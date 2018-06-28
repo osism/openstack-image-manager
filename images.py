@@ -9,6 +9,8 @@ import yaml
 import requests
 import shade
 
+shade.simple_logging(debug=os.environ.get('DEBUG', False))
+
 CLOUD= os.environ.get('CLOUD', 'images')
 REQUIRED_KEYS = [
     'name',
