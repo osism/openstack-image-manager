@@ -1,0 +1,28 @@
+---
+# Cirros
+
+- name: Cirros 0.3.5
+  format: qcow2
+  min_disk: 1
+  min_ram: 32
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: ubuntu
+    os_version: 0.3.5
+  url: http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
+
+# Ubuntu
+
+- name: Ubuntu 14.04 (20180627)
+  format: qcow2
+  min_disk: 8
+  min_ram: 512
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: ubuntu
+    os_version: 14.04
+  url: https://cloud-images.ubuntu.com/trusty/20180627/trusty-server-cloudimg-amd64-disk1.img
