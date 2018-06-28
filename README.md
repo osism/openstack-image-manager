@@ -1,6 +1,6 @@
 # Images
 
-[![Build Status](https://travis-ci.org/betacloud/images.svg?branch=master)](https://travis-ci.org/betacloud/images)
+[![Build Status](https://travis-ci.com/betacloud/images.svg?branch=master)](https://travis-ci.com/betacloud/images)
 
 License
 -------
