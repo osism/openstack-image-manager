@@ -61,7 +61,7 @@ for image in images:
         r = requests.head(image['url'])
         print("Test URL %s: %s" % (image['url'], r.status_code))
 
-        if r.status_code not in [200]:
+        if r.status_code not in [200, 302]:
             print("Skipping '%s'" % image['name'])
             continue
 
