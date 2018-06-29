@@ -5,6 +5,7 @@
   format: qcow2
   min_disk: 1
   min_ram: 32
+  status: active
   meta:
     architecture: x86_64
     hw_disk_bus: scsi
@@ -19,6 +20,7 @@
   format: qcow2
   min_disk: 8
   min_ram: 512
+  status: active
   meta:
     architecture: x86_64
     hw_disk_bus: scsi
@@ -31,6 +33,7 @@
   format: qcow2
   min_disk: 8
   min_ram: 512
+  status: active
   meta:
     architecture: x86_64
     hw_disk_bus: scsi
@@ -43,6 +46,7 @@
   format: qcow2
   min_disk: 8
   min_ram: 512
+  status: active
   meta:
     architecture: x86_64
     hw_disk_bus: scsi
@@ -57,6 +61,7 @@
   format: qcow2
   min_disk: 4
   min_ram: 512
+  status: active
   meta:
     architecture: x86_64
     hw_disk_bus: scsi

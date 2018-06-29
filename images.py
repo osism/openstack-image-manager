@@ -16,7 +16,8 @@ shade.simple_logging(debug=os.environ.get('DEBUG', False))
 CLOUD= os.environ.get('CLOUD', 'images')
 REQUIRED_KEYS = [
     'name',
-    'format'
+    'format',
+    'status'
 ]
 
 with open("images.yml") as fp:
@@ -116,3 +117,11 @@ for image in images:
             if property not in properties:
                 print("Setting %s: %s" % (property, image['meta'][property]))
                 glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
+
+        print("Checking status of '%s'" % image['name'])
+        if cloud_image.status != image['status'] and image['status'] == 'deactivated':
+            print("Deactivating image '%s'" % image['name'])
+            glance.images.deactivate(cloud_image.id)
+        elif cloud_image.status != image['status'] and image['status'] == 'active':
+            print("Reactivating image '%s'" % image['name'])
+            glance.images.reactivate(cloud_image.id)
