@@ -4,6 +4,9 @@
 
 # Documentation
 
+To make changes in this repository, open a pull request. To prioritize the import of a new image send an email to
+`support@betacloud.io` with reference to the created pull request.
+
 ## Add image
 
 * only freely accessible community images may be added
