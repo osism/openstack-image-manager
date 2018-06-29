@@ -91,6 +91,22 @@
     os_version: '28'
   url: https://download.fedoraproject.org/pub/alt/atomic/stable/Fedora-Atomic-28-20180625.1/AtomicHost/x86_64/images/Fedora-AtomicHost-28-20180625.1.x86_64.qcow2
 
+# openSUSE
+
+- name: openSUSE Leap 42.3 (20180629)
+  format: qcow2
+  min_disk: 8
+  min_ram: 512
+  status: active
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: opensuse
+    os_version: '42.3'
+  url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64.qcow2
+
 # Custom
 
 - name: Fedora Atomic Host 25 for Magnum (Ocata)
