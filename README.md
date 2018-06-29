@@ -20,6 +20,8 @@
   format: qcow2
   min_disk: 4
   min_ram: 512
+  status: active
+  visibility: public
   meta:
     architecture: x86_64
     hw_disk_bus: scsi
@@ -64,6 +66,15 @@
 
 * deactivation: change `status` to `deactivated`
 * reactivation: change `status` to `active`
+
+## Visibility
+
+* https://developer.openstack.org/api-ref/image/v2/index.html --> `Image visibility`
+
+* public: set `visibility` to `public`
+* community: set `visibility` to `community`
+* shared: set `visibility` to `shared`
+* private: set `visibility` to `private`
 
 # License
 

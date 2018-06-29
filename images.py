@@ -17,7 +17,8 @@ CLOUD= os.environ.get('CLOUD', 'images')
 REQUIRED_KEYS = [
     'name',
     'format',
-    'status'
+    'status',
+    'visibility'
 ]
 
 with open("images.yml") as fp:
@@ -125,3 +126,8 @@ for image in images:
         elif cloud_image.status != image['status'] and image['status'] == 'active':
             print("Reactivating image '%s'" % image['name'])
             glance.images.reactivate(cloud_image.id)
+
+        print("Checking visibility of '%s'" % image['name'])
+        if cloud_image.visibility != image['visibility']:
+            print("Set visibility of '%s' to '%s'" % (image['name'], image['visibility']))
+            glance.images.update(cloud_image.id, visibility=image['visibility'])
