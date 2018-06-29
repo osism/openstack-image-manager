@@ -38,3 +38,15 @@
     os_distro: ubuntu
     os_version: '16.04'
   url: https://cloud-images.ubuntu.com/xenial/20180628/xenial-server-cloudimg-amd64-disk1.img
+
+- name: Ubuntu 18.04 (20180627)
+  format: qcow2
+  min_disk: 8
+  min_ram: 512
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: ubuntu
+    os_version: '18.04'
+  url: https://cloud-images.ubuntu.com/bionic/20180627/bionic-server-cloudimg-amd64.img
