@@ -4,8 +4,10 @@ import os
 import shutil
 import subprocess
 import tempfile
+import time
 import yaml
 
+import os_client_config
 import requests
 import shade
 
@@ -21,11 +23,17 @@ with open("images.yml") as fp:
     images = yaml.load(fp)
 
 cloud = shade.openstack_cloud(cloud=CLOUD)
-cloud_images = {}
+glance = os_client_config.make_client("image", cloud=CLOUD)
 
-for image in cloud.list_images():
-    if image.is_public or image.owner == cloud.current_project_id:
-        cloud_images[image.name] = image
+def get_images(cloud):
+    result = {}
+    for image in cloud.list_images():
+        if image.is_public or image.owner == cloud.current_project_id:
+            result[image.name] = image
+
+    return result
+
+cloud_images = get_images(cloud)
 
 for image in images:
 
@@ -45,6 +53,7 @@ for image in images:
     # check existence
     existence = image['name'] in cloud_images
 
+    status = None
     if not existence:
         # check image url
 
@@ -55,39 +64,32 @@ for image in images:
             print("Skipping '%s'" % image['name'])
             continue
 
-        r = requests.get(image['url'], stream=True)
-        if r.status_code in [200]:
-            _, p = tempfile.mkstemp(prefix='images-')
-            print("Saving '%s' --> %s" % (image['name'], p))
-            with open(p, 'wb') as f:
-                r.raw.decode_content = True
-                shutil.copyfileobj(r.raw, f)        
+        print("Creating import task '%s'" % image['name'])
+        input = {
+            'import_from_format': image['format'],
+            'import_from': image['url'],
+            'image_properties': {
+                'container_format': 'bare',
+                'disk_format': image['format'],
+                'min_disk': image.get('min_disk', 0),
+                'min_ram': image.get('min_ram', 0),
+                'name': image['name'],
+                'visibility': 'public'
+            }
+        }
+        t = glance.tasks.create(type='import', input=input)
+        while True:
+            status = glance.tasks.get(t.id).status
+            if status not in ['failure', 'success']:
+                print("Waiting for task %s" % t.id)
+                time.sleep(10.0)
+            else:
+                break
 
-            if image['format'] != 'raw':
-                _, p_raw = tempfile.mkstemp(prefix='images-')
-                print ("Converting '%s' --> %s" % (image['name'], p_raw))
-                subprocess.call(['qemu-img', 'convert', p, p_raw])
+        if status == 'success':
+            cloud_images = get_images(cloud)
 
-                print("Removing %s" % p)
-                os.unlink(p)
-
-                p = p_raw
-
-            print("Uploading %s" % p)
-            i = cloud.create_image(
-                image['name'],
-                filename=p,
-                wait=True,
-                disk_format='raw',
-                container_format='bare',
-                meta=image['meta'],
-                min_disk=image.get('min_disk', 0),
-                min_ram=image.get('min_ram', 0),
-            )
-
-            print("Removing %s" % p)
-            os.unlink(p)
-    else:
+    if existence or (not existence and status == 'success'):
         print("Checking parameters of '%s'" % image['name'])
 
         cloud_image = cloud_images[image['name']]
@@ -105,13 +107,12 @@ for image in images:
             if property in image['meta']:
                 if image['meta'][property] != properties[property]:
                     print("Setting %s: %s != %s" % (property, properties[property], image['meta'][property]))
-                    meta = {property: image['meta'][property]}
-                    cloud.update_image_properties(name_or_id=cloud_image.id, meta=meta)
-            else:
+                    glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
+            elif property not in ['self', 'schema']:
                 # FIXME: handle deletion of properties
-                pass
+                print("Deleting %s" % (property))
 
         for property in image['meta']:
             if property not in properties:
-                # FIXME: handle addition of properties
-                pass
+                print("Setting %s: %s" % (property, image['meta'][property]))
+                glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
