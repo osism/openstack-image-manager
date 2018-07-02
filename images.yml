@@ -77,7 +77,7 @@
 
 # Fedora
 
-- name: Fedora 28
+- name: Fedora 28 (20180425)
   format: qcow2
   min_disk: 4
   min_ram: 512
