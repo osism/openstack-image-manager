@@ -15,15 +15,18 @@ To make changes in this repository, open a pull request. To prioritize the impor
 * useful metadata keys can be found at https://docs.openstack.org/glance/latest/admin/useful-image-properties.html
 * possible values for `os_distro` can be found in libosinfo: https://gitlab.com/libosinfo/osinfo-db/tree/master/data/os or `osinfo-query os`
 * `min_disk` and `min_ram` should always be specified (keys do not have to be set, by default the values are 0)
+* At `login` specify the user with whom you can log in after the initial start. This is necessary for the generated documentation as well as later automatic tests.
 
 ```yaml
 # Fedora
 [...]
 - name: Fedora 28
   format: qcow2
+  login: fedora
   min_disk: 4
   min_ram: 512
   status: active
+  url: https://download.fedoraproject.org/pub/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
   visibility: public
   meta:
     architecture: x86_64
@@ -31,7 +34,6 @@ To make changes in this repository, open a pull request. To prioritize the impor
     hw_scsi_model: virtio-scsi
     os_distro: fedora
     os_version: '28'
-  url: https://download.fedoraproject.org/pub/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
 ```
 
 ### Naming convention
