@@ -77,6 +77,20 @@
 
 # Fedora
 
+- name: Fedora 27 (20171105)
+  format: qcow2
+  min_disk: 4
+  min_ram: 512
+  status: active
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: fedora
+    os_version: '27'
+  url: https://ftp.halifax.rwth-aachen.de/fedora/linux/releases/27/CloudImages/x86_64/images/Fedora-Cloud-Base-27-1.6.x86_64.qcow2
+
 - name: Fedora 28 (20180425)
   format: qcow2
   min_disk: 4
