@@ -215,6 +215,19 @@
 
 # RancherOS
 
+- name: RancherOS 1.3.0
+  format: qcow2
+  min_disk: 8
+  min_ram: 512
+  status: active
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_version: '1.3.0'
+  url: https://github.com/rancher/os/releases/download/v1.3.0/rancheros-openstack.img
+
 - name: RancherOS 1.4.0
   format: qcow2
   min_disk: 8
