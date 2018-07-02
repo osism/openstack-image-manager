@@ -10,6 +10,7 @@ To make changes in this repository, open a pull request. To prioritize the impor
 ## Add image
 
 * only freely accessible community images may be added
+* currently, the decompression of images, as with CoreOS, is not supported
 * if there is no section for the product / distribution then create it accordingly
 * explicitly mark `os_version` as a string to prevent evaluation as a double
 * useful metadata keys can be found at https://docs.openstack.org/glance/latest/admin/useful-image-properties.html
