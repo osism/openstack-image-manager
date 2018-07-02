@@ -77,7 +77,7 @@ for image in images:
                 'min_disk': image.get('min_disk', 0),
                 'min_ram': image.get('min_ram', 0),
                 'name': image['name'],
-                'visibility': 'public'
+                'visibility': 'private'
             }
         }
         t = glance.tasks.create(type='import', input=input)
