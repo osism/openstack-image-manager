@@ -208,6 +208,20 @@
     os_distro: opensuse
     os_version: '15.0'
 
+- name: openSUSE Tumbleweed (20180630)
+  format: qcow2
+  login: root
+  min_disk: 8
+  min_ram: 512
+  status: active
+  url: https://download.opensuse.org/repositories/home:/ojkastl_buildservice:/CloudImages/images/openSUSE-Tumbleweed-OpenStack.x86_64.qcow2
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: opensuse
+
 # ArchLinux
 
 - name: ArchLinux (20180626)
