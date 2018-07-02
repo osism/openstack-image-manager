@@ -14,6 +14,7 @@ import shade
 shade.simple_logging(debug=os.environ.get('DEBUG', False))
 
 CLOUD= os.environ.get('CLOUD', 'images')
+IMAGESFILE = os.environ.get('IMAGESFILE', 'images.yml')
 REQUIRED_KEYS = [
     'name',
     'format',
@@ -21,7 +22,7 @@ REQUIRED_KEYS = [
     'visibility'
 ]
 
-with open("images.yml") as fp:
+with open(IMAGESFILE) as fp:
     images = yaml.load(fp)
 
 cloud = shade.openstack_cloud(cloud=CLOUD)
@@ -81,12 +82,17 @@ for image in images:
         }
         t = glance.tasks.create(type='import', input=input)
         while True:
-            status = glance.tasks.get(t.id).status
-            if status not in ['failure', 'success']:
-                print("Waiting for task %s" % t.id)
-                time.sleep(10.0)
-            else:
-                break
+            try:
+                status = glance.tasks.get(t.id).status
+                if status not in ['failure', 'success']:
+                    print("Waiting for task %s" % t.id)
+                    time.sleep(10.0)
+                else:
+                    break
+
+            except:
+                time.sleep(5.0)
+                pass
 
         if status == 'success':
             cloud_images = get_images(cloud)
