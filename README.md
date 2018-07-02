@@ -14,7 +14,7 @@ To make changes in this repository, open a pull request. To prioritize the impor
 * if there is no section for the product / distribution then create it accordingly
 * explicitly mark `os_version` as a string to prevent evaluation as a double
 * useful metadata keys can be found at https://docs.openstack.org/glance/latest/admin/useful-image-properties.html
-* possible values for `os_distro` can be found in libosinfo: https://gitlab.com/libosinfo/osinfo-db/tree/master/data/os or `osinfo-query os`
+* possible values for `os_distro` can be found in libosinfo: https://gitlab.com/libosinfo/osinfo-db/tree/master/data/os or `osinfo-query os` (omit `os_distro` if there is no meaningful value for it)
 * `min_disk` and `min_ram` should always be specified (keys do not have to be set, by default the values are 0)
 * At `login` specify the user with whom you can log in after the initial start. This is necessary for the generated documentation as well as later automatic tests.
 
