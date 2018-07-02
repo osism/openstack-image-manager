@@ -16,6 +16,21 @@
     os_distro: ubuntu
     os_version: '0.3.5'
 
+- name: Cirros 0.4.0
+  format: qcow2
+  login: cirros
+  min_disk: 1
+  min_ram: 32
+  status: active
+  url: http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: ubuntu
+    os_version: '0.4.0'
+
 # CentOS
 
 - name: CentOS 7 (20180606)
