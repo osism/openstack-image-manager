@@ -248,7 +248,7 @@
   format: qcow2
   login: rancher
   min_disk: 8
-  min_ram: 512
+  min_ram: 1024
   status: active
   url: https://github.com/rancher/os/releases/download/v1.3.0/rancheros-openstack.img
   visibility: public
@@ -262,7 +262,7 @@
   format: qcow2
   login: rancher
   min_disk: 8
-  min_ram: 512
+  min_ram: 2048
   status: active
   url: https://github.com/rancher/os/releases/download/v1.4.0/rancheros-openstack.img
   visibility: public
