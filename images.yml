@@ -173,7 +173,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
-    os_distro: fedora
+    os_distro: fedora-atomic
     os_version: '28'
 
 # openSUSE
