@@ -315,20 +315,3 @@
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
     os_version: '1.4.0'
-
-# Custom
-
-- name: Fedora Atomic Host 25 for Magnum (Ocata)
-  format: qcow2
-  login: fedora
-  min_disk: 8
-  min_ram: 512
-  status: active
-  url: https://fedorapeople.org/groups/magnum/fedora-atomic-ocata.qcow2
-  visibility: public
-  meta:
-    architecture: x86_64
-    hw_disk_bus: scsi
-    hw_scsi_model: virtio-scsi
-    os_distro: fedora-atomic
-    os_version: '25'
