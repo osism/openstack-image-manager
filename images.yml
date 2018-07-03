@@ -161,6 +161,21 @@
 
 # Fedora Atomic Host
 
+- name: Fedora Atomic Host 26 (20171030.0)
+  format: qcow2
+  login: fedora
+  min_disk: 8
+  min_ram: 512
+  status: active
+  url: https://download.fedoraproject.org/pub/alt/atomic/stable/Fedora-Atomic-26-20171030.0/CloudImages/x86_64/images/Fedora-Atomic-26-20171030.0.x86_64.qcow2
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    os_distro: fedora-atomic
+    os_version: '26'
+
 - name: Fedora Atomic Host 27 (20180419.0)
   format: qcow2
   login: fedora
