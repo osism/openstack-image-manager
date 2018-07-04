@@ -13,6 +13,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: ubuntu
     os_version: '0.3.5'
 
@@ -28,6 +29,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: ubuntu
     os_version: '0.4.0'
 
@@ -45,6 +47,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: centos
     os_version: '7'
 
@@ -62,6 +65,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: debian
     os_version: '8.11.0'
 
@@ -77,6 +81,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: debian
     os_version: '9.4.6'
 
@@ -94,6 +99,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: ubuntu
     os_version: '14.04'
 
@@ -109,6 +115,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: ubuntu
     os_version: '16.04'
 
@@ -124,6 +131,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: ubuntu
     os_version: '18.04'
 
@@ -141,6 +149,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: fedora
     os_version: '27'
 
@@ -156,6 +165,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: fedora
     os_version: '28'
 
@@ -173,6 +183,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: fedora-atomic
     os_version: '26'
 
@@ -188,6 +199,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: fedora-atomic
     os_version: '27'
 
@@ -203,6 +215,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: fedora-atomic
     os_version: '28'
 
@@ -220,6 +233,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: centos-atomic
     os_version: '28'
 
@@ -237,6 +251,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: opensuse
     os_version: '42.3'
 
@@ -252,6 +267,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: opensuse
     os_version: '15.0'
 
@@ -267,6 +283,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: opensuse
 
 # ArchLinux
@@ -283,6 +300,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: archlinux
     os_version: '20180626'
 
@@ -300,6 +318,7 @@
     architecture: x86_64
     hw_disk_bus: virtio
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: gentoo
     os_version: '20180629'
 
@@ -317,6 +336,7 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_version: '1.3.0'
 
 - name: RancherOS 1.4.0
@@ -331,4 +351,5 @@
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_version: '1.4.0'

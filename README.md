@@ -33,6 +33,7 @@ To make changes in this repository, open a pull request. To prioritize the impor
     architecture: x86_64
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
     os_distro: fedora
     os_version: '28'
 ```
