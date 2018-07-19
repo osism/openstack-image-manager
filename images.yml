@@ -63,7 +63,7 @@
   visibility: public
   meta:
     architecture: x86_64
-    hw_disk_bus: scsi
+    hw_disk_bus: virtio
     hw_scsi_model: virtio-scsi
     hw_watchdog_action: reset
     os_distro: debian
@@ -79,7 +79,7 @@
   visibility: public
   meta:
     architecture: x86_64
-    hw_disk_bus: scsi
+    hw_disk_bus: virtio
     hw_scsi_model: virtio-scsi
     hw_watchdog_action: reset
     os_distro: debian
