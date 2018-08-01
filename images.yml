@@ -85,6 +85,22 @@
     os_distro: debian
     os_version: '8.11.1'
 
+- name: Debian 8 (20180729)
+  format: qcow2
+  login: debian
+  min_disk: 8
+  min_ram: 512
+  status: active
+  url: https://cdimage.debian.org/cdimage/openstack/8.11.2-20180729/debian-8.11.2-20180729-openstack-amd64.qcow2
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: virtio
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+    os_distro: debian
+    os_version: '8.11.2'
+
 - name: Debian 9 (20180609)
   format: qcow2
   login: debian
@@ -116,6 +132,22 @@
     hw_watchdog_action: reset
     os_distro: debian
     os_version: '9.5.0'
+
+- name: Debian 9 (20180729)
+  format: qcow2
+  login: debian
+  min_disk: 8
+  min_ram: 512
+  status: active
+  url: https://cdimage.debian.org/cdimage/openstack/9.5.1-20180729/debian-9.5.1-20180729-openstack-amd64.raw
+  visibility: public
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+    os_distro: debian
+    os_version: '9.5.1'
 
 # Ubuntu
 
