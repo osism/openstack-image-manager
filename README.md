@@ -18,13 +18,13 @@ To make changes in this repository, open a pull request. To prioritize the impor
 * `min_disk` and `min_ram` should always be specified (keys do not have to be set, by default the values are 0)
 * At `login` specify the user with whom you can log in after the initial start. This is necessary for the generated documentation as well as later automatic tests.
 
-```yaml
-# Fedora
+### Image with regular rebuilds
 
-- name: Fedora 28
+```yaml
+- name: Ubuntu 16.04
   format: qcow2
-  login: fedora
-  min_disk: 4
+  login: ubuntu
+  min_disk: 8
   min_ram: 512
   status: active
   visibility: public
@@ -34,16 +34,59 @@ To make changes in this repository, open a pull request. To prioritize the impor
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
     hw_watchdog_action: reset
-    os_distro: fedora
-    os_version: '28'
+    os_distro: ubuntu
+    os_version: '16.04'
   versions:
-    20180425:
-      url: https://download.fedoraproject.org/pub/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
+    20180928:
+      url: https://cloud-images.ubuntu.com/xenial/20180928/xenial-server-cloudimg-amd64-disk1.img
+    20181004:
+      url: https://cloud-images.ubuntu.com/xenial/20181004/xenial-server-cloudimg-amd64-disk1.img
 ```
 
-### Add new version
+This configuration creates the following images:
 
-FIXME
+* ``Ubuntu 16.04 (20180928)``
+* ``Ubuntu 16.04``
+
+If a newer build is added, the following rotation takes place:
+
+* ``Ubuntu 16.04`` becomes ``Ubuntu 16.04 (20181004)``
+* the new image becomes ``Ubuntu 16.04``
+
+### Image without regular rebuild
+
+```yaml
+# RancherOS
+
+- name: RancherOS
+  format: qcow2
+  login: rancher
+  min_disk: 8
+  min_ram: 2048
+  status: active
+  visibility: public
+  multi: false
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+  versions:
+    1.3.0:
+      url: https://github.com/rancher/os/releases/download/v1.3.0/rancheros-openstack.img
+    1.4.0:
+      url: https://github.com/rancher/os/releases/download/v1.4.0/rancheros-openstack.img
+    1.4.1:
+      url: https://github.com/rancher/os/releases/download/v1.4.1/rancheros-openstack.img
+```
+
+This configuration creates the following images:
+
+* ``RancherOS 1.3.0``
+* ``RancherOS 1.4.0``
+* ``RancherOS 1.4.1``
+
+If a new version is added, no rotation takes place. The new version is added as ``RancherOS x.y.z``.
 
 ### Naming convention
 
