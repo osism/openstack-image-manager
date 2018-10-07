@@ -16,7 +16,7 @@ install:
 
 script:
   - yamllint -c .yamllint.yml .
-  - python images.py
+  - python src/images.py
 
 notifications:
   irc:

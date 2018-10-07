@@ -14,7 +14,7 @@ import shade
 shade.simple_logging(debug=os.environ.get('DEBUG', False))
 
 CLOUD= os.environ.get('CLOUD', 'images')
-IMAGESFILE = os.environ.get('IMAGESFILE', 'images.yml')
+IMAGESFILE = os.environ.get('IMAGESFILE', 'etc/images.yml')
 REQUIRED_KEYS = [
     'name',
     'format',
