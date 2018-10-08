@@ -170,9 +170,14 @@ for image in images:
                 glance.images.reactivate(cloud_image.id)
 
             logging.info("Checking visibility of '%s'" % name)
-            if cloud_image.visibility != image['visibility']:
-                logging.info("Set visibility of '%s' to '%s'" % (name, image['visibility']))
-                glance.images.update(cloud_image.id, visibility=image['visibility'])
+            if image['multi'] and image['visibility'] == 'public' and version not in versions[-3:]:
+                visibility = 'community'
+            else:
+                visibility = image['visibility']
+
+            if cloud_image.visibility != visibility:
+                logging.info("Set visibility of '%s' to '%s'" % (name, visibility))
+                glance.images.update(cloud_image.id, visibility=visibility)
 
     if image['multi'] and len(versions) > 1:
         name = image['name']
@@ -188,6 +193,7 @@ for image in images:
             glance.images.update(cloud_images[latest].id, name=name)
 
         cloud_images = get_images(conn)
+
     elif image['multi'] and len(versions) == 1:
         name = image['name']
         latest = "%s (%s)" % (image['name'], versions[-1])
