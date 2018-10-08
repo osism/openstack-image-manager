@@ -23,6 +23,28 @@
     0.4.0:
       url: http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
 
+# CoreOS
+
+- name: CoreOS
+  format: qcow2
+  login: root
+  min_disk: 10
+  min_ram: 2048
+  status: active
+  visibility: public
+  multi: false
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+    os_distro: coreos
+  versions:
+    1745.7.0:
+      url: https://mirror.betacloud.io/coreos/1745.7.0/coreos_production_openstack_image.img
+    1855.4.0:
+      url: https://mirror.betacloud.io/coreos/1855.4.0/coreos_production_openstack_image.img
+
 # RancherOS
 
 - name: RancherOS
