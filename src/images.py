@@ -142,6 +142,10 @@ for image in images:
 
             if not image['multi']:
                 image['meta']['os_version'] = version
+            else:
+                if 'os_version' in image['versions'][version]:
+                    image['meta']['os_version'] = image['versions'][version]['os_version']
+
 
             for property in properties:
                 if property in image['meta']:

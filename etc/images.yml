@@ -1,4 +1,6 @@
 ---
+# Images without regular rebuild
+
 # Cirros
 
 - name: Cirros
@@ -43,6 +45,8 @@
       url: https://github.com/rancher/os/releases/download/v1.4.0/rancheros-openstack.img
     1.4.1:
       url: https://github.com/rancher/os/releases/download/v1.4.1/rancheros-openstack.img
+
+# Images with regular rebuilds
 
 # Ubuntu
 
@@ -125,3 +129,45 @@
       url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1805.qcow2
     20180906:
       url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1808.qcow2
+
+# Debian
+
+- name: Debian 8
+  format: qcow2
+  login: debian
+  min_disk: 8
+  min_ram: 512
+  status: active
+  visibility: public
+  multi: true
+  meta:
+    architecture: x86_64
+    hw_disk_bus: virtio
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+    os_distro: debian
+    os_version: '8'
+  versions:
+    20181005:
+      url: https://cdimage.debian.org/cdimage/openstack/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
+      os_version: '8.11.5'
+
+- name: Debian 9
+  format: qcow2
+  login: debian
+  min_disk: 8
+  min_ram: 512
+  status: active
+  visibility: public
+  multi: true
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+    os_distro: debian
+    os_version: '9'
+  versions:
+    20181004:
+      url: https://cdimage.debian.org/cdimage/openstack/9.5.5-20181004/debian-9.5.5-20181004-openstack-amd64.qcow2
+      os_version: '9.5.5'
