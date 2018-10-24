@@ -393,8 +393,10 @@
     os_distro: opensuse
     os_version: '15.0'
   versions:
-    20101008:
+    20181008:
       url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.35.qcow2
+    20181024:
+      url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.45.qcow2
 
 - name: openSUSE Tumbleweed
   format: qcow2
