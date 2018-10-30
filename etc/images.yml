@@ -271,6 +271,8 @@
   versions:
     20180920:
       url: https://download.fedoraproject.org/pub/fedora/linux/releases/test/29_Beta/Cloud/x86_64/images/Fedora-Cloud-Base-29_Beta-1.5.x86_64.qcow2
+    20181025:
+      url: https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2
 
 # Fedora Atomic Host
 
