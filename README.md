@@ -1,9 +1,5 @@
 # Images
 
-[![Build Status](https://travis-ci.com/betacloud/images.svg?branch=master)](https://travis-ci.com/betacloud/images)
-
-# Documentation
-
 To make changes in this repository, open a pull request. To prioritize the import of a new image send an email to
 `support@betacloud.io` with reference to the created pull request.
 
