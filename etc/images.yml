@@ -210,8 +210,11 @@
     os_version: '9'
   versions:
     20181004:
-      url: https://cdimage.debian.org/cdimage/openstack/9.5.5-20181004/debian-9.5.5-20181004-openstack-amd64.qcow2
+      url: https://cdimage.debian.org/cdimage/openstack/archive/9.5.5-20181004/debian-9.5.5-20181004-openstack-amd64.qcow2
       os_version: '9.5.5'
+    20190124:
+      url: https://cdimage.debian.org/cdimage/openstack/9.7.0/debian-9.7.0-openstack-amd64.qcow2
+      os_version: '9.7.0'
 
 # Fedora
 
