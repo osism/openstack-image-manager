@@ -1,6 +1,25 @@
 ---
 # Images without regular rebuild
 
+# Mikrotik Cloud Hosted Router
+
+- name: Mikrotik Cloud Hosted Router
+  format: qcow2
+  login: root
+  min_disk: 1
+  min_ram: 1024
+  status: active
+  visibility: public
+  multi: false
+  meta:
+    architecture: x86_64
+    hw_disk_bus: scsi
+    hw_scsi_model: virtio-scsi
+    hw_watchdog_action: reset
+  versions:
+    6.43.12:
+      url: https://mirror.betacloud.io/mikrotik/6.43.12/chr-6.43.12.img
+
 # OPNsense
 
 - name: OPNsense
