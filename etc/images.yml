@@ -105,6 +105,10 @@
       url: https://github.com/rancher/os/releases/download/v1.4.0/rancheros-openstack.img
     1.4.1:
       url: https://github.com/rancher/os/releases/download/v1.4.1/rancheros-openstack.img
+    1.4.2:
+      url: https://github.com/rancher/os/releases/download/v1.4.2/rancheros-openstack.img
+    1.4.3:
+      url: https://github.com/rancher/os/releases/download/v1.4.3/rancheros-openstack.img
 
 # Images with regular rebuilds
 
