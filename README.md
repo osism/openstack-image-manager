@@ -32,6 +32,7 @@ To make changes in this repository, open a pull request. To prioritize the impor
     hw_watchdog_action: reset
     os_distro: ubuntu
     os_version: '16.04'
+  tags: []
   versions:
     20180928:
       url: https://cloud-images.ubuntu.com/xenial/20180928/xenial-server-cloudimg-amd64-disk1.img
@@ -67,6 +68,7 @@ If a newer build is added, the following rotation takes place:
     hw_disk_bus: scsi
     hw_scsi_model: virtio-scsi
     hw_watchdog_action: reset
+  tags: []
   versions:
     1.3.0:
       url: https://github.com/rancher/os/releases/download/v1.3.0/rancheros-openstack.img
@@ -98,13 +100,16 @@ Samples:
 
 * not implemented yet
 
-## Modify image properties/tags
+## Modify image properties
 
-* management of tags not yet possible
 * removal of properties is not yet possible
 * URL, name and format can not be changed
 * any keys can be added to `meta`, these will be added to the image
 * existing keys in `meta` can be changed, the same applies to `min_disk` and `min_ram`
+
+## Modify image tags
+
+* add or remove tags to the ``tags`` list
 
 ## Deactivate/reactivate image
 

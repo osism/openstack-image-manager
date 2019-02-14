@@ -131,6 +131,7 @@ for image in images:
 
             cloud_image = cloud_images[name]
             properties = cloud_image.properties
+            tags = cloud_image.tags
 
             if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
                 logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
@@ -146,19 +147,28 @@ for image in images:
                 if 'os_version' in image['versions'][version]:
                     image['meta']['os_version'] = image['versions'][version]['os_version']
 
+            for tag in tags:
+                if tag not in image['tags']:
+                    logging.info("Deleting tag %s" % (tag))
+                    glance.image_tags.delete(cloud_image.id, tag)
+
+            for tag in image['tags']:
+                if tag not in tags:
+                    logging.info("Adding tag %s" % (tag))
+                    glance.image_tags.update(cloud_image.id, tag)
 
             for property in properties:
                 if property in image['meta']:
                     if image['meta'][property] != properties[property]:
-                        logging.info("Setting %s: %s != %s" % (property, properties[property], image['meta'][property]))
+                        logging.info("Setting property %s: %s != %s" % (property, properties[property], image['meta'][property]))
                         glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
                 elif property not in ['self', 'schema']:
                     # FIXME: handle deletion of properties
-                    logging.info("Deleting %s" % (property))
+                    logging.info("Deleting property %s" % (property))
 
             for property in image['meta']:
                 if property not in properties:
-                    logging.info("Setting %s: %s" % (property, image['meta'][property]))
+                    logging.info("Setting property %s: %s" % (property, image['meta'][property]))
                     glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
 
             logging.info("Checking status of '%s'" % name)
