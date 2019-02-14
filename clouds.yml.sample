@@ -1,0 +1,11 @@
+---
+clouds:
+  images:
+    auth:
+      username: USER
+      project_name: PROJECT
+      project_domain_name: DOMAIN
+      user_domain_name: DOMAIN
+      auth_url: https://api-1.betacloud.io:5000/v3
+    identity_api_version: 3
+    image_api_version: 2
