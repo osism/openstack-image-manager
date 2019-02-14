@@ -1,4 +1,3 @@
 requests
-shade
 openstacksdk
 python-glanceclient

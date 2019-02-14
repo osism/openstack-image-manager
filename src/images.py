@@ -11,7 +11,6 @@ import yaml
 import openstack
 import os_client_config
 import requests
-import shade
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -29,7 +28,6 @@ with open(IMAGESFILE) as fp:
     images = yaml.load(fp)
 
 conn = openstack.connect(cloud=CLOUD)
-cloud = shade.openstack_cloud(cloud=CLOUD)
 glance = os_client_config.make_client("image", cloud=CLOUD)
 
 def create_import_task(glance, image, url):
@@ -135,11 +133,11 @@ for image in images:
 
             if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
                 logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
-                cloud.update_image_properties(name_or_id=cloud_image.id, min_disk=image['min_disk'])
+                glance.images.update(cloud_image.id, **{'min_disk': int(image['min_disk'])})
 
             if 'min_ram' in image and image['min_ram'] != cloud_image.min_ram:
                 logging.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
-                cloud.update_image_properties(name_or_id=cloud_image.id, min_ram=image['min_ram'])
+                glance.images.update(cloud_image.id, **{'min_ram': int(image['min_ram'])})
 
             if not image['multi']:
                 image['meta']['os_version'] = version
