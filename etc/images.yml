@@ -61,7 +61,7 @@
     hw_watchdog_action: reset
   tags: []
   versions:
-    19.1:
+    '19.1':
       url: https://mirror.betacloud.io/opnsense/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img
 
 # Cirros
