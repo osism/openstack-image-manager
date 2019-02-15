@@ -29,6 +29,7 @@
 - name: Mikrotik Cloud Hosted Router
   format: qcow2
   login: root
+  password: empty password
   min_disk: 1
   min_ram: 1024
   status: active
@@ -49,6 +50,7 @@
 - name: OPNsense
   format: qcow2
   login: root
+  password: opnsense
   min_disk: 4
   min_ram: 1024
   status: active
@@ -69,6 +71,7 @@
 - name: Cirros
   format: qcow2
   login: cirros
+  password: gocubsgo
   min_disk: 1
   min_ram: 32
   status: active
