@@ -4,18 +4,27 @@ import logging
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import yaml
 
+from oslo_config import cfg
 import openstack
 import os_client_config
 import requests
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
-CLOUD = os.environ.get('CLOUD', 'images')
-IMAGESFILE = os.environ.get('IMAGESFILE', 'etc/images.yml')
+PROJECT_NAME='images'
+CONF = cfg.CONF
+opts = [
+  cfg.StrOpt('cloud', help='Managed cloud', default='images'),
+  cfg.StrOpt('images', help='Path to images.yml', default='etc/images.yml')
+]
+CONF.register_cli_opts(opts)
+CONF(sys.argv[1:], project=PROJECT_NAME)
+
 REQUIRED_KEYS = [
     'format',
     'name',
@@ -24,11 +33,11 @@ REQUIRED_KEYS = [
     'visibility',
 ]
 
-with open(IMAGESFILE) as fp:
+with open(CONF.images) as fp:
     images = yaml.load(fp)
 
-conn = openstack.connect(cloud=CLOUD)
-glance = os_client_config.make_client("image", cloud=CLOUD)
+conn = openstack.connect(cloud=CONF.cloud)
+glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
 def create_import_task(glance, image, url):
     logging.info("Creating import task '%s'" % name)

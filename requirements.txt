@@ -1,3 +1,5 @@
-requests
 openstacksdk
+os-client-config
+oslo.config
 python-glanceclient
+requests
