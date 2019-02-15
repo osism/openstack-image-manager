@@ -1,7 +1,7 @@
-# Images
+With this script it is possible to easily manage and keep up to date a large number of images on an OpenStack environment.
+We use this script to maintain the images on our public cloud Betacloud.
 
-To make changes in this repository, open a pull request. To prioritize the import of a new image send an email to
-`support@betacloud.io` with reference to the created pull request.
+# Usage
 
 ## Add new image
 
@@ -124,6 +124,12 @@ Samples:
 * community: set `visibility` to `community`
 * shared: set `visibility` to `shared`
 * private: set `visibility` to `private`
+
+# Contribute
+
+To make changes in this repository, open a pull request. To prioritize the import of a new image send an email to
+`support@betacloud.io` with reference to the created pull request.
+
 
 # License
 
