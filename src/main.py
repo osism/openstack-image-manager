@@ -5,12 +5,12 @@ import subprocess
 import sys
 import tempfile
 import time
-import yaml
 
 from oslo_config import cfg
 import openstack
 import os_client_config
 import requests
+import yaml
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
