@@ -160,7 +160,9 @@
   tags: []
   versions:
     20181004:
-      url: https://cloud-images.ubuntu.com/trusty/20181004//trusty-server-cloudimg-amd64-disk1.img
+      url: https://cloud-images.ubuntu.com/trusty/20181004/trusty-server-cloudimg-amd64-disk1.img
+    20190209:
+      url: https://cloud-images.ubuntu.com/trusty/20190209/trusty-server-cloudimg-amd64-disk1.img
 
 - name: Ubuntu 16.04
   format: qcow2
@@ -181,6 +183,8 @@
   versions:
     20181004:
       url: https://cloud-images.ubuntu.com/xenial/20181004/xenial-server-cloudimg-amd64-disk1.img
+    20190212:
+      url: https://cloud-images.ubuntu.com/xenial/20190212/xenial-server-cloudimg-amd64-disk1.img
 
 - name: Ubuntu 18.04
   format: qcow2
@@ -201,6 +205,8 @@
   versions:
     20181004:
       url: https://cloud-images.ubuntu.com/bionic/20181004/bionic-server-cloudimg-amd64.img
+    20190210:
+      url: https://cloud-images.ubuntu.com/bionic/20190210/bionic-server-cloudimg-amd64.img
 
 - name: Ubuntu 19.04
   format: qcow2
