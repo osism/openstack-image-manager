@@ -19,8 +19,8 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, date
 PROJECT_NAME='images'
 CONF = cfg.CONF
 opts = [
-  cfg.StrOpt('cloud', help='Managed cloud', default='images'),
-  cfg.StrOpt('images', help='Path to images.yml', default='etc/images.yml')
+  cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
+  cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)

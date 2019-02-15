@@ -3,3 +3,4 @@ os-client-config
 oslo.config
 python-glanceclient
 requests
+tabulate
