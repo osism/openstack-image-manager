@@ -5,4 +5,5 @@ install:
   - pip install -r test-requirements.txt
 
 script:
-  - yamllint -c .yamllint.yml etc/images.yml
+  - yamllint -c .yamllint.yml etc/images.yml .yamllint.yml .yamale.yml
+  - yamale -s .yamale.yml -p ruamel etc/images.yml

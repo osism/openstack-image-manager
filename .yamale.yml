@@ -1,0 +1,25 @@
+---
+images: list(include('image'))
+
+---
+image:
+  name: str()
+  format: enum('qcow2', 'raw', 'iso')
+  login: str()
+  min_disk: int()
+  min_ram: int()
+  status: enum('active', 'deactivated')
+  visibility: enum('public', 'community', 'shared', 'private')
+  multi: bool()
+  meta: include('meta')
+  tags: list(str())
+  versions: list(include('version'))
+
+meta:
+  architecture: enum('x86_64')
+  os_version: str(required=False)
+
+version:
+  version: str()
+  url: str()
+  os_version: str(required=False)

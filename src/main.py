@@ -6,6 +6,7 @@ import sys
 import tempfile
 import time
 
+from natsort import natsorted
 from oslo_config import cfg
 import openstack
 import os_client_config
@@ -32,7 +33,8 @@ REQUIRED_KEYS = [
 ]
 
 with open(CONF.images) as fp:
-    images = yaml.load(fp)
+    data = yaml.load(fp)
+    images = data.get('images', [])
 
 conn = openstack.connect(cloud=CONF.cloud)
 glance = os_client_config.make_client("image", cloud=CONF.cloud)
@@ -92,8 +94,17 @@ for image in images:
 
     logging.info("Processing '%s'" % image['name'])
 
-    versions = sorted(image['versions'].keys())
-    for version in versions:
+    versions = dict()
+    for version in image['versions']:
+        versions[str(version['version'])] = {
+            'url': version['url']
+        }
+
+        if 'os_version' in version:
+            versions[version['version']]['os_version'] = version['os_version']
+
+    sorted_versions = natsorted(versions.keys())
+    for version in sorted_versions:
         if image['multi']:
             name = "%s (%s)" % (image['name'], version)
         else:
@@ -103,18 +114,17 @@ for image in images:
 
         existence = name in cloud_images
 
-        if image['multi'] and len(versions) > 1 and version == versions[-1] and not existence:
-            previous = "%s (%s)" % (image['name'], versions[-2])
+        if image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1] and not existence:
+            previous = "%s (%s)" % (image['name'], sorted_versions[-2])
             existence = previous in cloud_images and image['name'] in cloud_images
-        elif image['multi'] and len(versions) > 1 and version == versions[-2] and not existence:
+        elif image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-2] and not existence:
             existence = image['name'] in cloud_images
-        elif image['multi'] and len(versions) == 1:
+        elif image['multi'] and len(sorted_versions) == 1:
             existence = image['name'] in cloud_images
 
         status = None
         if not existence:
-
-            url = image['versions'][version]['url']
+            url = versions[version]['url']
 
             r = requests.head(url)
             logging.info("Tested URL %s: %s" % (url, r.status_code))
@@ -128,7 +138,7 @@ for image in images:
             if status == 'success':
                 cloud_images = get_images(conn)
 
-        if image['multi'] and existence and version == versions[-1] and image['name'] in cloud_images:
+        if image['multi'] and existence and version == sorted_versions[-1] and image['name'] in cloud_images:
             name = image['name']
 
         if name in cloud_images:
@@ -149,8 +159,8 @@ for image in images:
             if not image['multi']:
                 image['meta']['os_version'] = version
             else:
-                if 'os_version' in image['versions'][version]:
-                    image['meta']['os_version'] = image['versions'][version]['os_version']
+                if 'os_version' in versions[version]:
+                    image['meta']['os_version'] = versions[version]['os_version']
 
             for tag in tags:
                 if tag not in image['tags']:
@@ -185,7 +195,7 @@ for image in images:
                 glance.images.reactivate(cloud_image.id)
 
             logging.info("Checking visibility of '%s'" % name)
-            if image['multi'] and image['visibility'] == 'public' and version not in versions[-3:]:
+            if image['multi'] and image['visibility'] == 'public' and version not in sorted_versions[-3:]:
                 visibility = 'community'
             else:
                 visibility = image['visibility']
@@ -194,10 +204,10 @@ for image in images:
                 logging.info("Set visibility of '%s' to '%s'" % (name, visibility))
                 glance.images.update(cloud_image.id, visibility=visibility)
 
-    if image['multi'] and len(versions) > 1:
+    if image['multi'] and len(sorted_versions) > 1:
         name = image['name']
-        latest = "%s (%s)" % (image['name'], versions[-1])
-        current = "%s (%s)" % (image['name'], versions[-2])
+        latest = "%s (%s)" % (image['name'], sorted_versions[-1])
+        current = "%s (%s)" % (image['name'], sorted_versions[-2])
 
         if name in cloud_images and current not in cloud_images:
             logging.info("Rename %s to %s" % (name, current))
@@ -209,9 +219,9 @@ for image in images:
 
         cloud_images = get_images(conn)
 
-    elif image['multi'] and len(versions) == 1:
+    elif image['multi'] and len(sorted_versions) == 1:
         name = image['name']
-        latest = "%s (%s)" % (image['name'], versions[-1])
+        latest = "%s (%s)" % (image['name'], sorted_versions[-1])
 
         if latest in cloud_images:
             logging.info("Rename %s to %s" % (latest, name))

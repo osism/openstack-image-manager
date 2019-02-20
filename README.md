@@ -17,27 +17,27 @@ We use this script to maintain the images on our public cloud Betacloud.
 ### Image with regular rebuilds
 
 ```yaml
-- name: Ubuntu 16.04
-  format: qcow2
-  login: ubuntu
-  min_disk: 8
-  min_ram: 512
-  status: active
-  visibility: public
-  multi: true
-  meta:
-    architecture: x86_64
-    hw_disk_bus: scsi
-    hw_scsi_model: virtio-scsi
-    hw_watchdog_action: reset
-    os_distro: ubuntu
-    os_version: '16.04'
-  tags: []
-  versions:
-    20180928:
-      url: https://cloud-images.ubuntu.com/xenial/20180928/xenial-server-cloudimg-amd64-disk1.img
-    20181004:
-      url: https://cloud-images.ubuntu.com/xenial/20181004/xenial-server-cloudimg-amd64-disk1.img
+  - name: Ubuntu 16.04
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '16.04'
+    tags: []
+    versions:
+      - version: '20180928'
+        url: https://cloud-images.ubuntu.com/xenial/20180928/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20181004'
+        url: https://cloud-images.ubuntu.com/xenial/20181004/xenial-server-cloudimg-amd64-disk1.img
 ```
 
 This configuration creates the following images:
@@ -53,29 +53,27 @@ If a newer build is added, the following rotation takes place:
 ### Image without regular rebuild
 
 ```yaml
-# RancherOS
-
-- name: RancherOS
-  format: qcow2
-  login: rancher
-  min_disk: 8
-  min_ram: 2048
-  status: active
-  visibility: public
-  multi: false
-  meta:
-    architecture: x86_64
-    hw_disk_bus: scsi
-    hw_scsi_model: virtio-scsi
-    hw_watchdog_action: reset
-  tags: []
-  versions:
-    1.3.0:
-      url: https://github.com/rancher/os/releases/download/v1.3.0/rancheros-openstack.img
-    1.4.0:
-      url: https://github.com/rancher/os/releases/download/v1.4.0/rancheros-openstack.img
-    1.4.1:
-      url: https://github.com/rancher/os/releases/download/v1.4.1/rancheros-openstack.img
+  - name: RancherOS
+    format: qcow2
+    login: rancher
+    min_disk: 8
+    min_ram: 2048
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+    tags: []
+    versions:
+      - version: '1.3.0'
+        url: https://github.com/rancher/os/releases/download/v1.3.0/rancheros-openstack.img
+      - version: '1.4.0'
+        url: https://github.com/rancher/os/releases/download/v1.4.0/rancheros-openstack.img
+      - version: '1.4.1'
+        url: https://github.com/rancher/os/releases/download/v1.4.1/rancheros-openstack.img
 ```
 
 This configuration creates the following images:
