@@ -542,3 +542,5 @@ images:
     versions:
       - version: '20181008'
         url: https://linuximages.de/openstack/arch/arch-openstack-2018-10-08-07-12-image-bootstrap-0.9.2.1-66-g4a9286d.qcow2
+      - version: '20190220'
+        url: https://linuximages.de/openstack/arch/arch-openstack-2019-02-20-06-25-image-bootstrap-0.9.2.1-79-g1ac4a4d.qcow2
