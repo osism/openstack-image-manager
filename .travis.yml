@@ -1,0 +1,8 @@
+---
+language: python
+
+install:
+  - pip install -r test-requirements.txt
+
+script:
+  - yamllint -c .yamllint.yml etc/images.yml
