@@ -46,7 +46,7 @@ with open(CONF.images) as fp:
 conn = openstack.connect(cloud=CONF.cloud)
 glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
-def create_import_task(glance, image, url):
+def create_import_task(glance, name, image, url):
     logging.info("Creating import task '%s'" % name)
 
     input = {
@@ -76,6 +76,8 @@ def create_import_task(glance, image, url):
         except:
             time.sleep(5.0)
             pass
+
+    logging.info("Import task for '%s' finished with status '%s'" % (name, status))
 
     return status
 
@@ -148,7 +150,7 @@ for image in images:
                 logging.warning("Skipping '%s'" % name)
                 continue
 
-            status = create_import_task(glance, image, url)
+            status = create_import_task(glance, name, image, url)
 
             if status == 'success':
                 cloud_images = get_images(conn)
