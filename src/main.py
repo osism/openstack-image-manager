@@ -218,7 +218,7 @@ for image in images:
                 visibility = image['visibility']
 
             if cloud_image.visibility != visibility:
-                logging.info("Set visibility of '%s' to '%s'" % (name, visibility))
+                logging.info("Setting visibility of '%s' to '%s'" % (name, visibility))
                 glance.images.update(cloud_image.id, visibility=visibility)
 
     if image['multi'] and len(sorted_versions) > 1:
@@ -250,6 +250,20 @@ cloud_images = get_images(conn)
 
 for image in [x for x in cloud_images if x not in existing_images]:
     if CONF.yes_i_really_know_what_i_do:
-        logging.info("Deleting %s" % image)
+        cloud_image = cloud_images[image]
+
+        try:
+            logging.info("Deactivating image '%s'" % image)
+            glance.images.deactivate(cloud_image.id)
+
+            logging.info("Setting visibility of '%s' to 'community'" % image)
+            glance.images.update(cloud_image.id, visibility='community')
+
+            logging.info("Deleting %s" % image)
+            glance.images.delete(cloud_image.id)
+
+        except:
+            logging.info("%s is still in use and cannot be deleted" % image)
+
     else:
         logging.info("Image %s should be deleted" % image)

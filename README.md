@@ -96,7 +96,7 @@ Samples:
 
 ## Delete image
 
-* not implemented yet
+Simply remove the version of an image you want to delete or the entire image from ``etc/images.yml``.
 
 ## Modify image properties
 
