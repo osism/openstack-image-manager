@@ -13,17 +13,22 @@ import os_client_config
 import requests
 import yaml
 
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
-
 PROJECT_NAME='images'
 CONF = cfg.CONF
 opts = [
+  cfg.BoolOpt('debug', help='Enable debug logging', default=False),
   cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
   cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
   cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
+
+if CONF.debug:
+    level=logging.DEBUG
+else:
+    level=logging.INFO
+logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
 
 REQUIRED_KEYS = [
     'format',
