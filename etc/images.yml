@@ -136,7 +136,7 @@ images:
         url: https://github.com/rancher/os/releases/download/v1.4.3/rancheros-openstack.img
       - version: '1.5.1'
         url: https://github.com/rancher/os/releases/download/v1.5.1/rancheros-openstack.img
-  
+
   # Images with regular rebuilds
 
   # Ubuntu
