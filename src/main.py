@@ -88,6 +88,8 @@ cloud_images = get_images(conn)
 
 # manage existing images and add new ones
 
+existing_images = []
+
 for image in images:
     skip = False
     for required_key in REQUIRED_KEYS:
@@ -147,6 +149,8 @@ for image in images:
 
         if image['multi'] and existence and version == sorted_versions[-1] and image['name'] in cloud_images:
             name = image['name']
+
+        existing_images.append(name)
 
         if name in cloud_images:
             logging.info("Checking parameters of '%s'" % name)
@@ -217,11 +221,11 @@ for image in images:
         current = "%s (%s)" % (image['name'], sorted_versions[-2])
 
         if name in cloud_images and current not in cloud_images:
-            logging.info("Rename %s to %s" % (name, current))
+            logging.info("Renaming %s to %s" % (name, current))
             glance.images.update(cloud_images[name].id, name=current)
 
         if latest in cloud_images:
-            logging.info("Rename %s to %s" % (latest, name))
+            logging.info("Renaming %s to %s" % (latest, name))
             glance.images.update(cloud_images[latest].id, name=name)
 
         cloud_images = get_images(conn)
@@ -231,5 +235,13 @@ for image in images:
         latest = "%s (%s)" % (image['name'], sorted_versions[-1])
 
         if latest in cloud_images:
-            logging.info("Rename %s to %s" % (latest, name))
+            logging.info("Renaming %s to %s" % (latest, name))
             glance.images.update(cloud_images[latest].id, name=name)
+
+# check if images need to be removed
+
+cloud_images = get_images(conn)
+
+for image in cloud_images:
+    if image not in existing_images:
+        logging.info("Deleting %s" % image)
