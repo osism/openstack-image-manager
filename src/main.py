@@ -76,12 +76,16 @@ def get_images(conn):
     result = {}
 
     for image in conn.list_images():
-        if image.is_public or image.owner == conn.current_project_id:
+        if 'managed_by_betacloud' in image.tags and (image.is_public or image.owner == conn.current_project_id):
             result[image.name] = image
+        else:
+            logging.debug("'%s' not managed" % image.name)
 
     return result
 
 cloud_images = get_images(conn)
+
+# manage existing images and add new ones
 
 for image in images:
     skip = False
