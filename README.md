@@ -1,18 +1,29 @@
-With this script it is possible to easily manage and keep up to date a large number of images on an OpenStack environment.
+With this script it is possible to easily manage and keep up to date a
+large number of images on an OpenStack environment.
+
 We use this script to maintain the images on our public cloud Betacloud.
 
 # Usage
 
 ## Add new image
 
-* only freely accessible community images may be added
-* currently, the decompression of images, as with CoreOS, is not supported
-* if there is no section for the product / distribution then create it accordingly
-* explicitly mark `os_version` as a string to prevent evaluation as a double
-* useful metadata keys can be found at https://docs.openstack.org/glance/latest/admin/useful-image-properties.html
-* possible values for `os_distro` can be found in libosinfo: https://gitlab.com/libosinfo/osinfo-db/tree/master/data/os or `osinfo-query os` (omit `os_distro` if there is no meaningful value for it)
-* `min_disk` and `min_ram` should always be specified (keys do not have to be set, by default the values are 0)
-* At `login` specify the user with whom you can log in after the initial start. This is necessary for the generated documentation as well as later automatic tests.
+* Only freely accessible community images may be added.
+* Currently, the decompression of images, as with CoreOS, is not supported.
+* If there is no section for the product / distribution then create it
+  accordingly.
+* Explicitly mark `os_version` as a string to prevent evaluation as a double.
+* Useful metadata keys can be found at
+  https://docs.openstack.org/glance/latest/admin/useful-image-properties.html
+* possible values for `os_distro` can be found in libosinfo:
+  https://gitlab.com/libosinfo/osinfo-db/tree/master/data/os or
+  `osinfo-query os` (omit `os_distro` if there is no meaningful value for it).
+* `min_disk` and `min_ram` should always be specified (keys do not have to be
+  set, by default the values are 0).
+* At `login` specify the user with whom you can log in after the initial start.
+  This is necessary for the generated documentation as well as later automatic
+  tests.
+* Special images offer the login via a password. This can be specified via the
+  parameter `password`.
 
 ### Image with regular rebuilds
 
@@ -82,12 +93,13 @@ This configuration creates the following images:
 * ``RancherOS 1.4.0``
 * ``RancherOS 1.4.1``
 
-If a new version is added, no rotation takes place. The new version is added as ``RancherOS x.y.z``.
+If a new version is added, no rotation takes place. The new version is added
+as ``RancherOS x.y.z``.
 
 ### Naming convention
 
-* names must be unique
-* use the full name of the product / distribution, no shortcuts
+* Names must be unique
+* Use the full name of the product / distribution, no shortcuts
 
 Samples:
 
@@ -96,14 +108,16 @@ Samples:
 
 ## Delete image
 
-Simply remove the version of an image you want to delete or the entire image from ``etc/images.yml``.
+Simply remove the version of an image you want to delete or the entire
+image from ``etc/images.yml``.
 
 ## Modify image properties
 
-* removal of properties is not yet possible
+* Removal of properties is not yet possible
 * URL, name and format can not be changed
-* any keys can be added to `meta`, these will be added to the image
-* existing keys in `meta` can be changed, the same applies to `min_disk` and `min_ram`
+* Any keys can be added to `meta`, these will be added to the image
+* Existing keys in `meta` can be changed, the same applies to `min_disk`
+  and `min_ram`
 
 ## Modify image tags
 
@@ -125,9 +139,9 @@ Simply remove the version of an image you want to delete or the entire image fro
 
 # Contribute
 
-To make changes in this repository, open a pull request. To prioritize the import of a new image send an email to
-`support@betacloud.io` with reference to the created pull request.
-
+To make changes in this repository, open a pull request. To prioritize the import
+of a new image send an email to `support@betacloud.io` with reference to the created
+pull request.
 
 # License
 
