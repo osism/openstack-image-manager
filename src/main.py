@@ -19,7 +19,8 @@ PROJECT_NAME='images'
 CONF = cfg.CONF
 opts = [
   cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
-  cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml')
+  cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
+  cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
@@ -76,7 +77,7 @@ def get_images(conn):
     result = {}
 
     for image in conn.list_images():
-        if 'managed_by_betacloud' in image.tags and (image.is_public or image.owner == conn.current_project_id):
+        if CONF.tag in image.tags and (image.is_public or image.owner == conn.current_project_id):
             result[image.name] = image
         else:
             logging.debug("'%s' not managed" % image.name)
@@ -108,7 +109,7 @@ for image in images:
             versions[version['version']]['os_version'] = version['os_version']
 
     sorted_versions = natsorted(versions.keys())
-    image['tags'].append('managed_by_betacloud')
+    image['tags'].append(CONF.tag)
 
     for version in sorted_versions:
         if image['multi']:
