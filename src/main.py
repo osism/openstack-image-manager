@@ -17,6 +17,7 @@ PROJECT_NAME='images'
 CONF = cfg.CONF
 opts = [
   cfg.BoolOpt('debug', help='Enable debug logging', default=False),
+  cfg.BoolOpt('yes-i-really-know-what-i-do', help='Enable image deletion', default=False),
   cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
   cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
   cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
@@ -247,6 +248,8 @@ for image in images:
 
 cloud_images = get_images(conn)
 
-for image in cloud_images:
-    if image not in existing_images:
+for image in [x for x in cloud_images if x not in existing_images]:
+    if CONF.yes_i_really_know_what_i_do:
         logging.info("Deleting %s" % image)
+    else:
+        logging.info("Image %s should be deleted" % image)
