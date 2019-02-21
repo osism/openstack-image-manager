@@ -143,6 +143,9 @@ To make changes in this repository, open a pull request. To prioritize the impor
 of a new image send an email to `support@betacloud.io` with reference to the created
 pull request.
 
+After creating a PR, please check the result of the Travis CI and correct any
+errors identified.
+
 # License
 
 Licensed under the Apache License, Version 2.0 (the "License");
