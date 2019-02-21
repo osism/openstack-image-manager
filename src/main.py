@@ -104,6 +104,8 @@ for image in images:
             versions[version['version']]['os_version'] = version['os_version']
 
     sorted_versions = natsorted(versions.keys())
+    image['tags'].append('managed_by_betacloud')
+
     for version in sorted_versions:
         if image['multi']:
             name = "%s (%s)" % (image['name'], version)
@@ -162,15 +164,15 @@ for image in images:
                 if 'os_version' in versions[version]:
                     image['meta']['os_version'] = versions[version]['os_version']
 
-            for tag in tags:
-                if tag not in image['tags']:
-                    logging.info("Deleting tag %s" % (tag))
-                    glance.image_tags.delete(cloud_image.id, tag)
-
             for tag in image['tags']:
                 if tag not in tags:
                     logging.info("Adding tag %s" % (tag))
                     glance.image_tags.update(cloud_image.id, tag)
+
+            for tag in tags:
+                if tag not in image['tags']:
+                    logging.info("Deleting tag %s" % (tag))
+                    glance.image_tags.delete(cloud_image.id, tag)
 
             for property in properties:
                 if property in image['meta']:
