@@ -87,8 +87,9 @@ def get_images(conn):
     for image in conn.list_images():
         if CONF.tag in image.tags and (image.is_public or image.owner == conn.current_project_id):
             result[image.name] = image
+            logging.debug("Managed image '%s'" % image.name)
         else:
-            logging.debug("'%s' not managed" % image.name)
+            logging.debug("Unmanaged image '%s'" % image.name)
 
     return result
 
@@ -153,6 +154,7 @@ for image in images:
             status = create_import_task(glance, name, image, url)
 
             if status == 'success':
+                logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn)
 
         if image['multi'] and existence and version == sorted_versions[-1] and image['name'] in cloud_images:
