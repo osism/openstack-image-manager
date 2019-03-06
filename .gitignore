@@ -1,3 +1,4 @@
-secure.yml
-clouds.yml
 .tox
+Pipfile.lock
+clouds.yml
+secure.yml

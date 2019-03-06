@@ -165,7 +165,16 @@ Simply call `tox` without parameters.
 The deletion of images must be explicitly confirmed with the `--yes-i-really-know-what-i-do` parameter.
 
 ```
-tox -- --yes-i-really-know-what-i-do
+$ tox -- --yes-i-really-know-what-i-do
+```
+
+# Development
+
+As an alternative to `tox`, `pipenv` can be used for development.
+
+```
+$ pipenv install
+$ pipenv shell
 ```
 
 # License
