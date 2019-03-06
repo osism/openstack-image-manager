@@ -5,6 +5,8 @@ We use this script to maintain the images on our public cloud Betacloud.
 
 # Configuration
 
+After a change to the configuration, validate it with `tox -e check`.
+
 ## Add new image
 
 * Only freely accessible community images may be added.
