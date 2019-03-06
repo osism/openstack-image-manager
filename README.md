@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/betacloud/images.svg?branch=master)](https://travis-ci.org/betacloud/images)
+
 With this script it is possible to easily manage and keep up to date a
 large number of images on an OpenStack environment.
 
