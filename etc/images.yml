@@ -120,7 +120,7 @@ images:
   - name: RancherOS
     format: qcow2
     login: rancher
-    min_disk: 8
+    min_disk: 10
     min_ram: 2048
     status: active
     visibility: public
