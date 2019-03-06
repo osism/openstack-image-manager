@@ -58,6 +58,7 @@ def create_import_task(glance, name, image, url):
             'min_disk': image.get('min_disk', 0),
             'min_ram': image.get('min_ram', 0),
             'name': name,
+            'tags': [CONF.tag],
             'visibility': 'private'
         }
     }
