@@ -2,6 +2,9 @@ natsort
 openstacksdk
 os-client-config
 oslo.config
+paramiko
+patool
 python-glanceclient
+pyunpack
 requests
 tabulate

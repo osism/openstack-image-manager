@@ -6,6 +6,7 @@ images:
   # Octavia Amphora
 
   - name: Octavia Amphora
+    shortname: amphora
     format: qcow2
     login: root
     min_disk: 2
@@ -29,6 +30,7 @@ images:
   # Mikrotik Cloud Hosted Router
 
   - name: Mikrotik Cloud Hosted Router
+    shortname: mikrotik
     format: qcow2
     login: root
     password: empty password
@@ -54,6 +56,7 @@ images:
   # OPNsense
 
   - name: OPNsense
+    shortname: opnsense
     format: qcow2
     login: root
     password: opnsense
@@ -100,6 +103,7 @@ images:
   # CoreOS
 
   - name: CoreOS
+    shortname: coreos
     format: qcow2
     login: root
     min_disk: 10
