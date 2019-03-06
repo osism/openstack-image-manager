@@ -22,4 +22,5 @@ meta:
 version:
   version: str()
   url: str()
+  source: str(required=False)
   os_version: str(required=False)

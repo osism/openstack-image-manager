@@ -46,6 +46,10 @@ images:
     versions:
       - version: '6.43.12'
         url: https://mirror.betacloud.io/mikrotik/6.43.12/chr-6.43.12.img
+        source: https://download2.mikrotik.com/routeros/6.43.12/chr-6.43.12.img.zip
+      - version: '6.44'
+        url: https://mirror.betacloud.io/mikrotik/6.44/chr-6.44.img
+        source: https://download2.mikrotik.com/routeros/6.44/chr-6.44.img.zip
 
   # OPNsense
 
@@ -67,6 +71,7 @@ images:
     versions:
       - version: '19.1'
         url: https://mirror.betacloud.io/opnsense/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img
+        source: https://mirror.dns-root.de/opnsense/releases/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img.bz2
 
   # Cirros
 
@@ -112,8 +117,13 @@ images:
     versions:
       - version: '1745.7.0'
         url: https://mirror.betacloud.io/coreos/1745.7.0/coreos_production_openstack_image.img
+        source: https://stable.release.core-os.net/amd64-usr/1745.7.0/coreos_production_openstack_image.img.bz2
       - version: '1855.4.0'
         url: https://mirror.betacloud.io/coreos/1855.4.0/coreos_production_openstack_image.img
+        source: https://stable.release.core-os.net/amd64-usr/1855.4.0/coreos_production_openstack_image.img.bz2
+      - version: '2023.4.0'
+        url: https://mirror.betacloud.io/coreos/2023.4.0/coreos_production_openstack_image.img
+        source: https://stable.release.core-os.net/amd64-usr/2023.4.0/coreos_production_openstack_image.img.bz2
 
   # RancherOS
 
