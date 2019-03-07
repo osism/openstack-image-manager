@@ -119,9 +119,6 @@ images:
       os_distro: coreos
     tags: []
     versions:
-      - version: '1855.4.0'
-        url: https://mirror.betacloud.io/coreos/1855.4.0/coreos_production_openstack_image.img
-        source: https://stable.release.core-os.net/amd64-usr/1855.4.0/coreos_production_openstack_image.img.bz2
       - version: '2023.4.0'
         url: https://mirror.betacloud.io/coreos/2023.4.0/coreos_production_openstack_image.img
         source: https://stable.release.core-os.net/amd64-usr/2023.4.0/coreos_production_openstack_image.img.bz2
