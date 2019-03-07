@@ -31,7 +31,7 @@ images:
 
   - name: Mikrotik Cloud Hosted Router
     shortname: mikrotik
-    format: qcow2
+    format: raw
     login: root
     password: empty password
     min_disk: 1
