@@ -1,6 +1,5 @@
 # NOTE(berendt): quick & dirty (but it works for the moment)
 
-import exceptions
 import logging
 import os
 import shutil
@@ -9,7 +8,7 @@ from urllib.parse import urlparse
 
 from oslo_config import cfg
 import paramiko
-from pyunpack import Archive
+import patoolib
 import requests
 import yaml
 
@@ -60,7 +59,7 @@ for image in images:
         try:
             client.stat(os.path.join(CONF.basepath, dirname, filename))
             logging.info("'%s' available in '%s'" % (filename, dirname))
-        except exceptions.FileNotFoundError:
+        except FileNotFoundError:
             logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
             logging.info("Downloading '%s'" % version['source'])
@@ -70,7 +69,7 @@ for image in images:
             del response
 
             logging.info("Decompressing '%s'" % os.path.basename(path.path))
-            Archive(os.path.basename(path.path)).extractall('.')
+            patoolib.extract_archive(os.path.basename(path.path), outdir='.')
             os.remove(os.path.basename(path.path))
 
             logging.info("Uploading '%s' to '%s'" % (filename, dirname))
