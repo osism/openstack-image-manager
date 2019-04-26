@@ -296,6 +296,8 @@ images:
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1805.qcow2
       - version: '20180906'
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1808.qcow2
+      - version: '20190128'
+        url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
 
   # Debian
 
