@@ -59,7 +59,7 @@ for image in images:
         try:
             client.stat(os.path.join(CONF.basepath, dirname, filename))
             logging.info("'%s' available in '%s'" % (filename, dirname))
-        except FileNotFoundError:
+        except OSError:
             logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
             logging.info("Downloading '%s'" % version['source'])
