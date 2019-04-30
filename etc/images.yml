@@ -431,7 +431,9 @@ images:
     tags: []
     versions:
       - version: '20190326'
-        url: https://mirror.karneval.cz/pub/linux/fedora/linux/releases/test/30_Beta/Cloud/x86_64/images/Fedora-Cloud-Base-30_Beta-1.8.x86_64.qcow2
+        url: https://download.fedoraproject.org/pub/fedora/linux/releases/test/30_Beta/Cloud/x86_64/images/Fedora-Cloud-Base-30_Beta-1.8.x86_64.qcow2
+      - version: '20190426'
+        url: https://download.fedoraproject.org/pub/fedora/linux/releases/30/Cloud/x86_64/images/Fedora-Cloud-Base-30-1.2.x86_64.qcow2
 
   # Fedora Atomic Host
 
