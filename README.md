@@ -144,7 +144,7 @@ image from ``etc/images.yml``.
 # Contribute
 
 To make changes in this repository, open a pull request. To prioritize the import
-of a new image send an email to `support@betacloud.io` with reference to the created
+of a new image send an email to `info@betacloud.de` with reference to the created
 pull request.
 
 After creating a PR, please check the result of the Travis CI and correct any
