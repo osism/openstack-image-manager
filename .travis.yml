@@ -7,4 +7,4 @@ install:
 script:
   - yamllint -c .yamllint.yml etc/images.yml .yamllint.yml .yamale.yml
   - yamale -s .yamale.yml -p ruamel etc/images.yml
-  - flake8 --ignore E501
+  - flake8
