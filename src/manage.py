@@ -71,7 +71,7 @@ def create_import_task(glance, name, image, url):
             else:
                 break
 
-        except:
+        except Exception:
             time.sleep(5.0)
             pass
 
@@ -266,7 +266,7 @@ for image in [x for x in cloud_images if x not in existing_images]:
             logging.info("Deleting %s" % image)
             glance.images.delete(cloud_image.id)
 
-        except:
+        except Exception:
             logging.info("%s is still in use and cannot be deleted" % image)
 
     else:

@@ -75,7 +75,7 @@ for image in images:
             logging.info("Uploading '%s' to '%s'" % (filename, dirname))
             try:
                 client.mkdir(dirname)
-            except:
+            except Exception:
                 pass
 
             client.put(filename, os.path.join(dirname, filename))
