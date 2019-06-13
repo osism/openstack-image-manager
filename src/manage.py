@@ -1,9 +1,5 @@
 import logging
-import os
-import shutil
-import subprocess
 import sys
-import tempfile
 import time
 
 from natsort import natsorted
@@ -13,22 +9,22 @@ import os_client_config
 import requests
 import yaml
 
-PROJECT_NAME='images'
+PROJECT_NAME = 'images'
 CONF = cfg.CONF
 opts = [
-  cfg.BoolOpt('debug', help='Enable debug logging', default=False),
-  cfg.BoolOpt('yes-i-really-know-what-i-do', help='Enable image deletion', default=False),
-  cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
-  cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
-  cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
+    cfg.BoolOpt('debug', help='Enable debug logging', default=False),
+    cfg.BoolOpt('yes-i-really-know-what-i-do', help='Enable image deletion', default=False),
+    cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
+    cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
+    cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
 
 if CONF.debug:
-    level=logging.DEBUG
+    level = logging.DEBUG
 else:
-    level=logging.INFO
+    level = logging.INFO
 logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
 
 REQUIRED_KEYS = [
@@ -46,6 +42,7 @@ with open(CONF.images) as fp:
 conn = openstack.connect(cloud=CONF.cloud)
 glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
+
 def create_import_task(glance, name, image, url):
     logging.info("Creating import task '%s'" % name)
 
@@ -58,6 +55,7 @@ def create_import_task(glance, name, image, url):
             'min_disk': image.get('min_disk', 0),
             'min_ram': image.get('min_ram', 0),
             'name': name,
+            'tags': [CONF.tag],
             'visibility': 'private'
         }
     }
@@ -73,7 +71,7 @@ def create_import_task(glance, name, image, url):
             else:
                 break
 
-        except:
+        except Exception:
             time.sleep(5.0)
             pass
 
@@ -81,16 +79,19 @@ def create_import_task(glance, name, image, url):
 
     return status
 
+
 def get_images(conn):
     result = {}
 
     for image in conn.list_images():
         if CONF.tag in image.tags and (image.is_public or image.owner == conn.current_project_id):
             result[image.name] = image
+            logging.debug("Managed image '%s'" % image.name)
         else:
-            logging.debug("'%s' not managed" % image.name)
+            logging.debug("Unmanaged image '%s'" % image.name)
 
     return result
+
 
 cloud_images = get_images(conn)
 
@@ -153,6 +154,7 @@ for image in images:
             status = create_import_task(glance, name, image, url)
 
             if status == 'success':
+                logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn)
 
         if image['multi'] and existence and version == sorted_versions[-1] and image['name'] in cloud_images:
@@ -194,9 +196,10 @@ for image in images:
             for property in properties:
                 if property in image['meta']:
                     if image['meta'][property] != properties[property]:
-                        logging.info("Setting property %s: %s != %s" % (property, properties[property], image['meta'][property]))
+                        logging.info("Setting property %s: %s != %s" %
+                                     (property, properties[property], image['meta'][property]))
                         glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
-                elif property not in ['self', 'schema']:
+                elif property not in ['self', 'schema', 'os_hash_algo', 'os_hidden', 'os_hash_value']:
                     # FIXME: handle deletion of properties
                     logging.info("Deleting property %s" % (property))
 
@@ -264,7 +267,7 @@ for image in [x for x in cloud_images if x not in existing_images]:
             logging.info("Deleting %s" % image)
             glance.images.delete(cloud_image.id)
 
-        except:
+        except Exception:
             logging.info("%s is still in use and cannot be deleted" % image)
 
     else:
