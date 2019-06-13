@@ -589,6 +589,26 @@ images:
       - version: '20190214'
         url: https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.107.qcow2
 
+  - name: openSUSE Leap 15.1
+    format: qcow2
+    login: opensuse
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+      os_version: '15.1'
+    tags: []
+    versions:
+      - version: '20190612'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build5.2.qcow2
+
   # ArchLinux
 
   - name: ArchLinux
