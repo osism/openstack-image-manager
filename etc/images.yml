@@ -144,7 +144,7 @@ images:
         url: https://github.com/rancher/os/releases/download/v1.5.1/rancheros-openstack.img
 
   # Images with regular rebuilds
-	
+
   # Ubuntu
 
   - name: Ubuntu 14.04
