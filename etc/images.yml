@@ -142,8 +142,8 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '1.5.1'
-        url: https://github.com/rancher/os/releases/download/v1.5.1/rancheros-openstack.img
+      - version: '1.5.2'
+        url: https://github.com/rancher/os/releases/download/v1.5.2/rancheros-openstack.img
 
   # Images with regular rebuilds
 
