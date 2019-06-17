@@ -384,9 +384,9 @@ images:
       - version: '20190409'
         url: https://cdimage.debian.org/cdimage/openstack/archive/9.8.3-20190409/debian-9.8.3-20190409-openstack-amd64.qcow2
         os_version: '9.8.3'
-      - version: '20190515'
-        url: https://cdimage.debian.org/cdimage/openstack/9.9.1-20190515/debian-9.9.1-20190515-openstack-amd64.qcow2
-        os_version: '9.9.1'
+      - version: '20190614'
+        url: https://cdimage.debian.org/cdimage/openstack/9.9.2-20190614/debian-9.9.2-20190614-openstack-amd64.qcow2
+        os_version: '9.9.2'
 
   # Fedora
 
