@@ -605,8 +605,8 @@ images:
     versions:
       - version: '20180720'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.196.qcow2
-      - version: '20190612'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.266.qcow2
+      - version: '20190617'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.269.qcow2
 
   - name: openSUSE Leap 15.0
     format: qcow2
