@@ -651,6 +651,8 @@ images:
     versions:
       - version: '20190612'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build5.2.qcow2
+      - version: '20190702'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.1.qcow2
 
   # ArchLinux
 
