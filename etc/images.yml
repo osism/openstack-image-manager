@@ -9,6 +9,8 @@ images:
     shortname: alpine
     format: iso
     login: root
+    min_disk: 2
+    min_ram: 512
     status: active
     visibility: private
     multi: true
