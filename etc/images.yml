@@ -586,6 +586,25 @@ images:
 
   # openSUSE
 
+  - name: openSUSE Kubic
+    format: qcow2
+    login: opensuse
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+    tags: []
+    versions:
+      - version: '20191013'
+        url: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-Kubic-kubeadm-OpenStack-Cloud.qcow2
+
   - name: openSUSE Leap 42.3
     format: qcow2
     login: opensuse
