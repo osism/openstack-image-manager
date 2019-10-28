@@ -673,6 +673,25 @@ images:
       - version: '20190702'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.1.qcow2
 
+  - name: openSUSE Tumbleweed MicroOS
+    format: qcow2
+    login: opensuse
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+    tags: []
+    versions:
+      - version: '20191104'
+        url: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20191104.qcow2
+
   # ArchLinux
 
   - name: ArchLinux
