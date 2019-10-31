@@ -602,7 +602,7 @@ images:
       os_distro: opensuse
     tags: []
     versions:
-      - version: '20191013'
+      - version: '20191027'
         url: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-Kubic-kubeadm-OpenStack-Cloud.qcow2
 
   - name: openSUSE Leap 42.3
