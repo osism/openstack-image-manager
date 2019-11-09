@@ -34,7 +34,7 @@ else:
 logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
 
 with open(CONF.images) as fp:
-    data = yaml.load(fp)
+    data = yaml.load(fp, Loader=yaml.SafeLoader)
     images = data.get('images', [])
 
 transport = paramiko.Transport(sock=(CONF.server, CONF.port))

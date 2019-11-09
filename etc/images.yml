@@ -97,6 +97,8 @@ images:
     versions:
       - version: '0.3.5'
         url: http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
+      - version: '0.3.6'
+        url: http://download.cirros-cloud.net/0.3.6/cirros-0.3.6-x86_64-disk.img
       - version: '0.4.0'
         url: http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
 
@@ -140,8 +142,8 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '1.5.1'
-        url: https://github.com/rancher/os/releases/download/v1.5.1/rancheros-openstack.img
+      - version: '1.5.2'
+        url: https://github.com/rancher/os/releases/download/v1.5.2/rancheros-openstack.img
 
   # Images with regular rebuilds
 
@@ -168,6 +170,8 @@ images:
         url: https://cloud-images.ubuntu.com/trusty/20181004/trusty-server-cloudimg-amd64-disk1.img
       - version: '20190209'
         url: https://cloud-images.ubuntu.com/trusty/20190209/trusty-server-cloudimg-amd64-disk1.img
+      - version: '20190514'
+        url: https://cloud-images.ubuntu.com/trusty/20190514/trusty-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 16.04
     format: qcow2
@@ -190,6 +194,8 @@ images:
         url: https://cloud-images.ubuntu.com/xenial/20181004/xenial-server-cloudimg-amd64-disk1.img
       - version: '20190212'
         url: https://cloud-images.ubuntu.com/xenial/20190212/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20190605'
+        url: https://cloud-images.ubuntu.com/xenial/20190605/xenial-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu Minimal 16.04
     format: qcow2
@@ -210,6 +216,8 @@ images:
     versions:
       - version: '20190320'
         url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20190320/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+      - version: '20190604'
+        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20190604/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 18.04
     format: qcow2
@@ -232,6 +240,8 @@ images:
         url: https://cloud-images.ubuntu.com/bionic/20181004/bionic-server-cloudimg-amd64.img
       - version: '20190210'
         url: https://cloud-images.ubuntu.com/bionic/20190210/bionic-server-cloudimg-amd64.img
+      - version: '20190612'
+        url: https://cloud-images.ubuntu.com/bionic/20190612/bionic-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 18.04
     format: qcow2
@@ -252,6 +262,8 @@ images:
     versions:
       - version: '20190320'
         url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20190320/ubuntu-18.04-minimal-cloudimg-amd64.img
+      - version: '20190606'
+        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20190606.1/ubuntu-18.04-minimal-cloudimg-amd64.img
 
   - name: Ubuntu 19.04
     format: qcow2
@@ -272,6 +284,28 @@ images:
     versions:
       - version: '20190211'
         url: https://cloud-images.ubuntu.com/disco/20190211/disco-server-cloudimg-amd64.img
+      - version: '20190613'
+        url: https://cloud-images.ubuntu.com/disco/20190613/disco-server-cloudimg-amd64.img
+
+  - name: Ubuntu 19.10
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '19.10'
+    tags: []
+    versions:
+      - version: '20190612'
+        url: https://cloud-images.ubuntu.com/eoan/20190612/eoan-server-cloudimg-amd64.img
 
   # CentOS
 
@@ -298,6 +332,8 @@ images:
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1808.qcow2
       - version: '20190128'
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
+      - version: '20190604'
+        url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1905.qcow2
 
   # Debian
 
@@ -319,7 +355,7 @@ images:
     tags: []
     versions:
       - version: '20181005'
-        url: https://cdimage.debian.org/cdimage/openstack/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
+        url: https://cdimage.debian.org/cdimage/openstack/archive/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
         os_version: '8.11.5'
 
   - name: Debian 9
@@ -346,8 +382,11 @@ images:
         url: https://cdimage.debian.org/cdimage/openstack/archive/9.7.0/debian-9.7.0-openstack-amd64.qcow2
         os_version: '9.7.0'
       - version: '20190409'
-        url: https://cdimage.debian.org/cdimage/openstack/current/debian-9.8.3-20190409-openstack-amd64.qcow2
+        url: https://cdimage.debian.org/cdimage/openstack/archive/9.8.3-20190409/debian-9.8.3-20190409-openstack-amd64.qcow2
         os_version: '9.8.3'
+      - version: '20190614'
+        url: https://cdimage.debian.org/cdimage/openstack/9.9.2-20190614/debian-9.9.2-20190614-openstack-amd64.qcow2
+        os_version: '9.9.2'
 
   # Fedora
 
@@ -369,7 +408,7 @@ images:
     tags: []
     versions:
       - version: '20171105'
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/27/CloudImages/x86_64/images/Fedora-Cloud-Base-27-1.6.x86_64.qcow2
+        url: https://archives.fedoraproject.org/pub/archive/fedora/linux/releases/27/CloudImages/x86_64/images/Fedora-Cloud-Base-27-1.6.x86_64.qcow2
 
   - name: Fedora 28
     format: qcow2
@@ -389,7 +428,7 @@ images:
     tags: []
     versions:
       - version: '20180425'
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
+        url: https://archives.fedoraproject.org/pub/archive/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
 
   - name: Fedora 29
     format: qcow2
@@ -542,8 +581,29 @@ images:
         url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7.1805-GenericCloud.qcow2
       - version: '20180912'
         url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7.1808-GenericCloud.qcow2
+      - version: '20190315'
+        url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7.1902-GenericCloud.qcow2
 
   # openSUSE
+
+  - name: openSUSE Kubic
+    format: qcow2
+    login: opensuse
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+    tags: []
+    versions:
+      - version: '20191027'
+        url: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-Kubic-kubeadm-OpenStack-Cloud.qcow2
 
   - name: openSUSE Leap 42.3
     format: qcow2
@@ -564,6 +624,8 @@ images:
     versions:
       - version: '20180720'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.196.qcow2
+      - version: '20190617'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.269.qcow2
 
   - name: openSUSE Leap 15.0
     format: qcow2
@@ -589,6 +651,28 @@ images:
       - version: '20190214'
         url: https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.107.qcow2
 
+  - name: openSUSE Leap 15.1
+    format: qcow2
+    login: opensuse
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+      os_version: '15.1'
+    tags: []
+    versions:
+      - version: '20190612'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build5.2.qcow2
+      - version: '20190702'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.1.qcow2
+
   # ArchLinux
 
   - name: ArchLinux
@@ -611,3 +695,5 @@ images:
         url: https://linuximages.de/openstack/arch/arch-openstack-2018-10-08-07-12-image-bootstrap-0.9.2.1-66-g4a9286d.qcow2
       - version: '20190220'
         url: https://linuximages.de/openstack/arch/arch-openstack-2019-02-20-06-25-image-bootstrap-0.9.2.1-79-g1ac4a4d.qcow2
+      - version: '20190613'
+        url: https://linuximages.de/openstack/arch/arch-openstack-2019-06-13-06-25-image-bootstrap-0.9.2.1-80-ga2f6f2b.qcow2

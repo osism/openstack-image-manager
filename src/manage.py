@@ -36,7 +36,7 @@ REQUIRED_KEYS = [
 ]
 
 with open(CONF.images) as fp:
-    data = yaml.load(fp)
+    data = yaml.load(fp, Loader=yaml.SafeLoader)
     images = data.get('images', [])
 
 conn = openstack.connect(cloud=CONF.cloud)

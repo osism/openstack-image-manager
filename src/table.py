@@ -14,7 +14,7 @@ CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
 
 with open(CONF.images) as fp:
-    data = yaml.load(fp)
+    data = yaml.load(fp, Loader=yaml.SafeLoader)
     images = data.get('images', [])
 
 data = []
