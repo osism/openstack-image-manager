@@ -76,6 +76,29 @@ images:
         url: https://mirror.betacloud.io/opnsense/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img
         source: https://mirror.dns-root.de/opnsense/releases/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img.bz2
 
+  # Alpine Linux
+
+  - name: Alpine Linux
+    shortname: alpinelinux
+    format: iso
+    login: root
+    password: empty password
+    min_disk: 1
+    min_ram: 128
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: alpinelinux
+    tags: []
+    versions:
+      - version: '3.10.3'
+        url: http://dl-cdn.alpinelinux.org/alpine/v3.10/releases/x86_64/alpine-standard-3.10.3-x86_64.iso
+
   # Cirros
 
   - name: Cirros

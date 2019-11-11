@@ -139,6 +139,9 @@ for image in images:
         else:
             name = "%s %s" % (image['name'], version)
 
+        if image['format'] == "iso":
+            name = "%s (ISO)" % name
+
         logging.info("Processing image '%s'" % name)
 
         existence = name in cloud_images
