@@ -87,9 +87,9 @@ def get_images(conn):
     for image in conn.list_images():
         if CONF.tag in image.tags and (image.is_public or image.owner == conn.current_project_id):
             result[image.name] = image
-            logging.debug("Managed image '%s'" % image.name)
+            logging.debug("Managed image '%s' (tags = %s)" % (image.name, image.tags))
         else:
-            logging.debug("Unmanaged image '%s'" % image.name)
+            logging.debug("Unmanaged image '%s' (tags = %s)" % (image.name, image.tags))
 
     return result
 
