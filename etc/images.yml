@@ -624,6 +624,8 @@ images:
       os_distro: opensuse
     tags: []
     versions:
+      - version: '20191110'
+        url: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20191110.qcow2
       - version: '20191027'
         url: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-Kubic-kubeadm-OpenStack-Cloud.qcow2
 
