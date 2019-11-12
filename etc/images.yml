@@ -608,7 +608,7 @@ images:
 
   # openSUSE
 
-  - name: openSUSE Kubic
+  - name: openSUSE Kubic kubeadm
     format: qcow2
     login: opensuse
     min_disk: 8
