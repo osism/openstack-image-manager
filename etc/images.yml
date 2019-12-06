@@ -496,6 +496,26 @@ images:
       - version: '20190426'
         url: https://download.fedoraproject.org/pub/fedora/linux/releases/30/Cloud/x86_64/images/Fedora-Cloud-Base-30-1.2.x86_64.qcow2
 
+  - name: Fedora 31
+    format: qcow2
+    login: fedora
+    min_disk: 4
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: fedora
+      os_version: '31'
+    tags: []
+    versions:
+      - version: '20191023'
+        url: https://download.fedoraproject.org/pub/linux/fedora/linux/releases/31/Cloud/x86_64/images/Fedora-Cloud-Base-31-1.9.x86_64.qcow2
+
   # Fedora Atomic Host
 
   - name: Fedora Atomic Host 26
