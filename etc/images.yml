@@ -397,12 +397,6 @@ images:
       os_version: '9'
     tags: []
     versions:
-      - version: '20181004'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/9.5.5-20181004/debian-9.5.5-20181004-openstack-amd64.qcow2
-        os_version: '9.5.5'
-      - version: '20190124'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/9.7.0/debian-9.7.0-openstack-amd64.qcow2
-        os_version: '9.7.0'
       - version: '20190409'
         url: https://cdimage.debian.org/cdimage/openstack/archive/9.8.3-20190409/debian-9.8.3-20190409-openstack-amd64.qcow2
         os_version: '9.8.3'
