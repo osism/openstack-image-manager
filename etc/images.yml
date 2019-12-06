@@ -168,8 +168,6 @@ images:
       os_version: '14.04'
     tags: []
     versions:
-      - version: '20181004'
-        url: https://cloud-images.ubuntu.com/trusty/20181004/trusty-server-cloudimg-amd64-disk1.img
       - version: '20190209'
         url: https://cloud-images.ubuntu.com/trusty/20190209/trusty-server-cloudimg-amd64-disk1.img
       - version: '20190514'
@@ -669,8 +667,6 @@ images:
       os_version: '42.3'
     tags: []
     versions:
-      - version: '20180720'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.196.qcow2
       - version: '20190617'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.269.qcow2
 
@@ -691,10 +687,6 @@ images:
       os_version: '15.0'
     tags: []
     versions:
-      - version: '20181008'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.35.qcow2
-      - version: '20181024'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.45.qcow2
       - version: '20190214'
         url: https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.107.qcow2
 
@@ -738,8 +730,6 @@ images:
       os_distro: archlinux
     tags: []
     versions:
-      - version: '20181008'
-        url: https://linuximages.de/openstack/arch/arch-openstack-2018-10-08-07-12-image-bootstrap-0.9.2.1-66-g4a9286d.qcow2
       - version: '20190220'
         url: https://linuximages.de/openstack/arch/arch-openstack-2019-02-20-06-25-image-bootstrap-0.9.2.1-79-g1ac4a4d.qcow2
       - version: '20190613'
