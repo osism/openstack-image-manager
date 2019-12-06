@@ -586,8 +586,6 @@ images:
       os_version: '28'
     tags: []
     versions:
-      - version: '20180625'
-        url: https://download.fedoraproject.org/pub/alt/atomic/stable/Fedora-Atomic-28-20180625.1/AtomicHost/x86_64/images/Fedora-AtomicHost-28-20180625.1.x86_64.qcow2
       - version: '20180806'
         url: https://download.fedoraproject.org/pub/alt/atomic/stable/Fedora-Atomic-28-20180806.0/AtomicHost/x86_64/images/Fedora-AtomicHost-28-20180806.0.x86_64.qcow2
 
@@ -630,10 +628,6 @@ images:
       os_version: '7'
     tags: []
     versions:
-      - version: '20180611'
-        url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7.1805-GenericCloud.qcow2
-      - version: '20180912'
-        url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7.1808-GenericCloud.qcow2
       - version: '20190315'
         url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7.1902-GenericCloud.qcow2
 
