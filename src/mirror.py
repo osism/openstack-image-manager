@@ -51,7 +51,7 @@ for image in images:
         path = urlparse(version['source'])
 
         dirname = "/%s/%s" % (image['shortname'], version['version'])
-        filename = os.path.splitext(os.path.basename(path.path))[0]
+        filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
         logging.debug("dirname: %s" % dirname)
         logging.debug("filename: %s" % filename)
@@ -68,9 +68,10 @@ for image in images:
                 shutil.copyfileobj(response.raw, fp)
             del response
 
-            logging.info("Decompressing '%s'" % os.path.basename(path.path))
-            patoolib.extract_archive(os.path.basename(path.path), outdir='.')
-            os.remove(os.path.basename(path.path))
+            if fileextension in ['.bz2', '.zip']:
+                logging.info("Decompressing '%s'" % os.path.basename(path.path))
+                patoolib.extract_archive(os.path.basename(path.path), outdir='.')
+                os.remove(os.path.basename(path.path))
 
             logging.info("Uploading '%s' to '%s'" % (filename, dirname))
             try:
