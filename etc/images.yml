@@ -635,7 +635,7 @@ images:
     shortname: microos
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 24
     min_ram: 512
     status: active
     visibility: public
@@ -657,7 +657,7 @@ images:
     shortname: kubic-containerhost
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 24
     min_ram: 512
     status: active
     visibility: public
@@ -679,7 +679,7 @@ images:
     shortname: kubic-kubeadm
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 24
     min_ram: 512
     status: active
     visibility: public
