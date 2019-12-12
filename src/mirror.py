@@ -53,6 +53,9 @@ for image in images:
         dirname = "/%s/%s" % (image['shortname'], version['version'])
         filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
+        if fileextension not in ['.bz2', '.zip']:
+            filename += fileextension
+
         logging.debug("dirname: %s" % dirname)
         logging.debug("filename: %s" % filename)
 
