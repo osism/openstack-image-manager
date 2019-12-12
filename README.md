@@ -183,7 +183,9 @@ The debug mode can be activated via `--debug`, e.g.  `tox -- --debug`.
 
 ### Update and import new images
 
-Simply call `tox` without parameters.
+Simply run `tox` without parameters.
+
+Run `tox -- --dry-run` to see what will change.
 
 ### Delete removed images
 
