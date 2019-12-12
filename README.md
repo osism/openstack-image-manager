@@ -7,11 +7,40 @@ large number of images on an OpenStack environment.
 
 We use this script to maintain the images on our public cloud Betacloud.
 
-# Configuration
+- [Configuration](#configuration)
+  - [Naming convention](#naming-convention)
+  - [Add new image](#add-new-image)
+    - [Image with regular rebuilds](#image-with-regular-rebuilds)
+    - [Image without regular rebuild](#image-without-regular-rebuild)
+  - [Delete image](#delete-image)
+  - [Modify image properties](#modify-image-properties)
+  - [Modify image tags](#modify-image-tags)
+  - [Deactivate/reactivate image](#deactivatereactivate-image)
+  - [Visibility](#visibility)
+- [Contribute](#contribute)
+- [Usage](#usage)
+  - [Update and import new images](#update-and-import-new-images)
+  - [Delete removed images](#delete-removed-images)
+  - [Mirror images](#mirror-images)
+- [Development](#development)
+- [License](#license)
+
+## Configuration
 
 After a change to the configuration, validate it with `tox -e check`.
 
-## Add new image
+
+### Naming convention
+
+* Names must be unique
+* Use the full name of the product / distribution, no shortcuts
+
+Samples:
+
+* `Ubuntu 16.04`
+* `CoreOS`
+
+### Add new image
 
 * Only freely accessible community images may be added.
 * Currently, the decompression of images, as with CoreOS, is not supported.
@@ -31,7 +60,7 @@ After a change to the configuration, validate it with `tox -e check`.
 * Special images offer the login via a password. This can be specified via the
   parameter `password`.
 
-### Image with regular rebuilds
+#### Image with regular rebuilds
 
 ```yaml
   - name: Ubuntu 16.04
@@ -67,7 +96,7 @@ If a newer build is added, the following rotation takes place:
 * ``Ubuntu 16.04`` becomes ``Ubuntu 16.04 (20181004)``
 * the new image becomes ``Ubuntu 16.04``
 
-### Image without regular rebuild
+#### Image without regular rebuild
 
 ```yaml
   - name: RancherOS
@@ -102,22 +131,12 @@ This configuration creates the following images:
 If a new version is added, no rotation takes place. The new version is added
 as ``RancherOS x.y.z``.
 
-### Naming convention
-
-* Names must be unique
-* Use the full name of the product / distribution, no shortcuts
-
-Samples:
-
-* `Ubuntu 16.04`
-* `CoreOS`
-
-## Delete image
+### Delete image
 
 Simply remove the version of an image you want to delete or the entire
 image from ``etc/images.yml``.
 
-## Modify image properties
+### Modify image properties
 
 * Removal of properties is not yet possible
 * URL, name and format can not be changed
@@ -125,16 +144,16 @@ image from ``etc/images.yml``.
 * Existing keys in `meta` can be changed, the same applies to `min_disk`
   and `min_ram`
 
-## Modify image tags
+### Modify image tags
 
 * add or remove tags to the ``tags`` list
 
-## Deactivate/reactivate image
+### Deactivate/reactivate image
 
 * deactivation: change `status` to `deactivated`
 * reactivation: change `status` to `active`
 
-## Visibility
+### Visibility
 
 * https://developer.openstack.org/api-ref/image/v2/index.html --> `Image visibility`
 
@@ -143,7 +162,7 @@ image from ``etc/images.yml``.
 * shared: set `visibility` to `shared`
 * private: set `visibility` to `private`
 
-# Contribute
+## Contribute
 
 To make changes in this repository, open a pull request. To prioritize the import
 of a new image send an email to `info@betacloud.de` with reference to the created
@@ -152,7 +171,7 @@ pull request.
 After creating a PR, please check the result of the Travis CI and correct any
 errors identified.
 
-# Usage
+## Usage
 
 The cloud environment to be used can be specified via the `--cloud` parameter. `images` is set as the default.
 
@@ -162,11 +181,11 @@ The tag for the identification of managed images is set via `--tag`. `managed_by
 
 The debug mode can be activated via `--debug`, e.g.  `tox -- --debug`.
 
-## Update and import new images
+### Update and import new images
 
 Simply call `tox` without parameters.
 
-## Delete removed images
+### Delete removed images
 
 The deletion of images must be explicitly confirmed with the `--yes-i-really-know-what-i-do` parameter.
 
@@ -174,7 +193,13 @@ The deletion of images must be explicitly confirmed with the `--yes-i-really-kno
 $ tox -- --yes-i-really-know-what-i-do
 ```
 
-# Development
+### Mirror images
+
+```
+$ tox -e mirror -- --server SFTP_SERVER --username SFTP_USERNAME --password SFTP_PASSWORD
+```
+
+## Development
 
 As an alternative to `tox`, `pipenv` can be used for development.
 
@@ -183,7 +208,7 @@ $ pipenv install
 $ pipenv shell
 ```
 
-# License
+## License
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
