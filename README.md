@@ -7,6 +7,7 @@ large number of images on an OpenStack environment.
 
 We use this script to maintain the images on our public cloud Betacloud.
 
+- [Requirements](#requirements)
 - [Configuration](#configuration)
   - [Naming convention](#naming-convention)
   - [Add new image](#add-new-image)
@@ -25,10 +26,19 @@ We use this script to maintain the images on our public cloud Betacloud.
 - [Development](#development)
 - [License](#license)
 
+## Requirements
+
+Since this script stores many images in a project, the Glance quota must be set accordingly
+high or to unlimited.
+
+```
+[DEFAULT]
+user_storage_quota = 1TB
+```
+
 ## Configuration
 
 After a change to the configuration, validate it with `tox -e check`.
-
 
 ### Naming convention
 
