@@ -514,6 +514,28 @@ images:
 
   # openSUSE
 
+  - name: openSUSE Tumbleweed
+    shortname: tumbleweed
+    format: qcow2
+    login: opensuse
+    min_disk: 1
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+    tags: []
+    # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
+    versions:
+      - version: '20191216'
+        url: https://mirror.betacloud.io/tumbleweed/20191216/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20191216.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20191216.qcow2
+
   - name: openSUSE MicroOS
     shortname: microos
     format: qcow2
