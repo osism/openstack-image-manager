@@ -14,6 +14,7 @@ CONF = cfg.CONF
 opts = [
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
     cfg.BoolOpt('yes-i-really-know-what-i-do', help='Enable image deletion', default=False),
+    cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
     cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
@@ -86,12 +87,22 @@ def get_images(conn):
     for image in conn.list_images():
         if CONF.tag in image.tags and (image.is_public or image.owner == conn.current_project_id):
             result[image.name] = image
-            logging.debug("Managed image '%s'" % image.name)
+            logging.debug("Managed image '%s' (tags = %s)" % (image.name, image.tags))
         else:
-            logging.debug("Unmanaged image '%s'" % image.name)
+            logging.debug("Unmanaged image '%s' (tags = %s)" % (image.name, image.tags))
 
     return result
 
+
+# show runtime parameters
+
+logging.debug("cloud = %s" % CONF.cloud)
+logging.debug("dry-run = %s" % CONF.dry_run)
+logging.debug("images = %s" % CONF.images)
+logging.debug("tag = %s" % CONF.tag)
+logging.debug("yes-i-really-know-what-i-do = %s" % CONF.yes_i_really_know_what_i_do)
+
+# get all existing images
 
 cloud_images = get_images(conn)
 
@@ -151,7 +162,10 @@ for image in images:
                 logging.warning("Skipping '%s'" % name)
                 continue
 
-            status = create_import_task(glance, name, image, url)
+            if not CONF.dry_run:
+                status = create_import_task(glance, name, image, url)
+            else:
+                status = 'dry-run'
 
             if status == 'success':
                 logging.info("Import of '%s' successfully completed, reload images" % name)
@@ -171,11 +185,15 @@ for image in images:
 
             if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
                 logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
-                glance.images.update(cloud_image.id, **{'min_disk': int(image['min_disk'])})
+
+                if not CONF.dry_run:
+                    glance.images.update(cloud_image.id, **{'min_disk': int(image['min_disk'])})
 
             if 'min_ram' in image and image['min_ram'] != cloud_image.min_ram:
                 logging.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
-                glance.images.update(cloud_image.id, **{'min_ram': int(image['min_ram'])})
+
+                if not CONF.dry_run:
+                    glance.images.update(cloud_image.id, **{'min_ram': int(image['min_ram'])})
 
             if not image['multi']:
                 image['meta']['os_version'] = version
@@ -186,19 +204,25 @@ for image in images:
             for tag in image['tags']:
                 if tag not in tags:
                     logging.info("Adding tag %s" % (tag))
-                    glance.image_tags.update(cloud_image.id, tag)
+
+                    if not CONF.dry_run:
+                        glance.image_tags.update(cloud_image.id, tag)
 
             for tag in tags:
                 if tag not in image['tags']:
                     logging.info("Deleting tag %s" % (tag))
-                    glance.image_tags.delete(cloud_image.id, tag)
+
+                    if not CONF.dry_run:
+                        glance.image_tags.delete(cloud_image.id, tag)
 
             for property in properties:
                 if property in image['meta']:
                     if image['meta'][property] != properties[property]:
                         logging.info("Setting property %s: %s != %s" %
                                      (property, properties[property], image['meta'][property]))
-                        glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
+
+                        if not CONF.dry_run:
+                            glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
                 elif property not in ['self', 'schema', 'os_hash_algo', 'os_hidden', 'os_hash_value']:
                     # FIXME: handle deletion of properties
                     logging.info("Deleting property %s" % (property))
@@ -206,15 +230,21 @@ for image in images:
             for property in image['meta']:
                 if property not in properties:
                     logging.info("Setting property %s: %s" % (property, image['meta'][property]))
-                    glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
+
+                    if not CONF.dry_run:
+                        glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
 
             logging.info("Checking status of '%s'" % name)
             if cloud_image.status != image['status'] and image['status'] == 'deactivated':
                 logging.info("Deactivating image '%s'" % name)
-                glance.images.deactivate(cloud_image.id)
+
+                if not CONF.dry_run:
+                    glance.images.deactivate(cloud_image.id)
             elif cloud_image.status != image['status'] and image['status'] == 'active':
                 logging.info("Reactivating image '%s'" % name)
-                glance.images.reactivate(cloud_image.id)
+
+                if not CONF.dry_run:
+                    glance.images.reactivate(cloud_image.id)
 
             logging.info("Checking visibility of '%s'" % name)
             if image['multi'] and image['visibility'] == 'public' and version not in sorted_versions[-3:]:
@@ -224,7 +254,9 @@ for image in images:
 
             if cloud_image.visibility != visibility:
                 logging.info("Setting visibility of '%s' to '%s'" % (name, visibility))
-                glance.images.update(cloud_image.id, visibility=visibility)
+
+                if not CONF.dry_run:
+                    glance.images.update(cloud_image.id, visibility=visibility)
 
     if image['multi'] and len(sorted_versions) > 1:
         name = image['name']
@@ -233,11 +265,15 @@ for image in images:
 
         if name in cloud_images and current not in cloud_images:
             logging.info("Renaming %s to %s" % (name, current))
-            glance.images.update(cloud_images[name].id, name=current)
+
+            if not CONF.dry_run:
+                glance.images.update(cloud_images[name].id, name=current)
 
         if latest in cloud_images:
             logging.info("Renaming %s to %s" % (latest, name))
-            glance.images.update(cloud_images[latest].id, name=name)
+
+            if not CONF.dry_run:
+                glance.images.update(cloud_images[latest].id, name=name)
 
         cloud_images = get_images(conn)
 
@@ -247,14 +283,16 @@ for image in images:
 
         if latest in cloud_images:
             logging.info("Renaming %s to %s" % (latest, name))
-            glance.images.update(cloud_images[latest].id, name=name)
+
+            if not CONF.dry_run:
+                glance.images.update(cloud_images[latest].id, name=name)
 
 # check if images need to be removed
 
 cloud_images = get_images(conn)
 
 for image in [x for x in cloud_images if x not in existing_images]:
-    if CONF.yes_i_really_know_what_i_do:
+    if CONF.yes_i_really_know_what_i_do and not CONF.dry_run:
         cloud_image = cloud_images[image]
 
         try:
