@@ -360,6 +360,26 @@ images:
       - version: '20190604'
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1905.qcow2
 
+  - name: CentOS 8
+    format: qcow2
+    login: centos
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '8'
+    tags: []
+    versions:
+      - version: '20200113'
+        url: http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2
+
   # Debian
 
   - name: Debian 8
