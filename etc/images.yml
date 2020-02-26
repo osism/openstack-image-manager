@@ -579,6 +579,9 @@ images:
       - version: '20191210'
         url: https://mirror.betacloud.io/microos/20191210/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20191210.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20191210.qcow2
+      - version: '20200224'
+        url: https://mirror.betacloud.io/tumbleweed/20200224/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20191216.qcow2
+        source: https://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20200224.qcow2
 
   - name: openSUSE Kubic containerhost
     shortname: kubic-containerhost
@@ -685,6 +688,8 @@ images:
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build5.2.qcow2
       - version: '20190702'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.1.qcow2
+      - version: '20200225'
+        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.157.qcow2
 
   # ArchLinux
 
