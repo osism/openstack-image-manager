@@ -39,11 +39,9 @@ def share_image_with_project(conn, image, project):
         if not CONF.dry_run:
             member = conn.image.add_member(image.id, member_id=project.id)
 
-    if member.status != "accepted":
+    if not CONF.dry_run and member.status != "accepted":
         logging.info("accept - %s - %s (%s)" % (image.name, project.name, project.domain_id))
-
-        if not CONF.dry_run:
-            conn.image.update_member(member, image.id, status="accepted")
+        conn.image.update_member(member, image.id, status="accepted")
 
 
 if __name__ == '__main__':
