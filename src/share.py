@@ -9,10 +9,11 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, date
 PROJECT_NAME = 'glance-share-image'
 CONF = cfg.CONF
 opts = [
+    cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
     cfg.StrOpt('action', required=False, help='Action', default='add'),
     cfg.StrOpt('cloud', required=False, help='Managed cloud', default='service'),
-    cfg.StrOpt('project-domain', required=False, help='Target project domain', default='default'),
     cfg.StrOpt('image', required=True, help='Image to share'),
+    cfg.StrOpt('project-domain', required=False, help='Target project domain', default='default'),
     cfg.StrOpt('target', required=True, help='Target project or domain'),
     cfg.StrOpt('type', required=True, help='Project or domain', default='project')
 ]
@@ -24,7 +25,9 @@ def unshare_image_with_project(conn, image, project):
 
     if member:
         logging.info("del - %s - %s (%s)" % (image.name, project.name, project.domain_id))
-        conn.image.remove_member(member, image.id)
+
+        if not CONF.dry_run:
+            conn.image.remove_member(member, image.id)
 
 
 def share_image_with_project(conn, image, project):
@@ -32,10 +35,15 @@ def share_image_with_project(conn, image, project):
 
     if not member:
         logging.info("add - %s - %s (%s)" % (image.name, project.name, project.domain_id))
-        member = conn.image.add_member(image.id, member_id=project.id)
+
+        if not CONF.dry_run:
+            member = conn.image.add_member(image.id, member_id=project.id)
 
     if member.status != "accepted":
-        conn.image.update_member(member, image.id, status="accepted")
+        logging.info("accept - %s - %s (%s)" % (image.name, project.name, project.domain_id))
+
+        if not CONF.dry_run:
+            conn.image.update_member(member, image.id, status="accepted")
 
 
 if __name__ == '__main__':
