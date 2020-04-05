@@ -3,30 +3,6 @@ images:
 
   # Images without regular rebuild
 
-  # Octavia Amphora
-
-  - name: Octavia Amphora
-    shortname: amphora
-    format: qcow2
-    login: root
-    min_disk: 2
-    min_ram: 512
-    status: active
-    visibility: private
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: ubuntu
-      os_version: '16.04'
-    tags:
-      - amphora
-    versions:
-      - version: '20190214'
-        url: https://mirror.betacloud.io/amphora/queens/20190214-amphora-x64-haproxy.img
-
   # OPNsense
 
   - name: OPNsense
