@@ -144,6 +144,8 @@ images:
         url: https://cloud-images.ubuntu.com/trusty/20190209/trusty-server-cloudimg-amd64-disk1.img
       - version: '20190514'
         url: https://cloud-images.ubuntu.com/trusty/20190514/trusty-server-cloudimg-amd64-disk1.img
+      - version: '20191107'
+        url: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 16.04
     format: qcow2
@@ -168,6 +170,8 @@ images:
         url: https://cloud-images.ubuntu.com/xenial/20190212/xenial-server-cloudimg-amd64-disk1.img
       - version: '20190605'
         url: https://cloud-images.ubuntu.com/xenial/20190605/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20200403'
+        url: https://cloud-images.ubuntu.com/xenial/20200403/xenial-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu Minimal 16.04
     format: qcow2
@@ -190,6 +194,8 @@ images:
         url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20190320/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
       - version: '20190604'
         url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20190604/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+      - version: '20200317'
+        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20200317/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 18.04
     format: qcow2
@@ -214,6 +220,8 @@ images:
         url: https://cloud-images.ubuntu.com/bionic/20190210/bionic-server-cloudimg-amd64.img
       - version: '20190612'
         url: https://cloud-images.ubuntu.com/bionic/20190612/bionic-server-cloudimg-amd64.img
+      - version: '20200402'
+        url: https://cloud-images.ubuntu.com/bionic/20200402/bionic-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 18.04
     format: qcow2
@@ -236,6 +244,8 @@ images:
         url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20190320/ubuntu-18.04-minimal-cloudimg-amd64.img
       - version: '20190606'
         url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20190606.1/ubuntu-18.04-minimal-cloudimg-amd64.img
+      - version: '20200318'
+        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20200318/ubuntu-18.04-minimal-cloudimg-amd64.img
 
   - name: Ubuntu 20.04
     format: qcow2
@@ -256,6 +266,9 @@ images:
     versions:
       - version: '20191029'
         url: https://cloud-images.ubuntu.com/focal/20191029/focal-server-cloudimg-amd64.img
+      - version: '20200330'
+        url: https://cloud-images.ubuntu.com/focal/20200330/focal-server-cloudimg-arm64.img
+
 
   # CentOS
 
@@ -282,6 +295,8 @@ images:
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
       - version: '20190604'
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1905.qcow2
+      - version: '20190808'
+        url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1907.qcow2
 
   - name: CentOS 8
     format: qcow2
