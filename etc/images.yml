@@ -295,6 +295,8 @@ images:
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
       - version: '20190604'
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1905.qcow2
+      - version: '20190808'
+        url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1907.qcow2
 
   - name: CentOS 8
     format: qcow2
