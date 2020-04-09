@@ -164,8 +164,6 @@ images:
       os_version: '16.04'
     tags: []
     versions:
-      - version: '20181004'
-        url: https://cloud-images.ubuntu.com/xenial/20181004/xenial-server-cloudimg-amd64-disk1.img
       - version: '20190212'
         url: https://cloud-images.ubuntu.com/xenial/20190212/xenial-server-cloudimg-amd64-disk1.img
       - version: '20190605'
@@ -214,8 +212,6 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20181004'
-        url: https://cloud-images.ubuntu.com/bionic/20181004/bionic-server-cloudimg-amd64.img
       - version: '20190210'
         url: https://cloud-images.ubuntu.com/bionic/20190210/bionic-server-cloudimg-amd64.img
       - version: '20190612'
@@ -289,8 +285,6 @@ images:
       os_version: '7'
     tags: []
     versions:
-      - version: '20180906'
-        url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1808.qcow2
       - version: '20190128'
         url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
       - version: '20190604'
