@@ -264,7 +264,28 @@ images:
         url: https://cloud-images.ubuntu.com/focal/20191029/focal-server-cloudimg-amd64.img
       - version: '20200330'
         url: https://cloud-images.ubuntu.com/focal/20200330/focal-server-cloudimg-arm64.img
+      - version: '20200416'
+        url: https://cloud-images.ubuntu.com/focal/20200416/focal-server-cloudimg-amd64.img
 
+  - name: Ubuntu Minimal 20.04
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '20.04'
+    tags: []
+    versions:
+      - version: '20200416'
+        url: http://cloud-images.ubuntu.com/minimal/daily/focal/20200416/focal-minimal-cloudimg-amd64.img
 
   # CentOS
 
