@@ -45,6 +45,29 @@ images:
       - version: '2020-04'
         url: http://files.osism.de/octavia-amphora-haproxy-master-2020-04.qcow2
 
+  # VyOS
+
+  - name: VyOS
+    shortname: vyos
+    format: qcow2
+    login: vyos
+    password: vyos
+    min_disk: 4
+    min_ram: 1024
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: debian
+    tags: []
+    versions:
+      - version: '1.3'
+        url: https://mirror.betacloud.io/vyos/1.3/vyos_qemu_image.img
+
   # OPNsense
 
   - name: OPNsense
