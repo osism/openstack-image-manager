@@ -310,3 +310,11 @@ for image in [x for x in cloud_images if x not in existing_images]:
 
     else:
         logging.info("Image %s should be deleted" % image)
+        if not CONF.dry_run:
+            cloud_image = cloud_images[image]
+
+            logging.info("Deactivating image '%s'" % image)
+            glance.images.deactivate(cloud_image.id)
+
+            logging.info("Setting visibility of '%s' to 'community'" % image)
+            glance.images.update(cloud_image.id, visibility='community')
