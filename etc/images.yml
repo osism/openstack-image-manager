@@ -115,28 +115,7 @@ images:
       - version: '0.5.0'
         url: https://github.com/cirros-dev/cirros/releases/download/0.5.0/cirros-0.5.0-x86_64-disk.img
 
-  # CoreOS
-
-  - name: CoreOS
-    shortname: coreos
-    format: qcow2
-    login: root
-    min_disk: 10
-    min_ram: 2048
-    status: active
-    visibility: public
-    multi: false
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: coreos
-    tags: []
-    versions:
-      - version: '2303.3.0'
-        url: https://mirror.betacloud.io/coreos/2303.3.0/coreos_production_openstack_image.img
-        source: https://stable.release.core-os.net/amd64-usr/2303.3.0/coreos_production_openstack_image.img.bz2
+  # Fedora CoreOS
 
   - name: Fedora CoreOS 31
     format: qcow2
