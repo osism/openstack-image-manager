@@ -24,6 +24,8 @@ images:
     versions:
       - version: '2020-04'
         url: http://files.osism.de/testbed-2020-04.qcow2
+      - version: '2020-05'
+        url: http://files.osism.de/testbed-2020-05.qcow2
 
   - name: Octavia Amphora Haproxy
     format: qcow2
