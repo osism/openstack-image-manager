@@ -16,12 +16,13 @@ PROJECT_NAME = 'mirror'
 CONF = cfg.CONF
 opts = [
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
-    cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
-    cfg.StrOpt('server', help='SFTP server'),
+    cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
     cfg.IntOpt('port', help='SFTP port', default=22),
-    cfg.StrOpt('username', help='SFTP username'),
+    cfg.StrOpt('basepath', help='Basepath', default='/'),
+    cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
     cfg.StrOpt('password', help='SFTP password'),
-    cfg.StrOpt('basepath', help='Basepath', default='/')
+    cfg.StrOpt('server', help='SFTP server'),
+    cfg.StrOpt('username', help='SFTP username')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
@@ -34,7 +35,7 @@ else:
 logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
 
 with open(CONF.images) as fp:
-    data = yaml.load(fp)
+    data = yaml.load(fp, Loader=yaml.SafeLoader)
     images = data.get('images', [])
 
 transport = paramiko.Transport(sock=(CONF.server, CONF.port))
@@ -51,7 +52,10 @@ for image in images:
         path = urlparse(version['source'])
 
         dirname = "/%s/%s" % (image['shortname'], version['version'])
-        filename = os.path.splitext(os.path.basename(path.path))[0]
+        filename, fileextension = os.path.splitext(os.path.basename(path.path))
+
+        if fileextension not in ['.bz2', '.zip']:
+            filename += fileextension
 
         logging.debug("dirname: %s" % dirname)
         logging.debug("filename: %s" % filename)
@@ -62,21 +66,23 @@ for image in images:
         except OSError:
             logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
-            logging.info("Downloading '%s'" % version['source'])
-            response = requests.get(version['source'], stream=True)
-            with open(os.path.basename(path.path), 'wb') as fp:
-                shutil.copyfileobj(response.raw, fp)
-            del response
+            if not CONF.dry_run:
+                logging.info("Downloading '%s'" % version['source'])
+                response = requests.get(version['source'], stream=True)
+                with open(os.path.basename(path.path), 'wb') as fp:
+                    shutil.copyfileobj(response.raw, fp)
+                del response
 
-            logging.info("Decompressing '%s'" % os.path.basename(path.path))
-            patoolib.extract_archive(os.path.basename(path.path), outdir='.')
-            os.remove(os.path.basename(path.path))
+                if fileextension in ['.bz2', '.zip']:
+                    logging.info("Decompressing '%s'" % os.path.basename(path.path))
+                    patoolib.extract_archive(os.path.basename(path.path), outdir='.')
+                    os.remove(os.path.basename(path.path))
 
-            logging.info("Uploading '%s' to '%s'" % (filename, dirname))
-            try:
-                client.mkdir(dirname)
-            except Exception:
-                pass
+                logging.info("Uploading '%s' to '%s'" % (filename, dirname))
+                try:
+                    client.mkdir(dirname)
+                except Exception:
+                    pass
 
-            client.put(filename, os.path.join(dirname, filename))
-            os.remove(filename)
+                client.put(filename, os.path.join(dirname, filename))
+                os.remove(filename)
