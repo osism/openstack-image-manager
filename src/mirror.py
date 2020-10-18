@@ -54,7 +54,7 @@ for image in images:
         dirname = "/%s/%s" % (image['shortname'], version['version'])
         filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
-        if fileextension not in ['.bz2', '.zip']:
+        if fileextension not in ['.bz2', '.zip', '.xz']:
             filename += fileextension
 
         logging.debug("dirname: %s" % dirname)
@@ -73,7 +73,7 @@ for image in images:
                     shutil.copyfileobj(response.raw, fp)
                 del response
 
-                if fileextension in ['.bz2', '.zip']:
+                if fileextension in ['.bz2', '.zip', '.xz']:
                     logging.info("Decompressing '%s'" % os.path.basename(path.path))
                     patoolib.extract_archive(os.path.basename(path.path), outdir='.')
                     os.remove(os.path.basename(path.path))
