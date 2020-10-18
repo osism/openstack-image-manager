@@ -118,6 +118,28 @@ images:
         url: https://mirror.betacloud.io/fedora-coreos/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/31.20200407.3.0/x86_64/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2.xz
 
+  # Flatcar Container Linux
+
+  - name: Flatcar Container Linux
+    shortname: flatcar
+    format: qcow2
+    login: root
+    min_disk: 8
+    min_ram: 2048
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+    tags: []
+    versions:
+      - version: '2605.6.0'
+        url: https://mirror.betacloud.io/flatcar/2605.6.0/flatcar_production_openstack_image.img
+        source: https://stable.release.flatcar-linux.net/amd64-usr/2605.6.0/flatcar_production_openstack_image.img.bz2
+
   # RancherOS
 
   - name: RancherOS
