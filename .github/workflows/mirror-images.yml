@@ -4,9 +4,11 @@ name: Mirror images
 on:
   push:
     paths:
-      - '.github/workflows/mirror.yml'
+      - '.github/workflows/mirror-images.yml'
       - 'etc/images.yml'
       - 'src/mirror.py'
+    branches:
+      - master
 
 jobs:
   default:
