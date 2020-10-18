@@ -80,7 +80,11 @@ for image in images:
 
                 logging.info("Uploading '%s' to '%s'" % (filename, dirname))
                 try:
-                    client.mkdir(dirname)
+                    client.mkdir(os.path.join(CONF.basepath, image['shortname']))
+                except Exception:
+                    pass
+                try:
+                    client.mkdir(os.path.join(CONF.basepath, dirname))
                 except Exception:
                     pass
 
