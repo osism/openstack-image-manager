@@ -1,0 +1,26 @@
+---
+name: Mirror images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/mirror.yml'
+      - 'etc/images.yml'
+      - 'src/mirror.py'
+
+jobs:
+  default:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - run: pip3 install -r requirements.txt
+      - run: python3 src/mirror.py --username $USERNAME --password $PASSWORD --server $SERVER
+        env:
+          PASSWORD: ${{ secrets.MIRROR_PASSWORD }}
+          SERVER: ${{ secrets.MIRROR_SERVER }}
+          USERNAME: ${{ secrets.MIRROR_USERNAME }}
