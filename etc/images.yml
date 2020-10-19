@@ -3,7 +3,7 @@ images:
 
   # Images without regular rebuild
 
-  - name: Octavia Amphora Haproxy
+  - name: Octavia Amphora Haproxy - Rocky
     format: qcow2
     login: ubuntu
     min_disk: 2
@@ -20,8 +20,8 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '2020-04'
-        url: http://files.osism.de/octavia-amphora-haproxy-master-2020-04.qcow2
+      - version: '2020-10'
+        url: http://files.osism.io/octavia-amphora-haproxy-rocky-2020-10.qcow2
 
   # VyOS
 
