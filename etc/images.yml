@@ -115,7 +115,7 @@ images:
     tags: []
     versions:
       - version: '20200407'
-        url: https://mirror.betacloud.io/fedora-coreos/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2
+        url: https://mirror.betacloud.io/fedora-coreos/20200407/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/31.20200407.3.0/x86_64/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2.xz
 
   - name: Fedora CoreOS 32
@@ -600,9 +600,6 @@ images:
       - version: '20200402'
         url: https://mirror.betacloud.io/tumbleweed/20200402/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20200402.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20200402.qcow2
-      - version: '20191216'
-        url: https://mirror.betacloud.io/tumbleweed/20191216/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20191216.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20191216.qcow2
 
   - name: openSUSE MicroOS
     shortname: microos
@@ -625,9 +622,6 @@ images:
       - version: '20200402'
         url: https://mirror.betacloud.io/microos/20200402/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20200402.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20200402.qcow2
-      - version: '20191210'
-        url: https://mirror.betacloud.io/microos/20191210/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20191210.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20191210.qcow2
 
   - name: openSUSE Kubic containerhost
     shortname: kubic-containerhost
@@ -650,9 +644,6 @@ images:
       - version: '20200402'
         url: https://mirror.betacloud.io/kubic-containerhost/20200402/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20200402.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20200402.qcow2
-      - version: '20191210'
-        url: https://mirror.betacloud.io/kubic-containerhost/20191210/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20191210.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20191210.qcow2
 
   - name: openSUSE Kubic kubeadm
     shortname: kubic-kubeadm
@@ -675,9 +666,6 @@ images:
       - version: '20200402'
         url: https://mirror.betacloud.io/kubic-kubeadm/20200402/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20200402.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20200402.qcow2
-      - version: '20191210'
-        url: https://mirror.betacloud.io/kubic-kubeadm/20191210/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20191210.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20191210.qcow2
 
   - name: openSUSE Leap 42.3
     format: qcow2
@@ -736,10 +724,6 @@ images:
       os_version: '15.1'
     tags: []
     versions:
-      - version: '20190612'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build5.2.qcow2
-      - version: '20190702'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.1.qcow2
       - version: '20200406'
         url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.204.qcow2
 
