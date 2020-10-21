@@ -19,15 +19,15 @@ images:
       os_distro: ubuntu
     tags: []
     versions:
-      - version: 'rocky'
+      - version: 'ROCKY'
         url: http://files.osism.io/octavia-amphora-haproxy-rocky-2020-10.qcow2
-      - version: 'stein'
+      - version: 'STEIN'
         url: http://files.osism.io/octavia-amphora-haproxy-stein-2020-10.qcow2
-      - version: 'train'
+      - version: 'TRAIN'
         url: http://files.osism.io/octavia-amphora-haproxy-train-2020-10.qcow2
-      - version: 'ussuri'
+      - version: 'USSURI'
         url: http://files.osism.io/octavia-amphora-haproxy-ussuri-2020-10.qcow2
-      - version: 'victoria'
+      - version: 'VICTORIA'
         url: http://files.osism.io/octavia-amphora-haproxy-victoria-2020-10.qcow2
 
   # VyOS
