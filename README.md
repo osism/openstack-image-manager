@@ -34,6 +34,14 @@ high or to unlimited.
 user_storage_quota = 1TB
 ```
 
+With most storage backends it makes sense to convert the imported images directly to RAW.
+This requires the following parameter for the taskflow executor.
+
+```
+[taskflow_executor]
+conversion_format = raw
+```
+
 ## Configuration
 
 After a change to the configuration, validate it with `tox -e check`.
