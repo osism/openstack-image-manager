@@ -17,6 +17,7 @@ opts = [
     cfg.BoolOpt('delete', help='Delete images that should be delete', default=False),
     cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
     cfg.BoolOpt('hide', help='Hide images that should be deleted', default=False),
+    cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
     cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
@@ -155,7 +156,7 @@ for image in images:
             existence = image['name'] in cloud_images
 
         status = None
-        if not existence:
+        if not existence and not (CONF.latest and version != sorted_versions[-1]):
             url = versions[version]['url']
 
             r = requests.head(url)
@@ -174,10 +175,16 @@ for image in images:
                 logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn)
 
-        if image['multi'] and existence and version == sorted_versions[-1] and image['name'] in cloud_images:
-            name = image['name']
+            if status in ['dry-run', 'success']:
+                existing_images.append(name)
+        else:
+            logging.info("Skipping image '%s' (only importing the latest version of images from type multi)" % name)
 
-        existing_images.append(name)
+        if existence:
+            if image['multi'] and version == sorted_versions[-1] and image['name'] in cloud_images:
+                name = image['name']
+
+            existing_images.append(name)
 
         if name in cloud_images:
             logging.info("Checking parameters of '%s'" % name)
