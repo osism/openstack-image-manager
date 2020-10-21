@@ -3,25 +3,32 @@ images:
 
   # Images without regular rebuild
 
-  - name: Octavia Amphora Haproxy - Rocky
+  - name: OpenStack Octavia Amphora Haproxy
     format: qcow2
     login: ubuntu
     min_disk: 2
     min_ram: 1024
     status: active
     visibility: shared
-    multi: true
+    multi: false
     meta:
       architecture: x86_64
       hw_disk_bus: scsi
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
       os_distro: ubuntu
-      os_version: '18.04'
     tags: []
     versions:
-      - version: '2020-10'
+      - version: 'rocky'
         url: http://files.osism.io/octavia-amphora-haproxy-rocky-2020-10.qcow2
+      - version: 'stein'
+        url: http://files.osism.io/octavia-amphora-haproxy-stein-2020-10.qcow2
+      - version: 'train'
+        url: http://files.osism.io/octavia-amphora-haproxy-train-2020-10.qcow2
+      - version: 'ussuri'
+        url: http://files.osism.io/octavia-amphora-haproxy-ussuri-2020-10.qcow2
+      - version: 'victoria'
+        url: http://files.osism.io/octavia-amphora-haproxy-victoria-2020-10.qcow2
 
   # VyOS
 
