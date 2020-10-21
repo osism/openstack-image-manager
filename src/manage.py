@@ -12,9 +12,12 @@ import yaml
 PROJECT_NAME = 'images'
 CONF = cfg.CONF
 opts = [
+    cfg.BoolOpt('deactivate', help='Deactivate images that should be deleted', default=False),
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
-    cfg.BoolOpt('yes-i-really-know-what-i-do', help='Enable image deletion', default=False),
+    cfg.BoolOpt('delete', help='Delete images that should be delete', default=False),
     cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
+    cfg.BoolOpt('hide', help='Hide images that should be deleted', default=False),
+    cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
     cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
@@ -292,7 +295,7 @@ for image in images:
 cloud_images = get_images(conn)
 
 for image in [x for x in cloud_images if x not in existing_images]:
-    if CONF.yes_i_really_know_what_i_do and not CONF.dry_run:
+    if not CONF.dry_run and CONF.delete and CONF.yes_i_really_know_what_i_do:
         cloud_image = cloud_images[image]
 
         try:
@@ -310,11 +313,13 @@ for image in [x for x in cloud_images if x not in existing_images]:
 
     else:
         logging.info("Image %s should be deleted" % image)
-        if not CONF.dry_run:
+        if not CONF.dry_run and CONF.deactivate:
             cloud_image = cloud_images[image]
 
             logging.info("Deactivating image '%s'" % image)
             glance.images.deactivate(cloud_image.id)
 
+        if not CONF.dry_run and CONF.hide:
+            cloud_image = cloud_images[image]
             logging.info("Setting visibility of '%s' to 'community'" % image)
             glance.images.update(cloud_image.id, visibility='community')
