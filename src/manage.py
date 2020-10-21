@@ -137,6 +137,7 @@ for image in images:
     sorted_versions = natsorted(versions.keys())
     image['tags'].append(CONF.tag)
 
+    uploaded_new_latest_image = False
     for version in sorted_versions:
         if image['multi']:
             name = "%s (%s)" % (image['name'], version)
@@ -147,7 +148,9 @@ for image in images:
 
         existence = name in cloud_images
 
-        if image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1] and not existence:
+        if image['multi'] and CONF.latest and version == sorted_versions[-1] and not existence:
+            existence = image['name'] in cloud_images
+        elif image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1] and not existence:
             previous = "%s (%s)" % (image['name'], sorted_versions[-2])
             existence = previous in cloud_images and image['name'] in cloud_images
         elif image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-2] and not existence:
@@ -175,16 +178,18 @@ for image in images:
                 logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn)
 
+                if version == sorted_versions[-1]:
+                    uploaded_new_latest_image = True
+
             if status in ['dry-run', 'success']:
                 existing_images.append(name)
-        else:
+        elif CONF.latest and version != sorted_versions[-1]:
             logging.info("Skipping image '%s' (only importing the latest version of images from type multi)" % name)
 
-        if existence:
-            if image['multi'] and version == sorted_versions[-1] and image['name'] in cloud_images:
-                name = image['name']
+        if image['multi'] and version == sorted_versions[-1] and image['name'] in cloud_images:
+            name = image['name']
 
-            existing_images.append(name)
+        existing_images.append(name)
 
         if name in cloud_images:
             logging.info("Checking parameters of '%s'" % name)
@@ -204,6 +209,9 @@ for image in images:
 
                 if not CONF.dry_run:
                     glance.images.update(cloud_image.id, **{'min_ram': int(image['min_ram'])})
+
+            logging.info("Setting internal_version = %s" % version)
+            image['meta']['internal_version'] = version
 
             if not image['multi']:
                 image['meta']['os_version'] = version
@@ -268,7 +276,7 @@ for image in images:
                 if not CONF.dry_run:
                     glance.images.update(cloud_image.id, visibility=visibility)
 
-    if image['multi'] and len(sorted_versions) > 1:
+    if image['multi'] and len(sorted_versions) > 1 and uploaded_new_latest_image:
         name = image['name']
         latest = "%s (%s)" % (image['name'], sorted_versions[-1])
         current = "%s (%s)" % (image['name'], sorted_versions[-2])
