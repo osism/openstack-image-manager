@@ -20,6 +20,7 @@ image:
 meta:
   architecture: enum('x86_64')
   hw_disk_bus: str(required=False)
+  hw_rng_model: str(required=False)
   hw_scsi_model: str(required=False)
   hw_watchdog_action: str(required=False)
   os_distro: str(required=False)
