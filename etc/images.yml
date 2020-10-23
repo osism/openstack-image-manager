@@ -152,7 +152,7 @@ images:
     shortname: flatcar
     format: qcow2
     login: root
-    min_disk: 8
+    min_disk: 10
     min_ram: 2048
     status: active
     visibility: public
@@ -416,7 +416,7 @@ images:
   - name: CentOS 8
     format: qcow2
     login: centos
-    min_disk: 8
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
@@ -436,7 +436,7 @@ images:
   - name: CentOS Stream
     format: qcow2
     login: centos
-    min_disk: 8
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
@@ -595,7 +595,7 @@ images:
     shortname: tumbleweed
     format: qcow2
     login: opensuse
-    min_disk: 1
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
@@ -682,7 +682,7 @@ images:
   - name: openSUSE Leap 42.3
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
@@ -704,7 +704,7 @@ images:
   - name: openSUSE Leap 15.0
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
@@ -726,7 +726,7 @@ images:
   - name: openSUSE Leap 15.1
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
@@ -748,7 +748,7 @@ images:
   - name: openSUSE Leap 15.2
     format: qcow2
     login: opensuse
-    min_disk: 8
+    min_disk: 10
     min_ram: 512
     status: active
     visibility: public
