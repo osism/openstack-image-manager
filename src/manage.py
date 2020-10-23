@@ -213,6 +213,9 @@ for image in images:
             logging.info("Setting internal_version = %s" % version)
             image['meta']['internal_version'] = version
 
+            logging.info("Setting image_original_user = %s" % image['login'])
+            image['meta']['image_original_user'] = image['login']
+
             if not image['multi']:
                 image['meta']['os_version'] = version
             else:
