@@ -201,6 +201,9 @@ for image in images:
             properties = cloud_image.properties
             tags = cloud_image.tags
 
+            if 'min_disk' in image and cloud_image.size / 2**30 > image['min_disk']:
+                logging.warning("Invalid value for min_disk: %.2f > %d" % (cloud_image.size / 2**30, image['min_disk']))
+
             if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
                 logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
 
