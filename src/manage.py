@@ -137,6 +137,9 @@ for image in images:
     sorted_versions = natsorted(versions.keys())
     image['tags'].append(CONF.tag)
 
+    if 'os_distro' in image['meta']:
+        image['tags'].append("os:%s" % image['meta']['os_distro'])
+
     uploaded_new_latest_image = False
     for version in sorted_versions:
         if image['multi']:
