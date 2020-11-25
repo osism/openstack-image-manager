@@ -5,7 +5,9 @@ on:
     types: [opened]
 
 jobs:
-  default:
+  pr-labeler:
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: technote-space/pr-labeler-action@v4

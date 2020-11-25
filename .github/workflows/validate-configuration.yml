@@ -4,15 +4,15 @@ name: Validate configuration
 on:
   push:
     paths:
-      - .github/workflows/validate-config.yml
+      - .github/workflows/validate-configuration.yml
       - etc/images.yml
   pull_request:
     paths:
-      - .github/workflows/validate-config.yml
+      - .github/workflows/validate-configuration.yml
       - etc/images.yml
 
 jobs:
-  default:
+  validate-configuration:
 
     runs-on: ubuntu-latest
 
