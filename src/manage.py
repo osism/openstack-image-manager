@@ -1,3 +1,4 @@
+from decimal import Decimal, ROUND_UP
 import logging
 import sys
 import time
@@ -199,16 +200,27 @@ for image in images:
 
             cloud_image = cloud_images[name]
             properties = cloud_image.properties
+            real_image_size = int(Decimal(cloud_image.size / 2**30).quantize(Decimal('1.'), rounding=ROUND_UP))
             tags = cloud_image.tags
-
-            if 'min_disk' in image and cloud_image.size / 2**30 > image['min_disk']:
-                logging.warning("Invalid value for min_disk: %.2f > %d" % (cloud_image.size / 2**30, image['min_disk']))
 
             if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
                 logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
 
                 if not CONF.dry_run:
                     glance.images.update(cloud_image.id, **{'min_disk': int(image['min_disk'])})
+
+            if 'min_disk' in image and real_image_size > image['min_disk']:
+                logging.warning("Invalid value for min_disk: %d > %d" % (real_image_size, image['min_disk']))
+                logging.info("Setting min_disk = %d" % real_image_size)
+
+                if not CONF.dry_run:
+                    glance.images.update(cloud_image.id, **{'min_disk': real_image_size})
+
+            if 'min_disk' not in image:
+                logging.info("Setting min_disk = %d" % real_image_size)
+
+                if not CONF.dry_run:
+                    glance.images.update(cloud_image.id, **{'min_disk': real_image_size})
 
             if 'min_ram' in image and image['min_ram'] != cloud_image.min_ram:
                 logging.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
