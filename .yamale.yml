@@ -27,7 +27,8 @@ meta:
   os_version: str(required=False)
 
 version:
-  version: str()
-  url: str()
-  source: str(required=False)
+  build_date: str(required=False)
   os_version: str(required=False)
+  source: str(required=False)
+  url: str()
+  version: str()

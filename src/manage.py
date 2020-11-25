@@ -216,6 +216,10 @@ for image in images:
                 if not CONF.dry_run:
                     glance.images.update(cloud_image.id, **{'min_ram': int(image['min_ram'])})
 
+            if 'build_date' in versions[version]:
+                logging.info("Setting image_build_date = %s" % versions[version]['build_date'])
+                image['meta']['image_build_date'] = versions[version]['build_date']
+
             logging.info("Setting internal_version = %s" % version)
             image['meta']['internal_version'] = version
 
