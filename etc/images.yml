@@ -17,18 +17,19 @@ images:
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
       os_distro: ubuntu
-    tags: []
+    tags:
+      - amphora
     versions:
       - version: 'ROCKY'
-        url: http://files.osism.io/octavia-amphora-haproxy-rocky-2020-10.qcow2
+        url: http://files.osism.io/octavia-amphora-haproxy-rocky-2020-12.qcow2
       - version: 'STEIN'
-        url: http://files.osism.io/octavia-amphora-haproxy-stein-2020-10.qcow2
+        url: http://files.osism.io/octavia-amphora-haproxy-stein-2020-12.qcow2
       - version: 'TRAIN'
-        url: http://files.osism.io/octavia-amphora-haproxy-train-2020-10.qcow2
+        url: http://files.osism.io/octavia-amphora-haproxy-train-2020-12.qcow2
       - version: 'USSURI'
-        url: http://files.osism.io/octavia-amphora-haproxy-ussuri-2020-10.qcow2
+        url: http://files.osism.io/octavia-amphora-haproxy-ussuri-2020-12.qcow2
       - version: 'VICTORIA'
-        url: http://files.osism.io/octavia-amphora-haproxy-victoria-2020-10.qcow2
+        url: http://files.osism.io/octavia-amphora-haproxy-victoria-2020-12.qcow2
 
   # VyOS
 
