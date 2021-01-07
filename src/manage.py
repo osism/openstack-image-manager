@@ -21,6 +21,7 @@ opts = [
     cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
     cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
+    cfg.StrOpt('name', help='Image name to process', default=None),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
     cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
 ]
@@ -117,10 +118,15 @@ existing_images = []
 
 for image in images:
     skip = False
+
     for required_key in REQUIRED_KEYS:
         if required_key not in image:
             logging.error("'%s' lacks the necessary key %s" % (image['name'], required_key))
             skip = True
+
+    if CONF.name and CONF.name != image['name']:
+        skip = True
+
     if skip:
         continue
 
