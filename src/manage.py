@@ -352,7 +352,7 @@ for image in [x for x in cloud_images if x not in existing_images]:
             logging.info("%s is still in use and cannot be deleted" % image)
 
     else:
-        logging.info("Image %s should be deleted" % image)
+        logging.debug("Image %s should be deleted" % image)
         if not CONF.dry_run and CONF.deactivate:
             cloud_image = cloud_images[image]
 
