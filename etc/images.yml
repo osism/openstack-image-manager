@@ -601,6 +601,27 @@ images:
       - version: '20200422'
         url: https://download.fedoraproject.org/pub/fedora/linux/releases/32/Cloud/x86_64/images/Fedora-Cloud-Base-32-1.6.x86_64.qcow2
 
+  - name: Fedora 33
+    format: qcow2
+    login: fedora
+    min_disk: 4
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: fedora
+      os_version: '33'
+    tags: []
+    versions:
+      - version: '20201019'
+        url: https://download.fedoraproject.org/pub/fedora/linux/releases/33/Cloud/x86_64/images/Fedora-Cloud-Base-33-1.2.x86_64.qcow2
+
+
   # openSUSE
 
   - name: openSUSE Tumbleweed
