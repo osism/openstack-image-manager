@@ -266,7 +266,7 @@ for image in images:
 
                         if not CONF.dry_run:
                             glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
-                elif property not in ['self', 'schema', 'os_hash_algo', 'os_hidden', 'os_hash_value']:
+                elif property not in ['self', 'schema', 'os_hash_algo', 'os_hidden', 'os_hash_value', 'stores']:
                     # FIXME: handle deletion of properties
                     logging.info("Deleting property %s" % (property))
 
