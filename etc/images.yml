@@ -533,6 +533,9 @@ images:
       - version: '20200802'
         url: https://cdimage.debian.org/cdimage/openstack/archive/10.5.0/debian-10.5.0-openstack-amd64.qcow2
         os_version: '10.5.0'
+      - version: '20201205'
+        url: https://cdimage.debian.org/cdimage/openstack/archive/10.7.0/debian-10.7.0-openstack-amd64.qcow2
+        os_version: '10.7.0'
 
   # Fedora
 
