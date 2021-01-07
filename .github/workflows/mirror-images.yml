@@ -1,7 +1,7 @@
 ---
 name: Mirror images
 
-on:
+"on":
   push:
     paths:
       - '.github/workflows/mirror-images.yml'
@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-  default:
+  mirror-images:
 
     runs-on: ubuntu-latest
 

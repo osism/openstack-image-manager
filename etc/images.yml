@@ -166,6 +166,9 @@ images:
       - version: '2605.6.0'
         url: https://mirror.betacloud.io/flatcar/2605.6.0/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/2605.6.0/flatcar_production_openstack_image.img.bz2
+      - version: '2605.10.0'
+        url: https://mirror.betacloud.io/flatcar/2605.10.0/flatcar_production_openstack_image.img
+        source: https://stable.release.flatcar-linux.net/amd64-usr/2605.10.0/flatcar_production_openstack_image.img.bz2
 
   # RancherOS
 
