@@ -508,9 +508,9 @@ images:
       - version: '20190614'
         url: https://cdimage.debian.org/cdimage/openstack/9.9.2-20190614/debian-9.9.2-20190614-openstack-amd64.qcow2
         os_version: '9.9.2'
-      - version: '20200830'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/9.13.2-20200830/debian-9.13.2-20200830-openstack-amd64.raw
-        os_version: '9.13.2'
+      - version: '20201218'
+        url: https://cdimage.debian.org/cdimage/openstack/archive/9.13.11-20201218/debian-9.13.11-20201218-openstack-amd64.qcow2
+        os_version: '9.13.11'
 
   - name: Debian 10
     format: qcow2
