@@ -73,6 +73,9 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
+      - version: '21.1'
+        url: https://mirror.betacloud.io/opnsense/releases/21.1/OPNsense-21.1-OpenSSL-nano-amd64.img
+        source: https://mirror.dns-root.de/opnsense/releases/21.1/OPNsense-21.1-OpenSSL-nano-amd64.img.bz2
       - version: '19.1'
         url: https://mirror.betacloud.io/opnsense/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img
         source: https://mirror.dns-root.de/opnsense/releases/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img.bz2
