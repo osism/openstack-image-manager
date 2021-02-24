@@ -702,6 +702,9 @@ images:
     tags: []
     # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
+      - version: '20210222'
+        url: https://mirror.betacloud.io/kubic-containerhost/20210222/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20210222.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20210222.qcow2
       - version: '20200402'
         url: https://mirror.betacloud.io/kubic-containerhost/20200402/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20200402.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20200402.qcow2
