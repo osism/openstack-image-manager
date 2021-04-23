@@ -518,6 +518,9 @@ images:
       - version: '20201218'
         url: https://cdimage.debian.org/cdimage/openstack/archive/9.13.11-20201218/debian-9.13.11-20201218-openstack-amd64.qcow2
         os_version: '9.13.11'
+      - version: '20210320'
+        url: https://cdimage.debian.org/cdimage/openstack/9.13.19-20210320/debian-9.13.19-20210320-openstack-amd64.raw
+        os_version: '9.13.19'
 
   - name: Debian 10
     format: qcow2
@@ -548,6 +551,9 @@ images:
       - version: '20210206'
         url: https://cdimage.debian.org/cdimage/openstack/archive/10.8.0/debian-10.8.0-openstack-amd64.qcow2
         os_version: '10.8.0'
+      - version: '20210327'
+        url: https://cdimage.debian.org/cdimage/openstack/10.9.0/debian-10.9.0-openstack-amd64.qcow2
+        os_version: '10.9.0'
 
   # Fedora
 
