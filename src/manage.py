@@ -137,6 +137,8 @@ for image in images:
         versions[str(version['version'])] = {
             'url': version['url']
         }
+        if 'visibility' in version:
+            versions[version['version']]['visibility'] = version['visibility']
 
         if 'os_version' in version:
             versions[version['version']]['os_version'] = version['os_version']
@@ -298,6 +300,8 @@ for image in images:
             logging.info("Checking visibility of '%s'" % name)
             if image['multi'] and image['visibility'] == 'public' and version not in sorted_versions[-3:]:
                 visibility = 'community'
+            elif 'visibility' in versions[version]:
+                visibility = versions[version]['visibility']
             else:
                 visibility = image['visibility']
 
