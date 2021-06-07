@@ -1,7 +1,7 @@
 ---
 name: Validate configuration
 
-on:
+"on":
   push:
     paths:
       - .github/workflows/validate-configuration.yml
@@ -13,9 +13,7 @@ on:
 
 jobs:
   validate-configuration:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2

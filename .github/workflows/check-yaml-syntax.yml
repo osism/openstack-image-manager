@@ -1,7 +1,7 @@
 ---
 name: Check yaml syntax
 
-on:
+"on":
   push:
     paths:
       - .github/workflows/check-yaml-syntax.yml
@@ -15,13 +15,11 @@ on:
 
 jobs:
   check-yaml-syntax:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
       - run: pip3 install yamllint
-      - run: yamllint --config-file .github/yamllint.yml .
+      - run: yamllint --config-file .yamllint.yml .
