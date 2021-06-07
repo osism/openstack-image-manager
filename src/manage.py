@@ -196,7 +196,7 @@ for image in images:
         elif CONF.latest and version != sorted_versions[-1]:
             logging.info("Skipping image '%s' (only importing the latest version of images from type multi)" % name)
 
-        if image['multi'] and version == sorted_versions[-1] and image['name'] in cloud_images:
+        if image['multi'] and version == sorted_versions[-1] and image['name'] in cloud_images and CONF.latest:
             name = image['name']
 
         existing_images.append(name)
