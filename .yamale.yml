@@ -32,3 +32,4 @@ version:
   source: str(required=False)
   url: str()
   version: str()
+  visibility: str(required=False)
