@@ -552,8 +552,14 @@ images:
         url: https://cdimage.debian.org/cdimage/openstack/archive/10.8.0/debian-10.8.0-openstack-amd64.qcow2
         os_version: '10.8.0'
       - version: '20210327'
-        url: https://cdimage.debian.org/cdimage/openstack/10.9.0/debian-10.9.0-openstack-amd64.qcow2
+        url: https://cdimage.debian.org/cdimage/openstack/archive/10.9.0/debian-10.9.0-openstack-amd64.qcow2
         os_version: '10.9.0'
+      - version: '20210619'
+        url: https://cdimage.debian.org/cdimage/openstack/archive/10.10.0/debian-10.10.0-openstack-amd64.qcow2
+        os_version: '10.10.0'
+      - version: '20210624'
+        url: https://cdimage.debian.org/cdimage/openstack/10.10.1-20210624/debian-10.10.1-20210624-openstack-amd64.qcow2
+        os_version: '10.10.1'
 
   # Fedora
 
