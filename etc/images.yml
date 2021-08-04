@@ -20,16 +20,8 @@ images:
     tags:
       - amphora
     versions:
-      # - version: 'ROCKY'
-      #   url: http://files.osism.io/octavia-amphora-haproxy-rocky-2020-12.qcow2
-      # - version: 'STEIN'
-      #   url: http://files.osism.io/octavia-amphora-haproxy-stein-2020-12.qcow2
-      # - version: 'TRAIN'
-      #   url: http://files.osism.io/octavia-amphora-haproxy-train-2020-12.qcow2
-      # - version: 'USSURI'
-      #   url: http://files.osism.io/octavia-amphora-haproxy-ussuri-2020-12.qcow2
-      - version: 'VICTORIA'
-        url: http://files.osism.io/octavia-amphora-haproxy-victoria-2020-12.qcow2
+      - version: 'WALLABY'
+        url: https://images.osism.tech/openstack-octavia-apmphora-image/octavia-amphora-haproxy-wallaby.qcow2
 
   # VyOS
 
