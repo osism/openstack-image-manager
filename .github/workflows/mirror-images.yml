@@ -8,21 +8,18 @@ name: Mirror images
       - 'etc/images.yml'
       - 'src/mirror.py'
     branches:
-      - master
+      - main
 
 jobs:
   mirror-images:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
       - run: pip3 install -r requirements.txt
-      - run: python3 src/mirror.py --username $USERNAME --password $PASSWORD --server $SERVER
+      - run: python3 src/mirror.py --minio-access-key $MINIO_ACCESS_KEY --minio-secret-key $MINIO_SECRET_KEY
         env:
-          PASSWORD: ${{ secrets.MIRROR_PASSWORD }}
-          SERVER: ${{ secrets.MIRROR_SERVER }}
-          USERNAME: ${{ secrets.MIRROR_USERNAME }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}

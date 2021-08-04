@@ -7,7 +7,8 @@ import sys
 from urllib.parse import urlparse
 
 from oslo_config import cfg
-import paramiko
+from minio import Minio
+from minio.error import S3Error
 import patoolib
 import requests
 import yaml
@@ -17,12 +18,11 @@ CONF = cfg.CONF
 opts = [
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
     cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
-    cfg.IntOpt('port', help='SFTP port', default=22),
-    cfg.StrOpt('basepath', help='Basepath', default='/'),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
-    cfg.StrOpt('password', help='SFTP password'),
-    cfg.StrOpt('server', help='SFTP server'),
-    cfg.StrOpt('username', help='SFTP username')
+    cfg.StrOpt('minio-access-key', help='Minio access key'),
+    cfg.StrOpt('minio-secret-key', help='Minio secret key'),
+    cfg.StrOpt('minio-server', help='Minio server', default='images.osism.tech'),
+    cfg.StrOpt('minio-bucket', help='Minio bucket', default='mirror')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
@@ -38,9 +38,11 @@ with open(CONF.images) as fp:
     data = yaml.load(fp, Loader=yaml.SafeLoader)
     images = data.get('images', [])
 
-transport = paramiko.Transport(sock=(CONF.server, CONF.port))
-transport.connect(username=CONF.username, password=CONF.password)
-client = paramiko.SFTPClient.from_transport(transport)
+client = Minio(
+    CONF.minio_server,
+    access_key=CONF.minio_access_key,
+    secret_key=CONF.minio_secret_key
+)
 
 for image in images:
     for version in image['versions']:
@@ -51,7 +53,7 @@ for image in images:
 
         path = urlparse(version['source'])
 
-        dirname = "/%s/%s" % (image['shortname'], version['version'])
+        dirname = "%s/%s" % (image['shortname'], version['version'])
         filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
         if fileextension not in ['.bz2', '.zip', '.xz']:
@@ -61,9 +63,9 @@ for image in images:
         logging.debug("filename: %s" % filename)
 
         try:
-            client.stat(os.path.join(CONF.basepath, dirname, filename))
+            client.stat_object(CONF.minio_bucket, os.path.join(dirname, filename))
             logging.info("'%s' available in '%s'" % (filename, dirname))
-        except OSError:
+        except S3Error:
             logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
             if not CONF.dry_run:
@@ -79,14 +81,6 @@ for image in images:
                     os.remove(os.path.basename(path.path))
 
                 logging.info("Uploading '%s' to '%s'" % (filename, dirname))
-                try:
-                    client.mkdir(os.path.join(CONF.basepath, image['shortname']))
-                except Exception:
-                    pass
-                try:
-                    client.mkdir(os.path.join(CONF.basepath, dirname))
-                except Exception:
-                    pass
 
-                client.put(filename, os.path.join(dirname, filename))
+                client.fput_object(CONF.minio_bucket, os.path.join(dirname, filename), filename)
                 os.remove(filename)

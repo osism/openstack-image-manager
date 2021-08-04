@@ -28,7 +28,9 @@ meta:
 
 version:
   build_date: str(required=False)
+  hidden: bool(required=False)
   os_version: str(required=False)
   source: str(required=False)
   url: str()
   version: str()
+  visibility: str(required=False)
