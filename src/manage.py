@@ -20,10 +20,11 @@ opts = [
     cfg.BoolOpt('hide', help='Hide images that should be deleted', default=False),
     cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
     cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
+    cfg.BoolOpt('use-os-hidden', help='Use the os_hidden property', default=False),
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
     cfg.StrOpt('name', help='Image name to process', default=None),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
-    cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
+    cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
@@ -87,7 +88,7 @@ def create_import_task(glance, name, image, url):
     return status
 
 
-def get_images(conn):
+def get_images(conn, glance):
     result = {}
 
     for image in conn.list_images():
@@ -96,6 +97,16 @@ def get_images(conn):
             logging.debug("Managed image '%s' (tags = %s)" % (image.name, image.tags))
         else:
             logging.debug("Unmanaged image '%s' (tags = %s)" % (image.name, image.tags))
+
+    if CONF.use_os_hidden:
+        for image in glance.images.list(**{'filters': {'os_hidden': True}}):
+            hidden_image = conn.get_image_by_id(image.id)
+            if CONF.tag in hidden_image.tags and (hidden_image.is_public or
+               hidden_image.owner == conn.current_project_id):
+                result[hidden_image.name] = hidden_image
+                logging.debug("Managed hidden image '%s' (tags = %s)" % (hidden_image.name, hidden_image.tags))
+            else:
+                logging.debug("Unmanaged hidden image '%s' (tags = %s)" % (hidden_image.name, hidden_image.tags))
 
     return result
 
@@ -110,7 +121,7 @@ logging.debug("yes-i-really-know-what-i-do = %s" % CONF.yes_i_really_know_what_i
 
 # get all existing images
 
-cloud_images = get_images(conn)
+cloud_images = get_images(conn, glance)
 
 # manage existing images and add new ones
 
@@ -142,6 +153,8 @@ for image in images:
 
         if 'os_version' in version:
             versions[version['version']]['os_version'] = version['os_version']
+        if 'hidden' in version:
+            versions[version['version']]['hidden'] = version['hidden']
 
     sorted_versions = natsorted(versions.keys())
     image['tags'].append(CONF.tag)
@@ -188,7 +201,7 @@ for image in images:
 
             if status == 'success':
                 logging.info("Import of '%s' successfully completed, reload images" % name)
-                cloud_images = get_images(conn)
+                cloud_images = get_images(conn, glance)
 
                 if version == sorted_versions[-1]:
                     uploaded_new_latest_image = True
@@ -239,6 +252,17 @@ for image in images:
             if 'build_date' in versions[version]:
                 logging.info("Setting image_build_date = %s" % versions[version]['build_date'])
                 image['meta']['image_build_date'] = versions[version]['build_date']
+
+            if CONF.use_os_hidden:
+                if 'hidden' in versions[version]:
+                    logging.info("Setting os_hidden = %s" % versions[version]['hidden'])
+                    if not CONF.dry_run:
+                        glance.images.update(cloud_image.id, **{'os_hidden': versions[version]['hidden']})
+
+                elif version not in sorted_versions[-1:]:
+                    logging.info("Setting os_hidden = True")
+                    if not CONF.dry_run:
+                        glance.images.update(cloud_image.id, **{'os_hidden': True})
 
             logging.info("Setting internal_version = %s" % version)
             image['meta']['internal_version'] = version
@@ -328,7 +352,7 @@ for image in images:
             if not CONF.dry_run:
                 glance.images.update(cloud_images[latest].id, name=name)
 
-        cloud_images = get_images(conn)
+        cloud_images = get_images(conn, glance)
 
     elif image['multi'] and len(sorted_versions) == 1:
         name = image['name']
@@ -342,7 +366,7 @@ for image in images:
 
 # check if images need to be removed
 
-cloud_images = get_images(conn)
+cloud_images = get_images(conn, glance)
 
 for image in [x for x in cloud_images if x not in existing_images]:
     if not CONF.dry_run and CONF.delete and CONF.yes_i_really_know_what_i_do:
