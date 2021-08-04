@@ -23,29 +23,6 @@ images:
       - version: 'WALLABY'
         url: https://images.osism.tech/openstack-octavia-apmphora-image/octavia-amphora-haproxy-wallaby.qcow2
 
-  # VyOS
-
-  - name: VyOS
-    shortname: vyos
-    format: qcow2
-    login: vyos
-    password: vyos
-    min_disk: 4
-    min_ram: 1024
-    status: active
-    visibility: public
-    multi: false
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: debian
-    tags: []
-    versions:
-      - version: '1.3'
-        url: https://mirror.betacloud.io/vyos/1.3/vyos_qemu_image.img
-
   # OPNsense
 
   - name: OPNsense
@@ -65,9 +42,9 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '19.1'
-        url: https://mirror.betacloud.io/opnsense/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img
-        source: https://mirror.dns-root.de/opnsense/releases/19.1/OPNsense-19.1-OpenSSL-nano-amd64.img.bz2
+      - version: '21.7'
+        url: https://images.osism.tech/opnsense/21.7/OPNsense-21.7-OpenSSL-nano-amd64.img
+        source: https://mirror.dns-root.de/opnsense/releases/21.7/OPNsense-21.7-OpenSSL-nano-amd64.img.bz2
 
   # Cirros
 
@@ -95,7 +72,7 @@ images:
 
   # Fedora CoreOS
 
-  - name: Fedora CoreOS 31
+  - name: Fedora CoreOS
     shortname: fedora-coreos
     format: qcow2
     login: root
@@ -112,30 +89,9 @@ images:
       os_distro: fedora-coreos
     tags: []
     versions:
-      - version: '20200407'
-        url: https://mirror.betacloud.io/fedora-coreos/20200407/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2
-        source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/31.20200407.3.0/x86_64/fedora-coreos-31.20200407.3.0-openstack.x86_64.qcow2.xz
-
-  - name: Fedora CoreOS 32
-    shortname: fedora-coreos
-    format: qcow2
-    login: root
-    min_disk: 10
-    min_ram: 2048
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: fedora-coreos
-    tags: []
-    versions:
-      - version: '32.20200923.3.0'
-        url: https://mirror.betacloud.io/fedora-coreos/32.20200923.3.0/fedora-coreos-32.20200923.3.0-openstack.x86_64.qcow2
-        source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20200923.3.0/x86_64/fedora-coreos-32.20200923.3.0-openstack.x86_64.qcow2.xz
+      - version: '34.20210711.3.0'
+        url: https://images.osism.tech/fedora-coreos/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2
+        source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/34.20210711.3.0/x86_64/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2.xz
 
   # Flatcar Container Linux
 
@@ -156,11 +112,14 @@ images:
     tags: []
     versions:
       - version: '2605.6.0'
-        url: https://mirror.betacloud.io/flatcar/2605.6.0/flatcar_production_openstack_image.img
+        url: https://images.osism.tech/flatcar/2605.6.0/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/2605.6.0/flatcar_production_openstack_image.img.bz2
       - version: '2605.10.0'
-        url: https://mirror.betacloud.io/flatcar/2605.10.0/flatcar_production_openstack_image.img
+        url: https://images.osism.tech/flatcar/2605.10.0/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/2605.10.0/flatcar_production_openstack_image.img.bz2
+      - version: '2905.2.1'
+        url: https://images.osism.tech/flatcar/2905.2.1/flatcar_production_openstack_image.img
+        source: https://stable.release.flatcar-linux.net/amd64-usr/2905.2.1/flatcar_production_openstack_image.img.bz2
 
   # RancherOS
 
@@ -207,7 +166,7 @@ images:
     tags: []
     versions:
       - version: '33840'
-        url: https://mirror.betacloud.io/clearlinux/33840/clear-33840-cloudguest.img
+        url: https://images.osism.tech/clearlinux/33840/clear-33840-cloudguest.img
         source: https://cdn.download.clearlinux.org/releases/33840/clear/clear-33840-cloudguest.img.xz
 
   # Ubuntu
@@ -650,9 +609,9 @@ images:
     tags: []
     # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
-      - version: '20200402'
-        url: https://mirror.betacloud.io/tumbleweed/20200402/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20200402.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20200402.qcow2
+      - version: '20210802'
+        url: https://images.osism.tech/opensuse-tumbleweed/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210802.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210802.qcow2
 
   - name: openSUSE MicroOS
     shortname: microos
@@ -672,136 +631,6 @@ images:
     tags: []
     # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
-      - version: '20200402'
-        url: https://mirror.betacloud.io/microos/20200402/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20200402.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20200402.qcow2
-
-  - name: openSUSE Kubic containerhost
-    shortname: kubic-containerhost
-    format: qcow2
-    login: opensuse
-    min_disk: 24
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: opensuse
-    tags: []
-    # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
-    versions:
-      - version: '20200402'
-        url: https://mirror.betacloud.io/kubic-containerhost/20200402/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20200402.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-ContainerHost-OpenStack-Cloud-Snapshot20200402.qcow2
-
-  - name: openSUSE Kubic kubeadm
-    shortname: kubic-kubeadm
-    format: qcow2
-    login: opensuse
-    min_disk: 24
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: opensuse
-    tags: []
-    # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
-    versions:
-      - version: '20200402'
-        url: https://mirror.betacloud.io/kubic-kubeadm/20200402/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20200402.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-Kubic-kubeadm-OpenStack-Cloud-Snapshot20200402.qcow2
-
-  - name: openSUSE Leap 42.3
-    format: qcow2
-    login: opensuse
-    min_disk: 10
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: opensuse
-      os_version: '42.3'
-    tags: []
-    versions:
-      - version: '20190617'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build7.269.qcow2
-      - version: '20200316'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_42.3/images/openSUSE-Leap-42.3-OpenStack.x86_64-0.0.4-Build8.1.qcow2
-
-  - name: openSUSE Leap 15.0
-    format: qcow2
-    login: opensuse
-    min_disk: 10
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: opensuse
-      os_version: '15.0'
-    tags: []
-    versions:
-      - version: '20190214'
-        url: https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Buildlp150.12.107.qcow2
-      - version: '20200826'
-        url: https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.0/images/openSUSE-Leap-15.0-OpenStack.x86_64-0.0.4-Build12.300.qcow2
-
-  - name: openSUSE Leap 15.1
-    format: qcow2
-    login: opensuse
-    min_disk: 10
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: opensuse
-      os_version: '15.1'
-    tags: []
-    versions:
-      - version: '20200406'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build6.204.qcow2
-      - version: '20201020'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64-0.0.4-Build8.117.qcow2
-
-  - name: openSUSE Leap 15.2
-    format: qcow2
-    login: opensuse
-    min_disk: 10
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: opensuse
-      os_version: '15.2'
-    tags: []
-    versions:
-      - version: '20200707'
-        url: http://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.2/images/openSUSE-Leap-15.2-OpenStack.x86_64-0.0.4-Build8.25.qcow2
+      - version: '20210802'
+        url: https://images.osism.tech/opensuse-microos/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210802.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210802.qcow2
