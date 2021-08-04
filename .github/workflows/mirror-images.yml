@@ -8,7 +8,7 @@ name: Mirror images
       - 'etc/images.yml'
       - 'src/mirror.py'
     branches:
-      - master
+      - main
 
 jobs:
   mirror-images:
