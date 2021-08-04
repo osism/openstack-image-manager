@@ -24,7 +24,7 @@ opts = [
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
     cfg.StrOpt('name', help='Image name to process', default=None),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
-    cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_betacloud')
+    cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)

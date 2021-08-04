@@ -181,7 +181,7 @@ image from ``etc/images.yml``.
 ## Contribute
 
 To make changes in this repository, open a pull request. To prioritize the import
-of a new image send an email to `info@betacloud.de` with reference to the created
+of a new image send an email to `info@osism.tech` with reference to the created
 pull request.
 
 After creating a PR, please check the result of the Travis CI and correct any
@@ -193,7 +193,7 @@ The cloud environment to be used can be specified via the `--cloud` parameter. `
 
 The path to the definitions of the images is set via the parameter `--images`. `etc/images.yml` is set as the default.
 
-The tag for the identification of managed images is set via `--tag`. `managed_by_betacloud` is set as the default.
+The tag for the identification of managed images is set via `--tag`. `managed_by_osism` is set as the default.
 
 The debug mode can be activated via `--debug`, e.g.  `tox -- --debug`.
 
