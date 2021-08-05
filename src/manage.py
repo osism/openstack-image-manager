@@ -153,6 +153,7 @@ for image in images:
 
         if 'os_version' in version:
             versions[version['version']]['os_version'] = version['os_version']
+
         if 'hidden' in version:
             versions[version['version']]['hidden'] = version['hidden']
 
