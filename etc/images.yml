@@ -65,10 +65,6 @@ images:
       os_distro: ubuntu
     tags: []
     versions:
-      - version: '0.5.0'
-        url: https://github.com/cirros-dev/cirros/releases/download/0.5.0/cirros-0.5.0-x86_64-disk.img
-      - version: '0.5.1'
-        url: https://github.com/cirros-dev/cirros/releases/download/0.5.1/cirros-0.5.1-x86_64-disk.img
       - version: '0.5.2'
         url: https://github.com/cirros-dev/cirros/releases/download/0.5.2/cirros-0.5.2-x86_64-disk.img
 
@@ -113,12 +109,6 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '2605.6.0'
-        url: https://images.osism.tech/flatcar/2605.6.0/flatcar_production_openstack_image.img
-        source: https://stable.release.flatcar-linux.net/amd64-usr/2605.6.0/flatcar_production_openstack_image.img.bz2
-      - version: '2605.10.0'
-        url: https://images.osism.tech/flatcar/2605.10.0/flatcar_production_openstack_image.img
-        source: https://stable.release.flatcar-linux.net/amd64-usr/2605.10.0/flatcar_production_openstack_image.img.bz2
       - version: '2905.2.1'
         url: https://images.osism.tech/flatcar/2905.2.1/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/2905.2.1/flatcar_production_openstack_image.img.bz2
@@ -140,12 +130,8 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '1.5.5'
-        url: https://github.com/rancher/os/releases/download/v1.5.5/rancheros-openstack.img
-      - version: '1.5.6'
-        url: https://github.com/rancher/os/releases/download/v1.5.6/rancheros-openstack.img
-      - version: '1.5.7'
-        url: https://github.com/rancher/os/releases/download/v1.5.7/rancheros-openstack.img
+      - version: '1.5.8'
+        url: https://github.com/rancher/os/releases/download/v1.5.8/rancheros-openstack.img
 
   # Images with regular rebuilds
 
@@ -167,9 +153,9 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '33840'
-        url: https://images.osism.tech/clearlinux/33840/clear-33840-cloudguest.img
-        source: https://cdn.download.clearlinux.org/releases/33840/clear/clear-33840-cloudguest.img.xz
+      - version: '34920'
+        url: https://images.osism.tech/clearlinux/34920/clear-34920-cloudguest.img
+        source: https://cdn.download.clearlinux.org/releases/34920/clear/clear-34920-cloudguest.img.xz
 
   # Ubuntu
 
@@ -191,12 +177,9 @@ images:
       os_version: '14.04'
     tags: []
     versions:
-      - version: '20190429'
-        url: https://cloud-images.ubuntu.com/trusty/20190429/trusty-server-cloudimg-amd64-disk1.img
-      - version: '20190514'
-        url: https://cloud-images.ubuntu.com/trusty/20190514/trusty-server-cloudimg-amd64-disk1.img
       - version: '20191107'
-        url: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
+        url: https://images.osism.tech/ubuntu/14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
+        source: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 16.04
     format: qcow2
@@ -216,12 +199,9 @@ images:
       os_version: '16.04'
     tags: []
     versions:
-      - version: '20210413'
-        url: https://cloud-images.ubuntu.com/xenial/20210413/xenial-server-cloudimg-amd64-disk1.img
-      - version: '20210422'
-        url: https://cloud-images.ubuntu.com/xenial/20210422/xenial-server-cloudimg-amd64-disk1.img
-      - version: '20210429'
-        url: https://cloud-images.ubuntu.com/xenial/20210429/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20210804'
+        url: https://images.osism.tech/ubuntu/16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
+        source: https://cloud-images.ubuntu.com/xenial/20210804/xenial-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu Minimal 16.04
     format: qcow2
@@ -241,10 +221,9 @@ images:
       os_version: '16.04'
     tags: []
     versions:
-      - version: '20210319'
-        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210319/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
       - version: '20210430'
-        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+        url: https://images.osism.tech/ubuntu/16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+        source: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 18.04
     format: qcow2
@@ -264,12 +243,9 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20210413'
-        url: https://cloud-images.ubuntu.com/bionic/20210413/bionic-server-cloudimg-amd64.img
-      - version: '20210415'
-        url: https://cloud-images.ubuntu.com/bionic/20210415/bionic-server-cloudimg-amd64.img
-      - version: '20210501'
-        url: https://cloud-images.ubuntu.com/bionic/20210501/bionic-server-cloudimg-amd64.img
+      - version: '20210804'
+        url: https://images.osism.tech/ubuntu/18.04/20210804/bionic-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/bionic/20210804/bionic-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 18.04
     format: qcow2
@@ -289,10 +265,9 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20210325'
-        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210325/ubuntu-18.04-minimal-cloudimg-amd64.img
-      - version: '20210416'
-        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210416/ubuntu-18.04-minimal-cloudimg-amd64.img
+      - version: '20210803'
+        url: https://images.osism.tech/ubuntu/18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
+        source: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
 
   - name: Ubuntu 20.04
     format: qcow2
@@ -312,12 +287,9 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20210429'
-        url: https://cloud-images.ubuntu.com/focal/20210429/focal-server-cloudimg-amd64.img
-      - version: '20210430'
-        url: https://cloud-images.ubuntu.com/focal/20210430/focal-server-cloudimg-amd64.img
-      - version: '20210503'
-        url: https://cloud-images.ubuntu.com/focal/20210503/focal-server-cloudimg-amd64.img
+      - version: '20210803'
+        url: https://images.osism.tech/ubuntu/20.04/20210803/focal-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/focal/20210803/focal-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 20.04
     format: qcow2
@@ -337,12 +309,9 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20200423'
-        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20200423/ubuntu-20.04-minimal-cloudimg-amd64.img
-      - version: '20210223'
-        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210223/ubuntu-20.04-minimal-cloudimg-amd64.img
-      - version: '20210416'
-        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210416/ubuntu-20.04-minimal-cloudimg-amd64.img
+      - version: '20210720'
+        url: https://images.osism.tech/ubuntu/20.04-minimal/20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
+        source: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
 
   # CentOS
 
@@ -363,14 +332,9 @@ images:
       os_version: '7'
     tags: []
     versions:
-      - version: '20190128'
-        url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1901.qcow2
-      - version: '20190604'
-        url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1905.qcow2
-      - version: '20190808'
-        url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1907.qcow2
       - version: '20201112'
-        url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2
+        url: https://images.osism.tech/centos/7/CentOS-7-x86_64-GenericCloud-2009.qcow2
+        source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2
 
   - name: CentOS 8
     format: qcow2
@@ -389,10 +353,9 @@ images:
       os_version: '8'
     tags: []
     versions:
-      - version: '20200113'
-        url: http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2
-      - version: '20201204'
-        url: http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.3.2011-20201204.2.x86_64.qcow2
+      - version: '20210603'
+        url: https://images.osism.tech/centos/8/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+        source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
 
   - name: CentOS Stream
     format: qcow2
@@ -411,8 +374,9 @@ images:
       os_version: '8'
     tags: []
     versions:
-      - version: '20200113'
-        url: http://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20200113.0.x86_64.qcow2
+      - version: '20210603'
+        url: https://images.osism.tech/centos/8-stream/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
+        source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
 
   # Debian
 
@@ -454,18 +418,9 @@ images:
       os_version: '9'
     tags: []
     versions:
-      - version: '20190409'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/9.8.3-20190409/debian-9.8.3-20190409-openstack-amd64.qcow2
-        os_version: '9.8.3'
-      - version: '20190614'
-        url: https://cdimage.debian.org/cdimage/openstack/9.9.2-20190614/debian-9.9.2-20190614-openstack-amd64.qcow2
-        os_version: '9.9.2'
-      - version: '20201218'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/9.13.11-20201218/debian-9.13.11-20201218-openstack-amd64.qcow2
-        os_version: '9.13.11'
-      - version: '20210320'
-        url: https://cdimage.debian.org/cdimage/openstack/9.13.19-20210320/debian-9.13.19-20210320-openstack-amd64.raw
-        os_version: '9.13.19'
+      - version: '20210628'
+        url: https://cdimage.debian.org/cdimage/openstack/archive/9.13.25-20210628/debian-9.13.25-20210628-openstack-amd64.qcow2
+        os_version: '9.13.25'
 
   - name: Debian 10
     format: qcow2
@@ -484,31 +439,13 @@ images:
       os_version: '10'
     tags: []
     versions:
-      - version: '20191116'
-        url: https://cdimage.debian.org/cdimage/openstack/10.2.0/debian-10.2.0-openstack-amd64.qcow2
-        os_version: '10.2.0'
-      - version: '20200802'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/10.5.0/debian-10.5.0-openstack-amd64.qcow2
-        os_version: '10.5.0'
-      - version: '20201205'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/10.7.0/debian-10.7.0-openstack-amd64.qcow2
-        os_version: '10.7.0'
-      - version: '20210206'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/10.8.0/debian-10.8.0-openstack-amd64.qcow2
-        os_version: '10.8.0'
-      - version: '20210327'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/10.9.0/debian-10.9.0-openstack-amd64.qcow2
-        os_version: '10.9.0'
-      - version: '20210619'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/10.10.0/debian-10.10.0-openstack-amd64.qcow2
-        os_version: '10.10.0'
       - version: '20210624'
-        url: https://cdimage.debian.org/cdimage/openstack/10.10.1-20210624/debian-10.10.1-20210624-openstack-amd64.qcow2
+        url: https://cdimage.debian.org/cdimage/openstack/archive/10.10.1-20210624/debian-10.10.1-20210624-openstack-amd64.qcow2
         os_version: '10.10.1'
 
   # Fedora
 
-  - name: Fedora 30
+  - name: Fedora 34
     format: qcow2
     login: fedora
     min_disk: 4
@@ -522,71 +459,12 @@ images:
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
       os_distro: fedora
-      os_version: '30'
+      os_version: '34'
     tags: []
     versions:
-      - version: '20190426'
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/30/Cloud/x86_64/images/Fedora-Cloud-Base-30-1.2.x86_64.qcow2
-
-  - name: Fedora 31
-    format: qcow2
-    login: fedora
-    min_disk: 4
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: fedora
-      os_version: '31'
-    tags: []
-    versions:
-      - version: '20191023'
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/31/Cloud/x86_64/images/Fedora-Cloud-Base-31-1.9.x86_64.qcow2
-
-  - name: Fedora 32
-    format: qcow2
-    login: fedora
-    min_disk: 4
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: fedora
-      os_version: '32'
-    tags: []
-    versions:
-      - version: '20200422'
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/32/Cloud/x86_64/images/Fedora-Cloud-Base-32-1.6.x86_64.qcow2
-
-  - name: Fedora 33
-    format: qcow2
-    login: fedora
-    min_disk: 4
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: fedora
-      os_version: '33'
-    tags: []
-    versions:
-      - version: '20201019'
-        url: https://download.fedoraproject.org/pub/fedora/linux/releases/33/Cloud/x86_64/images/Fedora-Cloud-Base-33-1.2.x86_64.qcow2
+      - version: '20210423'
+        url: https://images.osism.tech/fedora/34/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
+        source: https://download.fedoraproject.org/pub/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
 
 
   # openSUSE
@@ -607,7 +485,6 @@ images:
       hw_watchdog_action: reset
       os_distro: opensuse
     tags: []
-    # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
       - version: '20210803'
         url: https://images.osism.tech/opensuse-tumbleweed/20210803/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210803.qcow2
@@ -629,8 +506,28 @@ images:
       hw_watchdog_action: reset
       os_distro: opensuse
     tags: []
-    # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
       - version: '20210803'
         url: https://images.osism.tech/opensuse-microos/20210803/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210803.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210803.qcow2
+
+  - name: openSUSE Leap 15.3
+    format: qcow2
+    login: opensuse
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+      os_version: '15.3'
+    tags: []
+    versions:
+      - version: '20210729'
+        url: https://images.osism.tech/opensuse-leap/15.3/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
+        source: https://download.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
