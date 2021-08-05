@@ -160,6 +160,7 @@ images:
   # Ubuntu
 
   - name: Ubuntu 14.04
+    shortname: ubuntu-14.04
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -178,10 +179,11 @@ images:
     tags: []
     versions:
       - version: '20191107'
-        url: https://images.osism.tech/ubuntu/14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
+        url: https://images.osism.tech/ubuntu-14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 16.04
+    shortname: ubuntu-16.04
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -200,10 +202,11 @@ images:
     tags: []
     versions:
       - version: '20210804'
-        url: https://images.osism.tech/ubuntu/16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
+        url: https://images.osism.tech/ubuntu-16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/xenial/20210804/xenial-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu Minimal 16.04
+    shortname: ubuntu-16.04-minimal
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -222,10 +225,11 @@ images:
     tags: []
     versions:
       - version: '20210430'
-        url: https://images.osism.tech/ubuntu/16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+        url: https://images.osism.tech/ubuntu-16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
         source: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 18.04
+    shortname: ubuntu-18.04
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -244,10 +248,11 @@ images:
     tags: []
     versions:
       - version: '20210804'
-        url: https://images.osism.tech/ubuntu/18.04/20210804/bionic-server-cloudimg-amd64.img
+        url: https://images.osism.tech/ubuntu-18.04/20210804/bionic-server-cloudimg-amd64.img
         source: https://cloud-images.ubuntu.com/bionic/20210804/bionic-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 18.04
+    shortname: ubuntu-18.04-minimal
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -266,10 +271,11 @@ images:
     tags: []
     versions:
       - version: '20210803'
-        url: https://images.osism.tech/ubuntu/18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
+        url: https://images.osism.tech/ubuntu-18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
         source: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
 
   - name: Ubuntu 20.04
+    shortname: ubuntu-20.04
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -288,10 +294,11 @@ images:
     tags: []
     versions:
       - version: '20210803'
-        url: https://images.osism.tech/ubuntu/20.04/20210803/focal-server-cloudimg-amd64.img
+        url: https://images.osism.tech/ubuntu-20.04/20210803/focal-server-cloudimg-amd64.img
         source: https://cloud-images.ubuntu.com/focal/20210803/focal-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 20.04
+    shortname: ubuntu-20.04-minimal
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -316,6 +323,7 @@ images:
   # CentOS
 
   - name: CentOS 7
+    shortname: centos-7
     format: qcow2
     login: centos
     min_disk: 8
@@ -333,10 +341,11 @@ images:
     tags: []
     versions:
       - version: '20201112'
-        url: https://images.osism.tech/centos/7/CentOS-7-x86_64-GenericCloud-2009.qcow2
+        url: https://images.osism.tech/centos-7/20201112/CentOS-7-x86_64-GenericCloud-2009.qcow2
         source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2
 
   - name: CentOS 8
+    shortname: centos-8
     format: qcow2
     login: centos
     min_disk: 10
@@ -354,10 +363,11 @@ images:
     tags: []
     versions:
       - version: '20210603'
-        url: https://images.osism.tech/centos/8/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+        url: https://images.osism.tech/centos-8/20210603/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
 
   - name: CentOS Stream
+    shortname: centos-stream
     format: qcow2
     login: centos
     min_disk: 10
@@ -375,7 +385,7 @@ images:
     tags: []
     versions:
       - version: '20210603'
-        url: https://images.osism.tech/centos/8-stream/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
+        url: https://images.osism.tech/centos-stream/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
 
   # Debian
@@ -446,6 +456,7 @@ images:
   # Fedora
 
   - name: Fedora 34
+    shortname: fedora-34
     format: qcow2
     login: fedora
     min_disk: 4
@@ -463,7 +474,7 @@ images:
     tags: []
     versions:
       - version: '20210423'
-        url: https://images.osism.tech/fedora/34/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
+        url: https://images.osism.tech/fedora-34/20210423/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
         source: https://download.fedoraproject.org/pub/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
 
 
@@ -512,6 +523,7 @@ images:
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210803.qcow2
 
   - name: openSUSE Leap 15.3
+    shortname: opensuse-leap-15.3
     format: qcow2
     login: opensuse
     min_disk: 10
@@ -529,5 +541,5 @@ images:
     tags: []
     versions:
       - version: '20210729'
-        url: https://images.osism.tech/opensuse-leap/15.3/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
+        url: https://images.osism.tech/opensuse-leap-15.3/20210729/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
         source: https://download.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
