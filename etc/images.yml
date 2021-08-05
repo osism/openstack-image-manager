@@ -189,8 +189,8 @@ images:
       os_version: '14.04'
     tags: []
     versions:
-      - version: '20190209'
-        url: https://cloud-images.ubuntu.com/trusty/20190209/trusty-server-cloudimg-amd64-disk1.img
+      - version: '20190429'
+        url: https://cloud-images.ubuntu.com/trusty/20190429/trusty-server-cloudimg-amd64-disk1.img
       - version: '20190514'
         url: https://cloud-images.ubuntu.com/trusty/20190514/trusty-server-cloudimg-amd64-disk1.img
       - version: '20191107'
@@ -214,12 +214,12 @@ images:
       os_version: '16.04'
     tags: []
     versions:
-      - version: '20200403'
-        url: https://cloud-images.ubuntu.com/xenial/20200403/xenial-server-cloudimg-amd64-disk1.img
-      - version: '20200923'
-        url: https://cloud-images.ubuntu.com/xenial/20200923/xenial-server-cloudimg-amd64-disk1.img
-      - version: '20201014'
-        url: https://cloud-images.ubuntu.com/xenial/20201014/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20210413'
+        url: https://cloud-images.ubuntu.com/xenial/20210413/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20210422'
+        url: https://cloud-images.ubuntu.com/xenial/20210422/xenial-server-cloudimg-amd64-disk1.img
+      - version: '20210429'
+        url: https://cloud-images.ubuntu.com/xenial/20210429/xenial-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu Minimal 16.04
     format: qcow2
@@ -239,10 +239,10 @@ images:
       os_version: '16.04'
     tags: []
     versions:
-      - version: '20200317'
-        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20200317/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
-      - version: '20200916'
-        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20200916/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+      - version: '20210319'
+        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210319/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+      - version: '20210430'
+        url: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 18.04
     format: qcow2
@@ -262,14 +262,12 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20200402'
-        url: https://cloud-images.ubuntu.com/bionic/20200402/bionic-server-cloudimg-amd64.img
-      - version: '20200922'
-        url: https://cloud-images.ubuntu.com/bionic/20200922/bionic-server-cloudimg-amd64.img
-      - version: '20201016'
-        url: https://cloud-images.ubuntu.com/bionic/20201016/bionic-server-cloudimg-amd64.img
-      - version: '20210106'
-        url: https://cloud-images.ubuntu.com/bionic/20210106/bionic-server-cloudimg-amd64.img
+      - version: '20210413'
+        url: https://cloud-images.ubuntu.com/bionic/20210413/bionic-server-cloudimg-amd64.img
+      - version: '20210415'
+        url: https://cloud-images.ubuntu.com/bionic/20210415/bionic-server-cloudimg-amd64.img
+      - version: '20210501'
+        url: https://cloud-images.ubuntu.com/bionic/20210501/bionic-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 18.04
     format: qcow2
@@ -289,12 +287,10 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20200318'
-        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20200318/ubuntu-18.04-minimal-cloudimg-amd64.img
-      - version: '20200923'
-        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20200923/ubuntu-18.04-minimal-cloudimg-amd64.img
-      - version: '20210106'
-        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210106/ubuntu-18.04-minimal-cloudimg-amd64.img
+      - version: '20210325'
+        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210325/ubuntu-18.04-minimal-cloudimg-amd64.img
+      - version: '20210416'
+        url: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210416/ubuntu-18.04-minimal-cloudimg-amd64.img
 
   - name: Ubuntu 20.04
     format: qcow2
@@ -314,14 +310,12 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20200424'
-        url: https://cloud-images.ubuntu.com/focal/20200424/focal-server-cloudimg-amd64.img
-      - version: '20200921'
-        url: https://cloud-images.ubuntu.com/focal/20200921.1/focal-server-cloudimg-amd64.img
-      - version: '20201016'
-        url: https://cloud-images.ubuntu.com/focal/20201016/focal-server-cloudimg-amd64.img
-      - version: '20210105'
-        url: https://cloud-images.ubuntu.com/focal/20210105/focal-server-cloudimg-amd64.img
+      - version: '20210429'
+        url: https://cloud-images.ubuntu.com/focal/20210429/focal-server-cloudimg-amd64.img
+      - version: '20210430'
+        url: https://cloud-images.ubuntu.com/focal/20210430/focal-server-cloudimg-amd64.img
+      - version: '20210503'
+        url: https://cloud-images.ubuntu.com/focal/20210503/focal-server-cloudimg-amd64.img
 
   - name: Ubuntu Minimal 20.04
     format: qcow2
@@ -341,14 +335,12 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20200416'
-        url: http://cloud-images.ubuntu.com/minimal/daily/focal/20200416/focal-minimal-cloudimg-amd64.img
       - version: '20200423'
         url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20200423/ubuntu-20.04-minimal-cloudimg-amd64.img
-      - version: '20200923'
-        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20200923/ubuntu-20.04-minimal-cloudimg-amd64.img
-      - version: '20210105'
-        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210105/ubuntu-20.04-minimal-cloudimg-amd64.img
+      - version: '20210223'
+        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210223/ubuntu-20.04-minimal-cloudimg-amd64.img
+      - version: '20210416'
+        url: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210416/ubuntu-20.04-minimal-cloudimg-amd64.img
 
   # CentOS
 
