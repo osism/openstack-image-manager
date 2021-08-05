@@ -567,3 +567,24 @@ images:
       - version: '20210729'
         url: https://images.osism.tech/opensuse-leap-15.3/20210729/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
         source: https://download.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
+
+  # Garden Linux
+
+  - name: Garden Linux
+    format: qcow2
+    login: debian
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: debian
+    tags: []
+    versions:
+      - version: '318.8'
+        url: https://images.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
