@@ -90,7 +90,7 @@ images:
     tags: []
     versions:
       - version: '34.20210711.3.0'
-        url: https://images.osism.tech/fedora-coreos/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2
+        url: https://images.osism.tech/fedora-coreos/34.20210711.3.0/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/34.20210711.3.0/x86_64/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2.xz
 
   # Flatcar Container Linux
@@ -610,7 +610,7 @@ images:
     # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
       - version: '20210802'
-        url: https://images.osism.tech/opensuse-tumbleweed/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210802.qcow2
+        url: https://images.osism.tech/opensuse-tumbleweed/20210802/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210802.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210802.qcow2
 
   - name: openSUSE MicroOS
@@ -632,5 +632,5 @@ images:
     # NOTE(berendt): The use of the mirror is necessary here because snapshots are used.
     versions:
       - version: '20210802'
-        url: https://images.osism.tech/opensuse-microos/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210802.qcow2
+        url: https://images.osism.tech/opensuse-microos/20210802/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210802.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210802.qcow2
