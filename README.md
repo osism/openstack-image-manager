@@ -3,8 +3,6 @@
 With this script it is possible to easily manage and keep up to date a
 large number of images on an OpenStack environment.
 
-We use this script to maintain the images on our public cloud Betacloud.
-
 - [Requirements](#requirements)
 - [Configuration](#configuration)
   - [Naming convention](#naming-convention)
@@ -41,6 +39,12 @@ This requires the following parameter for the taskflow executor.
 [taskflow_executor]
 conversion_format = raw
 ```
+
+## Notes
+
+Since the upstreams often only keep their images for a short time, we mirror most of the
+images on our images.osism.tech mirror. This makes us independent of the availability of
+the images in the individual upstreams.
 
 ## Configuration
 
