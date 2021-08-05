@@ -388,6 +388,30 @@ images:
         url: https://images.osism.tech/centos-stream/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
 
+  # RockyLinux
+
+  - name: Rocky 8
+    shortname: rocky-8
+    format: qcow2
+    login: rocky
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '8'
+    tags: []
+    versions:
+      - version: '20210620'
+        url: https://images.osism.tech/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
+        source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
+
   # Debian
 
   - name: Debian 8
