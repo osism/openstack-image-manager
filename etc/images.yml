@@ -588,3 +588,24 @@ images:
     versions:
       - version: '318.8'
         url: https://images.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
+
+  # Kubernetes CAPI
+
+  - name: Kubernetes CAPI
+    format: qcow2
+    login: ubuntu
+    min_disk: 20
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+    tags: []
+    versions:
+      - version: '1.22.0'
+        url: https://images.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.0.qcow2
