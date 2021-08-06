@@ -145,7 +145,7 @@ images:
     min_ram: 512
     status: active
     visibility: public
-    multi: true
+    multi: false
     meta:
       architecture: x86_64
       hw_disk_bus: scsi
