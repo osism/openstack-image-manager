@@ -587,4 +587,4 @@ images:
     tags: []
     versions:
       - version: '318.8'
-        url: https://images.osism.tech/mirror/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
+        url: https://images.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
