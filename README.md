@@ -220,3 +220,13 @@ $ tox -- --yes-i-really-know-what-i-do
 ```
 $ tox -e mirror -- --server SFTP_SERVER --username SFTP_USERNAME --password SFTP_PASSWORD
 ```
+
+### Change the tag of the managed images
+
+* old tag: ``managed_by_betacloud``
+* new tag: ``managed_by_osism``
+
+```
+openstack --os-cloud service image list --tag managed_by_betacloud -f value -c ID | tr -d '\r' | xargs -n1 openstack --os-cloud service image set --tag managed_by_osism
+openstack --os-cloud service image list --tag managed_by_betacloud -f value -c ID | tr -d '\r' | xargs -n1 openstack --os-cloud service image unset --tag managed_by_betacloud
+```
