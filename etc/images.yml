@@ -205,7 +205,7 @@ images:
         url: https://images.osism.tech/mirror/ubuntu-16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/xenial/20210804/xenial-server-cloudimg-amd64-disk1.img
 
-  - name: Ubuntu Minimal 16.04
+  - name: Ubuntu 16.04 Minimal
     shortname: ubuntu-16.04-minimal
     format: qcow2
     login: ubuntu
@@ -251,7 +251,7 @@ images:
         url: https://images.osism.tech/mirror/ubuntu-18.04/20210804/bionic-server-cloudimg-amd64.img
         source: https://cloud-images.ubuntu.com/bionic/20210804/bionic-server-cloudimg-amd64.img
 
-  - name: Ubuntu Minimal 18.04
+  - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
     format: qcow2
     login: ubuntu
@@ -297,7 +297,7 @@ images:
         url: https://images.osism.tech/mirror/ubuntu-20.04/20210803/focal-server-cloudimg-amd64.img
         source: https://cloud-images.ubuntu.com/focal/20210803/focal-server-cloudimg-amd64.img
 
-  - name: Ubuntu Minimal 20.04
+  - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
     format: qcow2
     login: ubuntu
