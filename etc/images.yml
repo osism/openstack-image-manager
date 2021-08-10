@@ -572,7 +572,7 @@ images:
 
   - name: Garden Linux
     format: qcow2
-    login: debian
+    login: admin
     min_disk: 10
     min_ram: 512
     status: active
