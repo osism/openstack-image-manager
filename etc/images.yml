@@ -473,9 +473,9 @@ images:
       os_version: '10'
     tags: []
     versions:
-      - version: '20210624'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/10.10.1-20210624/debian-10.10.1-20210624-openstack-amd64.qcow2
-        os_version: '10.10.1'
+      - version: '20211009'
+        url: https://cdimage.debian.org/cdimage/openstack/10.11.0/debian-10.11.0-openstack-amd64.qcow2
+        os_version: '10.11.0'
 
   - name: Debian 11
     format: qcow2
