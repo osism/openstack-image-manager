@@ -494,9 +494,9 @@ images:
       os_version: '11'
     tags: []
     versions:
-      - version: '20210814'
-        url: https://cdimage.debian.org/images/cloud/bullseye/20210814-734/debian-11-generic-amd64-20210814-734.qcow2
-        os_version: '11.0.0'
+      - version: '20211011'
+        url: https://cdimage.debian.org/images/cloud/bullseye/20211011-792/debian-11-generic-amd64-20211011-792.qcow2
+        os_version: '11.1.0'
 
   # Fedora
 
