@@ -56,7 +56,12 @@ def create_import_task(glance, name, image, url):
 
     input = {
         'import_from_format': image['format'],
-        'import_from': url,
+        'import_req': {
+            'method': {
+                'name': 'web-download',
+                'uri': url
+            }
+        },
         'image_properties': {
             'container_format': 'bare',
             'disk_format': image['format'],
@@ -68,7 +73,10 @@ def create_import_task(glance, name, image, url):
         }
     }
 
-    t = glance.tasks.create(type='import', input=input)
+    new_image = glance.images.create(name=name)
+    glance.images.update(new_image.id, **input['image_properties'])
+    input['image_id'] = new_image.id
+    t = glance.tasks.create(type='api_image_import', input=input)
 
     while True:
         try:
