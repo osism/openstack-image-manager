@@ -21,7 +21,7 @@ images:
       - amphora
     versions:
       - version: 'WALLABY'
-        url: https://images.osism.tech/openstack-octavia-apmphora-image/octavia-amphora-haproxy-wallaby.qcow2
+        url: https://minio.services.osism.tech/openstack-octavia-amphora-image/octavia-amphora-haproxy-wallaby.qcow2
 
   # OPNsense
 
