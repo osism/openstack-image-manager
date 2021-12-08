@@ -84,7 +84,6 @@ def import_image(glance, name, image, url):
             time.sleep(5.0)
             pass
 
-    return 'success'
 
 def get_images(conn, glance):
     result = {}
@@ -182,7 +181,6 @@ for image in images:
         elif image['multi'] and len(sorted_versions) == 1:
             existence = image['name'] in cloud_images
 
-        status = None
         if not existence and not (CONF.latest and version != sorted_versions[-1]):
             url = versions[version]['url']
 
@@ -194,19 +192,16 @@ for image in images:
                 continue
 
             if not CONF.dry_run:
-                status = import_image(glance, name, image, url)
-            else:
-                status = 'dry-run'
+                import_image(glance, name, image, url)
 
-            if status == 'success':
                 logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn, glance)
 
                 if version == sorted_versions[-1]:
                     uploaded_new_latest_image = True
 
-            if status in ['dry-run', 'success']:
-                existing_images.append(name)
+            existing_images.append(name)
+
         elif CONF.latest and version != sorted_versions[-1]:
             logging.info("Skipping image '%s' (only importing the latest version of images from type multi)" % name)
 
