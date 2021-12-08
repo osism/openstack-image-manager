@@ -51,17 +51,10 @@ conn = openstack.connect(cloud=CONF.cloud)
 glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
 
-def create_import_task(glance, name, image, url):
-    logging.info("Creating import task '%s'" % name)
+def import_image(glance, name, image, url):
+    logging.info("Importing image %s" % name)
 
     input = {
-        'import_from_format': image['format'],
-        'import_req': {
-            'method': {
-                'name': 'web-download',
-                'uri': url
-            }
-        },
         'image_properties': {
             'container_format': 'bare',
             'disk_format': image['format'],
@@ -75,26 +68,24 @@ def create_import_task(glance, name, image, url):
 
     new_image = glance.images.create(name=name)
     glance.images.update(new_image.id, **input['image_properties'])
-    input['image_id'] = new_image.id
-    t = glance.tasks.create(type='api_image_import', input=input)
+
+    glance.images.image_import(new_image.id, method='web-download', uri=url)
 
     while True:
         try:
-            status = glance.tasks.get(t.id).status
-            if status not in ['failure', 'success']:
-                logging.info("Waiting for task %s" % t.id)
+            status = glance.images.get(new_image.id).status
+            if status != 'active':
+                logging.info("Waiting for import to complete...")
                 time.sleep(10.0)
             else:
                 break
 
-        except Exception:
+        except Exception as e:
+            logging.error("Exception while importing %s" % e)
             time.sleep(5.0)
             pass
 
-    logging.info("Import task for '%s' finished with status '%s'" % (name, status))
-
-    return status
-
+    return 'success'
 
 def get_images(conn, glance):
     result = {}
@@ -204,7 +195,7 @@ for image in images:
                 continue
 
             if not CONF.dry_run:
-                status = create_import_task(glance, name, image, url)
+                status = import_image(glance, name, image, url)
             else:
                 status = 'dry-run'
 
