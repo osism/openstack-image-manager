@@ -66,8 +66,7 @@ def import_image(glance, name, image, url):
         }
     }
 
-    new_image = glance.images.create(name=name)
-    glance.images.update(new_image.id, **input['image_properties'])
+    new_image = glance.images.create(**input['image_properties'])
 
     glance.images.image_import(new_image.id, method='web-download', uri=url)
 
