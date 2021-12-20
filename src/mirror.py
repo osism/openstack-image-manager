@@ -21,8 +21,8 @@ opts = [
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
     cfg.StrOpt('minio-access-key', help='Minio access key'),
     cfg.StrOpt('minio-secret-key', help='Minio secret key'),
-    cfg.StrOpt('minio-server', help='Minio server', default='images.osism.tech'),
-    cfg.StrOpt('minio-bucket', help='Minio bucket', default='mirror')
+    cfg.StrOpt('minio-server', help='Minio server', default='minio.services.osism.tech'),
+    cfg.StrOpt('minio-bucket', help='Minio bucket', default='openstack-image-manager')
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
