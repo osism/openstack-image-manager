@@ -19,11 +19,12 @@ opts = [
     cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
     cfg.BoolOpt('hide', help='Hide images that should be deleted', default=False),
     cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
-    cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
     cfg.BoolOpt('use-os-hidden', help='Use the os_hidden property', default=False),
+    cfg.BoolOpt('use-raw-images', help='Use raw images', default=True),
+    cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
     cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
-    cfg.StrOpt('name', help='Image name to process', default=None),
     cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
+    cfg.StrOpt('name', help='Image name to process', default=None),
     cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
 ]
 CONF.register_cli_opts(opts)
@@ -54,10 +55,16 @@ glance = os_client_config.make_client("image", cloud=CONF.cloud)
 def import_image(glance, name, image, url):
     logging.info("Importing image %s" % name)
 
+    disk_format = image['format']
+
+    # NOTE: https://docs.openstack.org/glance/latest/admin/interoperable-image-import.html#the-image-conversion
+    if CONF.use_raw_images:
+        disk_format = "raw"
+
     input = {
         'image_properties': {
             'container_format': 'bare',
-            'disk_format': image['format'],
+            'disk_format': disk_format,
             'min_disk': image.get('min_disk', 0),
             'min_ram': image.get('min_ram', 0),
             'name': name,

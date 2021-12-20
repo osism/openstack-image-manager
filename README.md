@@ -33,11 +33,17 @@ user_storage_quota = 1TB
 ```
 
 With most storage backends it makes sense to convert the imported images directly to RAW.
-This requires the following parameter for the taskflow executor.
+This requires the following parameter for the image import workflow.
 
 ```
 [taskflow_executor]
 conversion_format = raw
+
+[image_import_opts]
+image_import_plugins = ['image_decompression', 'image_conversion']
+
+[image_conversion]
+output_format = raw
 ```
 
 ## Notes
