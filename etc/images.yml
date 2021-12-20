@@ -42,9 +42,9 @@ images:
       hw_watchdog_action: reset
     tags: []
     versions:
-      - version: '21.7'
-        url: https://images.osism.tech/mirror/opnsense/21.7/OPNsense-21.7-OpenSSL-nano-amd64.img
-        source: https://mirror.dns-root.de/opnsense/releases/21.7/OPNsense-21.7-OpenSSL-nano-amd64.img.bz2
+      - version: '21.7.1'
+        url: https://minio.services.osism.tech/openstack-image-manager/opnsense/21.7/OPNsense-21.7-OpenSSL-nano-amd64.img
+        source: https://mirror.dns-root.de/opnsense/releases/21.7/OPNsense-21.7.1-OpenSSL-nano-amd64.img.bz2
 
   # Cirros
 
@@ -88,7 +88,7 @@ images:
     tags: []
     versions:
       - version: '34.20210711.3.0'
-        url: https://images.osism.tech/mirror/fedora-coreos/34.20210711.3.0/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/fedora-coreos/34.20210711.3.0/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/34.20210711.3.0/x86_64/fedora-coreos-34.20210711.3.0-openstack.x86_64.qcow2.xz
 
   # Flatcar Container Linux
@@ -110,7 +110,7 @@ images:
     tags: []
     versions:
       - version: '2905.2.1'
-        url: https://images.osism.tech/mirror/flatcar/2905.2.1/flatcar_production_openstack_image.img
+        url: https://minio.services.osism.tech/openstack-image-manager/flatcar/2905.2.1/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/2905.2.1/flatcar_production_openstack_image.img.bz2
 
   # RancherOS
@@ -154,7 +154,7 @@ images:
     tags: []
     versions:
       - version: '34920'
-        url: https://images.osism.tech/mirror/clearlinux/34920/clear-34920-cloudguest.img
+        url: https://minio.services.osism.tech/openstack-image-manager/clearlinux/34920/clear-34920-cloudguest.img
         source: https://cdn.download.clearlinux.org/releases/34920/clear/clear-34920-cloudguest.img.xz
 
   # Ubuntu
@@ -179,7 +179,7 @@ images:
     tags: []
     versions:
       - version: '20191107'
-        url: https://images.osism.tech/mirror/ubuntu-14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 16.04
@@ -202,7 +202,7 @@ images:
     tags: []
     versions:
       - version: '20210804'
-        url: https://images.osism.tech/mirror/ubuntu-16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/xenial/20210804/xenial-server-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 16.04 Minimal
@@ -225,7 +225,7 @@ images:
     tags: []
     versions:
       - version: '20210430'
-        url: https://images.osism.tech/mirror/ubuntu-16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
         source: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
 
   - name: Ubuntu 18.04
@@ -247,9 +247,9 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20210804'
-        url: https://images.osism.tech/mirror/ubuntu-18.04/20210804/bionic-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/bionic/20210804/bionic-server-cloudimg-amd64.img
+      - version: '20211216'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20211216/bionic-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/bionic/20211216/bionic-server-cloudimg-amd64.img
 
   - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
@@ -271,7 +271,7 @@ images:
     tags: []
     versions:
       - version: '20210803'
-        url: https://images.osism.tech/mirror/ubuntu-18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
         source: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
 
   - name: Ubuntu 20.04
@@ -293,9 +293,9 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20210803'
-        url: https://images.osism.tech/mirror/ubuntu-20.04/20210803/focal-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/focal/20210803/focal-server-cloudimg-amd64.img
+      - version: '20211216'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20211216/focal-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/focal/20211216/focal-server-cloudimg-amd64.img
 
   - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
@@ -317,7 +317,7 @@ images:
     tags: []
     versions:
       - version: '20210720'
-        url: https://images.osism.tech/mirror/ubuntu-20.04-minimal/20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
         source: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
 
   # CentOS
@@ -341,7 +341,7 @@ images:
     tags: []
     versions:
       - version: '20201112'
-        url: https://images.osism.tech/mirror/centos-7/20201112/CentOS-7-x86_64-GenericCloud-2009.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-7/20201112/CentOS-7-x86_64-GenericCloud-2009.qcow2
         source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2
 
   - name: CentOS 8
@@ -363,7 +363,7 @@ images:
     tags: []
     versions:
       - version: '20210603'
-        url: https://images.osism.tech/mirror/centos-8/20210603/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-8/20210603/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
 
   - name: CentOS Stream
@@ -385,7 +385,7 @@ images:
     tags: []
     versions:
       - version: '20210603'
-        url: https://images.osism.tech/mirror/centos-stream/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
 
   # RockyLinux
@@ -409,7 +409,7 @@ images:
     tags: []
     versions:
       - version: '20210620'
-        url: https://images.osism.tech/mirror/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
         source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
 
   # Debian
@@ -519,7 +519,7 @@ images:
     tags: []
     versions:
       - version: '20210423'
-        url: https://images.osism.tech/mirror/fedora-34/20210423/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/fedora-34/20210423/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
         source: https://download.fedoraproject.org/pub/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
 
 
@@ -542,9 +542,9 @@ images:
       os_distro: opensuse
     tags: []
     versions:
-      - version: '20210803'
-        url: https://images.osism.tech/mirror/opensuse-tumbleweed/20210803/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210803.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20210803.qcow2
+      - version: '20211219'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-tumbleweed/20211219/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20211219.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20211219.qcow2
 
   - name: openSUSE MicroOS
     shortname: opensuse-microos
@@ -563,9 +563,9 @@ images:
       os_distro: opensuse
     tags: []
     versions:
-      - version: '20210803'
-        url: https://images.osism.tech/mirror/opensuse-microos/20210803/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210803.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20210803.qcow2
+      - version: '20211219'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-microos/20211219/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20211219.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20211219.qcow2
 
   - name: openSUSE Leap 15.3
     shortname: opensuse-leap-15.3
@@ -585,9 +585,9 @@ images:
       os_version: '15.3'
     tags: []
     versions:
-      - version: '20210729'
-        url: https://images.osism.tech/mirror/opensuse-leap-15.3/20210729/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
-        source: https://download.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
+      - version: '20211213'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.3/20211213/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
+        source: https://download.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.312.qcow2
 
   # Garden Linux
 
@@ -608,7 +608,7 @@ images:
     tags: []
     versions:
       - version: '318.8'
-        url: https://images.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
+        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
 
   # Kubernetes CAPI
 
@@ -629,4 +629,4 @@ images:
     tags: []
     versions:
       - version: '1.22.0'
-        url: https://images.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.0.qcow2
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.0.qcow2
