@@ -202,8 +202,8 @@ for image in images:
                 import_image(glance, name, image, url)
 
                 if image['multi'] and len(sorted_versions) == 1 and image['name'] in cloud_images:
-                    previous_current = "%s (%s)" % (name, the_previous_current_image['internal_version'])
-                    logging.info("Renaming old latest '%s' to '%s'" % (name, previous_current))
+                    previous_current = "%s (%s)" % (image['name'], the_previous_current_image['internal_version'])
+                    logging.info("Renaming old latest '%s' to '%s'" % (image['name'], previous_current))
                     glance.images.update(the_previous_current_image.id, name=previous_current)
 
                 logging.info("Import of '%s' successfully completed, reload images" % name)
