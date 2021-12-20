@@ -169,10 +169,13 @@ for image in images:
 
         logging.info("Processing image '%s'" % name)
 
+        logging.info("Checking existence of '%s'" % name)
         existence = name in cloud_images
 
         if image['multi'] and CONF.latest and version == sorted_versions[-1] and not existence:
             existence = image['name'] in cloud_images
+            if existence:
+                existence = cloud_images[image['name']]['internal_version'] == version
         elif image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1] and not existence:
             previous = "%s (%s)" % (image['name'], sorted_versions[-2])
             existence = previous in cloud_images and image['name'] in cloud_images
@@ -181,7 +184,11 @@ for image in images:
         elif image['multi'] and len(sorted_versions) == 1:
             existence = image['name'] in cloud_images
 
-        if not existence and not (CONF.latest and version != sorted_versions[-1]):
+        if not existence and not (CONF.latest and len(sorted_versions) > 1 and version != sorted_versions[-1]):
+
+            if image['multi'] and image['name'] in cloud_images:
+                the_previous_current_image = cloud_images[image['name']]
+
             url = versions[version]['url']
 
             r = requests.head(url)
@@ -193,6 +200,11 @@ for image in images:
 
             if not CONF.dry_run:
                 import_image(glance, name, image, url)
+
+                if image['multi'] and len(sorted_versions) == 1 and image['name'] in cloud_images:
+                    previous_current = "%s (%s)" % (name, the_previous_current_image['internal_version'])
+                    logging.info("Renaming old latest '%s' to '%s'" % (name, previous_current))
+                    glance.images.update(the_previous_current_image.id, name=previous_current)
 
                 logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn, glance)
