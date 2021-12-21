@@ -644,6 +644,8 @@ images:
     versions:
       - version: '318.8'
         url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
+      - version: '576.1'
+        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.1.qcow2
 
   # Kubernetes CAPI
 
