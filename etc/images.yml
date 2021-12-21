@@ -452,9 +452,9 @@ images:
       os_version: '9'
     tags: []
     versions:
-      - version: '20210628'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/9.13.25-20210628/debian-9.13.25-20210628-openstack-amd64.qcow2
-        os_version: '9.13.25'
+      - version: '20211129'
+        url: https://cdimage.debian.org/cdimage/openstack/9.13.31-20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
+        os_version: '9.13.31'
 
   - name: Debian 10
     format: qcow2
@@ -473,9 +473,9 @@ images:
       os_version: '10'
     tags: []
     versions:
-      - version: '20211009'
-        url: https://cdimage.debian.org/cdimage/openstack/10.11.0/debian-10.11.0-openstack-amd64.qcow2
-        os_version: '10.11.0'
+      - version: '20211129'
+        url: https://cdimage.debian.org/cdimage/openstack/10.11.2-20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
+        os_version: '10.11.2'
 
   - name: Debian 11
     format: qcow2
