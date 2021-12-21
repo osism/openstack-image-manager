@@ -28,6 +28,8 @@ meta:
 
 version:
   build_date: str(required=False)
+  classification: enum('supported', 'deprecated', 'preview', 'unsupported', required=False)
+  expiration: timestamp(required=False)
   hidden: bool(required=False)
   os_version: str(required=False)
   source: str(required=False)

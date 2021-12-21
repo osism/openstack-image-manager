@@ -5,10 +5,12 @@ name: Validate configuration
   push:
     paths:
       - .github/workflows/validate-configuration.yml
+      - .yamale.yml
       - etc/images.yml
   pull_request:
     paths:
       - .github/workflows/validate-configuration.yml
+      - .yamale.yml
       - etc/images.yml
 
 jobs:
