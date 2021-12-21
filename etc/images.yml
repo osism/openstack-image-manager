@@ -421,6 +421,7 @@ images:
   # Debian
 
   - name: Debian 8
+    shortname: debian-8
     format: qcow2
     login: debian
     min_disk: 8
@@ -438,10 +439,12 @@ images:
     tags: []
     versions:
       - version: '20181005'
-        url: https://cdimage.debian.org/cdimage/openstack/archive/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-8/20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
+        source: https://cdimage.debian.org/cdimage/openstack/archive/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
         os_version: '8.11.5'
 
   - name: Debian 9
+    shortname: debian-9
     format: qcow2
     login: debian
     min_disk: 8
@@ -464,6 +467,7 @@ images:
         os_version: '9.13.31'
 
   - name: Debian 10
+    shortname: debian-10
     format: qcow2
     login: debian
     min_disk: 8
@@ -486,6 +490,7 @@ images:
         os_version: '10.11.2'
 
   - name: Debian 11
+    shortname: debian-11
     format: qcow2
     login: debian
     min_disk: 8
