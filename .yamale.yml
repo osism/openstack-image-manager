@@ -28,6 +28,7 @@ meta:
 
 version:
   build_date: str(required=False)
+  checksum: str()
   classification: enum('supported', 'deprecated', 'preview', 'unsupported', required=False)
   expiration: timestamp(required=False)
   hidden: bool(required=False)
