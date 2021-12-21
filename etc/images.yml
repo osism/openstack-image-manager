@@ -22,6 +22,7 @@ images:
     versions:
       - version: 'WALLABY'
         url: https://minio.services.osism.tech/openstack-octavia-amphora-image/octavia-amphora-haproxy-wallaby.qcow2
+        checksum: "sha256:bb961b0bde336e8ab6be776f2e00c9b1d87bb28d1b9285a165a958c80a7d035a"
 
   # OPNsense
 
@@ -43,8 +44,9 @@ images:
     tags: []
     versions:
       - version: '21.7.1'
-        url: https://minio.services.osism.tech/openstack-image-manager/opnsense/21.7/OPNsense-21.7-OpenSSL-nano-amd64.img
+        url: https://minio.services.osism.tech/openstack-image-manager/opnsense/21.7.1/OPNsense-21.7.1-OpenSSL-nano-amd64.img
         source: https://mirror.dns-root.de/opnsense/releases/21.7/OPNsense-21.7.1-OpenSSL-nano-amd64.img.bz2
+        checksum: "sha256:331c2fca12a20fa1ab03919bbdd6a709b0974ea807cc4f14f6148a598d95af15"
 
   # Cirros
 
@@ -67,6 +69,7 @@ images:
     versions:
       - version: '0.5.2'
         url: https://github.com/cirros-dev/cirros/releases/download/0.5.2/cirros-0.5.2-x86_64-disk.img
+        checksum: "sha256:932fcae93574e242dc3d772d5235061747dfe537668443a1f0567d893614b464"
 
   # Fedora CoreOS
 
@@ -88,8 +91,9 @@ images:
     tags: []
     versions:
       - version: '35.20211203.3.0'
-        url: https://minio.services.osism.tech/openstack-image-manager/fedora-coreos/35.20211203.3.0/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2.xz
+        url: https://minio.services.osism.tech/openstack-image-manager/fedora-coreos/35.20211203.3.0/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/35.20211203.3.0/x86_64/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2.xz
+        checksum: "sha256:ab6cab3bf6269eae1cb6252a57f278255c2335655fdab06baeeb494e8ebfaa8b"
 
   # Flatcar Container Linux
 
@@ -112,9 +116,11 @@ images:
       - version: '2905.2.1'
         url: https://minio.services.osism.tech/openstack-image-manager/flatcar/2905.2.1/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/2905.2.1/flatcar_production_openstack_image.img.bz2
+        checksum: "sha256:d4f1b5086e5446474e24d11068bf8c8201e4e8dc153c99dc33c56ffbe7e37d97"
       - version: '3033.2.0'
         url: https://minio.services.osism.tech/openstack-image-manager/flatcar/3033.2.0/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/3033.2.0/flatcar_production_openstack_image.img.bz2
+        checksum: "sha256:f1d4b6f229af0937451097cd532eca542a9d9eb07239d145e507307ab45b2c8b"
 
   # RancherOS
 
@@ -135,6 +141,7 @@ images:
     versions:
       - version: '1.5.8'
         url: https://github.com/rancher/os/releases/download/v1.5.8/rancheros-openstack.img
+        checksum: "sha256:09c88d3862083858410790fd87d137172689d33c81abf3df618d71ec00790ed6"
 
   # Images with regular rebuilds
 
@@ -159,9 +166,11 @@ images:
       - version: '34920'
         url: https://minio.services.osism.tech/openstack-image-manager/clearlinux/34920/clear-34920-cloudguest.img
         source: https://cdn.download.clearlinux.org/releases/34920/clear/clear-34920-cloudguest.img.xz
+        checksum: "sha256:1ccc08eb6af992cdcbb119cfa1f90e518b48ad449545dead029c68dffaa99722"
       - version: '35440'
         url: https://minio.services.osism.tech/openstack-image-manager/clearlinux/35440/clear-35440-cloudguest.img
         source: https://cdn.download.clearlinux.org/releases/35440/clear/clear-35440-cloudguest.img.xz
+        checksum: "sha256:5e03015be709a893e8d3b7134f7b453862287fea5aabe0b6cb17273bb963701f"
 
   # Ubuntu
 
@@ -187,6 +196,7 @@ images:
       - version: '20191107'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
+        checksum: "sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1"
 
   - name: Ubuntu 16.04
     shortname: ubuntu-16.04
@@ -210,6 +220,7 @@ images:
       - version: '20210804'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
         source: https://cloud-images.ubuntu.com/xenial/20210804/xenial-server-cloudimg-amd64-disk1.img
+        checksum: "sha256:7960a137f3fd788298997b29b2fef92ead603759faaf23d5a791845c0f8dd4e5"
 
   - name: Ubuntu 16.04 Minimal
     shortname: ubuntu-16.04-minimal
@@ -233,6 +244,7 @@ images:
       - version: '20210430'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
         source: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+        checksum: "sha256:d6022f4868330fca3a172aed7b08110b14eac285af842cacc522da3f171272ec"
 
   - name: Ubuntu 18.04
     shortname: ubuntu-18.04
@@ -256,6 +268,7 @@ images:
       - version: '20211216'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20211216/bionic-server-cloudimg-amd64.img
         source: https://cloud-images.ubuntu.com/bionic/20211216/bionic-server-cloudimg-amd64.img
+        checksum: "sha256:0db3eb91b1539cf99494e5205cd73081392bca433659eaaec35f3fc97401a812"
 
   - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
@@ -279,6 +292,7 @@ images:
       - version: '20210803'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
         source: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
+        checksum: "sha256:54b5e4c0a64d6bba772e856af368da212b12ff3c7a4ef5abf53be26035cdec61"
 
   - name: Ubuntu 20.04
     shortname: ubuntu-20.04
@@ -302,6 +316,7 @@ images:
       - version: '20211216'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20211216/focal-server-cloudimg-amd64.img
         source: https://cloud-images.ubuntu.com/focal/20211216/focal-server-cloudimg-amd64.img
+        checksum: "sha256:d64bc2978f3b4e14017d8600715f3a67291df9141eec6bc3ac6daee0a7881fbc"
 
   - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
@@ -325,6 +340,7 @@ images:
       - version: '20210720'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
         source: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
+        checksum: "sha256:34beb25b38677827a969ad512465393576d292e0d99971851266a5d2c73cff34"
 
   # CentOS
 
@@ -349,6 +365,7 @@ images:
       - version: '20201112'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-7/20201112/CentOS-7-x86_64-GenericCloud-2009.qcow2
         source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2
+        checksum: "sha256:e38bab0475cc6d004d2e17015969c659e5a308111851b0e2715e84646035bdd3"
 
   - name: CentOS 8
     shortname: centos-8
@@ -371,6 +388,7 @@ images:
       - version: '20210603'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-8/20210603/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+        checksum: "sha256:3510fc7deb3e1939dbf3fe6f65a02ab1efcc763480bc352e4c06eca2e4f7c2a2"
 
   - name: CentOS Stream
     shortname: centos-stream
@@ -393,6 +411,7 @@ images:
       - version: '20210603'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-stream/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
+        checksum: "sha256:8e22e67687b81e38c7212fc30c47cb24cbc4935c0f2459ed139f498397d1e7cd"
 
   # RockyLinux
 
@@ -417,6 +436,7 @@ images:
       - version: '20210620'
         url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
         source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
+        checksum: "sha256:9f1d55a3b8672b1bb08cc9318c12a75fcf3b9152fd63f021c92fe6272ba97bcb"
 
   # Debian
 
@@ -441,6 +461,7 @@ images:
       - version: '20181005'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-8/20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
         source: https://cdimage.debian.org/cdimage/openstack/archive/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
+        checksum: "sha256:9a5e6fc845eff404942a116abce200b7f8e3b92e9c55313dadfca76850c75975"
         os_version: '8.11.5'
 
   - name: Debian 9
@@ -464,6 +485,7 @@ images:
       - version: '20211129'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-9/20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
         source: https://cdimage.debian.org/cdimage/openstack/9.13.31-20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
+        checksum: "sha256:0a967d10c5043904b0e393cf00f0e11a0982806700d414f872ca25ed50b551ad"
         os_version: '9.13.31'
 
   - name: Debian 10
@@ -487,6 +509,7 @@ images:
       - version: '20211129'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
         source: https://cdimage.debian.org/cdimage/openstack/10.11.2-20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
+        checksum: "sha256:77a7390a542af2327f34af940018aa4fbad3b79ad3687b524020f094994950a3"
         os_version: '10.11.2'
 
   - name: Debian 11
@@ -510,6 +533,7 @@ images:
       - version: '20211220'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20211220/debian-11-generic-amd64-20211220-862.qcow2
         source: https://cdimage.debian.org/images/cloud/bullseye/20211220-862/debian-11-generic-amd64-20211220-862.qcow2
+        checksum: "sha256:0286808217dca6e39bdbd227c493ae8a3d27b7c5b753a3c0eb37fc1ec50ad6b3"
         os_version: '11.2.0'
 
   # Fedora
@@ -535,6 +559,7 @@ images:
       - version: '20210423'
         url: https://minio.services.osism.tech/openstack-image-manager/fedora-34/20210423/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
         source: https://download.fedoraproject.org/pub/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
+        checksum: "sha256:b9b621b26725ba95442d9a56cbaa054784e0779a9522ec6eafff07c6e6f717ea"
 
   - name: Fedora 35
     shortname: fedora-35
@@ -557,6 +582,7 @@ images:
       - version: '20211026'
         url: https://minio.services.osism.tech/openstack-image-manager/fedora-35/20211026/Fedora-Cloud-Base-35-1.2.x86_64.qcow2
         source: https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/Fedora-Cloud-Base-35-1.2.x86_64.qcow2
+        checksum: "sha256:fe84502779b3477284a8d4c86731f642ca10dd3984d2b5eccdf82630a9ca2de6"
 
   # openSUSE
 
@@ -580,6 +606,7 @@ images:
       - version: '20211219'
         url: https://minio.services.osism.tech/openstack-image-manager/opensuse-tumbleweed/20211219/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20211219.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20211219.qcow2
+        checksum: "sha256:c570824df112a0ca053ba32a6679c525a5eedae0c31ff51d7fb9259e504003de"
 
   - name: openSUSE MicroOS
     shortname: opensuse-microos
@@ -601,6 +628,7 @@ images:
       - version: '20211219'
         url: https://minio.services.osism.tech/openstack-image-manager/opensuse-microos/20211219/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20211219.qcow2
         source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20211219.qcow2
+        checksum: "sha256:51ba1d72e94a5571a034e66c5bfd2e8582327314a347620954ffe9286292191a"
 
   - name: openSUSE Leap 15.3
     shortname: opensuse-leap-15.3
@@ -622,7 +650,8 @@ images:
     versions:
       - version: '20211213'
         url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.3/20211213/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
-        source: https://download.opensuse.org/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.312.qcow2
+        source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.312.qcow2
+        checksum: "sha256:a25dc03978e051c75fa02edc1434154a0a95dfbf7cbd982387423566b5ee0eb5"
 
   # Garden Linux
 
@@ -642,10 +671,9 @@ images:
       os_distro: debian
     tags: []
     versions:
-      - version: '318.8'
-        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.318.8.qcow2
       - version: '576.1'
         url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.1.qcow2
+        checksum: "sha256:f5a41e8428e493b104f40e97dbcddbac4167ab4ad0f9241fe041addfa0efe563"
 
   # Kubernetes CAPI
 
@@ -665,5 +693,6 @@ images:
       os_distro: ubuntu
     tags: []
     versions:
-      - version: '1.22.0'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.0.qcow2
+      - version: '1.22.3'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.3.qcow2
+        checksum: "sha256:6642409e17fd606df59c6a3ae06ff878dbeb730908157358a0e6e525791e84b6"
