@@ -693,6 +693,9 @@ images:
       os_distro: ubuntu
     tags: []
     versions:
-      - version: '1.22.3'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.3.qcow2
-        checksum: "sha256:6642409e17fd606df59c6a3ae06ff878dbeb730908157358a0e6e525791e84b6"
+      - version: '1.22.5'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.5.qcow2
+        checksum: "sha256:28b6a682b21209dc197c484ad25c49aa3556757b540649fc47976ca5b0eee378"
+      - version: '1.23.1'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.23/ubuntu-2004-kube-v1.23.1.qcow2
+        checksum: "sha256:7c28c49344b7b8d117234f9d7a31e01c6a6472825dbb01fd0a83fcc25e2fe230"
