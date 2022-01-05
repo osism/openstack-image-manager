@@ -9,6 +9,7 @@ import openstack
 import os_client_config
 import requests
 import yaml
+from datetime import datetime
 
 PROJECT_NAME = 'images'
 CONF = cfg.CONF
@@ -34,11 +35,13 @@ if CONF.debug:
     level = logging.DEBUG
 else:
     level = logging.INFO
-logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
+
+logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
 
 REQUIRED_KEYS = [
     'format',
     'name',
+    'login',
     'status',
     'versions',
     'visibility',
@@ -53,6 +56,9 @@ glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
 
 def import_image(glance, name, image, url):
+    '''
+    Create a new image in Glance and upload it using the web-download method
+    '''
     logging.info("Importing image %s" % name)
 
     disk_format = image['format']
@@ -74,7 +80,6 @@ def import_image(glance, name, image, url):
     }
 
     new_image = glance.images.create(**input['image_properties'])
-
     glance.images.image_import(new_image.id, method='web-download', uri=url)
 
     while True:
@@ -93,6 +98,10 @@ def import_image(glance, name, image, url):
 
 
 def get_images(conn, glance):
+    '''
+    Returns all images that match the specified tag from --tag
+    All other images from Glance are NOT included
+    '''
     result = {}
 
     for image in conn.list_images():
@@ -115,8 +124,24 @@ def get_images(conn, glance):
     return result
 
 
-# show runtime parameters
+def get_checksum(url: str, checksums_file: str) -> str:
+    '''
+    Get the checksum of an upstream image by parsing the checksums file
+    There needs to be a 'checksums_url' for the image in images.yml
+    Supports SHA1, SHA256 and SHA512
+    This checksum becomes the image property checksum_value
+    '''
+    filename = url.split('/')[-1]
+    for line in checksums_file.splitlines():
+        if filename in line:
+            splits = line.split(' ')
+            for item in splits:
+                if (len(item) == 128 or len(item) == 64 or len(item) == 40) and '.' not in item:
+                    return item
+    return ''
 
+
+# show runtime parameters
 logging.debug("cloud = %s" % CONF.cloud)
 logging.debug("dry-run = %s" % CONF.dry_run)
 logging.debug("images = %s" % CONF.images)
@@ -124,34 +149,32 @@ logging.debug("tag = %s" % CONF.tag)
 logging.debug("yes-i-really-know-what-i-do = %s" % CONF.yes_i_really_know_what_i_do)
 
 # get all existing images
-
 cloud_images = get_images(conn, glance)
 
 # manage existing images and add new ones
-
-existing_images = []
+existing_images = set()
 
 for image in images:
-    skip = False
 
     for required_key in REQUIRED_KEYS:
         if required_key not in image:
             logging.error("'%s' lacks the necessary key %s" % (image['name'], required_key))
-            skip = True
+            continue
 
     if CONF.name and CONF.name != image['name']:
-        skip = True
-
-    if skip:
         continue
 
     logging.info("Processing '%s'" % image['name'])
+    uploaded_latest_image = False
 
     versions = dict()
     for version in image['versions']:
         versions[str(version['version'])] = {
             'url': version['url']
         }
+        if 'checksums_url' in version:
+            versions[version['version']]['checksums_url'] = version['checksums_url']
+
         if 'visibility' in version:
             versions[version['version']]['visibility'] = version['visibility']
 
@@ -167,7 +190,6 @@ for image in images:
     if 'os_distro' in image['meta']:
         image['tags'].append("os:%s" % image['meta']['os_distro'])
 
-    uploaded_new_latest_image = False
     for version in sorted_versions:
         if image['multi']:
             name = "%s (%s)" % (image['name'], version)
@@ -191,10 +213,26 @@ for image in images:
         elif image['multi'] and len(sorted_versions) == 1:
             existence = image['name'] in cloud_images
 
+        if version == 'latest':
+            checksums_file = requests.get(versions[version]['checksums_url']).text
+            upstream_checksum = get_checksum(versions[version]['url'], checksums_file)
+            if not upstream_checksum:
+                logging.error("Could not find checksum for image '%s', check the checksums_url" % image['name'])
+                continue
+            if existence:
+                image_checksum = cloud_images[image['name']]['properties']['checksum_value']
+                if image_checksum == upstream_checksum:
+                    logging.info("No new version for '%s'" % image['name'])
+                    existing_images.add(image['name'])
+                    continue
+                else:
+                    logging.info("New version for '%s'" % image['name'])
+                    existence = False
+
         if not existence and not (CONF.latest and len(sorted_versions) > 1 and version != sorted_versions[-1]):
 
             if image['multi'] and image['name'] in cloud_images:
-                the_previous_current_image = cloud_images[image['name']]
+                previous_image = cloud_images[image['name']]
 
             url = versions[version]['url']
 
@@ -202,32 +240,25 @@ for image in images:
             logging.info("Tested URL %s: %s" % (url, r.status_code))
 
             if r.status_code not in [200, 302]:
-                logging.warning("Skipping '%s'" % name)
+                logging.warning("Skipping '%s' due to HTTP status code %s" % (name, r.status_code))
                 continue
 
             if not CONF.dry_run:
                 import_image(glance, name, image, url)
 
-                if image['multi'] and len(sorted_versions) == 1 and image['name'] in cloud_images:
-                    previous_current = "%s (%s)" % (image['name'], the_previous_current_image['internal_version'])
-                    logging.info("Renaming old latest '%s' to '%s'" % (image['name'], previous_current))
-                    glance.images.update(the_previous_current_image.id, name=previous_current)
-
                 logging.info("Import of '%s' successfully completed, reload images" % name)
                 cloud_images = get_images(conn, glance)
+                imported_image = cloud_images[name]
 
                 if version == sorted_versions[-1]:
-                    uploaded_new_latest_image = True
-
-            existing_images.append(name)
+                    uploaded_latest_image = True
 
         elif CONF.latest and version != sorted_versions[-1]:
             logging.info("Skipping image '%s' (only importing the latest version of images from type multi)" % name)
 
-        if image['multi'] and version == sorted_versions[-1] and image['name'] in cloud_images and CONF.latest:
-            name = image['name']
-
-        existing_images.append(name)
+        existing_images.add(image['name'])
+        if not image['multi']:
+            existing_images.add(name)
 
         if name in cloud_images:
             logging.info("Checking parameters of '%s'" % name)
@@ -283,6 +314,9 @@ for image in images:
             logging.info("Setting image_original_user = %s" % image['login'])
             image['meta']['image_original_user'] = image['login']
 
+            if version == 'latest' and upstream_checksum:
+                image['meta']['checksum_value'] = upstream_checksum
+
             if not image['multi']:
                 image['meta']['os_version'] = version
             else:
@@ -311,7 +345,8 @@ for image in images:
 
                         if not CONF.dry_run:
                             glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
-                elif property not in ['self', 'schema', 'os_hash_algo', 'os_hidden', 'os_hash_value', 'stores']:
+                elif property not in ['self', 'schema', 'os_hash_algo', 'os_hidden', 'os_hash_value', 'stores',
+                                      'checksum_value', 'os_glance_failed_import', 'os_glance_importing_to_stores']:
                     # FIXME: handle deletion of properties
                     logging.info("Deleting property %s" % (property))
 
@@ -348,24 +383,37 @@ for image in images:
                 if not CONF.dry_run:
                     glance.images.update(cloud_image.id, visibility=visibility)
 
-    if image['multi'] and len(sorted_versions) > 1 and uploaded_new_latest_image:
-        name = image['name']
+    cloud_images = get_images(conn, glance)
+    if image['multi'] and len(sorted_versions) > 1 and uploaded_latest_image:
         latest = "%s (%s)" % (image['name'], sorted_versions[-1])
-        current = "%s (%s)" % (image['name'], sorted_versions[-2])
+        previous_latest = "%s (%s)" % (image['name'], sorted_versions[-2])
 
-        if name in cloud_images and current not in cloud_images:
-            logging.info("Renaming %s to %s" % (name, current))
+        if image['name'] in cloud_images and previous_latest not in cloud_images:
+            logging.info("Renaming %s to %s" % (image['name'], previous_latest))
 
             if not CONF.dry_run:
-                glance.images.update(cloud_images[name].id, name=current)
+                glance.images.update(cloud_images[image['name']].id, name=previous_latest)
 
         if latest in cloud_images:
-            logging.info("Renaming %s to %s" % (latest, name))
+            logging.info("Renaming %s to %s" % (latest, image['name']))
 
             if not CONF.dry_run:
-                glance.images.update(cloud_images[latest].id, name=name)
+                glance.images.update(cloud_images[latest].id, name=image['name'])
 
-        cloud_images = get_images(conn, glance)
+    elif image['multi'] and len(sorted_versions) == 1 and image['name'] in cloud_images and uploaded_latest_image:
+        if previous_image['internal_version'] == 'latest':
+            create_date = str(datetime.strptime(previous_image.created_at, '%Y-%m-%dT%H:%M:%SZ').date())
+            create_date = create_date.replace('-', '')
+            previous_current = "%s (%s)" % (image['name'], create_date)
+            logging.info('Setting internal_version: %s for previous_current' % create_date)
+            glance.images.update(previous_image.id, **{'internal_version': create_date})
+        else:
+            previous_current = "%s (%s)" % (image['name'], previous_image['internal_version'])
+        logging.info("Renaming old latest '%s' to '%s'" % (image['name'], previous_current))
+        logging.info("Renaming imported_image '%s' to '%s'" % (imported_image.name, image['name']))
+        if not CONF.dry_run:
+            glance.images.update(previous_image.id, name=previous_current)
+            glance.images.update(imported_image.id, name=image['name'])
 
     elif image['multi'] and len(sorted_versions) == 1:
         name = image['name']
@@ -377,10 +425,9 @@ for image in images:
             if not CONF.dry_run:
                 glance.images.update(cloud_images[latest].id, name=name)
 
-# check if images need to be removed
 
+# manage old images
 cloud_images = get_images(conn, glance)
-
 for image in [x for x in cloud_images if x not in existing_images]:
     if not CONF.dry_run and CONF.delete and CONF.yes_i_really_know_what_i_do:
         cloud_image = cloud_images[image]
