@@ -7,6 +7,8 @@ name: Validate configuration
       - .github/workflows/validate-configuration.yml
       - .yamale.yml
       - etc/images.yml
+    branches:
+      - main
   pull_request:
     paths:
       - .github/workflows/validate-configuration.yml
