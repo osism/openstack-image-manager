@@ -55,7 +55,7 @@ conn = openstack.connect(cloud=CONF.cloud)
 glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
 
-def import_image(glance, name, image, url):
+def import_image(glance, name, image, url) -> None:
     '''
     Create a new image in Glance and upload it using the web-download method
     '''
@@ -92,12 +92,12 @@ def import_image(glance, name, image, url):
                 break
 
         except Exception as e:
-            logging.error("Exception while importing %s" % e)
+            logging.error("Exception while importing\n%s" % e)
             time.sleep(5.0)
             pass
 
 
-def get_images(conn, glance):
+def get_images(conn, glance) -> dict:
     '''
     Returns all images that match the specified tag from --tag
     All other images from Glance are NOT included
@@ -136,7 +136,7 @@ def get_checksum(url: str, checksums_file: str) -> str:
         if filename in line:
             splits = line.split(' ')
             for item in splits:
-                if (len(item) == 128 or len(item) == 64 or len(item) == 40) and '.' not in item:
+                if (len(item) == 128 or len(item) == 64 or len(item) == 40 or len(item) == 32) and '.' not in item:
                     return item
     return ''
 
@@ -383,6 +383,7 @@ for image in images:
                 if not CONF.dry_run:
                     glance.images.update(cloud_image.id, visibility=visibility)
 
+    # rename the images
     cloud_images = get_images(conn, glance)
     if image['multi'] and len(sorted_versions) > 1 and uploaded_latest_image:
         latest = "%s (%s)" % (image['name'], sorted_versions[-1])
@@ -401,36 +402,40 @@ for image in images:
                 glance.images.update(cloud_images[latest].id, name=image['name'])
 
     elif image['multi'] and len(sorted_versions) == 1 and image['name'] in cloud_images and uploaded_latest_image:
+
         if previous_image['internal_version'] == 'latest':
             create_date = str(datetime.strptime(previous_image.created_at, '%Y-%m-%dT%H:%M:%SZ').date())
             create_date = create_date.replace('-', '')
-            previous_current = "%s (%s)" % (image['name'], create_date)
-            logging.info('Setting internal_version: %s for previous_current' % create_date)
+            previous_latest = "%s (%s)" % (image['name'], create_date)
+
+            logging.info('Setting internal_version: %s for %s' % (create_date, previous_latest))
             glance.images.update(previous_image.id, **{'internal_version': create_date})
+
         else:
-            previous_current = "%s (%s)" % (image['name'], previous_image['internal_version'])
-        logging.info("Renaming old latest '%s' to '%s'" % (image['name'], previous_current))
+            previous_latest = "%s (%s)" % (image['name'], previous_image['internal_version'])
+
+        logging.info("Renaming old latest '%s' to '%s'" % (image['name'], previous_latest))
         logging.info("Renaming imported_image '%s' to '%s'" % (imported_image.name, image['name']))
+
         if not CONF.dry_run:
-            glance.images.update(previous_image.id, name=previous_current)
+            glance.images.update(previous_image.id, name=previous_latest)
             glance.images.update(imported_image.id, name=image['name'])
 
     elif image['multi'] and len(sorted_versions) == 1:
-        name = image['name']
         latest = "%s (%s)" % (image['name'], sorted_versions[-1])
 
         if latest in cloud_images:
-            logging.info("Renaming %s to %s" % (latest, name))
+            logging.info("Renaming %s to %s" % (latest, image['name']))
 
             if not CONF.dry_run:
-                glance.images.update(cloud_images[latest].id, name=name)
+                glance.images.update(cloud_images[latest].id, name=image['name'])
 
 
 # manage old images
 cloud_images = get_images(conn, glance)
 for image in [x for x in cloud_images if x not in existing_images]:
+    cloud_image = cloud_images[image]
     if not CONF.dry_run and CONF.delete and CONF.yes_i_really_know_what_i_do:
-        cloud_image = cloud_images[image]
 
         try:
             logging.info("Deactivating image '%s'" % image)
@@ -447,13 +452,14 @@ for image in [x for x in cloud_images if x not in existing_images]:
 
     else:
         logging.debug("Image %s should be deleted" % image)
-        if not CONF.dry_run and CONF.deactivate:
-            cloud_image = cloud_images[image]
+        try:
+            if not CONF.dry_run and CONF.deactivate:
+                logging.info("Deactivating image '%s'" % image)
+                glance.images.deactivate(cloud_image.id)
 
-            logging.info("Deactivating image '%s'" % image)
-            glance.images.deactivate(cloud_image.id)
-
-        if not CONF.dry_run and CONF.hide:
-            cloud_image = cloud_images[image]
-            logging.info("Setting visibility of '%s' to 'community'" % image)
-            glance.images.update(cloud_image.id, visibility='community')
+            if not CONF.dry_run and CONF.hide:
+                cloud_image = cloud_images[image]
+                logging.info("Setting visibility of '%s' to 'community'" % image)
+                glance.images.update(cloud_image.id, visibility='community')
+        except Exception as e:
+            logging.error('An Exception occurred: %s\n' % e)
