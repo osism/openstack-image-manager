@@ -219,16 +219,18 @@ for image in images:
             if not upstream_checksum:
                 logging.error("Could not find checksum for image '%s', check the checksums_url" % image['name'])
                 continue
-            if existence:
-                image_checksum = cloud_images[image['name']]['properties']['checksum_value']
-                if image_checksum == upstream_checksum:
-                    logging.info("No new version for '%s'" % image['name'])
-                    existing_images.add(image['name'])
-                    continue
-                else:
-                    logging.info("New version for '%s'" % image['name'])
-                    existence = False
 
+            image_checksum = (cloud_images[image['name']]['properties']['checksum_value']
+                              if image['name'] in cloud_images else '')
+            if image_checksum == upstream_checksum:
+                logging.info("No new version for '%s'" % image['name'])
+                existing_images.add(image['name'])
+                continue
+            else:
+                logging.info("New version for '%s'" % image['name'])
+                existence = False
+
+        modify_date = None
         if not existence and not (CONF.latest and len(sorted_versions) > 1 and version != sorted_versions[-1]):
 
             if image['multi'] and image['name'] in cloud_images:
@@ -244,6 +246,20 @@ for image in images:
                 continue
 
             if not CONF.dry_run:
+
+                # get the last modification date from the upstream image file
+                try:
+                    if version == 'latest':
+                        modify_date = requests.head(url, allow_redirects=True).headers['Last-Modified']
+
+                        if modify_date:
+                            date_format = '%a, %d %b %Y %H:%M:%S %Z'
+                            modify_date = str(datetime.strptime(modify_date, date_format).date())
+                            modify_date = modify_date.replace('-', '')
+                except Exception:
+                    logging.error("Error when retrieving the modification date of image '%s'", image['name'])
+                    continue
+
                 import_image(glance, name, image, url)
 
                 logging.info("Import of '%s' successfully completed, reload images" % name)
@@ -308,8 +324,12 @@ for image in images:
                     if not CONF.dry_run:
                         glance.images.update(cloud_image.id, **{'os_hidden': True})
 
-            logging.info("Setting internal_version = %s" % version)
-            image['meta']['internal_version'] = version
+            if modify_date:
+                logging.info("Setting internal_version = %s" % modify_date)
+                image['meta']['internal_version'] = modify_date
+            else:
+                logging.info("Setting internal_version = %s" % version)
+                image['meta']['internal_version'] = version
 
             logging.info("Setting image_original_user = %s" % image['login'])
             image['meta']['image_original_user'] = image['login']
@@ -404,8 +424,10 @@ for image in images:
     elif image['multi'] and len(sorted_versions) == 1 and image['name'] in cloud_images and uploaded_latest_image:
 
         if previous_image['internal_version'] == 'latest':
+            # if the last modification date cannot be found, use the creation date of the image instead
             create_date = str(datetime.strptime(previous_image.created_at, '%Y-%m-%dT%H:%M:%SZ').date())
             create_date = create_date.replace('-', '')
+
             previous_latest = "%s (%s)" % (image['name'], create_date)
 
             logging.info('Setting internal_version: %s for %s' % (create_date, previous_latest))
