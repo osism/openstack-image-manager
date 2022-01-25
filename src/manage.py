@@ -4,6 +4,7 @@ import time
 import openstack
 import requests
 import yaml
+import os
 
 from decimal import Decimal, ROUND_UP
 from natsort import natsorted
@@ -26,7 +27,7 @@ class ImageManager:
             cfg.BoolOpt('use-os-hidden', help='Use the os_hidden property', default=False),
             cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
             cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
-            cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
+            cfg.StrOpt('images', help='Path to the directory containing all image files', default='etc/images/'),
             cfg.StrOpt('name', help='Image name to process', default=None),
             cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
         ]
@@ -44,12 +45,21 @@ class ImageManager:
 
     def main(self) -> None:
         '''
-        Read images.yml and process each image
+        Read all files in etc/images/ and process each image
         Rename outdated images when not dry-running
         '''
-        with open(self.CONF.images) as fp:
-            data = yaml.load(fp, Loader=yaml.SafeLoader)
-            conf_images = data.get('images', [])
+        image_files = []
+        for f in os.listdir(self.CONF.images):
+            if os.path.isfile(os.path.join(self.CONF.images, f)):
+                image_files.append(f)
+
+        all_images = []
+        for file in image_files:
+            with open(self.CONF.images + file) as fp:
+                data = yaml.load(fp, Loader=yaml.SafeLoader)
+                images = data.get('images')
+                for image in images:
+                    all_images.append(image)
 
         logging.debug("cloud = %s" % self.CONF.cloud)
         logging.debug("dry-run = %s" % self.CONF.dry_run)
@@ -67,7 +77,7 @@ class ImageManager:
         ]
         managed_images = set()
 
-        for image in conf_images:
+        for image in all_images:
 
             for required_key in REQUIRED_KEYS:
                 if required_key not in image:

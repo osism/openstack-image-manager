@@ -9,6 +9,8 @@ from urllib.parse import urlparse
 from oslo_config import cfg
 from minio import Minio
 from minio.error import S3Error
+from os import listdir
+from os.path import isfile, join
 import patoolib
 import requests
 import yaml
@@ -18,7 +20,7 @@ CONF = cfg.CONF
 opts = [
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
     cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
-    cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
+    cfg.StrOpt('images', help='Path to the folder with the image files', default='etc/images/'),
     cfg.StrOpt('minio-access-key', help='Minio access key'),
     cfg.StrOpt('minio-secret-key', help='Minio secret key'),
     cfg.StrOpt('minio-server', help='Minio server', default='minio.services.osism.tech'),
@@ -34,9 +36,18 @@ else:
     logging.getLogger("paramiko").setLevel(logging.WARNING)
 logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
 
-with open(CONF.images) as fp:
-    data = yaml.load(fp, Loader=yaml.SafeLoader)
-    images = data.get('images', [])
+onlyfiles = []
+for f in listdir(CONF.images):
+    if isfile(join(CONF.images, f)):
+        onlyfiles.append(f)
+
+all_images = []
+for file in onlyfiles:
+    with open(CONF.images + file) as fp:
+        data = yaml.load(fp, Loader=yaml.SafeLoader)
+        images = data.get('images')
+        for image in images:
+            all_images.append(image)
 
 client = Minio(
     CONF.minio_server,
@@ -44,7 +55,7 @@ client = Minio(
     secret_key=CONF.minio_secret_key
 )
 
-for image in images:
+for image in all_images:
     for version in image['versions']:
         if 'source' not in version:
             continue

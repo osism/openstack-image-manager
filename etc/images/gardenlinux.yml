@@ -1,0 +1,22 @@
+---
+images:
+
+  - name: Garden Linux
+    format: qcow2
+    login: admin
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: debian
+    tags: []
+    versions:
+      - version: '576.1'
+        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.1.qcow2
+        checksum: "sha256:f5a41e8428e493b104f40e97dbcddbac4167ab4ad0f9241fe041addfa0efe563"

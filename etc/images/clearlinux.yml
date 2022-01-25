@@ -1,0 +1,27 @@
+---
+images:
+
+  - name: Clear Linux
+    shortname: clearlinux
+    format: qcow2
+    login: root
+    min_disk: 1
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+    tags: []
+    versions:
+      - version: '34920'
+        url: https://minio.services.osism.tech/openstack-image-manager/clearlinux/34920/clear-34920-cloudguest.img
+        source: https://cdn.download.clearlinux.org/releases/34920/clear/clear-34920-cloudguest.img.xz
+        checksum: "sha256:1ccc08eb6af992cdcbb119cfa1f90e518b48ad449545dead029c68dffaa99722"
+      - version: '35440'
+        url: https://minio.services.osism.tech/openstack-image-manager/clearlinux/35440/clear-35440-cloudguest.img
+        source: https://cdn.download.clearlinux.org/releases/35440/clear/clear-35440-cloudguest.img.xz
+        checksum: "sha256:5e03015be709a893e8d3b7134f7b453862287fea5aabe0b6cb17273bb963701f"

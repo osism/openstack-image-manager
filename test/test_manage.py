@@ -104,7 +104,7 @@ class TestManage(TestCase):
             hide=False,
             deactivate=False,
             cloud='fake-cloud',
-            images='fake.yml',
+            images='etc/images/',
             name=None,
             tag='fake_tag'
         )
@@ -291,12 +291,16 @@ class TestManage(TestCase):
     @mock.patch('src.manage.ImageManager.manage_outdated_images')
     @mock.patch('src.manage.ImageManager.rename_images')
     @mock.patch('src.manage.ImageManager.process_image')
+    @mock.patch('src.manage.os.path.isfile')
+    @mock.patch('src.manage.os.listdir')
     @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
-    def test_main(self, mock_process_image, mock_rename_images, mock_manage_outdated):
+    def test_main(self, mock_listdir, mock_isfile, mock_process_image, mock_rename_images, mock_manage_outdated):
         ''' test manage.ImageManager.main() '''
 
         self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
         mock_process_image.return_value = ({self.fake_image_dict['name']}, self.imported_image, self.previous_image)
+        mock_listdir.return_value = ['fake.yml']
+        mock_isfile.return_value = True
 
         self.sot.main()
 

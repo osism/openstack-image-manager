@@ -1,0 +1,27 @@
+---
+images:
+
+  - name: Flatcar Container Linux
+    shortname: flatcar
+    format: qcow2
+    login: root
+    min_disk: 10
+    min_ram: 2048
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+    tags: []
+    versions:
+      - version: '2905.2.1'
+        url: https://minio.services.osism.tech/openstack-image-manager/flatcar/2905.2.1/flatcar_production_openstack_image.img
+        source: https://stable.release.flatcar-linux.net/amd64-usr/2905.2.1/flatcar_production_openstack_image.img.bz2
+        checksum: "sha256:d4f1b5086e5446474e24d11068bf8c8201e4e8dc153c99dc33c56ffbe7e37d97"
+      - version: '3033.2.0'
+        url: https://minio.services.osism.tech/openstack-image-manager/flatcar/3033.2.0/flatcar_production_openstack_image.img
+        source: https://stable.release.flatcar-linux.net/amd64-usr/3033.2.0/flatcar_production_openstack_image.img.bz2
+        checksum: "sha256:f1d4b6f229af0937451097cd532eca542a9d9eb07239d145e507307ab45b2c8b"

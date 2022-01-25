@@ -1,0 +1,24 @@
+---
+images:
+
+  - name: OPNsense
+    shortname: opnsense
+    format: qcow2
+    login: root
+    password: opnsense
+    min_disk: 4
+    min_ram: 1024
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+    tags: []
+    versions:
+      - version: '21.7.1'
+        url: https://minio.services.osism.tech/openstack-image-manager/opnsense/21.7.1/OPNsense-21.7.1-OpenSSL-nano-amd64.img
+        source: https://mirror.dns-root.de/opnsense/releases/21.7/OPNsense-21.7.1-OpenSSL-nano-amd64.img.bz2
+        checksum: "sha256:331c2fca12a20fa1ab03919bbdd6a709b0974ea807cc4f14f6148a598d95af15"

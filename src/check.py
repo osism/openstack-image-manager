@@ -5,12 +5,14 @@ from natsort import natsorted
 from oslo_config import cfg
 import requests
 import yaml
+from os import listdir
+from os.path import isfile, join
 
 PROJECT_NAME = 'images'
 CONF = cfg.CONF
 opts = [
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
-    cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
+    cfg.StrOpt('images', help='Path to the folder with the image files', default='etc/images/'),
     cfg.BoolOpt('latest', help='Only check the latest version', default=False)
 ]
 CONF.register_cli_opts(opts)
@@ -30,11 +32,20 @@ def check_versions(versions_to_check, versions):
         logging.info("Tested URL %s: %s" % (url, r.status_code))
 
 
-with open(CONF.images) as fp:
-    data = yaml.load(fp, Loader=yaml.SafeLoader)
-    images = data.get('images', [])
+onlyfiles = []
+for f in listdir(CONF.images):
+    if isfile(join(CONF.images, f)):
+        onlyfiles.append(f)
 
-for image in images:
+all_images = []
+for file in onlyfiles:
+    with open(CONF.images + file) as fp:
+        data = yaml.load(fp, Loader=yaml.SafeLoader)
+        images = data.get('images')
+        for image in images:
+            all_images.append(image)
+
+for image in all_images:
     versions = dict()
     for version in image['versions']:
         versions[str(version['version'])] = {
