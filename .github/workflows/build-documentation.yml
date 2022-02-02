@@ -1,0 +1,28 @@
+---
+name: Build documentation
+
+"on":
+  workflow_dispatch:
+  push:
+    paths:
+      - 'source/**'
+      - '.github/workflows/build-documentation.yml'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'source/**'
+      - '.github/workflows/build-documentation.yml'
+
+jobs:
+  default:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - run: pip3 install -r documentation/requirements.txt
+      - run: sphinx-build -b html documentation/source documentation/build/html
