@@ -2,24 +2,22 @@ import logging
 import sys
 import time
 import openstack
-import os_client_config
 import requests
 import yaml
 
 from decimal import Decimal, ROUND_UP
 from natsort import natsorted
 from oslo_config import cfg
-from glanceclient.v2 import client
-from openstack import connection
-from munch import Munch
+from openstack.connection import Connection
+from openstack.image.v2.image import Image
 
 
-def import_image(glance: client.Client, name: str, image: dict, url: str) -> None:
+def import_image(conn: Connection, name: str, image: dict, url: str) -> None:
     '''
     Create a new image in Glance and upload it using the web-download method
 
     params:
-        glance - Glance connection client object
+        conn - OpenStack connection object
         name - name of the image to import
         image - image dict from images.yml
         url - download URL of the image
@@ -41,12 +39,12 @@ def import_image(glance: client.Client, name: str, image: dict, url: str) -> Non
         }
     }
 
-    new_image = glance.images.create(**properties['image_properties'])
-    glance.images.image_import(new_image.id, method='web-download', uri=url)
+    new_image = conn.image.create_image(**properties['image_properties'])
+    conn.image.import_image(new_image, method='web-download', uri=url)
 
     while True:
         try:
-            status = glance.images.get(new_image.id).status
+            status = conn.image.get_image(new_image).status
             if status != 'active':
                 logging.info("Waiting for import to complete...")
                 time.sleep(10.0)
@@ -58,30 +56,28 @@ def import_image(glance: client.Client, name: str, image: dict, url: str) -> Non
             time.sleep(5.0)
 
 
-def get_images(conn: connection.Connection, glance: client.Client) -> dict:
+def get_images(conn: Connection) -> dict:
     '''
-    Returns all images from glance that match the specified tag from --tag
+    Returns all images from Glance that match the specified tag from --tag
 
     params:
         conn - OpenStack connection object
-        glance - Glance connection client object
     returns:
-        a dict containing all images as Munch objects
+        a dict containing all images as OpenStack Image objects
     '''
     result = {}
 
-    for image in conn.list_images():
-        if CONF.tag in image.tags and (image.is_public or image.owner == conn.current_project_id):
+    for image in conn.image.images():
+        if CONF.tag in image.tags and (image.visibility == 'public' or image.owner == conn.current_project_id):
             result[image.name] = image
             logging.debug("Managed image '%s' (tags = %s)" % (image.name, image.tags))
         else:
             logging.debug("Unmanaged image '%s' (tags = %s)" % (image.name, image.tags))
 
     if CONF.use_os_hidden:
-        for image in glance.images.list(**{'filters': {'os_hidden': True}}):
-            hidden_image = conn.get_image_by_id(image.id)
-            if CONF.tag in hidden_image.tags and (hidden_image.is_public or
-               hidden_image.owner == conn.current_project_id):
+        for hidden_image in conn.image.images(**{'os_hidden': True}):
+            if CONF.tag in hidden_image.tags and (hidden_image.visibility == 'public'
+                                                  or hidden_image.owner == conn.current_project_id):
                 result[hidden_image.name] = hidden_image
                 logging.debug("Managed hidden image '%s' (tags = %s)" % (hidden_image.name, hidden_image.tags))
             else:
@@ -90,20 +86,13 @@ def get_images(conn: connection.Connection, glance: client.Client) -> dict:
     return result
 
 
-def process_image(
-    conn: connection.Connection,
-    glance: client.Client,
-    image: dict,
-    versions: dict,
-    sorted_versions: list
-) -> tuple:
+def process_image(conn: Connection, image: dict, versions: dict, sorted_versions: list) -> tuple:
     '''
     Process one image from images.yml
     Check if the image already exists in Glance and import it if not
 
     params:
         conn - OpenStack connection object
-        glance - Glance connection client object
         image - image dict from images.yml
         versions - dict of image version from images.yml
         sorted_versions - natsorted version list
@@ -112,7 +101,7 @@ def process_image(
         tuple with (previous_image, uploaded_image, imported_image, existing_images)
     '''
 
-    cloud_images = get_images(conn, glance)
+    cloud_images = get_images(conn)
     existing_images = set()
 
     uploaded_image = False
@@ -133,7 +122,7 @@ def process_image(
         if image['multi'] and CONF.latest and version == sorted_versions[-1] and not existence:
             existence = image['name'] in cloud_images
             if existence:
-                existence = cloud_images[image['name']]['internal_version'] == version
+                existence = cloud_images[image['name']]['properties']['internal_version'] == version
         elif image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1] and not existence:
             previous = "%s (%s)" % (image['name'], sorted_versions[-2])
             existence = previous in cloud_images and image['name'] in cloud_images
@@ -157,10 +146,10 @@ def process_image(
                 previous_image = cloud_images[image['name']]
 
             if not CONF.dry_run:
-                import_image(glance, name, image, url)
+                import_image(conn, name, image, url)
 
                 logging.info("Import of '%s' successfully completed, reloading images" % name)
-                cloud_images = get_images(conn, glance)
+                cloud_images = get_images(conn)
                 imported_image = cloud_images[name]
 
                 if version == sorted_versions[-1]:
@@ -175,32 +164,24 @@ def process_image(
             existing_images.add(image['name'])
 
         if uploaded_image:
-            set_properties(conn, glance, image, name, versions, version)
+            set_properties(conn, image, name, versions, version)
 
     return previous_image, uploaded_image, imported_image, existing_images
 
 
-def set_properties(
-    conn: connection.Connection,
-    glance: client.Client,
-    image: dict,
-    name: str,
-    versions: dict,
-    version: str
-) -> None:
+def set_properties(conn: Connection, image: dict, name: str, versions: dict, version: str) -> None:
     '''
     Set image properties and tags based on the configuration from images.yml
 
     params:
         conn - OpenStack connection object
-        glance - Glance connection client object
         image - image dict from images.yml
         name - name of the image including the version string
         versions - list of image version from images.yml
         version - currently processed version
     '''
 
-    cloud_images = get_images(conn, glance)
+    cloud_images = get_images(conn)
     if name in cloud_images:
         logging.info("Checking parameters of '%s'" % name)
 
@@ -210,15 +191,15 @@ def set_properties(
 
         if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
             logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
-            glance.images.update(cloud_image.id, **{'min_disk': int(image['min_disk'])})
+            conn.image.update_image(cloud_image.id, **{'min_disk': int(image['min_disk'])})
 
         if ('min_disk' in image and real_image_size > image['min_disk']) or 'min_disk' not in image:
             logging.info("Setting min_disk = %d" % real_image_size)
-            glance.images.update(cloud_image.id, **{'min_disk': real_image_size})
+            conn.image.update_image(cloud_image.id, **{'min_disk': real_image_size})
 
         if 'min_ram' in image and image['min_ram'] != cloud_image.min_ram:
             logging.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
-            glance.images.update(cloud_image.id, **{'min_ram': int(image['min_ram'])})
+            conn.image.update_image(cloud_image.id, **{'min_ram': int(image['min_ram'])})
 
         if 'build_date' in versions[version]:
             logging.info("Setting image_build_date = %s" % versions[version]['build_date'])
@@ -227,11 +208,11 @@ def set_properties(
         if CONF.use_os_hidden:
             if 'hidden' in versions[version]:
                 logging.info("Setting os_hidden = %s" % versions[version]['hidden'])
-                glance.images.update(cloud_image.id, **{'os_hidden': versions[version]['hidden']})
+                conn.image.update_image(cloud_image.id, **{'os_hidden': versions[version]['hidden']})
 
             elif version != natsorted(versions.keys())[-1:]:
                 logging.info("Setting os_hidden = True")
-                glance.images.update(cloud_image.id, **{'os_hidden': True})
+                conn.image.update_image(cloud_image.id, **{'os_hidden': True})
 
         logging.info("Setting internal_version = %s" % version)
         image['meta']['internal_version'] = version
@@ -247,19 +228,19 @@ def set_properties(
         for tag in image['tags']:
             if tag not in cloud_image.tags:
                 logging.info("Adding tag %s" % (tag))
-                glance.image_tags.update(cloud_image.id, tag)
+                conn.image.add_tag(cloud_image.id, tag)
 
         for tag in cloud_image.tags:
             if tag not in image['tags']:
                 logging.info("Deleting tag %s" % (tag))
-                glance.image_tags.delete(cloud_image.id, tag)
+                conn.image.remove_tag(cloud_image.id, tag)
 
         for property in properties:
             if property in image['meta']:
                 if image['meta'][property] != properties[property]:
                     logging.info("Setting property %s: %s != %s" %
                                  (property, properties[property], image['meta'][property]))
-                    glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
+                    conn.image.update_image(cloud_image.id, **{property: str(image['meta'][property])})
 
             elif property not in ['self', 'schema', 'stores'] or not property.startswith('os_'):
                 # FIXME: handle deletion of properties
@@ -268,16 +249,16 @@ def set_properties(
         for property in image['meta']:
             if property not in properties:
                 logging.info("Setting property %s: %s" % (property, image['meta'][property]))
-                glance.images.update(cloud_image.id, **{property: str(image['meta'][property])})
+                conn.image.update_image(cloud_image.id, **{property: str(image['meta'][property])})
 
         logging.info("Checking status of '%s'" % name)
         if cloud_image.status != image['status'] and image['status'] == 'deactivated':
             logging.info("Deactivating image '%s'" % name)
-            glance.images.deactivate(cloud_image.id)
+            conn.image.deactivate_image(cloud_image.id)
 
         elif cloud_image.status != image['status'] and image['status'] == 'active':
             logging.info("Reactivating image '%s'" % name)
-            glance.images.reactivate(cloud_image.id)
+            conn.image.reactivate_image(cloud_image.id)
 
         logging.info("Checking visibility of '%s'" % name)
         if 'visibility' in versions[version]:
@@ -287,16 +268,15 @@ def set_properties(
 
         if cloud_image.visibility != visibility:
             logging.info("Setting visibility of '%s' to '%s'" % (name, visibility))
-            glance.images.update(cloud_image.id, visibility=visibility)
+            conn.image.update_image(cloud_image.id, visibility=visibility)
 
 
 def rename_images(
-    conn: connection.Connection,
-    glance: client.Client,
+    conn: Connection,
     name: str,
     sorted_versions: list,
-    previous_image: Munch,
-    imported_image: Munch
+    previous_image: Image,
+    imported_image: Image
 ) -> None:
 
     '''
@@ -304,13 +284,12 @@ def rename_images(
 
     params:
         conn - OpenStack connection object
-        glance - Glance connection client object
         name - the name of the image from images.yml
         sorted_versions - natsorted version list
-        previous_image - Munch object of the previous latest image
-        imported_image - Munch object of the imported image
+        previous_image - OpenStack Image object of the previous latest image
+        imported_image - OpenStack Image object of the imported image
     '''
-    cloud_images = get_images(conn, glance)
+    cloud_images = get_images(conn)
 
     if len(sorted_versions) > 1:
         latest = "%s (%s)" % (name, sorted_versions[-1])
@@ -318,21 +297,21 @@ def rename_images(
 
         if name in cloud_images and previous_latest not in cloud_images:
             logging.info("Renaming %s to %s" % (name, previous_latest))
-            glance.images.update(cloud_images[name].id, name=previous_latest)
+            conn.image.update_image(cloud_images[name].id, name=previous_latest)
 
         if latest in cloud_images:
             logging.info("Renaming %s to %s" % (latest, name))
-            glance.images.update(cloud_images[latest].id, name=name)
+            conn.image.update_image(cloud_images[latest].id, name=name)
 
     elif len(sorted_versions) == 1 and name in cloud_images:
 
         previous_latest = "%s (%s)" % (name, previous_image['internal_version'])
 
         logging.info("Renaming old latest '%s' to '%s'" % (name, previous_latest))
-        glance.images.update(previous_image.id, name=previous_latest)
+        conn.image.update_image(previous_image.id, name=previous_latest)
 
         logging.info("Renaming imported image '%s' to '%s'" % (imported_image.name, name))
-        glance.images.update(imported_image.id, name=name)
+        conn.image.update_image(imported_image.id, name=name)
 
     elif len(sorted_versions) == 1:
         latest = "%s (%s)" % (name, sorted_versions[-1])
@@ -340,36 +319,35 @@ def rename_images(
         if latest in cloud_images:
             logging.info("Renaming %s to %s" % (latest, name))
 
-            glance.images.update(cloud_images[latest].id, name=name)
+            conn.image.update_image(cloud_images[latest].id, name=name)
 
 
-def manage_outdated_images(conn: connection.Connection, glance: client.Client, managed_images: set) -> None:
+def manage_outdated_images(conn: Connection, managed_images: set) -> None:
     '''
     Delete the image or change their visibility or hide them (depending on the CLI params)
 
     params:
         conn - OpenStack connection object
-        glance - Glance connection client object
         managed_images - set of managed images
     raises:
         Exception - when the image is still in use and cannot be deleted
         Exception - when the image cannot be deactivated or its visibility cannot be changed
     '''
 
-    cloud_images = get_images(conn, glance)
+    cloud_images = get_images(conn)
 
     for image in [x for x in cloud_images if x not in managed_images]:
         cloud_image = cloud_images[image]
         if CONF.delete and CONF.yes_i_really_know_what_i_do:
             try:
                 logging.info("Deactivating image '%s'" % image)
-                glance.images.deactivate(cloud_image.id)
+                conn.image.deactivate_image(cloud_image.id)
 
                 logging.info("Setting visibility of '%s' to 'community'" % image)
-                glance.images.update(cloud_image.id, visibility='community')
+                conn.image.update_image(cloud_image.id, visibility='community')
 
                 logging.info("Deleting %s" % image)
-                glance.images.delete(cloud_image.id)
+                conn.image.delete_image(cloud_image.id)
             except Exception as e:
                 logging.info("%s is still in use and cannot be deleted\n %s" % (image, e))
 
@@ -378,12 +356,12 @@ def manage_outdated_images(conn: connection.Connection, glance: client.Client, m
             try:
                 if CONF.deactivate:
                     logging.info("Deactivating image '%s'" % image)
-                    glance.images.deactivate(cloud_image.id)
+                    conn.image.deactivate_image(cloud_image.id)
 
                 if CONF.hide:
                     cloud_image = cloud_images[image]
                     logging.info("Setting visibility of '%s' to 'community'" % image)
-                    glance.images.update(cloud_image.id, visibility='community')
+                    conn.image.update_image(cloud_image.id, visibility='community')
             except Exception as e:
                 logging.error('An Exception occurred: %s' % e)
 
@@ -407,7 +385,6 @@ def main():
         images = data.get('images', [])
 
     conn = openstack.connect(cloud=CONF.cloud)
-    glance = os_client_config.make_client("image", cloud=CONF.cloud)
 
     # show runtime parameters
     logging.debug("cloud = %s" % CONF.cloud)
@@ -450,15 +427,15 @@ def main():
             image['tags'].append("os:%s" % image['meta']['os_distro'])
 
         previous_image, uploaded_image, imported_image, existing_images = \
-            process_image(conn, glance, image, versions, sorted_versions)
+            process_image(conn, image, versions, sorted_versions)
 
         if uploaded_image and image['multi']:
-            rename_images(conn, glance, image['name'], sorted_versions, previous_image, imported_image)
+            rename_images(conn, image['name'], sorted_versions, previous_image, imported_image)
 
         managed_images = set.union(managed_images, existing_images)
 
     if not CONF.dry_run:
-        manage_outdated_images(conn, glance, managed_images)
+        manage_outdated_images(conn, managed_images)
 
 
 if __name__ == '__main__':
@@ -472,7 +449,7 @@ if __name__ == '__main__':
         cfg.BoolOpt('hide', help='Hide images that should be deleted', default=False),
         cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
         cfg.BoolOpt('use-os-hidden', help='Use the os_hidden property', default=False),
-        cfg.BoolOpt('use-raw-images', help='Use raw images', default=True),
+        cfg.BoolOpt('use-raw-images', help='Use raw images', default=False),
         cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
         cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
         cfg.StrOpt('images', help='Path to the images.yml file', default='etc/images.yml'),
