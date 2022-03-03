@@ -123,18 +123,19 @@ class TestManage(TestCase):
         mock_images.reset_mock()
 
         # test with use_os_hidden = True
-        result = manage.get_images(self.conn, self.fake_CONF.tag, use_os_hidden=True)
+        self.fake_CONF.use_os_hidden = True
+        result = manage.get_images(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
         mock_images.assert_called_with(**{'os_hidden': True})
         self.assertEqual(mock_images.call_count, 2)
         self.assertEqual(result, {self.fake_image.name: self.fake_image})
 
-    @mock.patch('src.manage.time.sleep', side_effect=InterruptedError)
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.get_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.import_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.create_image')
-    def test_import_image(self, mock_create, mock_import, mock_get_image, mock_sleep):
+    def test_import_image(self, mock_create, mock_import, mock_get_image):
         ''' test manage.import_image() '''
 
+        mock_get_image.return_value = self.fake_image
         mock_create.return_value = self.fake_image
         properties = {
             'container_format': 'bare',
@@ -151,7 +152,6 @@ class TestManage(TestCase):
         mock_create.assert_called_once_with(**properties)
         mock_import.assert_called_once_with(self.fake_image, method='web-download', uri=self.fake_url)
         mock_get_image.assert_called_once_with(self.fake_image)
-        mock_sleep.assert_called_once_with(10.0)
 
     @mock.patch('src.manage.set_properties')
     @mock.patch('src.manage.import_image')
@@ -165,7 +165,7 @@ class TestManage(TestCase):
 
         result = manage.process_image(self.conn, self.fake_image_dict, versions, [1], self.fake_CONF)
 
-        mock_get_images.assert_called_with(self.conn, self.fake_CONF.tag, False)
+        mock_get_images.assert_called_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
         mock_import_image.assert_called_once_with(self.conn,
