@@ -26,8 +26,8 @@ images:
     tags: []
     versions:
       - version: '1'
-        url: https://url.com
-        checksum: "1234"
+        url: http://url.com
+        checksum: '1234'
 '''
 
 # sample image dict as generated from FAKE_YML
@@ -48,7 +48,7 @@ FAKE_IMAGE_DICT = {
     'versions': [
         {
             'version': '1',
-            'url': 'https://url.com',
+            'url': 'http://url.com',
             'checksum': '1234'
         }
     ]
@@ -79,12 +79,23 @@ FAKE_IMAGE_DATA = {
 
 class TestManage(TestCase):
 
-    def setUp(self):
+    @mock.patch('src.manage.openstack.connect')
+    def setUp(self, mock_connect):
         ''' create all necessary test data, gets called before each test '''
 
+        self.fake_image_dict = FAKE_IMAGE_DICT
+        self.fake_image = Image(**FAKE_IMAGE_DATA)
+        self.fake_name = '%s (%s)' % (self.fake_image_dict['name'], '1')
+        self.fake_url = 'http://url.com'
+        self.versions = {'1': {'url': self.fake_url}}
+        self.sorted_versions = ['2', '1']
+        self.previous_image = self.fake_image
+        self.imported_image = self.fake_image
+
+        self.sot = manage.ImageManager()
         # since oslo_config.cfg.ConfigOpts objects allow attribute-style access,
         # we can mimick its behaviour with a munch.Munch object
-        self.fake_CONF = Munch(
+        self.sot.CONF = Munch(
             latest=True,
             dry_run=False,
             use_os_hidden=False,
@@ -98,88 +109,72 @@ class TestManage(TestCase):
             tag='fake_tag'
         )
         # we can also mimick an openstack connection object with a Munch
-        self.conn = Munch(
+        self.sot.conn = Munch(
             current_project_id='123456789',
             image=Proxy
         )
-        self.fake_image_dict = FAKE_IMAGE_DICT
-        self.fake_image = Image(**FAKE_IMAGE_DATA)
-        self.fake_name = '%s (%s)' % (self.fake_image_dict['name'], 1)
-        self.fake_url = 'http://sample-url.com'
-
-    def tearDown(self):
-        pass
+        mock_connect.assert_called_once_with(cloud='images')
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.images')
     def test_get_images(self, mock_images):
-        ''' test manage.get_images() '''
+        ''' test manage.ImageManager.get_images() '''
 
         mock_images.return_value = [self.fake_image]
+        expected_result = {self.fake_image.name: self.fake_image}
 
-        result = manage.get_images(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        result = self.sot.get_images()
         mock_images.assert_called_once()
-        self.assertEqual(result, {self.fake_image.name: self.fake_image})
+        self.assertEqual(result, expected_result)
 
         mock_images.reset_mock()
 
         # test with use_os_hidden = True
-        self.fake_CONF.use_os_hidden = True
-        result = manage.get_images(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        self.sot.CONF.use_os_hidden = True
+        result = self.sot.get_images()
         mock_images.assert_called_with(**{'os_hidden': True})
         self.assertEqual(mock_images.call_count, 2)
-        self.assertEqual(result, {self.fake_image.name: self.fake_image})
+        self.assertEqual(result, expected_result)
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.get_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.import_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.create_image')
     def test_import_image(self, mock_create, mock_import, mock_get_image):
-        ''' test manage.import_image() '''
+        ''' test manage.ImageManager.import_image() '''
 
-        mock_get_image.return_value = self.fake_image
         mock_create.return_value = self.fake_image
+        mock_get_image.return_value = self.fake_image
         properties = {
             'container_format': 'bare',
             'disk_format': self.fake_image_dict['format'],
             'min_disk': self.fake_image_dict.get('min_disk', 0),
             'min_ram': self.fake_image_dict.get('min_ram', 0),
             'name': self.fake_name,
-            'tags': [self.fake_CONF.tag],
+            'tags': [self.sot.CONF.tag],
             'visibility': 'private'
         }
 
-        manage.import_image(self.conn, self.fake_name, self.fake_image_dict, self.fake_url, self.fake_CONF.tag)
+        self.sot.import_image(self.fake_name, self.fake_image_dict, self.fake_url)
 
         mock_create.assert_called_once_with(**properties)
         mock_import.assert_called_once_with(self.fake_image, method='web-download', uri=self.fake_url)
         mock_get_image.assert_called_once_with(self.fake_image)
 
-    @mock.patch('src.manage.set_properties')
-    @mock.patch('src.manage.import_image')
+    @mock.patch('src.manage.ImageManager.set_properties')
+    @mock.patch('src.manage.ImageManager.import_image')
     @mock.patch('src.manage.requests.head')
-    @mock.patch('src.manage.get_images')
+    @mock.patch('src.manage.ImageManager.get_images')
     def test_process_image(self, mock_get_images, mock_requests, mock_import_image, mock_set_properties):
-        ''' test manage.process_image() '''
+        ''' test manage.ImageManager.process_image() '''
 
-        versions = {1: {'url': self.fake_url}}
         mock_requests.return_value.status_code = 200
 
-        result = manage.process_image(self.conn, self.fake_image_dict, versions, [1], self.fake_CONF)
+        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions)
 
-        mock_get_images.assert_called_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
-        mock_import_image.assert_called_once_with(self.conn,
-                                                  self.fake_name,
-                                                  self.fake_image_dict,
-                                                  self.fake_url,
-                                                  self.fake_CONF.tag)
-        mock_set_properties.assert_called_once_with(self.conn,
-                                                    self.fake_image_dict,
-                                                    self.fake_name,
-                                                    versions,
-                                                    1,
-                                                    self.fake_CONF)
-        self.assertEqual(result, (True, None, mock_get_images().__getitem__(), {self.fake_image_dict['name']}))
+        mock_import_image.assert_called_once_with(self.fake_name, self.fake_image_dict, self.fake_url)
+        mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1')
+        self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.__getitem__(), None))
 
         mock_get_images.reset_mock()
         mock_requests.reset_mock()
@@ -187,67 +182,61 @@ class TestManage(TestCase):
         mock_set_properties.reset_mock()
 
         # test the same function with dry_run = True
-        self.fake_CONF.dry_run = True
-        result = manage.process_image(self.conn, self.fake_image_dict, versions, [1], self.fake_CONF)
+        self.sot.CONF.dry_run = True
+        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions)
 
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, False)
+        mock_get_images.assert_called_once()
         mock_requests.assert_called_once_with(self.fake_url)
         mock_import_image.assert_not_called()
         mock_set_properties.assert_not_called()
-        self.assertEqual(result, (False, None, None, {self.fake_image_dict['name']}))
+        self.assertEqual(result, ({self.fake_image_dict['name']}, None, None))
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.deactivate_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.remove_tag')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.add_tag')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.update_image')
-    @mock.patch('src.manage.get_images')
+    @mock.patch('src.manage.ImageManager.get_images')
     def test_set_properties(self, mock_get_images, mock_update_image, mock_add_tag, mock_remove_tag, mock_deactivate):
-        ''' test manage.set_properties() '''
+        ''' test manage.ImageManager.set_properties() '''
 
-        versions = {'1': {}}
-        mock_get_images.return_value = {
-            self.fake_name: self.fake_image
-        }
+        mock_get_images.return_value = {self.fake_name: self.fake_image}
 
         self.fake_image_dict['tags'] = ['my_tag']
         self.fake_image_dict['status'] = 'deactivated'
 
-        manage.set_properties(self.conn, self.fake_image_dict, self.fake_name, versions, '1', self.fake_CONF)
+        self.sot.set_properties(self.fake_image_dict, self.fake_name, self.versions, '1')
 
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        mock_get_images.assert_called_once()
         mock_update_image.assert_called()
         mock_add_tag.assert_called_once_with(self.fake_image.id, 'my_tag')
         mock_remove_tag.assert_called_once_with(self.fake_image.id, 'fake_tag')
         mock_deactivate.assert_called_once_with(self.fake_image.id)
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.update_image')
-    @mock.patch('src.manage.get_images')
+    @mock.patch('src.manage.ImageManager.get_images')
     def test_rename_images(self, mock_get_images, mock_update_image):
-        ''' test manage.rename_images() '''
+        ''' test manage.ImageManager.rename_images() '''
 
         # test with len(sorted_versions) > 1
         mock_get_images.return_value = {
             self.fake_name: self.fake_image,
             self.fake_image.name: self.fake_image
         }
+        self.sot.rename_images(self.fake_image.name, self.sorted_versions, self.imported_image, self.previous_image)
 
-        manage.rename_images(self.conn, self.fake_image.name, [2, 1], self.fake_image, self.fake_image, self.fake_CONF)
-
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        mock_get_images.assert_called_once()
         mock_update_image.assert_called_with(self.fake_image.id, name=mock.ANY)
-        self.assertEqual(mock_update_image.call_count, 2)
 
+        self.assertEqual(mock_update_image.call_count, 2)
         mock_get_images.reset_mock()
         mock_update_image.reset_mock()
 
         # test with len(sorted_versions) == 1 and name in cloud_images
-        mock_get_images.return_value = {
-            self.fake_image.name: self.fake_image
-        }
+        mock_get_images.return_value = {self.fake_image.name: self.fake_image}
+        self.sorted_versions = ['1']
 
-        manage.rename_images(self.conn, self.fake_image.name, [1], self.fake_image, self.fake_image, self.fake_CONF)
-
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        self.sot.rename_images(self.fake_image.name, self.sorted_versions, self.imported_image, self.previous_image)
+        mock_get_images.assert_called_once()
         mock_update_image.assert_called_with(self.fake_image.id, name=mock.ANY)
         self.assertEqual(mock_update_image.call_count, 2)
 
@@ -255,33 +244,29 @@ class TestManage(TestCase):
         mock_update_image.reset_mock()
 
         # test with len(sorted_versions) == 1
-        mock_get_images.return_value = {
-            self.fake_name: self.fake_image
-        }
+        mock_get_images.return_value = {self.fake_name: self.fake_image}
 
-        manage.rename_images(self.conn, self.fake_image.name, [1], self.fake_image, self.fake_image, self.fake_CONF)
-
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        self.sot.rename_images(self.fake_image.name, self.sorted_versions, self.imported_image, self.previous_image)
+        mock_get_images.assert_called_once()
         mock_update_image.assert_called_once_with(self.fake_image.id, name=mock.ANY)
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.delete_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.update_image')
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.deactivate_image')
-    @mock.patch('src.manage.get_images')
+    @mock.patch('src.manage.ImageManager.get_images')
     def test_manage_outdated_images(self, mock_get_images, mock_deactivate, mock_update_image, mock_delete_image):
-        ''' test manage.manage_outdated_images '''
+        ''' test manage.ImageManager.manage_outdated_images '''
 
         # test deletion of images
-        self.fake_CONF.delete = True
-        self.fake_CONF.yes_i_really_know_what_i_do = True
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
         managed_images = {'some_image_name'}
         mock_get_images.return_value = {
             self.fake_image.name: self.fake_image
         }
 
-        manage.manage_outdated_images(self.conn, managed_images, self.fake_CONF)
-
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        self.sot.manage_outdated_images(managed_images)
+        mock_get_images.assert_called_once()
         mock_deactivate.assert_called_once_with(self.fake_image.id)
         mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
         mock_delete_image.assert_called_once_with(self.fake_image.id)
@@ -292,54 +277,44 @@ class TestManage(TestCase):
         mock_delete_image.reset_mock()
 
         # test hide and deactivate of images
-        self.fake_CONF.delete = False
-        self.fake_CONF.yes_i_really_know_what_i_do = False
-        self.fake_CONF.hide = True
-        self.fake_CONF.deactivate = True
-        manage.manage_outdated_images(self.conn, managed_images, self.fake_CONF)
+        self.sot.CONF.delete = False
+        self.sot.CONF.yes_i_really_know_what_i_do = False
+        self.sot.CONF.hide = True
+        self.sot.CONF.deactivate = True
 
-        mock_get_images.assert_called_once_with(self.conn, self.fake_CONF.tag, self.fake_CONF.use_os_hidden)
+        self.sot.manage_outdated_images(managed_images)
+        mock_get_images.assert_called_once()
         mock_deactivate.assert_called_once_with(self.fake_image.id)
         mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
         mock_delete_image.assert_not_called()
 
-    @mock.patch('src.manage.manage_outdated_images')
-    @mock.patch('src.manage.rename_images')
-    @mock.patch('src.manage.process_image')
-    @mock.patch('src.manage.openstack.connect')
+    @mock.patch('src.manage.ImageManager.manage_outdated_images')
+    @mock.patch('src.manage.ImageManager.rename_images')
+    @mock.patch('src.manage.ImageManager.process_image')
     @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
-    def test_main(self, mock_connect, mock_process_image, mock_rename_images, mock_manage_outdated):
-        ''' test manage.main() '''
+    def test_main(self, mock_process_image, mock_rename_images, mock_manage_outdated):
+        ''' test manage.ImageManager.main() '''
 
-        self.fake_image_dict['tags'] = [self.fake_CONF.tag, 'os:ubuntu']
-        versions = {'1': {'url': 'https://url.com'}}
-        mock_connect.return_value = self.conn
-        mock_process_image.return_value = (True, Image(), Image(), {self.fake_image_dict['name']})
+        self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
+        mock_process_image.return_value = ({self.fake_image_dict['name']}, self.imported_image, self.previous_image)
 
-        manage.main(self.fake_CONF)
+        self.sot.main()
 
-        mock_connect.assert_called_once_with(cloud=self.fake_CONF.cloud)
-        mock_process_image.assert_called_once_with(self.conn, self.fake_image_dict, versions, ['1'], self.fake_CONF)
-        mock_rename_images.assert_called_once_with(self.conn,
-                                                   self.fake_image_dict['name'],
-                                                   ['1'],
-                                                   Image(),
-                                                   Image(),
-                                                   self.fake_CONF)
-        mock_manage_outdated.assert_called_once_with(self.conn, {self.fake_image_dict['name']}, self.fake_CONF)
+        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'])
+        mock_rename_images.assert_called_once_with(self.fake_image_dict['name'], ['1'],
+                                                   self.imported_image,
+                                                   self.previous_image)
+        mock_manage_outdated.assert_called_once_with({self.fake_image_dict['name']})
 
-        mock_connect.reset_mock()
         mock_process_image.reset_mock()
         mock_rename_images.reset_mock()
         mock_manage_outdated.reset_mock()
 
-        # test with dry_run = True
-        self.fake_CONF.dry_run = True
-        mock_process_image.return_value = (False, None, None, {self.fake_image_dict['name']})
+        # test with dry_run = True, this also implies that imported_image = None
+        self.sot.CONF.dry_run = True
+        mock_process_image.return_value = ({self.fake_image_dict['name']}, None, None)
 
-        manage.main(self.fake_CONF)
-
-        mock_connect.assert_called_once_with(cloud=self.fake_CONF.cloud)
-        mock_process_image.assert_called_once_with(self.conn, self.fake_image_dict, versions, ['1'], self.fake_CONF)
+        self.sot.main()
+        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'])
         mock_rename_images.assert_not_called()
         mock_manage_outdated.assert_not_called()
