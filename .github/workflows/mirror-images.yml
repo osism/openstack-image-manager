@@ -1,0 +1,24 @@
+---
+name: Mirror images
+
+"on":
+  push:
+    paths:
+      - .github/workflows/mirror-images.yml
+      - etc/images.yml
+    branches:
+      - main
+
+jobs:
+  mirror-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+      - run: pip3 install tox
+      - run: tox -e mirror -- --minio-access-key ${{ secrets.MINIO_ACCESS_KEY }} --minio-secret-key ${{ secrets.MINIO_SECRET_KEY }}
+        if: |
+          github.repository == 'osism/openstack-image-manager' &&
+          github.ref == 'refs/heads/main'
