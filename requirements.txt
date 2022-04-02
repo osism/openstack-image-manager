@@ -1,4 +1,4 @@
-minio==7.1.0
+minio==7.1.5
 natsort==7.1.0
 openstacksdk==0.52.0
 os-client-config==2.1.0
