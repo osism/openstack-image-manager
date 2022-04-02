@@ -511,11 +511,11 @@ images:
       os_version: '9'
     tags: []
     versions:
-      - version: '20211129'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-9/20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/9.13.31-20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
+      - version: '20220320'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-9/20220320/debian-9.13.35-20220320-openstack-amd64.qcow2
+        source: https://cdimage.debian.org/images/cloud/OpenStack/9.13.35-20220320/debian-9.13.35-20220320-openstack-amd64.qcow2
         checksum: "sha256:0a967d10c5043904b0e393cf00f0e11a0982806700d414f872ca25ed50b551ad"
-        os_version: '9.13.31'
+        os_version: '9.13.35'
 
   - name: Debian 10
     shortname: debian-10
