@@ -632,10 +632,10 @@ images:
       os_distro: opensuse
     tags: []
     versions:
-      - version: '20211219'
-        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-tumbleweed/20211219/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20211219.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20211219.qcow2
-        checksum: "sha256:c570824df112a0ca053ba32a6679c525a5eedae0c31ff51d7fb9259e504003de"
+      - version: '20220331'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-tumbleweed/20220331/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20220331.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-JeOS.x86_64-15.1.0-OpenStack-Cloud-Snapshot20220331.qcow2
+        checksum: "sha256:0aaf40c3da3c2d5985b8bc00c46bb71370414c6a870f9f89a16241d0c472b7f7"
 
   - name: openSUSE MicroOS
     shortname: opensuse-microos
