@@ -677,10 +677,10 @@ images:
       os_version: '15.3'
     tags: []
     versions:
-      - version: '20211213'
-        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.3/20211213/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
-        source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.312.qcow2
-        checksum: "sha256:a25dc03978e051c75fa02edc1434154a0a95dfbf7cbd982387423566b5ee0eb5"
+      - version: '20220325'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.3/20220325/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.427.qcow2
+        source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.427.qcow2
+        checksum: "sha256:f814ce6662bea6a9b9252262ce38ee644150b620bac4640289392612b9420c13"
 
   # Garden Linux
 
