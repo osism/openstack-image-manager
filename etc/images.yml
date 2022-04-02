@@ -654,10 +654,10 @@ images:
       os_distro: opensuse
     tags: []
     versions:
-      - version: '20211219'
-        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-microos/20211219/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20211219.qcow2
-        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20211219.qcow2
-        checksum: "sha256:51ba1d72e94a5571a034e66c5bfd2e8582327314a347620954ffe9286292191a"
+      - version: '20220331'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-microos/20220331/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20220331.qcow2
+        source: http://download.opensuse.org/tumbleweed/appliances/openSUSE-MicroOS.x86_64-16.0.0-OpenStack-Cloud-Snapshot20220331.qcow2
+        checksum: "sha256:49d79f9e61ebe07cbfc2047018608bbeb23728c0d3ccb3deb0ffc700bc0889ce"
 
   - name: openSUSE Leap 15.3
     shortname: opensuse-leap-15.3
