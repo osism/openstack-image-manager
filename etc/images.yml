@@ -313,10 +313,10 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20211216'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20211216/focal-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/focal/20211216/focal-server-cloudimg-amd64.img
-        checksum: "sha256:d64bc2978f3b4e14017d8600715f3a67291df9141eec6bc3ac6daee0a7881fbc"
+      - version: '20220401'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20220401/focal-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/focal/20220401/focal-server-cloudimg-amd64.img
+        checksum: "sha256:fb42ba37ba5b6497ff541da44eb6decbf522b1c87bfd9155dd8399dcb4ba60fb"
 
   - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
