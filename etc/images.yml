@@ -413,6 +413,31 @@ images:
         source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         checksum: "sha256:8e22e67687b81e38c7212fc30c47cb24cbc4935c0f2459ed139f498397d1e7cd"
 
+  # AlmaLinux
+
+  - name: AlmaLinux 8
+    shortname: almalinux-8
+    format: qcow2
+    login: almalinux
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '8'
+    tags: []
+    versions:
+      - version: '20211119'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20211119/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
+        source: https://ftp.gwdg.de/pub/linux/almalinux/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
+        checksum: "sha256:d629247b12802157be127db53a7fcb484b80fceae9896d750c953a51a8c6688f"
+
   # RockyLinux
 
   - name: Rocky 8
@@ -433,6 +458,10 @@ images:
       os_version: '8'
     tags: []
     versions:
+      - version: '20211114'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20211114/Rocky-8-GenericCloud-8.5-20211114.2.x86_64.qcow2
+        source: https://download.rockylinux.org/pub/rocky/8.5/images/Rocky-8-GenericCloud-8.5-20211114.2.x86_64.qcow2
+        checksum: "sha256:c23f58f26f73fb9ae92bfb4cf881993c23fdce1bbcfd2881a5831f90373ce0c8"
       - version: '20210620'
         url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
         source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
@@ -506,11 +535,11 @@ images:
       os_version: '10'
     tags: []
     versions:
-      - version: '20211129'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/10.11.2-20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
-        checksum: "sha256:77a7390a542af2327f34af940018aa4fbad3b79ad3687b524020f094994950a3"
-        os_version: '10.11.2'
+      - version: '20220326'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20220326/debian-10.12.0-20220326-openstack-amd64.qcow2
+        source: https://cdimage.debian.org/images/cloud/OpenStack/10.12.0/debian-10.12.0-openstack-amd64.qcow2
+        checksum: "sha256:ce2fc968e938c8b2c7ca3d936225c6a15c6fccc1f5ddac4dfa09053bed0fba99"
+        os_version: '10.12.0'
 
   - name: Debian 11
     shortname: debian-11
@@ -530,11 +559,11 @@ images:
       os_version: '11'
     tags: []
     versions:
-      - version: '20211220'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20211220/debian-11-generic-amd64-20211220-862.qcow2
-        source: https://cdimage.debian.org/images/cloud/bullseye/20211220-862/debian-11-generic-amd64-20211220-862.qcow2
-        checksum: "sha256:0286808217dca6e39bdbd227c493ae8a3d27b7c5b753a3c0eb37fc1ec50ad6b3"
-        os_version: '11.2.0'
+      - version: '20220328'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20220328/debian-11-generic-amd64-20220328-962.qcow2
+        source: https://cdimage.debian.org/images/cloud/bullseye/20220328-962/debian-11-generic-amd64-20220328-962.qcow2
+        checksum: "sha256:be6b83fda664af1c6d6a2da4f8841100624c6419081ea8f694af50ea89690d7b"
+        os_version: '11.3.0'
 
   # Fedora
 
