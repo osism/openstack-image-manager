@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "740fef1504977c73ea254c38eed0bf98f3860accf77417b12f102c0f3f7cb91d"
+            "sha256": "4a45ebd05d97f3016bb3834effd343d3976ba4e0123458d1368e87299b6a12e6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -312,11 +312,11 @@
         },
         "oslo.config": {
             "hashes": [
-                "sha256:3c5cc681ef106a4573d677510f907ab48f40004dc3aac2298d9a517559491efb",
-                "sha256:a0c346d778cdc8870ab945e438bea251b5f45fae05d6d99dfe4953cca2277b60"
+                "sha256:96933d3011dae15608a11616bfb00d947e22da3cb09b6ff37ddd7576abd4764c",
+                "sha256:b1e2a398450ea35a8e5630d8b23057b8939838c4433cd25a20cc3a36d5df9e3b"
             ],
             "index": "pypi",
-            "version": "==8.7.1"
+            "version": "==8.8.0"
         },
         "oslo.i18n": {
             "hashes": [
