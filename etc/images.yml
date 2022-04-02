@@ -265,10 +265,10 @@ images:
       os_version: '18.04'
     tags: []
     versions:
-      - version: '20211216'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20211216/bionic-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/bionic/20211216/bionic-server-cloudimg-amd64.img
-        checksum: "sha256:0db3eb91b1539cf99494e5205cd73081392bca433659eaaec35f3fc97401a812"
+      - version: '20220401'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20220401/bionic-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/bionic/20220401/bionic-server-cloudimg-amd64.img
+        checksum: "sha256:4b340e421861433c3854cf3ec4b4fa70f0fd97698152a4ae322b33add998bf34"
 
   - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
