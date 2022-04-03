@@ -6,5 +6,5 @@ oslo.config==8.8.0
 paramiko==2.10.3
 patool==1.12
 python-glanceclient==3.6.0
-requests==2.25.1
+requests==2.27.1
 tabulate==0.8.9
