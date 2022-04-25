@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "11595e82e1c43a588661c97820bfe65a2e31ecdb6300890fdcfdcf6d94892cc6"
+            "sha256": "6c9cd757a256468f3d4a108419f4759d2014031351196998bb4dbb3f2596bc0b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -344,11 +344,11 @@
         },
         "paramiko": {
             "hashes": [
-                "sha256:ac6593479f2b47a9422eca076b22cff9f795495e6733a64723efc75dd8c92101",
-                "sha256:ddb1977853aef82804b35d72a0e597b244fa326c404c350bd00c5b01dbfee71a"
+                "sha256:3c9ed6084f4b671ab66dc3c729092d32d96c3258f1426071301cb33654b09027",
+                "sha256:3d2e650b6812ce6d160abff701d6ef4434ec97934b13e95cf1ad3da70ffb5c58"
             ],
             "index": "pypi",
-            "version": "==2.10.3"
+            "version": "==2.10.4"
         },
         "patool": {
             "hashes": [
