@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "350eb3712f1bab085414b9461f0c760785028036bfaa48a4a0020c36ebe7882c"
+            "sha256": "076ced7722a531b1559a5532498b2458615500d12dcedd5f31f087b08342b213"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -50,10 +50,11 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:78884e7c1d4b00ce3cea67b44566851c4343c120abd683433ce934a68ea58872",
-                "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"
+                "sha256:9c5705e395cd70084351dd8ad5c41e65655e08ce46f2ec9cf6c2c08390f71eb7",
+                "sha256:f1d53542ee8cbedbe2118b5686372fb33c297fcd6379b050cca0ef13a597382a"
             ],
-            "version": "==2021.10.8"
+            "markers": "python_version >= '3.6'",
+            "version": "==2022.5.18.1"
         },
         "cffi": {
             "hashes": [
@@ -292,11 +293,11 @@
         },
         "openstacksdk": {
             "hashes": [
-                "sha256:3eed308871230f0c53a8f58b6c5a358b184080c6b2c6bc69ab088eea057aa127",
-                "sha256:9894d3d510563dcfc50c4755287dbfbf98def1f37caf2cfc15e9d0e1fd5d9a41"
+                "sha256:2c8af1ff416d33e5c3f184a42f2088808fb3bf4f9560b7682d31ec94110f6a16",
+                "sha256:3f73c3cc28089e93b342eb7f348b285f5a65ffe505898be15db250c75bb855eb"
             ],
             "index": "pypi",
-            "version": "==0.61.0"
+            "version": "==0.99.0"
         },
         "os-client-config": {
             "hashes": [
@@ -522,11 +523,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:512dfeb3cca6747fd9074f91d8cd4714b50d0d8726b3f6a25f8c33ee9ad22b5a",
-                "sha256:d4eebe23c2ed4d73fa69d4f78e4b59b9648cbd22c43018ee2e8b911866535463"
+                "sha256:68e45d17c9281ba25dc0104eadd2647172b3472d9e01f911efa57965e8d51a36",
+                "sha256:a43bdedf853c670e5fed28e5623403bad2f73cf02f9a2774e91def6bda8265a7"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==62.3.0"
+            "version": "==62.3.2"
         },
         "six": {
             "hashes": [
