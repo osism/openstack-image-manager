@@ -20,9 +20,9 @@ images:
     tags:
       - amphora
     versions:
-      - version: 'WALLABY'
-        url: https://minio.services.osism.tech/openstack-octavia-amphora-image/octavia-amphora-haproxy-wallaby.qcow2
-        checksum: "sha256:bb961b0bde336e8ab6be776f2e00c9b1d87bb28d1b9285a165a958c80a7d035a"
+      - version: 'XENA'
+        url: https://minio.services.osism.tech/openstack-octavia-amphora-image/octavia-amphora-haproxy-xena.qcow2
+        checksum: "sha256:837208b9285ac8bf60f07fc992e176573892c47e4767d5fdf4c7c4ebeb2f4a9f"
 
   # OPNsense
 
