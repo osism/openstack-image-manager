@@ -748,9 +748,9 @@ images:
       os_distro: debian
     tags: []
     versions:
-      - version: '576.1'
-        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.1.qcow2
-        checksum: "sha256:f5a41e8428e493b104f40e97dbcddbac4167ab4ad0f9241fe041addfa0efe563"
+      - version: '576.9'
+        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.9.qcow2
+        checksum: "sha256:657a7b63d5a9a522a343673cdcb8179975de13372e308b7a6fcf36f2fe336dea"
 
   # Kubernetes CAPI
 
