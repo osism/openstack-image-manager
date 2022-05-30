@@ -776,3 +776,6 @@ images:
       - version: '1.23.1'
         url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.23/ubuntu-2004-kube-v1.23.1.qcow2
         checksum: "sha256:7c28c49344b7b8d117234f9d7a31e01c6a6472825dbb01fd0a83fcc25e2fe230"
+      - version: '1.24.1'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.24/ubuntu-2004-kube-v1.24.1.qcow2
+        checksum: "sha256:781a032b15eb4cae861f7b96aeaed110de12ae024ebd00e1ec35b5edf00bbcc9"
