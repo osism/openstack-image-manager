@@ -485,6 +485,10 @@ images:
       os_version: '8'
     tags: []
     versions:
+      - version: '20220513'
+        url: https://minio.services.osism.tech/openstack-image-manager/almalinux-8/20220513/AlmaLinux-8-GenericCloud-8.6-20220513.x86_64.qcow2
+        source: https://ftp.gwdg.de/pub/linux/almalinux/8.6/cloud/x86_64/images/AlmaLinux-8-GenericCloud-8.6-20220513.x86_64.qcow2
+        checksum: "sha256:1563c0b09d98e7a606e1e737f1c810830aeb0cbe37ac5585f3696be62f0a32b4"
       - version: '20211119'
         url: https://minio.services.osism.tech/openstack-image-manager/almalinux-8/20211119/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
         source: https://ftp.gwdg.de/pub/linux/almalinux/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
