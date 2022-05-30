@@ -94,6 +94,10 @@ images:
       os_distro: fedora-coreos
     tags: []
     versions:
+      - version: '36.20220505.3.2'
+        url: https://minio.services.osism.tech/openstack-image-manager/fedora-coreos/36.20220505.3.2/fedora-coreos-36.20220505.3.2-qemu.x86_64.qcow2
+        source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220505.3.2/x86_64/fedora-coreos-36.20220505.3.2-qemu.x86_64.qcow2.xz
+        checksum: "sha256:671eb590785d4df35fc5548544a490428c2d8996383330b481292d392b3d7f4f"
       - version: '35.20211203.3.0'
         url: https://minio.services.osism.tech/openstack-image-manager/fedora-coreos/35.20211203.3.0/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/35.20211203.3.0/x86_64/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2.xz
