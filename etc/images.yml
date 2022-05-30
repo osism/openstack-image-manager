@@ -414,6 +414,10 @@ images:
       os_version: '7'
     tags: []
     versions:
+      - version: '20211116'
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-7/20211116/CentOS-7-x86_64-GenericCloud-2111.qcow2
+        source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2111.qcow2
+        checksum: "sha256:4c34278cd7ba51e47d864a5cb34301a2ec7853786cb73877f3fe61bb1040edd4"
       - version: '20201112'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-7/20201112/CentOS-7-x86_64-GenericCloud-2009.qcow2
         source: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2
