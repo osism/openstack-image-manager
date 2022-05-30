@@ -692,6 +692,29 @@ images:
         source: https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/Fedora-Cloud-Base-35-1.2.x86_64.qcow2
         checksum: "sha256:fe84502779b3477284a8d4c86731f642ca10dd3984d2b5eccdf82630a9ca2de6"
 
+  - name: Fedora 36
+    shortname: fedora-36
+    format: qcow2
+    login: fedora
+    min_disk: 4
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: fedora
+      os_version: '36'
+    tags: []
+    versions:
+      - version: '20220504'
+        url: https://minio.services.osism.tech/openstack-image-manager/fedora-36/20220504/Fedora-Cloud-Base-36-1.5.x86_64.qcow2
+        source: https://mirror.23m.com/fedora/linux/releases/36/Cloud/x86_64/images/Fedora-Cloud-Base-36-1.5.x86_64.qcow2
+        checksum: "sha256:ca9e514cc2f4a7a0188e7c68af60eb4e573d2e6850cc65b464697223f46b4605"
+
   # openSUSE
 
   - name: openSUSE Tumbleweed
