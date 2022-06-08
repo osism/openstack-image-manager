@@ -734,6 +734,29 @@ images:
         source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.427.qcow2
         checksum: "sha256:f814ce6662bea6a9b9252262ce38ee644150b620bac4640289392612b9420c13"
 
+  - name: openSUSE Leap 15.4
+    shortname: opensuse-leap-15.4
+    format: qcow2
+    login: opensuse
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+      os_version: '15.4'
+    tags: []
+    versions:
+      - version: '20220608'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.4/20220608/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
+        source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.4/appliances/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
+        checksum: "sha256:5505d73972e3324d4bec69b5ba43ef7cc087aeec5e56112144b478d62418fc7a"
+
   # Garden Linux
 
   - name: Garden Linux
