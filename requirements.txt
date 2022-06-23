@@ -7,4 +7,4 @@ paramiko==2.11.0
 patool==1.12
 python-glanceclient==4.0.0
 requests==2.28.0
-tabulate==0.8.9
+tabulate==0.8.10
