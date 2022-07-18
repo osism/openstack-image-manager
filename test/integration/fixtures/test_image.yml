@@ -1,0 +1,24 @@
+---
+images:
+  - name: ubuntu-20.04
+    shortname: ubuntu-20.04
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '20.04'
+    tags: []
+    versions:
+      - version: '1'
+        url: https://cloud-images.ubuntu.com/releases/focal/release-20220207/ubuntu-20.04-server-cloudimg-amd64.img
+        checksum: "sha256:d64bc2978f3b4e14017d8600715f3a67291df9141eec6bc3ac6daee0a7881fbc"
