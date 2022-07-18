@@ -1,4 +1,4 @@
-minio==7.1.9
+minio==7.1.10
 natsort==8.1.0
 openstacksdk==0.100.0
 oslo.config==8.8.0
