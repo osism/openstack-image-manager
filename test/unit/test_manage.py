@@ -79,8 +79,7 @@ FAKE_IMAGE_DATA = {
 
 class TestManage(TestCase):
 
-    @mock.patch('src.manage.openstack.connect')
-    def setUp(self, mock_connect):
+    def setUp(self):
         ''' create all necessary test data, gets called before each test '''
 
         self.fake_image_dict = FAKE_IMAGE_DICT
@@ -108,12 +107,12 @@ class TestManage(TestCase):
             name=None,
             tag='fake_tag'
         )
+
         # we can also mimick an openstack connection object with a Munch
         self.sot.conn = Munch(
             current_project_id='123456789',
             image=Proxy
         )
-        mock_connect.assert_called_once_with(cloud='openstack')
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.images')
     def test_get_images(self, mock_images):
@@ -153,7 +152,7 @@ class TestManage(TestCase):
             'visibility': 'private'
         }
 
-        self.sot.import_image(self.fake_name, self.fake_image_dict, self.fake_url)
+        self.sot.import_image(self.fake_image_dict, self.fake_name, self.fake_url)
 
         mock_create.assert_called_once_with(**properties)
         mock_import.assert_called_once_with(self.fake_image, method='web-download', uri=self.fake_url)
@@ -172,7 +171,7 @@ class TestManage(TestCase):
 
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
-        mock_import_image.assert_called_once_with(self.fake_name, self.fake_image_dict, self.fake_url)
+        mock_import_image.assert_called_once_with(self.fake_image_dict, self.fake_name, self.fake_url)
         mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1')
         self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.__getitem__(), None))
 
@@ -294,7 +293,9 @@ class TestManage(TestCase):
     @mock.patch('src.manage.os.path.isfile')
     @mock.patch('src.manage.os.listdir')
     @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
-    def test_main(self, mock_listdir, mock_isfile, mock_process_image, mock_rename_images, mock_manage_outdated):
+    @mock.patch('src.manage.openstack.connect')
+    def test_main(self, mock_connect, mock_listdir, mock_isfile,
+                  mock_process_image, mock_rename_images, mock_manage_outdated):
         ''' test manage.ImageManager.main() '''
 
         self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
@@ -304,6 +305,7 @@ class TestManage(TestCase):
 
         self.sot.main()
 
+        mock_connect.assert_called_once_with(cloud=self.sot.CONF.cloud)
         mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'])
         mock_rename_images.assert_called_once_with(self.fake_image_dict['name'], ['1'],
                                                    self.imported_image,
