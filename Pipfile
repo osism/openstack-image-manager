@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-minio = "==7.1.10"
+minio = "==7.1.11"
 natsort = "==8.1.0"
 openstacksdk = "==0.100.0"
 os-client-config = "==2.1.0"
