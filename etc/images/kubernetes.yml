@@ -1,0 +1,25 @@
+---
+images:
+
+  - name: Kubernetes CAPI
+    format: qcow2
+    login: ubuntu
+    min_disk: 20
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+    tags: []
+    versions:
+      - version: '1.22.5'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.5.qcow2
+        checksum: "sha256:28b6a682b21209dc197c484ad25c49aa3556757b540649fc47976ca5b0eee378"
+      - version: '1.23.1'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.23/ubuntu-2004-kube-v1.23.1.qcow2
+        checksum: "sha256:7c28c49344b7b8d117234f9d7a31e01c6a6472825dbb01fd0a83fcc25e2fe230"

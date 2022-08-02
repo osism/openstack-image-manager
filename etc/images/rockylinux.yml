@@ -1,0 +1,25 @@
+---
+images:
+
+  - name: Rocky 8
+    shortname: rocky-8
+    format: qcow2
+    login: rocky
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '8'
+    tags: []
+    versions:
+      - version: '20210620'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
+        source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
+        checksum: "sha256:9f1d55a3b8672b1bb08cc9318c12a75fcf3b9152fd63f021c92fe6272ba97bcb"
