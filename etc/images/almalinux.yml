@@ -1,0 +1,52 @@
+---
+images:
+
+  - name: AlmaLinux 8
+    shortname: almalinux-8
+    format: qcow2
+    login: almalinux
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '8'
+    tags: []
+    versions:
+      - version: '20220513'
+        url: https://minio.services.osism.tech/openstack-image-manager/almalinux-8/20220513/AlmaLinux-8-GenericCloud-8.6-20220513.x86_64.qcow2
+        source: https://ftp.gwdg.de/pub/linux/almalinux/8.6/cloud/x86_64/images/AlmaLinux-8-GenericCloud-8.6-20220513.x86_64.qcow2
+        checksum: "sha256:1563c0b09d98e7a606e1e737f1c810830aeb0cbe37ac5585f3696be62f0a32b4"
+      - version: '20211119'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20211119/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
+        source: https://ftp.gwdg.de/pub/linux/almalinux/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-8.5-20211119.x86_64.qcow2
+        checksum: "sha256:d629247b12802157be127db53a7fcb484b80fceae9896d750c953a51a8c6688f"
+
+  - name: AlmaLinux 9
+    shortname: almalinux-9
+    format: qcow2
+    login: almalinux
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '9'
+    tags: []
+    versions:
+      - version: '20220527'
+        url: https://minio.services.osism.tech/openstack-image-manager/almalinux-9/20220527/AlmaLinux-9-GenericCloud-9.0-20220527.x86_64.qcow2
+        source: https://ftp.gwdg.de/pub/linux/almalinux/9.0/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.0-20220527.x86_64.qcow2
+        checksum: "sha256:e453dde3dac780c149932f39814e3371cb0b7fe3f758012b86ab6c7a51ec7a42"
