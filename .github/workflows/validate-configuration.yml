@@ -6,14 +6,14 @@ name: Validate configuration
     paths:
       - .github/workflows/validate-configuration.yml
       - .yamale.yml
-      - etc/images.yml
+      - etc/images/*.yml
     branches:
       - main
   pull_request:
     paths:
       - .github/workflows/validate-configuration.yml
       - .yamale.yml
-      - etc/images.yml
+      - etc/images/*.yml
 
 jobs:
   validate-configuration:
