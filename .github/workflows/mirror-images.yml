@@ -5,7 +5,7 @@ name: Mirror images
   push:
     paths:
       - .github/workflows/mirror-images.yml
-      - etc/images.yml
+      - etc/images/*.yml
     branches:
       - main
 
