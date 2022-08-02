@@ -19,6 +19,10 @@ images:
       os_version: '8'
     tags: []
     versions:
+      - version: '20220702'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20220702/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow
+        source: https://download.rockylinux.org/pub/rocky/8.6/images/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow2
+        checksum: "sha256:7b786a39eeb96e22dd85386377ff186737f6c1b9a5faa105b0a0a7a4895c29d0"
       - version: '20210620'
         url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
         source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
