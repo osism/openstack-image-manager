@@ -39,7 +39,7 @@ for f in listdir(CONF.images):
 
 all_images = []
 for file in onlyfiles:
-    with open(CONF.images + file) as fp:
+    with open(join(CONF.images, file)) as fp:
         data = yaml.load(fp, Loader=yaml.SafeLoader)
         images = data.get('images')
         for image in images:

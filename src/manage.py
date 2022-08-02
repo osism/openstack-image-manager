@@ -55,7 +55,7 @@ class ImageManager:
 
         all_images = []
         for file in image_files:
-            with open(self.CONF.images + file) as fp:
+            with open(os.path.join(self.CONF.images, file)) as fp:
                 data = yaml.load(fp, Loader=yaml.SafeLoader)
                 images = data.get('images')
                 for image in images:
