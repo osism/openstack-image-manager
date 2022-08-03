@@ -1,5 +1,5 @@
 ---
 clouds:
-  images:
+  openstack:
     auth:
       password: password

@@ -113,7 +113,7 @@ class TestManage(TestCase):
             current_project_id='123456789',
             image=Proxy
         )
-        mock_connect.assert_called_once_with(cloud='images')
+        mock_connect.assert_called_once_with(cloud='openstack')
 
     @mock.patch('src.manage.openstack.image.v2._proxy.Proxy.images')
     def test_get_images(self, mock_images):
