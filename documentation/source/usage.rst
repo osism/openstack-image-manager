@@ -4,7 +4,7 @@
 Usage
 =====
 
-The cloud environment to be used can be specified via the ``--cloud`` parameter. The default-value is: `images`.
+The cloud environment to be used can be specified via the ``--cloud`` parameter. The default-value is: `openstack`.
 
 The path to the definitions of the images is set via the parameter ``--images``. The default-value is: `etc/images.yml`.
 
