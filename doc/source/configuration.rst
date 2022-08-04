@@ -138,7 +138,7 @@ Modify image tags
 
 * add or remove tags to the ``tags`` list
 
-Deactivate/reactivate iamge
+Deactivate/reactivate image
 ===========================
 
 * deactivation: change ``status`` to ``deactivated``
