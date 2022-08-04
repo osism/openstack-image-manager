@@ -41,6 +41,8 @@ Add new image
 Image with regular rebuilds
 ===========================
 
+.. hint:: multi: true
+
 .. code-block:: yaml
 
   - name: Ubuntu 16.04
@@ -74,9 +76,14 @@ If a newer build is added, the following rotation takes place:
 
 * ``Ubuntu 16.04`` becomes ``Ubuntu 16.04 (20181004)``
 * the new image becomes ``Ubuntu 16.04``
- 
+
+.. note:: last 3 images will be used see `#51 <https://github.com/osism/openstack-image-manager/issues/51>`_
+
+
 Image without regular rebuild
 =============================
+
+.. hint:: multi: false
 
 .. code-block:: yaml
 
@@ -110,6 +117,8 @@ This configuration creates the following images:
 
 If a new version is added, no rotation takes place. The new version is added
 as ``RancherOS x.y.z``.
+
+.. note:: last 3 images will be used see `#51 <https://github.com/osism/openstack-image-manager/issues/51>`_
 
 Delete image
 ============
