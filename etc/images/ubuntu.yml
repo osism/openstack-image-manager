@@ -168,3 +168,51 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
         source: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
         checksum: "sha256:34beb25b38677827a969ad512465393576d292e0d99971851266a5d2c73cff34"
+
+  - name: Ubuntu 22.04
+    shortname: ubuntu-22.04
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '22.04'
+    tags: []
+    versions:
+      - version: '20220718'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20220718/jammy-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/jammy/20220718/jammy-server-cloudimg-amd64.img
+        checksum: "sha256:b63ec58af8dfa161c5420dc6462ed312ca19f8c3e3e316b1cd55779831d52e58"
+
+  - name: Ubuntu 22.04 Minimal
+    shortname: ubuntu-22.04-minimal
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '22.04'
+    tags: []
+    versions:
+      - version: '20220713'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20220713/ubuntu-22.04-minimal-cloudimg-amd64.img
+        source: http://cloud-images.ubuntu.com/minimal/releases/jammy/release-20220713/ubuntu-22.04-minimal-cloudimg-amd64.img
+        checksum: "sha256:53113fb9ca9a3cff95be9a2c4d8bb79494bf8e2e8580e12693a040d2a29aa59a"
