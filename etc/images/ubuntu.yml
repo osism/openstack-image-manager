@@ -140,10 +140,10 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20211216'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20211216/focal-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/focal/20211216/focal-server-cloudimg-amd64.img
-        checksum: "sha256:d64bc2978f3b4e14017d8600715f3a67291df9141eec6bc3ac6daee0a7881fbc"
+      - version: '20220804'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20220804/focal-server-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/focal/20220804/focal-server-cloudimg-amd64.img
+        checksum: "sha256:d96622d77bcbab5526fd42e7d933ee851d239327946992a018b0bfc9fad777e7"
 
   - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
@@ -164,10 +164,10 @@ images:
       os_version: '20.04'
     tags: []
     versions:
-      - version: '20210720'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
-        source: http://cloud-images.ubuntu.com/minimal/releases/focal/release-20210720/ubuntu-20.04-minimal-cloudimg-amd64.img
-        checksum: "sha256:34beb25b38677827a969ad512465393576d292e0d99971851266a5d2c73cff34"
+      - version: '20220712'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20220712/ubuntu-20.04-minimal-cloudimg-amd64.img
+        source: https://cloud-images.ubuntu.com/minimal/releases/focal/release-20220712/ubuntu-20.04-minimal-cloudimg-amd64.img
+        checksum: "sha256:49dd8f0917b9b00f6962e6f9f690592f8fafb2126fbe294adb625930aff58a5f"
 
   - name: Ubuntu 22.04
     shortname: ubuntu-22.04
