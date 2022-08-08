@@ -26,7 +26,7 @@ class ImageManager:
             cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
             cfg.BoolOpt('use-os-hidden', help='Use the os_hidden property', default=False),
             cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
-            cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='images'),
+            cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='openstack'),
             cfg.StrOpt('images', help='Path to the directory containing all image files', default='etc/images/'),
             cfg.StrOpt('name', help='Image name to process', default=None),
             cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
@@ -55,7 +55,7 @@ class ImageManager:
 
         all_images = []
         for file in image_files:
-            with open(self.CONF.images + file) as fp:
+            with open(os.path.join(self.CONF.images, file)) as fp:
                 data = yaml.load(fp, Loader=yaml.SafeLoader)
                 images = data.get('images')
                 for image in images:
