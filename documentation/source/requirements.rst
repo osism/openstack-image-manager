@@ -4,6 +4,8 @@
 Requirements
 ============
 
+.. note:: See upstream glance documentation for more details: `<https://docs.openstack.org/glance/yoga/configuration/sample-configuration.html>`_
+
 Since this script stores many images in a project, the Glance quota 
 must be set accordingly high or to unlimited.
 
