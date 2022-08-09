@@ -1,9 +1,6 @@
 ---
 - project:
     default-branch: main
-    vars:
-      sphinx_source_dir: documentation/source
-      sphinx_build_dir: documentation/build
     check:
       jobs:
         - build-sphinx-docs

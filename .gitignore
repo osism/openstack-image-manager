@@ -1,5 +1,5 @@
 .tox
 clouds.yml
-documentation/build/
+doc/build/
 secure.yml
 __pycache__
