@@ -13,5 +13,3 @@ large number of images on an OpenStack enviroment.
    configuration
    contribute
    usage
-   development
-   license

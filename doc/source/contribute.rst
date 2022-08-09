@@ -1,5 +1,3 @@
-.. _contribute:
-
 ==========
 Contribute
 ==========
