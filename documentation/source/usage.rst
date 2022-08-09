@@ -61,14 +61,33 @@ Simply run ``tox`` without parameters.
 
 Run ``tox -- --dry-run`` to see what will change.
 
-Delete removed images
-=====================
+Outdated image handling
+=======================
+
+.. note:: By default outdated images are renamed but will stay accessable. There are 3 ways to handle outdated Images: hide, deactivate + delete
+
+Hide images
+-----------
+
+.. code-block:: bash
+
+  $ tox -- --hide
+
+Deactivate images
+-----------------
+
+.. code-block:: bash
+
+  $ tox -- --deactivate
+
+Delete images
+-------------
 
 The deletion of images must be explicitly confirmed with the ``--yes-i-really-know-what-i-do`` parameter.
 
 .. code-block:: bash
 
-    $ tox -- --yes-i-really-know-what-i-do
+    $ tox -- --delete --yes-i-really-know-what-i-do
 
 Mirror images
 =============
