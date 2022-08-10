@@ -36,8 +36,4 @@ html_context = {
     'github_version': 'main',
     'conf_py_path': '/source/'
 }
-html_logo = 'images/logo.png'
-html_static_path = [
-    '_static'
-]
 latex_elements = {}

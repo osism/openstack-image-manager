@@ -47,8 +47,8 @@ images:
         source: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
         checksum: "sha256:3510fc7deb3e1939dbf3fe6f65a02ab1efcc763480bc352e4c06eca2e4f7c2a2"
 
-  - name: CentOS Stream
-    shortname: centos-stream
+  - name: CentOS Stream 8
+    shortname: centos-stream-8
     format: qcow2
     login: centos
     min_disk: 10
@@ -66,6 +66,29 @@ images:
     tags: []
     versions:
       - version: '20210603'
-        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-8/20210603/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2
         checksum: "sha256:8e22e67687b81e38c7212fc30c47cb24cbc4935c0f2459ed139f498397d1e7cd"
+
+  - name: CentOS Stream 9
+    shortname: centos-stream-9
+    format: qcow2
+    login: centos
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '9'
+    tags: []
+    versions:
+      - version: '20220809'
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-9/20220809/CentOS-Stream-GenericCloud-9-20220808.1.x86_64.qcow2
+        source: https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20220808.1.x86_64.qcow2
+        checksum: "sha256:bcd6926e1790a493434e5872fb2159ce21c553119658d8579cca52dcb919461e"
