@@ -67,3 +67,26 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.3/20211213/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.156.qcow2
         source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.3/appliances/openSUSE-Leap-15.3-JeOS.x86_64-15.3-OpenStack-Cloud-Build9.312.qcow2
         checksum: "sha256:a25dc03978e051c75fa02edc1434154a0a95dfbf7cbd982387423566b5ee0eb5"
+
+  - name: openSUSE Leap 15.4
+    shortname: opensuse-leap-15.4
+    format: qcow2
+    login: opensuse
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: opensuse
+      os_version: '15.4'
+    tags: []
+    versions:
+      - version: '20220805'
+        url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.4/20220805/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
+        source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.4/appliances/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
+        checksum: "sha256:2521af728f47bdf7c18d18e1c95b576d2aedd9a8fb3668b4791f7f5ece7a1931"
