@@ -28,7 +28,7 @@ class ImageManager:
             cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
             cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='openstack'),
             cfg.StrOpt('images', help='Path to the directory containing all image files', default='etc/images/'),
-            cfg.StrOpt('name', help='Image name to process', default=None),
+            cfg.ListOpt('name', help='List of image names to process', default=list()),
             cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
         ]
         if not self.CONF._args:
@@ -82,6 +82,12 @@ class ImageManager:
         managed_images = set()
         all_images = self.read_image_files()
 
+        # get all active managed images, so they don't get deleted when using --name
+        cloud_images = self.get_images()
+        for image in cloud_images:
+            if cloud_images[image].visibility == "public":
+                managed_images.add(image)
+
         for image in all_images:
 
             for required_key in REQUIRED_KEYS:
@@ -89,7 +95,7 @@ class ImageManager:
                     logging.error("'%s' lacks the necessary key %s" % (image['name'], required_key))
                     continue
 
-            if self.CONF.name and self.CONF.name != image['name']:
+            if self.CONF.name and image['name'] not in self.CONF.name:
                 continue
 
             logging.info("Processing '%s'" % image['name'])
