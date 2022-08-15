@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: osism/openstack-action@main
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - run: pip3 install tox
-      # NOTE: The tests will not work until Glance API is usable within the CI.
-      - run: tox -e test -- test/integration || exit 0
+      - run: tox -e test -- test/integration
