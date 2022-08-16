@@ -2,7 +2,7 @@
 Configuration
 =============
 
-After a change to the configuration, validate it with ``tox -e check``.
+After a change to the configuration, validate it with ``tox -- --dry-run``.
 
 Naming Convention
 =================
