@@ -34,11 +34,12 @@ def check_versions(versions_to_check, versions):
         url = versions[version]['url']
         r = requests.head(url, allow_redirects=True)
         if (r.status_code != 200) and CONF.verifyurl:
-            url_status_failed+=1
-            url_status="FAILED"
+            url_status_failed += 1
+            url_status = "FAILED"
         else:
-            url_status="OK"
+            url_status = "OK"
         logging.info("Tested URL %s: %s (%s)" % (url, url_status, r.status_code))
+
 
 onlyfiles = []
 for f in listdir(CONF.images):
