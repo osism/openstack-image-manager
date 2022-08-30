@@ -4,6 +4,8 @@ Configuration
 
 After a change to the configuration, validate it with ``tox -e check``.
 
+.. hint:: ``tox -e check -- --verifyurls`` lets you verify that the urls are accessable.
+
 Naming Convention
 =================
 

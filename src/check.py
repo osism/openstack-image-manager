@@ -8,12 +8,14 @@ import yaml
 from os import listdir
 from os.path import isfile, join
 
+url_status_failed = 0
 PROJECT_NAME = 'images'
 CONF = cfg.CONF
 opts = [
     cfg.BoolOpt('debug', help='Enable debug logging', default=False),
     cfg.StrOpt('images', help='Path to the folder with the image files', default='etc/images/'),
-    cfg.BoolOpt('latest', help='Only check the latest version', default=False)
+    cfg.BoolOpt('latest', help='Only check the latest version', default=False),
+    cfg.BoolOpt('verifyurl', help='Verify accessable URLs', default=False)
 ]
 CONF.register_cli_opts(opts)
 CONF(sys.argv[1:], project=PROJECT_NAME)
@@ -26,11 +28,17 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=level, datefmt='%Y
 
 
 def check_versions(versions_to_check, versions):
+    global url_status_failed
+
     for version in versions_to_check:
         url = versions[version]['url']
-        r = requests.head(url)
-        logging.info("Tested URL %s: %s" % (url, r.status_code))
-
+        r = requests.head(url, allow_redirects=True)
+        if (r.status_code != 200) and CONF.verifyurl:
+            url_status_failed+=1
+            url_status="FAILED"
+        else:
+            url_status="OK"
+        logging.info("Tested URL %s: %s (%s)" % (url, url_status, r.status_code))
 
 onlyfiles = []
 for f in listdir(CONF.images):
@@ -61,3 +69,7 @@ for image in all_images:
         check_versions([sorted_versions[-1]], versions)
     else:
         check_versions(sorted_versions, versions)
+
+if (url_status_failed > 0):
+    logging.info("Failure URLs during verification: %s" % (url_status_failed))
+    sys.exit(10)
