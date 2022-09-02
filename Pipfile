@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 minio = "==7.1.11"
-natsort = "==8.1.0"
+natsort = "==8.2.0"
 openstacksdk = "==0.100.0"
 os-client-config = "==2.1.0"
 "oslo.config" = "==9.0.0"
