@@ -50,7 +50,7 @@ The debug mode can be activated via ``--debug``, e.g.  ``tox -- --debug``.
 Validate config
 ===============
 
-After a change to the configuration, validate it with ``tox -e check``.
+After a change to the configuration, validate it with ``tox -- --dry-run``.
 
 Update and import new images
 ============================

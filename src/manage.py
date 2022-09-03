@@ -14,6 +14,9 @@ from openstack.image.v2.image import Image
 
 class ImageManager:
 
+    def __init__(self) -> None:
+        self.url_error = False
+
     def create_cli_args(self):
         PROJECT_NAME = 'images'
         self.CONF = cfg.CONF
@@ -98,7 +101,7 @@ class ImageManager:
             if self.CONF.name and image['name'] not in self.CONF.name:
                 continue
 
-            logging.info("Processing '%s'" % image['name'])
+            logging.debug("Processing '%s'" % image['name'])
 
             versions = dict()
             for version in image['versions']:
@@ -126,6 +129,9 @@ class ImageManager:
 
         if not self.CONF.dry_run:
             self.manage_outdated_images(managed_images)
+
+        if self.url_error:
+            sys.exit('ERROR: One or more configured image URLs are not reachable')
 
     def import_image(self, image: dict, name: str, url: str) -> Image:
         '''
@@ -216,7 +222,7 @@ class ImageManager:
                 name = "%s %s" % (image['name'], version)
 
             logging.info("Processing image '%s'" % name)
-            logging.info("Checking existence of '%s'" % name)
+            logging.debug("Checking existence of '%s'" % name)
             existence = name in cloud_images
 
             if image['multi'] and self.CONF.latest and version == sorted_versions[-1] and not existence:
@@ -240,10 +246,13 @@ class ImageManager:
 
                 url = versions[version]['url']
                 r = requests.head(url)
-                logging.info("Tested URL %s: %s" % (url, r.status_code))
 
-                if r.status_code not in [200, 302]:
+                if r.status_code in [200, 302]:
+                    logging.info("Tested URL %s: %s" % (url, r.status_code))
+                else:
+                    logging.error("Tested URL %s: %s" % (url, r.status_code))
                     logging.error("Skipping '%s' due to HTTP status code %s" % (name, r.status_code))
+                    self.url_error = True
                     return existing_images, imported_image, previous_image
 
                 if image['multi'] and image['name'] in cloud_images:
