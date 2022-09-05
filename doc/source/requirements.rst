@@ -2,6 +2,9 @@
 Requirements
 ============
 
+OpenStack image service
+=======================
+
 .. note:: See upstream glance documentation for more details: `<https://docs.openstack.org/glance/yoga/configuration/sample-configuration.html>`_
 
 Since this script stores many images in a project, the Glance quota 
@@ -26,3 +29,10 @@ to RAW. This requires the following parameter for the image import workflow.
     [image_conversion]
     output_format = raw
 
+S3 storage backend
+==================
+
+If the mirror functionality is used, an S3 storage backend is required. The use
+of the mirror functionality is optional and is not used by default.
+
+Therefore, no S3 storage backend is required to use the OpenStack Image Manager.
