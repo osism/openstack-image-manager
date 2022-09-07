@@ -15,7 +15,7 @@ from openstack.image.v2.image import Image
 class ImageManager:
 
     def __init__(self) -> None:
-        self.url_error = False
+        self.exit_with_error = False
 
     def create_cli_args(self):
         PROJECT_NAME = 'images'
@@ -96,6 +96,7 @@ class ImageManager:
             for required_key in REQUIRED_KEYS:
                 if required_key not in image:
                     logging.error("'%s' lacks the necessary key %s" % (image['name'], required_key))
+                    self.exit_with_error = True
                     continue
 
             if self.CONF.name and image['name'] not in self.CONF.name:
@@ -130,8 +131,9 @@ class ImageManager:
         if not self.CONF.dry_run:
             self.manage_outdated_images(managed_images)
 
-        if self.url_error:
-            sys.exit('ERROR: One or more configured image URLs are not reachable')
+        if self.exit_with_error:
+            sys.exit('\nERROR: One or more errors occurred during the execution of the program, '
+                     'please check the output.')
 
     def import_image(self, image: dict, name: str, url: str) -> Image:
         '''
@@ -167,6 +169,7 @@ class ImageManager:
                     break
             except Exception as e:
                 logging.error("Exception while importing image %s\n%s" % (name, e))
+                self.exit_with_error = True
         return imported_image
 
     def get_images(self) -> dict:
@@ -252,7 +255,7 @@ class ImageManager:
                 else:
                     logging.error("Tested URL %s: %s" % (url, r.status_code))
                     logging.error("Skipping '%s' due to HTTP status code %s" % (name, r.status_code))
-                    self.url_error = True
+                    self.exit_with_error = True
                     return existing_images, imported_image, previous_image
 
                 if image['multi'] and image['name'] in cloud_images:
@@ -459,6 +462,7 @@ class ImageManager:
                         self.conn.image.update_image(cloud_image.id, visibility='community')
                 except Exception as e:
                     logging.error('An Exception occurred: \n%s' % e)
+                    self.exit_with_error = True
         return unmanaged_images
 
 
