@@ -43,11 +43,11 @@ images:
       os_version: '9'
     tags: []
     versions:
-      - version: '20211129'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-9/20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/9.13.31-20211129/debian-9.13.31-20211129-openstack-amd64.qcow2
-        checksum: "sha256:0a967d10c5043904b0e393cf00f0e11a0982806700d414f872ca25ed50b551ad"
-        os_version: '9.13.31'
+      - version: '20220706'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-9/20220706/debian-9.13.42-20220706-openstack-amd64.qcow2
+        source: https://cdimage.debian.org/cdimage/openstack/9.13.42-20220706/debian-9.13.42-20220706-openstack-amd64.qcow2
+        checksum: "sha256:f48ab562cc18a0b482482adeb9a4bbdf20c9850d4f3eb72648ce1facafc7b055"
+        os_version: '9.13.42'
 
   - name: Debian 10
     shortname: debian-10
@@ -67,11 +67,11 @@ images:
       os_version: '10'
     tags: []
     versions:
-      - version: '20211129'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/10.11.2-20211129/debian-10.11.2-20211129-openstack-amd64.qcow2
-        checksum: "sha256:77a7390a542af2327f34af940018aa4fbad3b79ad3687b524020f094994950a3"
-        os_version: '10.11.2'
+      - version: '20220910'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20220910/debian-10.13.0-openstack-amd64.qcow2
+        source: https://cdimage.debian.org/cdimage/openstack/10.13.0/debian-10.13.0-openstack-amd64.qcow2
+        checksum: "sha256:23fd7ec90d355bff2c9d1dfdd212e96f32c1c80650e25801e07f82653a4c9034"
+        os_version: '10.13.0'
 
   - name: Debian 11
     shortname: debian-11
@@ -91,8 +91,8 @@ images:
       os_version: '11'
     tags: []
     versions:
-      - version: '20211220'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20211220/debian-11-generic-amd64-20211220-862.qcow2
-        source: https://cdimage.debian.org/images/cloud/bullseye/20211220-862/debian-11-generic-amd64-20211220-862.qcow2
-        checksum: "sha256:0286808217dca6e39bdbd227c493ae8a3d27b7c5b753a3c0eb37fc1ec50ad6b3"
-        os_version: '11.2.0'
+      - version: '20220911'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20220911/debian-11-generic-amd64-20220911-1135.qcow2
+        source: https://cdimage.debian.org/images/cloud/bullseye/20220911-1135/debian-11-generic-amd64-20220911-1135.qcow2
+        checksum: "sha256:5f41a628d8d72fe1e41ec04ac1f635e26260147b06edf366e92233f7c3f6eddc"
+        os_version: '11.5.0'
