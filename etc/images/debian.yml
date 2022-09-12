@@ -91,8 +91,8 @@ images:
       os_version: '11'
     tags: []
     versions:
-      - version: '20211220'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20211220/debian-11-generic-amd64-20211220-862.qcow2
-        source: https://cdimage.debian.org/images/cloud/bullseye/20211220-862/debian-11-generic-amd64-20211220-862.qcow2
-        checksum: "sha256:0286808217dca6e39bdbd227c493ae8a3d27b7c5b753a3c0eb37fc1ec50ad6b3"
-        os_version: '11.2.0'
+      - version: '20220911'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20220911/debian-11-generic-amd64-20220911-1135.qcow2
+        source: https://cdimage.debian.org/images/cloud/bullseye/20220911-1135/debian-11-generic-amd64-20220911-1135.qcow2
+        checksum: "sha256:5f41a628d8d72fe1e41ec04ac1f635e26260147b06edf366e92233f7c3f6eddc"
+        os_version: '11.5.0'
