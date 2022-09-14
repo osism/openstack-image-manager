@@ -66,7 +66,10 @@ class ImageManager:
         Read all files in etc/images/ and process each image
         Rename outdated images when not dry-running
         '''
-        self.conn = openstack.connect(cloud=self.CONF.cloud)
+        if "OS_AUTH_URL" in os.environ:
+            self.conn = openstack.connect()
+        else:
+            self.conn = openstack.connect(cloud=self.CONF.cloud)
 
         logging.debug("cloud = %s" % self.CONF.cloud)
         logging.debug("dry-run = %s" % self.CONF.dry_run)
