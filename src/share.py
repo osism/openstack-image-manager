@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 from oslo_config import cfg
 import openstack
@@ -47,7 +48,10 @@ def share_image_with_project(conn, image, project):
 if __name__ == '__main__':
     CONF(sys.argv[1:], project=PROJECT_NAME)
 
-    conn = openstack.connect(cloud=CONF.cloud)
+    if "OS_AUTH_URL" in os.environ:
+        conn = openstack.connect()
+    else:
+        conn = openstack.connect(cloud=CONF.cloud)
 
     image = conn.get_image(CONF.image)
 
