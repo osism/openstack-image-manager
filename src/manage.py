@@ -1,14 +1,16 @@
 import logging
-import sys
 import time
 import openstack
 import requests
 import yaml
 import os
+import sys
+import typer
 
 from decimal import Decimal, ROUND_UP
+from munch import Munch
 from natsort import natsorted
-from oslo_config import cfg
+from typing import List, Optional
 from openstack.image.v2.image import Image
 
 
@@ -17,26 +19,25 @@ class ImageManager:
     def __init__(self) -> None:
         self.exit_with_error = False
 
-    def create_cli_args(self):
-        PROJECT_NAME = 'images'
-        self.CONF = cfg.CONF
-        opts = [
-            cfg.BoolOpt('deactivate', help='Deactivate images that should be deleted', default=False),
-            cfg.BoolOpt('debug', help='Enable debug logging', default=False),
-            cfg.BoolOpt('delete', help='Delete images that should be delete', default=False),
-            cfg.BoolOpt('dry-run', help='Do not really do anything', default=False),
-            cfg.BoolOpt('hide', help='Hide images that should be deleted', default=False),
-            cfg.BoolOpt('latest', help='Only import the latest version of images from type multi', default=True),
-            cfg.BoolOpt('use-os-hidden', help='Use the os_hidden property', default=False),
-            cfg.BoolOpt('yes-i-really-know-what-i-do', help='Really delete images', default=False),
-            cfg.StrOpt('cloud', help='Cloud name in clouds.yaml', default='openstack'),
-            cfg.StrOpt('images', help='Path to the directory containing all image files', default='etc/images/'),
-            cfg.ListOpt('name', help='List of image names to process', default=list()),
-            cfg.StrOpt('tag', help='Name of the tag used to identify managed images', default='managed_by_osism')
-        ]
-        if not self.CONF._args:
-            self.CONF.register_cli_opts(opts)
-        self.CONF(sys.argv[1:], project=PROJECT_NAME)
+    def create_cli_args(
+        self,
+        debug: bool = typer.Option(False, '--debug', help='Enable debug logging'),
+        dry_run: bool = typer.Option(False, '--dry-run', help='Do not perform any changes'),
+        latest: bool = typer.Option(False, '--latest', help='Only import the latest version for images of type multi'),
+        cloud: str = typer.Option('openstack', help='Cloud name in clouds.yaml'),
+        images: str = typer.Option('etc/images/', help='Path to the directory containing all image files'),
+        name: Optional[List[str]] = typer.Option([], help='Name of the image to process, '
+                                                 'use repeatedly for multiple images'),
+        tag: str = typer.Option('managed_by_osism', help='Name of the tag used to identify managed images'),
+        deactivate: bool = typer.Option(False, '--deactivate', help='Deactivate images that should be deleted'),
+        hide: bool = typer.Option(False, '--hide', help='Hide images that should be deleted'),
+        delete: bool = typer.Option(False, '--delete', help='Delete outdated images'),
+        yes_i_really_know_what_i_do: bool = typer.Option(False, '--yes-i-really-know-what-i-do',
+                                                         help='Really delete images'),
+        use_os_hidden: bool = typer.Option(False, '--use-os-hidden', help='Use the os_hidden property')
+    ):
+        self.CONF = Munch.fromDict(locals())
+        self.CONF.pop('self')   # remove the self object from CONF
 
         if self.CONF.debug:
             level = logging.DEBUG
@@ -44,6 +45,9 @@ class ImageManager:
             level = logging.INFO
 
         logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
+
+        if __name__ == '__main__':
+            self.main()
 
     def read_image_files(self) -> list:
         ''' Read all YAML files in etc/images/ '''
@@ -471,5 +475,4 @@ class ImageManager:
 
 if __name__ == '__main__':
     image_manager = ImageManager()
-    image_manager.create_cli_args()
-    image_manager.main()
+    typer.run(image_manager.create_cli_args)
