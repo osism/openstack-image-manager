@@ -49,16 +49,19 @@ class ImageManager:
         ''' Read all YAML files in etc/images/ '''
         image_files = []
         for file in os.listdir(self.CONF.images):
-            if os.path.isfile(os.path.join(self.CONF.images, file)):
+            if file.endswith(tuple([".yml", "yaml"])):
                 image_files.append(file)
 
         all_images = []
         for file in image_files:
             with open(os.path.join(self.CONF.images, file)) as fp:
-                data = yaml.load(fp, Loader=yaml.SafeLoader)
-                images = data.get('images')
-                for image in images:
-                    all_images.append(image)
+                try:
+                    data = yaml.load(fp, Loader=yaml.SafeLoader)
+                    images = data.get('images')
+                    for image in images:
+                        all_images.append(image)
+                except yaml.YAMLError as exc:
+                    print(exc)
         return all_images
 
     def main(self) -> None:
