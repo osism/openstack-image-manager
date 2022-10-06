@@ -1,11 +1,11 @@
-import logging
 import openstack
+from loguru import logger
 from munch import Munch
 from unittest import TestCase
 
 from src import manage
 
-logging.disable(logging.CRITICAL)
+logger.remove()   # disable all logging from manage.py
 
 
 class TestManageAPI(TestCase):

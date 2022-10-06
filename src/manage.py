@@ -1,4 +1,3 @@
-import logging
 import time
 import openstack
 import requests
@@ -9,6 +8,7 @@ import typer
 
 from datetime import datetime
 from decimal import Decimal, ROUND_UP
+from loguru import logger
 from munch import Munch
 from natsort import natsorted
 from typing import List, Optional
@@ -41,11 +41,14 @@ class ImageManager:
         self.CONF.pop('self')   # remove the self object from CONF
 
         if self.CONF.debug:
-            level = logging.DEBUG
+            level = "DEBUG"
         else:
-            level = logging.INFO
+            level = "INFO"
 
-        logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=level, datefmt='%Y-%m-%d %H:%M:%S')
+        logger.remove()    # remove the default sink
+        log_fmt = ("<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
+                   "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>")
+        logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
         if __name__ == '__main__':
             self.main()
@@ -100,11 +103,11 @@ class ImageManager:
         else:
             self.conn = openstack.connect(cloud=self.CONF.cloud)
 
-        logging.debug("cloud = %s" % self.CONF.cloud)
-        logging.debug("dry-run = %s" % self.CONF.dry_run)
-        logging.debug("images = %s" % self.CONF.images)
-        logging.debug("tag = %s" % self.CONF.tag)
-        logging.debug("yes-i-really-know-what-i-do = %s" % self.CONF.yes_i_really_know_what_i_do)
+        logger.debug("cloud = %s" % self.CONF.cloud)
+        logger.debug("dry-run = %s" % self.CONF.dry_run)
+        logger.debug("images = %s" % self.CONF.images)
+        logger.debug("tag = %s" % self.CONF.tag)
+        logger.debug("yes-i-really-know-what-i-do = %s" % self.CONF.yes_i_really_know_what_i_do)
 
         REQUIRED_KEYS = [
             'format',
@@ -127,14 +130,14 @@ class ImageManager:
 
             for required_key in REQUIRED_KEYS:
                 if required_key not in image:
-                    logging.error("'%s' lacks the necessary key %s" % (image['name'], required_key))
+                    logger.error("'%s' lacks the necessary key %s" % (image['name'], required_key))
                     self.exit_with_error = True
                     continue
 
             if self.CONF.name and image['name'] not in self.CONF.name:
                 continue
 
-            logging.debug("Processing '%s'" % image['name'])
+            logger.debug("Processing '%s'" % image['name'])
 
             try:
                 versions = dict()
@@ -154,7 +157,7 @@ class ImageManager:
                         else:
                             raise Exception()
             except Exception:
-                logging.error('Key "checksums_url" is required when using version "latest"')
+                logger.error('Key "checksums_url" is required when using version "latest"')
                 continue
 
             sorted_versions = natsorted(versions.keys())
@@ -185,7 +188,7 @@ class ImageManager:
             name: name of the image to import
             url: download URL of the image
         '''
-        logging.info("Importing image %s" % name)
+        logger.info("Importing image %s" % name)
 
         properties = {
             'container_format': 'bare',
@@ -204,12 +207,12 @@ class ImageManager:
             try:
                 imported_image = self.conn.image.get_image(new_image)
                 if imported_image.status != 'active':
-                    logging.info("Waiting for import to complete...")
+                    logger.info("Waiting for import to complete...")
                     time.sleep(10.0)
                 else:
                     break
             except Exception as e:
-                logging.error("Exception while importing image %s\n%s" % (name, e))
+                logger.error("Exception while importing image %s\n%s" % (name, e))
                 self.exit_with_error = True
         return imported_image
 
@@ -226,18 +229,18 @@ class ImageManager:
             if self.CONF.tag in image.tags and (image.visibility == 'public'
                                                 or image.owner == self.conn.current_project_id):
                 result[image.name] = image
-                logging.debug("Managed image '%s' (tags = %s)" % (image.name, image.tags))
+                logger.debug("Managed image '%s' (tags = %s)" % (image.name, image.tags))
             else:
-                logging.debug("Unmanaged image '%s' (tags = %s)" % (image.name, image.tags))
+                logger.debug("Unmanaged image '%s' (tags = %s)" % (image.name, image.tags))
 
         if self.CONF.use_os_hidden:
             for image in self.conn.image.images(**{'os_hidden': True}):
                 if self.CONF.tag in image.tags and (image.visibility == 'public'
                                                     or image.owner == self.conn.current_project_id):
                     result[image.name] = image
-                    logging.debug("Managed hidden image '%s' (tags = %s)" % (image.name, image.tags))
+                    logger.debug("Managed hidden image '%s' (tags = %s)" % (image.name, image.tags))
                 else:
-                    logging.debug("Unmanaged hidden image '%s' (tags = %s)" % (image.name, image.tags))
+                    logger.debug("Unmanaged hidden image '%s' (tags = %s)" % (image.name, image.tags))
         return result
 
     def process_image(self, image: dict, versions: dict, sorted_versions: list) -> tuple:
@@ -266,8 +269,8 @@ class ImageManager:
             else:
                 name = "%s %s" % (image['name'], version)
 
-            logging.info("Processing image '%s'" % name)
-            logging.debug("Checking existence of '%s'" % name)
+            logger.info("Processing image '%s'" % name)
+            logger.debug("Checking existence of '%s'" % name)
             existence = name in cloud_images
 
             if image['multi'] and self.CONF.latest and version == sorted_versions[-1] and not existence:
@@ -276,7 +279,7 @@ class ImageManager:
                     if existence:
                         existence = cloud_images[image['name']]['properties']['internal_version'] == version
                 except KeyError:
-                    logging.error("Image %s is missing property 'internal_version'" % image['name'])
+                    logger.error("Image %s is missing property 'internal_version'" % image['name'])
 
             elif (image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1]
                   and not existence):
@@ -294,18 +297,18 @@ class ImageManager:
                 checksums_url = versions[version]['checksums_url']
                 upstream_checksum = self.get_checksum(versions[version]['url'], checksums_url)
                 if not upstream_checksum:
-                    logging.error("Could not find checksum for image '%s', check the checksums_url" % image['name'])
+                    logger.error("Could not find checksum for image '%s', check the checksums_url" % image['name'])
                     return existing_images, imported_image, previous_image
 
                 try:
                     image_checksum = (cloud_images[image['name']]['properties']['upstream_checksum']
                                       if image['name'] in cloud_images else '')
                     if image_checksum == upstream_checksum:
-                        logging.info("No new version for '%s'" % image['name'])
+                        logger.info("No new version for '%s'" % image['name'])
                         existing_images.add(image['name'])
                         return existing_images, imported_image, previous_image
                     else:
-                        logging.info("New version for '%s'" % image['name'])
+                        logger.info("New version for '%s'" % image['name'])
                         existence = False
                 except KeyError:
                     # when switching from a release pointer to a latest pointer, the image has no checksum property
@@ -317,10 +320,10 @@ class ImageManager:
                 r = requests.head(url)
 
                 if r.status_code in [200, 302]:
-                    logging.info("Tested URL %s: %s" % (url, r.status_code))
+                    logger.info("Tested URL %s: %s" % (url, r.status_code))
                 else:
-                    logging.error("Tested URL %s: %s" % (url, r.status_code))
-                    logging.error("Skipping '%s' due to HTTP status code %s" % (name, r.status_code))
+                    logger.error("Tested URL %s: %s" % (url, r.status_code))
+                    logger.error("Skipping '%s' due to HTTP status code %s" % (name, r.status_code))
                     self.exit_with_error = True
                     return existing_images, imported_image, previous_image
 
@@ -329,12 +332,12 @@ class ImageManager:
 
                 if not self.CONF.dry_run:
                     self.import_image(image, name, url)
-                    logging.info("Import of '%s' successfully completed, reloading images" % name)
+                    logger.info("Import of '%s' successfully completed, reloading images" % name)
                     cloud_images = self.get_images()
                     imported_image = cloud_images[name]
 
             elif self.CONF.latest and version != sorted_versions[-1]:
-                logging.info("Skipping image '%s' (only importing the latest version from type multi)" % name)
+                logger.info("Skipping image '%s' (only importing the latest version from type multi)" % name)
 
             if image['multi']:
                 existing_images.add(image['name'])
@@ -358,34 +361,34 @@ class ImageManager:
         cloud_images = self.get_images()
 
         if name in cloud_images:
-            logging.info("Checking parameters of '%s'" % name)
+            logger.info("Checking parameters of '%s'" % name)
 
             cloud_image = cloud_images[name]
             real_image_size = int(Decimal(cloud_image.size / 2**30).quantize(Decimal('1.'), rounding=ROUND_UP))
 
             if 'min_disk' in image and image['min_disk'] != cloud_image.min_disk:
-                logging.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
+                logger.info("Setting min_disk: %s != %s" % (image['min_disk'], cloud_image.min_disk))
                 self.conn.image.update_image(cloud_image.id, **{'min_disk': int(image['min_disk'])})
 
             if ('min_disk' in image and real_image_size > image['min_disk']) or 'min_disk' not in image:
-                logging.info("Setting min_disk = %d" % real_image_size)
+                logger.info("Setting min_disk = %d" % real_image_size)
                 self.conn.image.update_image(cloud_image.id, **{'min_disk': real_image_size})
 
             if 'min_ram' in image and image['min_ram'] != cloud_image.min_ram:
-                logging.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
+                logger.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
                 self.conn.image.update_image(cloud_image.id, **{'min_ram': int(image['min_ram'])})
 
             if 'build_date' in versions[version]:
-                logging.info("Setting image_build_date = %s" % versions[version]['build_date'])
+                logger.info("Setting image_build_date = %s" % versions[version]['build_date'])
                 image['meta']['image_build_date'] = versions[version]['build_date']
 
             if self.CONF.use_os_hidden:
                 if 'hidden' in versions[version]:
-                    logging.info("Setting os_hidden = %s" % versions[version]['hidden'])
+                    logger.info("Setting os_hidden = %s" % versions[version]['hidden'])
                     self.conn.image.update_image(cloud_image.id, **{'os_hidden': versions[version]['hidden']})
 
                 elif version != natsorted(versions.keys())[-1:]:
-                    logging.info("Setting os_hidden = True")
+                    logger.info("Setting os_hidden = True")
                     self.conn.image.update_image(cloud_image.id, **{'os_hidden': True})
 
             if version == 'latest':
@@ -397,17 +400,17 @@ class ImageManager:
                     modify_date = str(datetime.strptime(modify_date, date_format).date())
                     modify_date = modify_date.replace('-', '')
 
-                    logging.info("Setting internal_version = %s" % modify_date)
+                    logger.info("Setting internal_version = %s" % modify_date)
                     image['meta']['internal_version'] = modify_date
                 except Exception:
-                    logging.error("Error when retrieving the modification date of image '%s'", image['name'])
-                    logging.info("Setting internal_version = %s" % version)
+                    logger.error("Error when retrieving the modification date of image '%s'", image['name'])
+                    logger.info("Setting internal_version = %s" % version)
                     image['meta']['internal_version'] = version
             else:
-                logging.info("Setting internal_version = %s" % version)
+                logger.info("Setting internal_version = %s" % version)
                 image['meta']['internal_version'] = version
 
-            logging.info("Setting image_original_user = %s" % image['login'])
+            logger.info("Setting image_original_user = %s" % image['login'])
             image['meta']['image_original_user'] = image['login']
 
             if version == 'latest' and upstream_checksum:
@@ -420,48 +423,48 @@ class ImageManager:
 
             for tag in image['tags']:
                 if tag not in cloud_image.tags:
-                    logging.info("Adding tag %s" % (tag))
+                    logger.info("Adding tag %s" % (tag))
                     self.conn.image.add_tag(cloud_image.id, tag)
 
             for tag in cloud_image.tags:
                 if tag not in image['tags']:
-                    logging.info("Deleting tag %s" % (tag))
+                    logger.info("Deleting tag %s" % (tag))
                     self.conn.image.remove_tag(cloud_image.id, tag)
 
             properties = cloud_image.properties
             for property in properties:
                 if property in image['meta']:
                     if image['meta'][property] != properties[property]:
-                        logging.info("Setting property %s: %s != %s" %
-                                     (property, properties[property], image['meta'][property]))
+                        logger.info("Setting property %s: %s != %s" %
+                                    (property, properties[property], image['meta'][property]))
                         self.conn.image.update_image(cloud_image.id, **{property: str(image['meta'][property])})
 
                 elif property not in ['self', 'schema', 'stores'] or not property.startswith('os_'):
                     # FIXME: handle deletion of properties
-                    logging.debug("Deleting property %s" % (property))
+                    logger.debug("Deleting property %s" % (property))
 
             for property in image['meta']:
                 if property not in properties:
-                    logging.info("Setting property %s: %s" % (property, image['meta'][property]))
+                    logger.info("Setting property %s: %s" % (property, image['meta'][property]))
                     self.conn.image.update_image(cloud_image.id, **{property: str(image['meta'][property])})
 
-            logging.info("Checking status of '%s'" % name)
+            logger.info("Checking status of '%s'" % name)
             if cloud_image.status != image['status'] and image['status'] == 'deactivated':
-                logging.info("Deactivating image '%s'" % name)
+                logger.info("Deactivating image '%s'" % name)
                 self.conn.image.deactivate_image(cloud_image.id)
 
             elif cloud_image.status != image['status'] and image['status'] == 'active':
-                logging.info("Reactivating image '%s'" % name)
+                logger.info("Reactivating image '%s'" % name)
                 self.conn.image.reactivate_image(cloud_image.id)
 
-            logging.info("Checking visibility of '%s'" % name)
+            logger.info("Checking visibility of '%s'" % name)
             if 'visibility' in versions[version]:
                 visibility = versions[version]['visibility']
             else:
                 visibility = image['visibility']
 
             if cloud_image.visibility != visibility:
-                logging.info("Setting visibility of '%s' to '%s'" % (name, visibility))
+                logger.info("Setting visibility of '%s' to '%s'" % (name, visibility))
                 self.conn.image.update_image(cloud_image.id, visibility=visibility)
 
     def rename_images(self, name: str, sorted_versions: list, imported_image: Image, previous_image: Image) -> None:
@@ -481,11 +484,11 @@ class ImageManager:
             previous_latest = "%s (%s)" % (name, sorted_versions[-2])
 
             if name in cloud_images and previous_latest not in cloud_images:
-                logging.info("Renaming %s to %s" % (name, previous_latest))
+                logger.info("Renaming %s to %s" % (name, previous_latest))
                 self.conn.image.update_image(cloud_images[name].id, name=previous_latest)
 
             if latest in cloud_images:
-                logging.info("Renaming %s to %s" % (latest, name))
+                logger.info("Renaming %s to %s" % (latest, name))
                 self.conn.image.update_image(cloud_images[latest].id, name=name)
 
         elif len(sorted_versions) == 1 and name in cloud_images:
@@ -497,22 +500,22 @@ class ImageManager:
 
                 previous_latest = "%s (%s)" % (name, create_date)
 
-                logging.info('Setting internal_version: %s for %s' % (create_date, previous_latest))
+                logger.info('Setting internal_version: %s for %s' % (create_date, previous_latest))
                 self.conn.image.update_image(previous_image.id, **{'internal_version': create_date})
             else:
                 previous_latest = "%s (%s)" % (name, previous_image['properties']['internal_version'])
 
-            logging.info("Renaming old latest '%s' to '%s'" % (name, previous_latest))
+            logger.info("Renaming old latest '%s' to '%s'" % (name, previous_latest))
             self.conn.image.update_image(previous_image.id, name=previous_latest)
 
-            logging.info("Renaming imported image '%s' to '%s'" % (imported_image.name, name))
+            logger.info("Renaming imported image '%s' to '%s'" % (imported_image.name, name))
             self.conn.image.update_image(imported_image.id, name=name)
 
         elif len(sorted_versions) == 1:
             latest = "%s (%s)" % (name, sorted_versions[-1])
 
             if latest in cloud_images:
-                logging.info("Renaming %s to %s" % (latest, name))
+                logger.info("Renaming %s to %s" % (latest, name))
                 self.conn.image.update_image(cloud_images[latest].id, name=name)
 
     def manage_outdated_images(self, managed_images: set) -> list:
@@ -534,30 +537,30 @@ class ImageManager:
             cloud_image = cloud_images[image]
             if self.CONF.delete and self.CONF.yes_i_really_know_what_i_do:
                 try:
-                    logging.info("Deactivating image '%s'" % image)
+                    logger.info("Deactivating image '%s'" % image)
                     self.conn.image.deactivate_image(cloud_image.id)
 
-                    logging.info("Setting visibility of '%s' to 'community'" % image)
+                    logger.info("Setting visibility of '%s' to 'community'" % image)
                     self.conn.image.update_image(cloud_image.id, visibility='community')
 
-                    logging.info("Deleting %s" % image)
+                    logger.info("Deleting %s" % image)
                     self.conn.image.delete_image(cloud_image.id)
                 except Exception as e:
-                    logging.info("%s is still in use and cannot be deleted\n %s" % (image, e))
+                    logger.info("%s is still in use and cannot be deleted\n %s" % (image, e))
 
             else:
-                logging.warning("Image %s should be deleted" % image)
+                logger.warning("Image %s should be deleted" % image)
                 try:
                     if self.CONF.deactivate:
-                        logging.info("Deactivating image '%s'" % image)
+                        logger.info("Deactivating image '%s'" % image)
                         self.conn.image.deactivate_image(cloud_image.id)
 
                     if self.CONF.hide:
                         cloud_image = cloud_images[image]
-                        logging.info("Setting visibility of '%s' to 'community'" % image)
+                        logger.info("Setting visibility of '%s' to 'community'" % image)
                         self.conn.image.update_image(cloud_image.id, visibility='community')
                 except Exception as e:
-                    logging.error('An Exception occurred: \n%s' % e)
+                    logger.error('An Exception occurred: \n%s' % e)
                     self.exit_with_error = True
         return unmanaged_images
 
