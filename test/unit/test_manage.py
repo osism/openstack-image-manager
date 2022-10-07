@@ -172,7 +172,7 @@ class TestManage(TestCase):
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
         mock_import_image.assert_called_once_with(self.fake_image_dict, self.fake_name, self.fake_url)
-        mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1')
+        mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1', '')
         self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.__getitem__(), None))
 
         mock_get_images.reset_mock()
@@ -203,7 +203,7 @@ class TestManage(TestCase):
         self.fake_image_dict['tags'] = ['my_tag']
         self.fake_image_dict['status'] = 'deactivated'
 
-        self.sot.set_properties(self.fake_image_dict, self.fake_name, self.versions, '1')
+        self.sot.set_properties(self.fake_image_dict, self.fake_name, self.versions, '1', '')
 
         mock_get_images.assert_called_once()
         mock_update_image.assert_called()

@@ -7,6 +7,7 @@ import os
 import sys
 import typer
 
+from datetime import datetime
 from decimal import Decimal, ROUND_UP
 from munch import Munch
 from natsort import natsorted
@@ -68,6 +69,27 @@ class ImageManager:
                     print(exc)
         return all_images
 
+    def get_checksum(self, url: str, checksums_url: str) -> str:
+        '''
+        Get the checksum of an upstream image by parsing its corresponding checksums file
+
+        Params:
+            url: the download URL of the image
+            checksums_url: the URL of the corresponding checksums file
+
+        Returns:
+            the matching checksum, if it is available or else an empty string
+        '''
+        filename = url.split('/')[-1]
+        checksums_file = requests.get(checksums_url).text
+        for line in checksums_file.splitlines():
+            if filename in line:
+                split = line.split(' ')
+                for elem in split:
+                    if (len(elem) == 128 or len(elem) == 64 or len(elem) == 40 or len(elem) == 32) and '.' not in elem:
+                        return elem
+        return ''
+
     def main(self) -> None:
         '''
         Read all files in etc/images/ and process each image
@@ -114,17 +136,26 @@ class ImageManager:
 
             logging.debug("Processing '%s'" % image['name'])
 
-            versions = dict()
-            for version in image['versions']:
-                versions[str(version['version'])] = {
-                    'url': version['url']
-                }
-                if 'visibility' in version:
-                    versions[version['version']]['visibility'] = version['visibility']
-                if 'os_version' in version:
-                    versions[version['version']]['os_version'] = version['os_version']
-                if 'hidden' in version:
-                    versions[version['version']]['hidden'] = version['hidden']
+            try:
+                versions = dict()
+                for version in image['versions']:
+                    versions[str(version['version'])] = {
+                        'url': version['url']
+                    }
+                    if 'visibility' in version:
+                        versions[version['version']]['visibility'] = version['visibility']
+                    if 'os_version' in version:
+                        versions[version['version']]['os_version'] = version['os_version']
+                    if 'hidden' in version:
+                        versions[version['version']]['hidden'] = version['hidden']
+                    if version['version'] == 'latest':
+                        if 'checksums_url' in version:
+                            versions[version['version']]['checksums_url'] = version['checksums_url']
+                        else:
+                            raise Exception()
+            except Exception:
+                logging.error('Key "checksums_url" is required when using version "latest"')
+                continue
 
             sorted_versions = natsorted(versions.keys())
             image['tags'].append(self.CONF.tag)
@@ -227,6 +258,7 @@ class ImageManager:
         existing_images = set()
         imported_image = None
         previous_image = None
+        upstream_checksum = ''
 
         for version in sorted_versions:
             if image['multi']:
@@ -240,8 +272,11 @@ class ImageManager:
 
             if image['multi'] and self.CONF.latest and version == sorted_versions[-1] and not existence:
                 existence = image['name'] in cloud_images
-                if existence:
-                    existence = cloud_images[image['name']]['properties']['internal_version'] == version
+                try:
+                    if existence:
+                        existence = cloud_images[image['name']]['properties']['internal_version'] == version
+                except KeyError:
+                    logging.error("Image %s is missing property 'internal_version'" % image['name'])
 
             elif (image['multi'] and len(sorted_versions) > 1 and version == sorted_versions[-1]
                   and not existence):
@@ -254,6 +289,27 @@ class ImageManager:
 
             elif image['multi'] and len(sorted_versions) == 1:
                 existence = image['name'] in cloud_images
+
+            if version == 'latest':
+                checksums_url = versions[version]['checksums_url']
+                upstream_checksum = self.get_checksum(versions[version]['url'], checksums_url)
+                if not upstream_checksum:
+                    logging.error("Could not find checksum for image '%s', check the checksums_url" % image['name'])
+                    return existing_images, imported_image, previous_image
+
+                try:
+                    image_checksum = (cloud_images[image['name']]['properties']['upstream_checksum']
+                                      if image['name'] in cloud_images else '')
+                    if image_checksum == upstream_checksum:
+                        logging.info("No new version for '%s'" % image['name'])
+                        existing_images.add(image['name'])
+                        return existing_images, imported_image, previous_image
+                    else:
+                        logging.info("New version for '%s'" % image['name'])
+                        existence = False
+                except KeyError:
+                    # when switching from a release pointer to a latest pointer, the image has no checksum property
+                    existence = False
 
             if not existence and not (self.CONF.latest and len(sorted_versions) > 1 and version != sorted_versions[-1]):
 
@@ -286,10 +342,10 @@ class ImageManager:
                 existing_images.add(name)
 
             if imported_image:
-                self.set_properties(image, name, versions, version)
+                self.set_properties(image, name, versions, version, upstream_checksum)
         return existing_images, imported_image, previous_image
 
-    def set_properties(self, image: dict, name: str, versions: dict, version: str) -> None:
+    def set_properties(self, image: dict, name: str, versions: dict, version: str, upstream_checksum: str) -> None:
         '''
         Set image properties and tags based on the configuration from images.yml
 
@@ -332,11 +388,30 @@ class ImageManager:
                     logging.info("Setting os_hidden = True")
                     self.conn.image.update_image(cloud_image.id, **{'os_hidden': True})
 
-            logging.info("Setting internal_version = %s" % version)
-            image['meta']['internal_version'] = version
+            if version == 'latest':
+                try:
+                    url = versions[version]['url']
+                    modify_date = requests.head(url, allow_redirects=True).headers['Last-Modified']
+
+                    date_format = '%a, %d %b %Y %H:%M:%S %Z'
+                    modify_date = str(datetime.strptime(modify_date, date_format).date())
+                    modify_date = modify_date.replace('-', '')
+
+                    logging.info("Setting internal_version = %s" % modify_date)
+                    image['meta']['internal_version'] = modify_date
+                except Exception:
+                    logging.error("Error when retrieving the modification date of image '%s'", image['name'])
+                    logging.info("Setting internal_version = %s" % version)
+                    image['meta']['internal_version'] = version
+            else:
+                logging.info("Setting internal_version = %s" % version)
+                image['meta']['internal_version'] = version
 
             logging.info("Setting image_original_user = %s" % image['login'])
             image['meta']['image_original_user'] = image['login']
+
+            if version == 'latest' and upstream_checksum:
+                image['meta']['upstream_checksum'] = upstream_checksum
 
             if image['multi'] and 'os_version' in versions[version]:
                 image['meta']['os_version'] = versions[version]['os_version']
@@ -414,7 +489,18 @@ class ImageManager:
                 self.conn.image.update_image(cloud_images[latest].id, name=name)
 
         elif len(sorted_versions) == 1 and name in cloud_images:
-            previous_latest = "%s (%s)" % (name, previous_image['properties']['internal_version'])
+
+            if previous_image['properties']['internal_version'] == 'latest':
+                # if the last modification date cannot be found, use the creation date of the image instead
+                create_date = str(datetime.strptime(previous_image.created_at, '%Y-%m-%dT%H:%M:%SZ').date())
+                create_date = create_date.replace('-', '')
+
+                previous_latest = "%s (%s)" % (name, create_date)
+
+                logging.info('Setting internal_version: %s for %s' % (create_date, previous_latest))
+                self.conn.image.update_image(previous_image.id, **{'internal_version': create_date})
+            else:
+                previous_latest = "%s (%s)" % (name, previous_image['properties']['internal_version'])
 
             logging.info("Renaming old latest '%s' to '%s'" % (name, previous_latest))
             self.conn.image.update_image(previous_image.id, name=previous_latest)
