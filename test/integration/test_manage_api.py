@@ -57,7 +57,7 @@ class TestManageAPI(TestCase):
         self.assertFalse(imported_image.is_hidden)
 
         # test set properties
-        self.sot.set_properties(self.image, self.name, {'1': dict()}, '1', '')
+        self.sot.set_properties(self.image, self.name, {'1': dict()}, '1', '', self.image['meta'])
 
         # assert the properties of the image got updated
         image = self.sot.get_images()[self.name]

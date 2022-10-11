@@ -166,13 +166,14 @@ class TestManage(TestCase):
         ''' test manage.ImageManager.process_image() '''
 
         mock_requests.return_value.status_code = 200
+        meta = self.fake_image_dict['meta']
 
-        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions)
+        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions, meta)
 
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
         mock_import_image.assert_called_once_with(self.fake_image_dict, self.fake_name, self.fake_url)
-        mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1', '')
+        mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1', '', meta)
         self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.__getitem__(), None))
 
         mock_get_images.reset_mock()
@@ -182,7 +183,7 @@ class TestManage(TestCase):
 
         # test the same function with dry_run = True
         self.sot.CONF.dry_run = True
-        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions)
+        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions, meta)
 
         mock_get_images.assert_called_once()
         mock_requests.assert_called_once_with(self.fake_url)
@@ -198,12 +199,13 @@ class TestManage(TestCase):
     def test_set_properties(self, mock_get_images, mock_update_image, mock_add_tag, mock_remove_tag, mock_deactivate):
         ''' test manage.ImageManager.set_properties() '''
 
+        meta = self.fake_image_dict['meta']
         mock_get_images.return_value = {self.fake_name: self.fake_image}
 
         self.fake_image_dict['tags'] = ['my_tag']
         self.fake_image_dict['status'] = 'deactivated'
 
-        self.sot.set_properties(self.fake_image_dict, self.fake_name, self.versions, '1', '')
+        self.sot.set_properties(self.fake_image_dict, self.fake_name, self.versions, '1', '', meta)
 
         mock_get_images.assert_called_once()
         mock_update_image.assert_called()
@@ -298,6 +300,7 @@ class TestManage(TestCase):
                   mock_process_image, mock_rename_images, mock_manage_outdated):
         ''' test manage.ImageManager.main() '''
 
+        meta = self.fake_image_dict['meta']
         self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
         mock_process_image.return_value = ({self.fake_image_dict['name']}, self.imported_image, self.previous_image)
         mock_listdir.return_value = ['fake.yml']
@@ -306,7 +309,7 @@ class TestManage(TestCase):
         self.sot.main()
 
         mock_connect.assert_called_once_with(cloud=self.sot.CONF.cloud)
-        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'])
+        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'], meta)
         mock_rename_images.assert_called_once_with(self.fake_image_dict['name'], ['1'],
                                                    self.imported_image,
                                                    self.previous_image)
@@ -321,6 +324,6 @@ class TestManage(TestCase):
         mock_process_image.return_value = ({self.fake_image_dict['name']}, None, None)
 
         self.sot.main()
-        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'])
+        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'], meta)
         mock_rename_images.assert_not_called()
         mock_manage_outdated.assert_not_called()
