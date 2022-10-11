@@ -562,6 +562,10 @@ class ImageManager:
         return unmanaged_images
 
 
-if __name__ == '__main__':
+def main():
     image_manager = ImageManager()
     typer.run(image_manager.create_cli_args)
+
+
+if __name__ == '__main__':
+    main()
