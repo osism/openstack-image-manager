@@ -1,0 +1,35 @@
+---
+name: Publish
+
+"on":
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - run: >-
+          python -m
+          pip install
+          build
+          --user
+      - run: >-
+          python -m
+          build
+          --sdist
+          --wheel
+          --outdir dist/
+          .
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}

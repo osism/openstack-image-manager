@@ -1,0 +1,25 @@
+---
+name: Test python setup
+
+"on":
+  push:
+    paths:
+      - '**.py'
+      - .github/workflows/test-python-setup.yml
+    branches:
+      - main
+  pull_request:
+    paths:
+      - '**.py'
+      - .github/workflows/test-python-setup.yml
+
+jobs:
+  test-python-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - run: pip3 install .
+      - run: openstack-image-manager --help
