@@ -1,0 +1,23 @@
+---
+name: Check docker syntax
+
+"on":
+  push:
+    paths:
+      - Containerfile
+      - .github/workflows/check-docker-syntax.yml
+    branches:
+      - main
+  pull_request:
+    paths:
+      - Containerfile
+      - .github/workflows/check-docker-syntax.yml
+
+jobs:
+  check-docker-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: brpaz/hadolint-action@v1.5.0
+        with:
+          dockerfile: Containerfile
