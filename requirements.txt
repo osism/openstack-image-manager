@@ -1,3 +1,4 @@
+loguru==0.6.0
 minio==7.1.12
 munch==2.5.0
 natsort==8.2.0

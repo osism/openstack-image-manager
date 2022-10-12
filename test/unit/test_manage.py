@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 from munch import Munch
 from unittest import TestCase, mock
 from openstack.image.v2.image import Image
@@ -6,7 +6,7 @@ from openstack.image.v2._proxy import Proxy
 
 from src import manage
 
-logging.disable(logging.CRITICAL)   # disable all logging from manage.py
+logger.remove()   # disable all logging from manage.py
 
 # sample config from images.yml
 FAKE_YML = '''
