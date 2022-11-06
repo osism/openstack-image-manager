@@ -20,10 +20,29 @@ images:
     tags: []
     versions:
       - version: '20220702'
-        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20220702/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow
         source: https://download.rockylinux.org/pub/rocky/8.6/images/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow2
         checksum: "sha256:7b786a39eeb96e22dd85386377ff186737f6c1b9a5faa105b0a0a7a4895c29d0"
-      - version: '20210620'
-        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20210620/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
-        source: https://download.rockylinux.org/pub/rocky/8.4/images/Rocky-8-GenericCloud-8.4-20210620.0.x86_64.qcow2
-        checksum: "sha256:9f1d55a3b8672b1bb08cc9318c12a75fcf3b9152fd63f021c92fe6272ba97bcb"
+
+  - name: Rocky 9
+    shortname: rocky-9
+    format: qcow2
+    login: rocky
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: centos
+      os_version: '9'
+    tags: []
+    versions:
+      - version: '20220830'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-9/Rocky-9-GenericCloud-9.0-20220830.0.x86_64.qcow2
+        source: https://download.rockylinux.org/pub/rocky/9.0/images/x86_64/Rocky-9-GenericCloud-9.0-20220830.0.x86_64.qcow2
+        checksum: "sha256:f02570e0ad3653df7f56baa8157739dbe92a003234acd5824dcf94d24694e20b"
