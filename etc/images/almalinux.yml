@@ -20,9 +20,9 @@ images:
     latest_checksum_url: https://repo.almalinux.org/almalinux/8/cloud/x86_64/images/CHECKSUM
     latest_url: https://repo.almalinux.org/almalinux/8/cloud/x86_64/images/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2
     versions:
-      - version: 'XXX'
-        url: XXX
-        checksum: XXX
+      - version: '20220831'
+        url: https://minio.services.osism.tech/openstack-image-manager/almalinux-8/20220831-almalinux-8.qcow2
+        checksum: sha256:e4b215dc807200db3a8934bdd785026c3776d3798e36f830897861074f29fc54
   - name: AlmaLinux 9
     shortname: almalinux-9
     format: qcow2
@@ -43,6 +43,6 @@ images:
     latest_checksum_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM
     latest_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
     versions:
-      - version: 'XXX'
-        url: XXX
-        checksum: XXX
+      - version: '20221102'
+        url: https://minio.services.osism.tech/openstack-image-manager/almalinux-9/20221102-almalinux-9.qcow2
+        checksum: sha256:0ca2ad494ae98eb8b22f2192871ccfe878dc8ee79ab77cb45db47573e49ea74d
