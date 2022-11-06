@@ -1,6 +1,5 @@
 ---
 images:
-
   - name: Rocky 8
     shortname: rocky-8
     format: qcow2
@@ -21,10 +20,9 @@ images:
     latest_checksum_url: https://download.rockylinux.org/pub/rocky/8/images/CHECKSUM
     latest_url: https://download.rockylinux.org/pub/rocky/8/images/Rocky-8-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: 'XXXX'
-        url: XXX
-        checksum: XXX
-
+      - version: '20220703'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20220703-rocky-8.qcow2
+        checksum: sha256:7b786a39eeb96e22dd85386377ff186737f6c1b9a5faa105b0a0a7a4895c29d0
   - name: Rocky 9
     shortname: rocky-9
     format: qcow2
@@ -45,6 +43,6 @@ images:
     latest_checksum_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM
     latest_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: 'XXX'
-        url: XXX
-        checksum: XXX
+      - version: '20220830'
+        url: https://minio.services.osism.tech/openstack-image-manager/rocky-9/20220830-rocky-9.qcow2
+        checksum: sha256:f02570e0ad3653df7f56baa8157739dbe92a003234acd5824dcf94d24694e20b
