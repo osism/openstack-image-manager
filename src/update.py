@@ -78,20 +78,26 @@ def update_image(image, CONF):
     latest_url = image["latest_url"]
     logger.info(f"Latest download URL is {latest_url}")
 
+    parsed_url = urlparse(latest_url)
+    latest_filename = os.path.basename(parsed_url.path)
+
     latest_checksum_url = image["latest_checksum_url"]
     logger.info(f"Getting checksums from {latest_checksum_url}")
 
     result = requests.get(latest_checksum_url)
     checksums = {}
     for line in result.text.split("\n"):
-        splitted_line = re.split("\s+", line)  # noqa W605
-        if len(splitted_line) == 2:
-            checksums[splitted_line[1]] = splitted_line[0]
 
-    parsed_url = urlparse(latest_url)
-    latest_filename = os.path.basename(parsed_url.path)
+        if image["shortname"] == "rocky-9":
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if splitted_line[0] == "SHA256":
+                checksums[latest_filename] = splitted_line[3]
+        else:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if len(splitted_line) == 2:
+                checksums[splitted_line[1]] = splitted_line[0]
+
     current_checksum = f"sha256:{checksums[latest_filename]}"
-
     logger.info(f"Checksum of current {latest_filename} is {current_checksum}")
 
     latest_version = image["versions"][0]
