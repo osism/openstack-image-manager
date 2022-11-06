@@ -1,8 +1,5 @@
 ---
 # NOTE: This is the clouds.yml file for the integration tests run by GitHub Actions.
-#
-#       The file will be moved from to the .github direct after implementation
-#       of https://github.com/osism/openstack-image-manager/issues/316.
 
 clouds:
   openstack:
