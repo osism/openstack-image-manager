@@ -92,6 +92,20 @@ def update_image(image, CONF):
             splitted_line = re.split("\s+", line)  # noqa W605
             if splitted_line[0] == "SHA256":
                 checksums[latest_filename] = splitted_line[3]
+        if image["shortname"] in [
+            "ubuntu-14.04",
+            "ubuntu-16.04",
+            "ubuntu-16.04-minimal",
+            "ubuntu-18.04",
+            "ubuntu-18.04-minimal",
+            "ubuntu-20.04",
+            "ubuntu-20.04-minimal",
+            "ubuntu-22.04",
+            "ubuntu-22.04-minimal",
+        ]:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if len(splitted_line) == 2:
+                checksums[splitted_line[1][1:]] = splitted_line[0]
         else:
             splitted_line = re.split("\s+", line)  # noqa W605
             if len(splitted_line) == 2:
