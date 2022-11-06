@@ -13,6 +13,7 @@ jobs:
       matrix:
         image:
           - almalinux
+          - rockylinux
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
