@@ -40,11 +40,16 @@ def mirror_image(image, CONF):
     if fileextension not in [".bz2", ".zip", ".xz"]:
         filename += fileextension
 
+    shortname = image["shortname"]
+    format = image["format"]
+    new_version = version["version"]
+    new_filename = f"{new_version}-{shortname}.{format}"
+
     try:
-        client.stat_object(CONF.minio_bucket, os.path.join(dirname, filename))
-        logger.info("'%s' available in '%s'" % (filename, dirname))
+        client.stat_object(CONF.minio_bucket, os.path.join(dirname, new_filename))
+        logger.info("'%s' available in '%s'" % (new_filename, dirname))
     except S3Error:
-        logger.info("'%s' not yet available in '%s'" % (filename, dirname))
+        logger.info("'%s' not yet available in '%s'" % (new_filename, dirname))
         logger.info("Downloading '%s'" % version["source"])
         response = requests.get(version["source"], stream=True)
         with open(os.path.basename(path.path), "wb") as fp:
@@ -56,9 +61,13 @@ def mirror_image(image, CONF):
             patoolib.extract_archive(os.path.basename(path.path), outdir=".")
             os.remove(os.path.basename(path.path))
 
-        logger.info("Uploading '%s' to '%s'" % (filename, dirname))
+        logger.info(
+            "Uploading '%s' to '%s' as '%s'" % (filename, dirname, new_filename)
+        )
 
-        client.fput_object(CONF.minio_bucket, os.path.join(dirname, filename), filename)
+        client.fput_object(
+            CONF.minio_bucket, os.path.join(dirname, new_filename), filename
+        )
         os.remove(filename)
 
 
@@ -115,6 +124,7 @@ def update_image(image, CONF):
         image["versions"][0]["url"] = new_url
 
         mirror_image(image, CONF)
+        del image["versions"][0]["source"]
 
     else:
         logger.info(f"Image {name} is up-to-date, nothing to do")
