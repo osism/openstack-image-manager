@@ -14,6 +14,7 @@ jobs:
         image:
           - almalinux
           - rockylinux
+          - ubuntu
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
