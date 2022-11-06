@@ -2,6 +2,21 @@
 Notes
 =====
 
+Mirroring of images
+===================
+
 Since the upstreams often only keep their images for a short time, we mirror most of the
-images on our images.osism.tech mirror. This makes us independent of the availability of
-the images in the individual upstreams.
+images on our ``minio.services.osism.tech`` mirror. This makes us independent of the
+availability of the images in the individual upstreams.
+
+Updating images
+===============
+
+Some of the images are automatically updated by a CI job. The latest available build at
+the time of the CI job execution is mirrored and made available as the current version.
+
+Currently, the following images are updated once a week (every Sunday at 0 am):
+
+* Almalinux
+* Rockylinux
+* Ubuntu
