@@ -19,11 +19,12 @@ images:
       os_distro: ubuntu
       os_version: '14.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
     versions:
-      - version: '20191107'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107/trusty-server-cloudimg-amd64-disk1.img
-        source: https://cloud-images.ubuntu.com/trusty/20191107/trusty-server-cloudimg-amd64-disk1.img
-        checksum: "sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 16.04
     shortname: ubuntu-16.04
@@ -43,11 +44,12 @@ images:
       os_distro: ubuntu
       os_version: '16.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/xenial/current/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     versions:
-      - version: '20210804'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20210804/xenial-server-cloudimg-amd64-disk1.img
-        source: https://cloud-images.ubuntu.com/xenial/20210804/xenial-server-cloudimg-amd64-disk1.img
-        checksum: "sha256:7960a137f3fd788298997b29b2fef92ead603759faaf23d5a791845c0f8dd4e5"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 16.04 Minimal
     shortname: ubuntu-16.04-minimal
@@ -67,11 +69,12 @@ images:
       os_distro: ubuntu
       os_version: '16.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/xenial/release/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/minimal/releases/xenial/release/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
     versions:
-      - version: '20210430'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
-        source: http://cloud-images.ubuntu.com/minimal/releases/xenial/release-20210430/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
-        checksum: "sha256:d6022f4868330fca3a172aed7b08110b14eac285af842cacc522da3f171272ec"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 18.04
     shortname: ubuntu-18.04
@@ -91,11 +94,12 @@ images:
       os_distro: ubuntu
       os_version: '18.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
     versions:
-      - version: '20211216'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20211216/bionic-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/bionic/20211216/bionic-server-cloudimg-amd64.img
-        checksum: "sha256:0db3eb91b1539cf99494e5205cd73081392bca433659eaaec35f3fc97401a812"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
@@ -115,11 +119,12 @@ images:
       os_distro: ubuntu
       os_version: '18.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/bionic/release/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20210803'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
-        source: http://cloud-images.ubuntu.com/minimal/releases/bionic/release-20210803/ubuntu-18.04-minimal-cloudimg-amd64.img
-        checksum: "sha256:54b5e4c0a64d6bba772e856af368da212b12ff3c7a4ef5abf53be26035cdec61"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 20.04
     shortname: ubuntu-20.04
@@ -139,11 +144,12 @@ images:
       os_distro: ubuntu
       os_version: '20.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20220804'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20220804/focal-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/focal/20220804/focal-server-cloudimg-amd64.img
-        checksum: "sha256:d96622d77bcbab5526fd42e7d933ee851d239327946992a018b0bfc9fad777e7"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
@@ -163,11 +169,12 @@ images:
       os_distro: ubuntu
       os_version: '20.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20220712'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20220712/ubuntu-20.04-minimal-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/minimal/releases/focal/release-20220712/ubuntu-20.04-minimal-cloudimg-amd64.img
-        checksum: "sha256:49dd8f0917b9b00f6962e6f9f690592f8fafb2126fbe294adb625930aff58a5f"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 22.04
     shortname: ubuntu-22.04
@@ -187,11 +194,12 @@ images:
       os_distro: ubuntu
       os_version: '22.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20220718'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20220718/jammy-server-cloudimg-amd64.img
-        source: https://cloud-images.ubuntu.com/jammy/20220718/jammy-server-cloudimg-amd64.img
-        checksum: "sha256:b63ec58af8dfa161c5420dc6462ed312ca19f8c3e3e316b1cd55779831d52e58"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Ubuntu 22.04 Minimal
     shortname: ubuntu-22.04-minimal
@@ -211,8 +219,9 @@ images:
       os_distro: ubuntu
       os_version: '22.04'
     tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20220713'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20220713/ubuntu-22.04-minimal-cloudimg-amd64.img
-        source: http://cloud-images.ubuntu.com/minimal/releases/jammy/release-20220713/ubuntu-22.04-minimal-cloudimg-amd64.img
-        checksum: "sha256:53113fb9ca9a3cff95be9a2c4d8bb79494bf8e2e8580e12693a040d2a29aa59a"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
