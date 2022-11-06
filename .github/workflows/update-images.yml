@@ -12,8 +12,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - almalinux
-    if: github.repository == 'osism/openstack-image-manager'
+        - almalinux
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -24,7 +23,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - run: pip3 install tox
+      - name: Install pip3
+        run: pip3 install tox
 
       - name: Update ${{ matrix.image }} images
         uses: technote-space/create-pr-action@v2
@@ -36,8 +36,8 @@ jobs:
             chore: update ${{ matrix.image }} images
 
             Signed-off-by: OSISM Bot <bot@osism.tech>
-          COMMIT_NAME: 'OSISM Bot'
+          COMMIT_NAME: "OSISM Bot"
           ONLY_DEFAULT_BRANCH: true
           PR_BRANCH_NAME: "update-${{ matrix.image }}-images"
-          PR_BRANCH_PREFIX: 'chore/'
+          PR_BRANCH_PREFIX: "chore/"
           PR_TITLE: "chore: update ${{ matrix.image }} images"
