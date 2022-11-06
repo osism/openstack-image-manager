@@ -18,11 +18,12 @@ images:
       os_distro: centos
       os_version: '8'
     tags: []
+    latest_checksum_url: https://download.rockylinux.org/pub/rocky/8/images/x86_64/CHECKSUM
+    latest_url: https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20220702'
-        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow2
-        source: https://download.rockylinux.org/pub/rocky/8.6/images/Rocky-8-GenericCloud-8.6.20220702.0.x86_64.qcow2
-        checksum: "sha256:7b786a39eeb96e22dd85386377ff186737f6c1b9a5faa105b0a0a7a4895c29d0"
+      - version: 'XXXX'
+        url: XXX
+        checksum: XXX
 
   - name: Rocky 9
     shortname: rocky-9
@@ -41,8 +42,9 @@ images:
       os_distro: centos
       os_version: '9'
     tags: []
+    latest_checksum_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/CHECKSUM
+    latest_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20220830'
-        url: https://minio.services.osism.tech/openstack-image-manager/rocky-9/Rocky-9-GenericCloud-9.0-20220830.0.x86_64.qcow2
-        source: https://download.rockylinux.org/pub/rocky/9.0/images/x86_64/Rocky-9-GenericCloud-9.0-20220830.0.x86_64.qcow2
-        checksum: "sha256:f02570e0ad3653df7f56baa8157739dbe92a003234acd5824dcf94d24694e20b"
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
