@@ -41,6 +41,10 @@ Usage
 
 The cloud environment to be used can be specified via the ``--cloud`` parameter. The default-value is: `openstack`.
 
+The path of the ``clouds.yaml`` file to be used can be set via the environment variable ``OS_CLIENT_CONFIG_FILE``.
+
+OS_CLIENT_CONFIG_FILE
+
 The path to the definitions of the images is set via the parameter ``--images``. The default-value is: `etc/images.yml`.
 
 The tag for the identification of managed images is set via ``--tag``. The default-value is: `managed_by_osism`.
