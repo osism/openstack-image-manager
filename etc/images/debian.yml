@@ -18,12 +18,12 @@ images:
       os_distro: debian
       os_version: '10'
     tags: []
+    lastest_checksum_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
+    lastest_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
-      - version: '20220910'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20220910/debian-10.13.0-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/10.13.0/debian-10.13.0-openstack-amd64.qcow2
-        checksum: "sha256:23fd7ec90d355bff2c9d1dfdd212e96f32c1c80650e25801e07f82653a4c9034"
-        os_version: '10.13.0'
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
 
   - name: Debian 11
     shortname: debian-11
@@ -42,9 +42,9 @@ images:
       os_distro: debian
       os_version: '11'
     tags: []
+    lastest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/SHA512SUMS
+    lastest_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20220911'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20220911/debian-11-generic-amd64-20220911-1135.qcow2
-        source: https://cdimage.debian.org/images/cloud/bullseye/20220911-1135/debian-11-generic-amd64-20220911-1135.qcow2
-        checksum: "sha256:5f41a628d8d72fe1e41ec04ac1f635e26260147b06edf366e92233f7c3f6eddc"
-        os_version: '11.5.0'
+      - version: 'XXX'
+        url: XXX
+        checksum: XXX
