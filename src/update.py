@@ -88,6 +88,8 @@ def update_image(image, CONF):
     result = requests.get(latest_checksum_url)
     checksums = {}
 
+    checksum_type = "sha256"
+
     filename_pattern = None
     if image["shortname"] in ["centos-stream-8", "centos-stream-9", "centos-7"]:
         filename_pattern = latest_filename.replace("HEREBE", "")
@@ -99,6 +101,8 @@ def update_image(image, CONF):
             splitted_line = re.split("\s+", line)  # noqa W605
             if splitted_line[0] == "SHA256":
                 checksums[latest_filename] = splitted_line[3]
+        elif image["shortname"] in ["debian-10", "debian-11"]:
+            checksum_type = "sha512"
         elif image["shortname"] in [
             "ubuntu-14.04",
             "ubuntu-16.04",
@@ -139,7 +143,7 @@ def update_image(image, CONF):
         latest_filename = new_latest_filename
         latest_url = new_latest_url
 
-    current_checksum = f"sha256:{checksums[latest_filename]}"
+    current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
     logger.info(f"Checksum of current {latest_filename} is {current_checksum}")
 
     latest_version = image["versions"][0]
