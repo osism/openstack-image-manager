@@ -37,7 +37,9 @@ class ImageManager:
         delete: bool = typer.Option(False, '--delete', help='Delete outdated images'),
         yes_i_really_know_what_i_do: bool = typer.Option(False, '--yes-i-really-know-what-i-do',
                                                          help='Really delete images'),
-        use_os_hidden: bool = typer.Option(False, '--use-os-hidden', help='Use the os_hidden property')
+        use_os_hidden: bool = typer.Option(False, '--use-os-hidden', help='Use the os_hidden property'),
+        validate: bool = typer.Option(False, '--validate',
+                                      help='Validate the image metadata against the SCS Image Metadata Standard')
     ):
         self.CONF = Munch.fromDict(locals())
         self.CONF.pop('self')   # remove the self object from CONF
@@ -180,7 +182,7 @@ class ImageManager:
         if not self.CONF.dry_run:
             self.manage_outdated_images(managed_images)
 
-        if self.CONF.dry_run:
+        if self.CONF.validate:
             self.check_image_metadata()
 
         if self.exit_with_error:

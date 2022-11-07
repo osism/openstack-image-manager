@@ -105,7 +105,8 @@ class TestManage(TestCase):
             cloud='fake-cloud',
             images='etc/images/',
             name=None,
-            tag='fake_tag'
+            tag='fake_tag',
+            validate=False
         )
 
         # we can also mimick an openstack connection object with a Munch
@@ -324,6 +325,7 @@ class TestManage(TestCase):
 
         # test with dry_run = True, this also implies that imported_image = None
         self.sot.CONF.dry_run = True
+        self.sot.CONF.validate = True
         mock_process_image.return_value = ({self.fake_image_dict['name']}, None, None)
 
         self.sot.main()
