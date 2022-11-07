@@ -19,7 +19,7 @@ images:
       os_version: '7'
     tags: []
     latest_checksum_url: https://cloud.centos.org/centos/7/images/sha256sum.txt
-    latest_url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+    latest_url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS
     versions:
       - version: 'XXX'
         url: XXX

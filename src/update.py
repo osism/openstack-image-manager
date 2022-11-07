@@ -89,7 +89,7 @@ def update_image(image, CONF):
     checksums = {}
 
     filename_pattern = None
-    if image["shortname"] in ["centos-stream-8", "centos-stream-9"]:
+    if image["shortname"] in ["centos-stream-8", "centos-stream-9", "centos-7"]:
         filename_pattern = latest_filename.replace("HEREBE", "")
         filename_pattern = filename_pattern.replace("DRAGONS", "")
 
@@ -99,7 +99,7 @@ def update_image(image, CONF):
             splitted_line = re.split("\s+", line)  # noqa W605
             if splitted_line[0] == "SHA256":
                 checksums[latest_filename] = splitted_line[3]
-        if image["shortname"] in [
+        elif image["shortname"] in [
             "ubuntu-14.04",
             "ubuntu-16.04",
             "ubuntu-16.04-minimal",
@@ -113,6 +113,11 @@ def update_image(image, CONF):
             splitted_line = re.split("\s+", line)  # noqa W605
             if len(splitted_line) == 2:
                 checksums[splitted_line[1][1:]] = splitted_line[0]
+        elif image["shortname"] in ["centos-7"]:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if len(splitted_line) == 2:
+                if re.search(filename_pattern, splitted_line[1]):
+                    checksums[splitted_line[1]] = splitted_line[0]
         elif image["shortname"] in ["centos-stream-8", "centos-stream-9"]:
             splitted_line = re.split("\s+", line)  # noqa W605
             if splitted_line[0] == "SHA256" and re.search(
