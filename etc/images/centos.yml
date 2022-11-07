@@ -1,6 +1,5 @@
 ---
 images:
-
   - name: CentOS 7
     shortname: centos-7
     format: qcow2
@@ -21,10 +20,9 @@ images:
     latest_checksum_url: https://cloud.centos.org/centos/7/images/sha256sum.txt
     latest_url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS
     versions:
-      - version: 'XXX'
-        url: XXX
-        checksum: XXX
-
+      - version: '20201112'
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-7/20201112-centos-7.qcow2
+        checksum: sha256:e38bab0475cc6d004d2e17015969c659e5a308111851b0e2715e84646035bdd3
   - name: CentOS Stream 8
     shortname: centos-stream-8
     format: qcow2
@@ -45,10 +43,9 @@ images:
     latest_checksum_url: https://cloud.centos.org/centos/8-stream/x86_64/images/CHECKSUM
     latest_url: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: 'XXX'
-        url: XXX
-        checksum: XXX
-
+      - version: '20220913'
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-8/20220913-centos-stream-8.qcow2
+        checksum: sha256:8717251f8e4d2fe3e5032799caae89358c1ba68d65a16b5128a59ec6003aac1c
   - name: CentOS Stream 9
     shortname: centos-stream-9
     format: qcow2
@@ -69,6 +66,6 @@ images:
     latest_checksum_url: https://cloud.centos.org/centos/9-stream/x86_64/images/CHECKSUM
     latest_url: https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: 'XXX'
-        url: XXX
-        checksum: XXX
+      - version: '20221102'
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-9/20221102-centos-stream-9.qcow2
+        checksum: sha256:99d0519ebe8475bb39ac5bd6eac87a1a19b77934b79c33bccbfe6be3b1d91ba9
