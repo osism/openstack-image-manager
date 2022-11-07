@@ -1,6 +1,5 @@
 ---
 images:
-
   - name: Debian 10
     shortname: debian-10
     format: qcow2
@@ -21,10 +20,9 @@ images:
     lastest_checksum_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
     lastest_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
-      - version: 'XXX'
+      - version: XXX
         url: XXX
         checksum: XXX
-
   - name: Debian 11
     shortname: debian-11
     format: qcow2
@@ -45,6 +43,6 @@ images:
     lastest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/SHA512SUMS
     lastest_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: 'XXX'
+      - version: XXX
         url: XXX
         checksum: XXX
