@@ -24,7 +24,9 @@ class TestManageAPI(TestCase):
             cloud='openstack',
             images='test/integration/fixtures/',
             name=None,
-            tag='fake_tag'
+            tag='fake_tag',
+            filter='',
+            validate=False
         )
         self.image = self.sot.read_image_files()[0]
         self.assertEqual(self.image['name'], 'ubuntu-20.04')
