@@ -1,54 +1,5 @@
 ---
 images:
-
-  - name: Debian 8
-    shortname: debian-8
-    format: qcow2
-    login: debian
-    min_disk: 8
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: virtio
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: debian
-      os_version: '8'
-    tags: []
-    versions:
-      - version: '20181005'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-8/20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/archive/8.11.5-20181005/debian-8.11.5-20181005-openstack-amd64.qcow2
-        checksum: "sha256:9a5e6fc845eff404942a116abce200b7f8e3b92e9c55313dadfca76850c75975"
-        os_version: '8.11.5'
-
-  - name: Debian 9
-    shortname: debian-9
-    format: qcow2
-    login: debian
-    min_disk: 8
-    min_ram: 512
-    status: active
-    visibility: public
-    multi: true
-    meta:
-      architecture: x86_64
-      hw_disk_bus: scsi
-      hw_scsi_model: virtio-scsi
-      hw_watchdog_action: reset
-      os_distro: debian
-      os_version: '9'
-    tags: []
-    versions:
-      - version: '20220706'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-9/20220706/debian-9.13.42-20220706-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/9.13.42-20220706/debian-9.13.42-20220706-openstack-amd64.qcow2
-        checksum: "sha256:f48ab562cc18a0b482482adeb9a4bbdf20c9850d4f3eb72648ce1facafc7b055"
-        os_version: '9.13.42'
-
   - name: Debian 10
     shortname: debian-10
     format: qcow2
@@ -66,13 +17,12 @@ images:
       os_distro: debian
       os_version: '10'
     tags: []
+    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
+    latest_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
-      - version: '20220910'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20220910/debian-10.13.0-openstack-amd64.qcow2
-        source: https://cdimage.debian.org/cdimage/openstack/10.13.0/debian-10.13.0-openstack-amd64.qcow2
-        checksum: "sha256:23fd7ec90d355bff2c9d1dfdd212e96f32c1c80650e25801e07f82653a4c9034"
-        os_version: '10.13.0'
-
+      - version: '20220911'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20220911-debian-10.qcow2
+        checksum: sha512:04ac7e848fdcf03700fe79e7e2be7d5ecb8850a877bf630e9b53c570819fe7dfbc15b83bcc828ff0276195629ea354df32dd399d447124b1ad2e3486250a99a9
   - name: Debian 11
     shortname: debian-11
     format: qcow2
@@ -90,9 +40,9 @@ images:
       os_distro: debian
       os_version: '11'
     tags: []
+    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/SHA512SUMS
+    latest_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20220911'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20220911/debian-11-generic-amd64-20220911-1135.qcow2
-        source: https://cdimage.debian.org/images/cloud/bullseye/20220911-1135/debian-11-generic-amd64-20220911-1135.qcow2
-        checksum: "sha256:5f41a628d8d72fe1e41ec04ac1f635e26260147b06edf366e92233f7c3f6eddc"
-        os_version: '11.5.0'
+      - version: '20221020'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20221020-debian-11.qcow2
+        checksum: sha512:3a7884cdc1948ef86f6f6a231bbc050f6df7144a8083aeeefba79223650ad8599da38eda88ca3c9e58adbcae9fe2250775f1e0f21bc447761e9e7c10584e4d12

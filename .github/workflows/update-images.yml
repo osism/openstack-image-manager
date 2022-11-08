@@ -13,6 +13,8 @@ jobs:
       matrix:
         image:
           - almalinux
+          - centos
+          - debian
           - rockylinux
           - ubuntu
     runs-on: ubuntu-latest
