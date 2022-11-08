@@ -3,6 +3,7 @@ import openstack
 import requests
 import yaml
 import os
+import re
 import sys
 import typer
 
@@ -13,6 +14,7 @@ from munch import Munch
 from natsort import natsorted
 from typing import List, Optional
 from openstack.image.v2.image import Image
+from openstack.exceptions import DuplicateResource
 
 
 class ImageManager:
@@ -35,7 +37,9 @@ class ImageManager:
         delete: bool = typer.Option(False, '--delete', help='Delete outdated images'),
         yes_i_really_know_what_i_do: bool = typer.Option(False, '--yes-i-really-know-what-i-do',
                                                          help='Really delete images'),
-        use_os_hidden: bool = typer.Option(False, '--use-os-hidden', help='Use the os_hidden property')
+        use_os_hidden: bool = typer.Option(False, '--use-os-hidden', help='Use the os_hidden property'),
+        validate: bool = typer.Option(False, '--validate',
+                                      help='Validate the image metadata against the SCS Image Metadata Standard')
     ):
         self.CONF = Munch.fromDict(locals())
         self.CONF.pop('self')   # remove the self object from CONF
@@ -177,6 +181,9 @@ class ImageManager:
 
         if not self.CONF.dry_run:
             self.manage_outdated_images(managed_images)
+
+        if self.CONF.validate:
+            self.check_image_metadata()
 
         if self.exit_with_error:
             sys.exit('\nERROR: One or more errors occurred during the execution of the program, '
@@ -573,6 +580,126 @@ class ImageManager:
                     logger.error('An Exception occurred: \n%s' % e)
                     self.exit_with_error = True
         return unmanaged_images
+
+    def check_image_metadata(self):
+        """
+        Retrieve metadata from managed images and check for compliance with SCS specifications:
+        -> https://github.com/SovereignCloudStack/Docs/blob/main/Design-Docs/Image-Properties-Spec.md
+
+        code adopted from https://github.com/SovereignCloudStack/Docs/blob/main/Design-Docs/tools/image-md-check.py
+        """
+        cloud_images = self.get_images()
+
+        mand_images = ["Ubuntu 22.04", "Ubuntu 20.04", "Debian 11"]
+        rec1_images = ["CentOS 8", "Rocky 8", "AlmaLinux 8", "Debian 10", "Fedora 36"]
+        rec2_images = ["SLES 15SP4", "RHEL 9", "RHEL 8", "Windows Server 2022", "Windows Server 2019"]
+        # sugg_images = ["openSUSE Leap 15.4", "Cirros 0.5.2", "Alpine", "Arch"]    # Ignore for now
+
+        # properties inside of the main image dict
+        image_properties = {
+            "os_distro": {"mandatory": True, "values": None},
+            "os_version": {"mandatory": True, "values": None},
+            "architecture": {"mandatory": True, "values": ["x86_64", "aarch64", "risc-v"]},
+            "hypervisor_type": {"mandatory": True, "values": ["qemu", "kvm", "xen", "hyper-v", "esxi", None]},
+            "hw_rng_model": {"mandatory": False, "values": ["virtio", None]},
+            "hw_disk_bus": {"mandatory": True, "values": ["virtio", "scsi", None]},
+            "hash_algo": {"mandatory": False, "values": ["sha256", "sha512"]}
+        }
+
+        # properties inside of the image.properties dict
+        custom_properties = {
+            "image_build_date": {"mandatory": True, "values": None},
+            "patchlevel": {"mandatory": False, "values": None},
+            "image_original_user": {"mandatory": True, "values": None},
+            "image_source": {"mandatory": True, "values": None},
+            "image_description": {"mandatory": True, "values": None},
+            "replace_frequency": {
+                "mandatory": True,
+                "values": ["yearly", "quarterly", "monthly", "weekly", "daily", "critical_bug", "never"]
+            },
+            "provided_until": {"mandatory": True, "values": None},
+            "uuid_validity": {"mandatory": True, "values": None},
+            "hotfix_hours": {"mandatory": False, "values": None}
+        }
+
+        for image_name in cloud_images.keys():
+            try:
+                image = self.conn.image.find_image(image_name)
+            except DuplicateResource as exc:
+                logger.error("Duplicate name: %s\n%s" % (image_name, str(exc)))
+                self.exit_with_error = True
+                continue
+            if not image:
+                logger.error("Image %s not found" % image_name)
+                self.exit_with_error = True
+                continue
+
+            for prop in image_properties:
+                if prop in image:
+                    values = image_properties[prop]["values"]
+                    if values and not image[prop] in values:
+                        logger.error("Image %s: Value %s not allowed for property %s" % (image.name, image[prop], prop))
+                        self.exit_with_error = True
+                elif image_properties[prop]["mandatory"]:
+                    logger.error("Image %s: Missing mandatory image property %s" % (image.name, prop))
+                    self.exit_with_error = True
+                else:
+                    logger.warning("Image %s: Missing optional image property %s" % (image.name, prop))
+
+            if ("hw_rng_model" in image and image.hw_rng_model == "scsi" and
+                    "hw_disk_bus" in image and image.hw_disk_bus == "scsi"):
+                if "hw_scsi_model" not in image:
+                    logger.warning("Image %s: property hw_scsi_model is recommended when using 'scsi' for "
+                                   "hw_rng_model and hw_disk_bus" % image.name)
+
+            for prop in custom_properties:
+                if prop in image.properties:
+                    values = custom_properties[prop]["values"]
+                    if values and not image.properties[prop] in values:
+                        logger.error("Image %s: Value %s not allowed for property %s" %
+                                     (image.name, image.properties[prop], prop))
+                        self.exit_with_error = True
+                elif custom_properties[prop]["mandatory"]:
+                    logger.error("Image %s: Missing mandatory custom property %s" % (image.name, prop))
+                    self.exit_with_error = True
+                else:
+                    logger.warning("Image %s: Missing optional custom property %s" % (image.name, prop))
+
+            if "image_build_date" in image.properties:
+                try:
+                    time.strptime(image.properties["image_build_date"][:10], "%Y-%m-%d")
+                except Exception:
+                    logger.error("Image %s: invalid value for image_build_date %s" %
+                                 (image.name, image.properties["build_date"]))
+                    self.exit_with_error = True
+
+            if "image_source" in image.properties:
+                if not re.match(r"^(http|ftp)s?://\w*..*", image.properties["image_source"]):
+                    logger.error("Image %s: image_source is not a valid URL" % image.name)
+                    self.exit_with_error = True
+
+            if "hotfix_hours" in image.properties:
+                if type(image.properties["hotfix_hours"]) == str and not image.properties["hotfix_hours"].isdigit():
+                    logger.warning("Image %s: custom property hotfix_hours is not numeric" % image.name)
+
+            rec_image_name = "%s %s" % (image.os_distro, image.os_version)
+            if not re.match(f"^{rec_image_name}", image.name, re.IGNORECASE):
+                logger.warning("Image %s: Name does not start with recommended name %s" % (image.name, rec_image_name))
+
+            rec_tag = "os:%s" % image.os_distro
+            if rec_tag not in image.tags:
+                logger.warning("Image %s: Missing recommended tag %s" % (image.name, rec_tag))
+            if not any(tag.startswith("managed_by_") for tag in image.tags):
+                logger.warning("Image %s: Missing recommended tag managed_by_" % image.name)
+
+        # check for image completeness
+        for image in mand_images:
+            if image not in cloud_images:
+                logger.warning("Mandatory image %s is missing" % image)
+        for image in (*rec1_images, *rec2_images):
+            if image not in cloud_images:
+                logger.info("Recommended image %s is missing" % image)
+        # Ignore sugg_images for now
 
 
 def main():

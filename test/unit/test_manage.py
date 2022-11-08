@@ -105,7 +105,8 @@ class TestManage(TestCase):
             cloud='fake-cloud',
             images='etc/images/',
             name=None,
-            tag='fake_tag'
+            tag='fake_tag',
+            validate=False
         )
 
         # we can also mimick an openstack connection object with a Munch
@@ -289,6 +290,7 @@ class TestManage(TestCase):
         mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
         mock_delete_image.assert_not_called()
 
+    @mock.patch('src.manage.ImageManager.check_image_metadata')
     @mock.patch('src.manage.ImageManager.manage_outdated_images')
     @mock.patch('src.manage.ImageManager.rename_images')
     @mock.patch('src.manage.ImageManager.process_image')
@@ -297,7 +299,7 @@ class TestManage(TestCase):
     @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
     @mock.patch('src.manage.openstack.connect')
     def test_main(self, mock_connect, mock_listdir, mock_isfile,
-                  mock_process_image, mock_rename_images, mock_manage_outdated):
+                  mock_process_image, mock_rename_images, mock_manage_outdated, mock_check_metadata):
         ''' test manage.ImageManager.main() '''
 
         meta = self.fake_image_dict['meta']
@@ -314,16 +316,20 @@ class TestManage(TestCase):
                                                    self.imported_image,
                                                    self.previous_image)
         mock_manage_outdated.assert_called_once_with({self.fake_image_dict['name']})
+        mock_check_metadata.assert_not_called()
 
         mock_process_image.reset_mock()
         mock_rename_images.reset_mock()
         mock_manage_outdated.reset_mock()
+        mock_check_metadata.reset_mock()
 
         # test with dry_run = True, this also implies that imported_image = None
         self.sot.CONF.dry_run = True
+        self.sot.CONF.validate = True
         mock_process_image.return_value = ({self.fake_image_dict['name']}, None, None)
 
         self.sot.main()
         mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'], meta)
         mock_rename_images.assert_not_called()
         mock_manage_outdated.assert_not_called()
+        mock_check_metadata.assert_called_once()
