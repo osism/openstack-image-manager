@@ -120,6 +120,30 @@ class ImageManager:
         logger.debug("tag = %s" % self.CONF.tag)
         logger.debug("yes-i-really-know-what-i-do = %s" % self.CONF.yes_i_really_know_what_i_do)
 
+        if self.CONF.validate:
+            self.check_image_metadata()
+
+        else:
+            images = self.read_image_files()
+            managed_images = self.process_images(images)
+
+            # get all active managed images, so they don't get deleted when using --name
+            cloud_images = self.get_images()
+            for image in cloud_images:
+                if cloud_images[image].visibility == "public":
+                    managed_images.add(image)
+
+            if not self.CONF.dry_run:
+                self.manage_outdated_images(managed_images)
+
+        if self.exit_with_error:
+            sys.exit('\nERROR: One or more errors occurred during the execution of the program, '
+                     'please check the output.')
+
+    def process_images(self, images) -> set:
+
+        managed_images = set()
+
         REQUIRED_KEYS = [
             'format',
             'name',
@@ -128,16 +152,8 @@ class ImageManager:
             'versions',
             'visibility',
         ]
-        managed_images = set()
-        all_images = self.read_image_files()
 
-        # get all active managed images, so they don't get deleted when using --name
-        cloud_images = self.get_images()
-        for image in cloud_images:
-            if cloud_images[image].visibility == "public":
-                managed_images.add(image)
-
-        for image in all_images:
+        for image in images:
 
             for required_key in REQUIRED_KEYS:
                 if required_key not in image:
@@ -186,15 +202,7 @@ class ImageManager:
             if imported_image and image['multi']:
                 self.rename_images(image['name'], sorted_versions, imported_image, previous_image)
 
-        if not self.CONF.dry_run:
-            self.manage_outdated_images(managed_images)
-
-        if self.CONF.validate:
-            self.check_image_metadata()
-
-        if self.exit_with_error:
-            sys.exit('\nERROR: One or more errors occurred during the execution of the program, '
-                     'please check the output.')
+        return managed_images
 
     def import_image(self, image: dict, name: str, url: str) -> Image:
         '''
