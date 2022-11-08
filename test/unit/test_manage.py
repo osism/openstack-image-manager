@@ -291,6 +291,7 @@ class TestManage(TestCase):
         mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
         mock_delete_image.assert_not_called()
 
+    @mock.patch('src.manage.ImageManager.validate_yaml_schema')
     @mock.patch('src.manage.ImageManager.check_image_metadata')
     @mock.patch('src.manage.ImageManager.manage_outdated_images')
     @mock.patch('src.manage.ImageManager.process_images')
@@ -298,7 +299,7 @@ class TestManage(TestCase):
     @mock.patch('src.manage.ImageManager.read_image_files')
     @mock.patch('src.manage.openstack.connect')
     def test_main(self, mock_connect, mock_read_image_files, mock_get_images,
-                  mock_process_images, mock_manage_outdated, mock_check_metadata):
+                  mock_process_images, mock_manage_outdated, mock_check_metadata, mock_validate_yaml):
         ''' test manage.ImageManager.main() '''
         mock_read_image_files.return_value = [self.fake_image_dict]
 
@@ -310,12 +311,14 @@ class TestManage(TestCase):
         mock_process_images.assert_called_once_with([self.fake_image_dict])
         mock_manage_outdated.assert_called_once_with(set())
         mock_check_metadata.assert_not_called()
+        mock_validate_yaml.assert_not_called()
 
         mock_read_image_files.reset_mock()
         mock_get_images.reset_mock()
         mock_process_images.reset_mock()
         mock_manage_outdated.reset_mock()
         mock_check_metadata.reset_mock()
+        mock_validate_yaml.reset_mock()
 
         # test with dry_run = True and validate = True
         self.sot.CONF.dry_run = True
@@ -327,11 +330,13 @@ class TestManage(TestCase):
         mock_process_images.assert_not_called()
         mock_manage_outdated.assert_not_called()
         mock_check_metadata.assert_called_once()
+        mock_validate_yaml.assert_called_once()
 
     @mock.patch('src.manage.os.path.isfile')
     @mock.patch('src.manage.os.listdir')
     @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
     def test_read_image_files(self, mock_listdir, mock_isfile):
+        ''' test manage.ImageManager.read_image_files() '''
         mock_listdir.return_value = ['fake.yml']
         mock_isfile.return_value = True
 
@@ -341,6 +346,7 @@ class TestManage(TestCase):
     @mock.patch('src.manage.ImageManager.rename_images')
     @mock.patch('src.manage.ImageManager.process_image')
     def test_process_images(self, mock_process_image, mock_rename_images):
+        ''' test manage.ImageManager.process_images() '''
         meta = self.fake_image_dict['meta']
         self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
         mock_process_image.return_value = ({self.fake_image_dict['name']}, self.imported_image, self.previous_image)

@@ -1,0 +1,49 @@
+---
+images: list(include('image'), min=1)
+
+---
+image:
+  name: str()
+  shortname: str(required=False)
+  format: enum('aki', 'ari', 'ami', 'raw', 'iso', 'vhd', 'vdi', 'qcow2', 'vmdk')
+  login: str()
+  password: str(required=False)
+  min_disk: int(min=0)
+  min_ram: int(min=0)
+  status: enum('active', 'deactivated')
+  visibility: enum('public', 'private', 'community', 'shared')
+  multi: bool()
+  meta: include('meta', required=True)
+  tags: list(str())
+  latest_checksum_url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)
+  latest_url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)
+  versions: list(include('versions'))
+
+---
+meta:
+  architecture: enum('x86_64', 'aarch64', 'risc-v')
+  hw_disk_bus: enum('virtio', 'scsi', None)
+  hw_rng_model: enum('virtio', None, required=False)
+  hw_scsi_model: enum('virtio-scsi', required=False)
+  hw_watchdog_action: enum('disabled', 'reset', 'poweroff', 'pause', 'none', required=False)
+  os_distro: enum('arch', 'centos', 'debian', 'fedora', 'opensuse', 'rhel', 'ubuntu', 'windows')
+  os_version: str()
+  patchlevel: str(required=False)
+  replace_frequency: enum('yearly', 'quarterly', 'monthly', 'weekly', 'daily', 'critical_bug', 'never', required=False)
+  uuid_validity: any('none', 'forever', 'notice', str(starts_with='last-'), day(), required=False)
+  provided_until: day(required=False)
+  hotfix_hours: int(min=0, required=False)
+
+---
+versions:
+  version: str()
+  hidden: bool(required=False)
+  visibility: enum('public', 'private', 'community', 'shared', required=False)
+  os_version: str(required=False)
+  url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL')
+  checksum: regex('\w+:([a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64}|[a-f0-9]{128})$', name='valid checksum', required=False)
+  source: regex('^(http|ftp)s?:\/\/\w+.*|^private$', name='valid URL or private', required=False)
+  checksums_url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)
+  build_date: any(day(), timestamp(), required=False)
+  image_description: str(required=False)
+  meta: include('meta', required=False)
