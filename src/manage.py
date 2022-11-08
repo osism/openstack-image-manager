@@ -28,7 +28,8 @@ class ImageManager:
         dry_run: bool = typer.Option(False, '--dry-run', help='Do not perform any changes'),
         latest: bool = typer.Option(False, '--latest', help='Only import the latest version for images of type multi'),
         cloud: str = typer.Option('openstack', help='Cloud name in clouds.yaml'),
-        images: str = typer.Option('etc/images/', help='Path to the directory containing all image files'),
+        images: str = typer.Option('etc/images/', help='Path to the directory containing all image files or path to '
+                                   'a single image file'),
         name: Optional[List[str]] = typer.Option([], help='Name of the image to process, '
                                                  'use repeatedly for multiple images'),
         tag: str = typer.Option('managed_by_osism', help='Name of the tag used to identify managed images'),
@@ -60,9 +61,13 @@ class ImageManager:
     def read_image_files(self) -> list:
         ''' Read all YAML files in etc/images/ '''
         image_files = []
-        for file in os.listdir(self.CONF.images):
-            if file.endswith(tuple([".yml", "yaml"])):
-                image_files.append(file)
+
+        if os.path.isdir(self.CONF.images):
+            for file in os.listdir(self.CONF.images):
+                if file.endswith(tuple([".yml", "yaml"])):
+                    image_files.append(file)
+        else:
+            image_files = [self.CONF.images]
 
         all_images = []
         for file in image_files:
