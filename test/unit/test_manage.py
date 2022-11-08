@@ -82,7 +82,7 @@ class TestManage(TestCase):
     def setUp(self):
         ''' create all necessary test data, gets called before each test '''
 
-        self.fake_image_dict = FAKE_IMAGE_DICT
+        self.fake_image_dict = FAKE_IMAGE_DICT.copy()
         self.fake_image = Image(**FAKE_IMAGE_DATA)
         self.fake_name = '%s (%s)' % (self.fake_image_dict['name'], '1')
         self.fake_url = 'http://url.com'
@@ -292,44 +292,63 @@ class TestManage(TestCase):
 
     @mock.patch('src.manage.ImageManager.check_image_metadata')
     @mock.patch('src.manage.ImageManager.manage_outdated_images')
-    @mock.patch('src.manage.ImageManager.rename_images')
-    @mock.patch('src.manage.ImageManager.process_image')
-    @mock.patch('src.manage.os.path.isfile')
-    @mock.patch('src.manage.os.listdir')
-    @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
+    @mock.patch('src.manage.ImageManager.process_images')
+    @mock.patch('src.manage.ImageManager.get_images')
+    @mock.patch('src.manage.ImageManager.read_image_files')
     @mock.patch('src.manage.openstack.connect')
-    def test_main(self, mock_connect, mock_listdir, mock_isfile,
-                  mock_process_image, mock_rename_images, mock_manage_outdated, mock_check_metadata):
+    def test_main(self, mock_connect, mock_read_image_files, mock_get_images,
+                  mock_process_images, mock_manage_outdated, mock_check_metadata):
         ''' test manage.ImageManager.main() '''
-
-        meta = self.fake_image_dict['meta']
-        self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
-        mock_process_image.return_value = ({self.fake_image_dict['name']}, self.imported_image, self.previous_image)
-        mock_listdir.return_value = ['fake.yml']
-        mock_isfile.return_value = True
+        mock_read_image_files.return_value = [self.fake_image_dict]
 
         self.sot.main()
 
         mock_connect.assert_called_once_with(cloud=self.sot.CONF.cloud)
+        mock_read_image_files.assert_called_once()
+        mock_get_images.assert_called_once()
+        mock_process_images.assert_called_once_with([self.fake_image_dict])
+        mock_manage_outdated.assert_called_once_with(set())
+        mock_check_metadata.assert_not_called()
+
+        mock_read_image_files.reset_mock()
+        mock_get_images.reset_mock()
+        mock_process_images.reset_mock()
+        mock_manage_outdated.reset_mock()
+        mock_check_metadata.reset_mock()
+
+        # test with dry_run = True and validate = True
+        self.sot.CONF.dry_run = True
+        self.sot.CONF.validate = True
+
+        self.sot.main()
+        mock_read_image_files.assert_not_called()
+        mock_get_images.assert_not_called()
+        mock_process_images.assert_not_called()
+        mock_manage_outdated.assert_not_called()
+        mock_check_metadata.assert_called_once()
+
+    @mock.patch('src.manage.os.path.isfile')
+    @mock.patch('src.manage.os.listdir')
+    @mock.patch('builtins.open', mock.mock_open(read_data=str(FAKE_YML)))
+    def test_read_image_files(self, mock_listdir, mock_isfile):
+        mock_listdir.return_value = ['fake.yml']
+        mock_isfile.return_value = True
+
+        result = self.sot.read_image_files()
+        self.assertEqual(result, [FAKE_IMAGE_DICT])
+
+    @mock.patch('src.manage.ImageManager.rename_images')
+    @mock.patch('src.manage.ImageManager.process_image')
+    def test_process_images(self, mock_process_image, mock_rename_images):
+        meta = self.fake_image_dict['meta']
+        self.fake_image_dict['tags'] = [self.sot.CONF.tag, 'os:%s' % self.fake_image_dict['meta']['os_distro']]
+        mock_process_image.return_value = ({self.fake_image_dict['name']}, self.imported_image, self.previous_image)
+
+        result = self.sot.process_images([self.fake_image_dict])
+
         mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'], meta)
         mock_rename_images.assert_called_once_with(self.fake_image_dict['name'], ['1'],
                                                    self.imported_image,
                                                    self.previous_image)
-        mock_manage_outdated.assert_called_once_with({self.fake_image_dict['name']})
-        mock_check_metadata.assert_not_called()
 
-        mock_process_image.reset_mock()
-        mock_rename_images.reset_mock()
-        mock_manage_outdated.reset_mock()
-        mock_check_metadata.reset_mock()
-
-        # test with dry_run = True, this also implies that imported_image = None
-        self.sot.CONF.dry_run = True
-        self.sot.CONF.validate = True
-        mock_process_image.return_value = ({self.fake_image_dict['name']}, None, None)
-
-        self.sot.main()
-        mock_process_image.assert_called_once_with(self.fake_image_dict, self.versions, ['1'], meta)
-        mock_rename_images.assert_not_called()
-        mock_manage_outdated.assert_not_called()
-        mock_check_metadata.assert_called_once()
+        self.assertEqual(result, {self.fake_image_dict["name"]})

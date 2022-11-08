@@ -59,7 +59,7 @@ class ImageManager:
             self.main()
 
     def read_image_files(self) -> list:
-        ''' Read all YAML files in etc/images/ '''
+        """ Read all YAML files in self.CONF.images """
         image_files = []
 
         if os.path.isdir(self.CONF.images):
@@ -125,13 +125,15 @@ class ImageManager:
 
         else:
             images = self.read_image_files()
-            managed_images = self.process_images(images)
+            managed_images = set()
 
             # get all active managed images, so they don't get deleted when using --name
             cloud_images = self.get_images()
             for image in cloud_images:
                 if cloud_images[image].visibility == "public":
                     managed_images.add(image)
+
+            managed_images = set.union(managed_images, self.process_images(images))
 
             if not self.CONF.dry_run:
                 self.manage_outdated_images(managed_images)
@@ -141,8 +143,7 @@ class ImageManager:
                      'please check the output.')
 
     def process_images(self, images) -> set:
-
-        managed_images = set()
+        """ Process each image from images.yaml """
 
         REQUIRED_KEYS = [
             'format',
@@ -197,12 +198,11 @@ class ImageManager:
 
             existing_images, imported_image, previous_image = \
                 self.process_image(image, versions, sorted_versions, image['meta'].copy())
-            managed_images = set.union(managed_images, existing_images)
 
             if imported_image and image['multi']:
                 self.rename_images(image['name'], sorted_versions, imported_image, previous_image)
 
-        return managed_images
+        return existing_images
 
     def import_image(self, image: dict, name: str, url: str) -> Image:
         '''
