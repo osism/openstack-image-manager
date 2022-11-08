@@ -106,6 +106,7 @@ class TestManage(TestCase):
             images='etc/images/',
             name=None,
             tag='fake_tag',
+            filter='',
             validate=False
         )
 

@@ -33,6 +33,7 @@ class ImageManager:
         name: Optional[List[str]] = typer.Option([], help='Name of the image to process, '
                                                  'use repeatedly for multiple images'),
         tag: str = typer.Option('managed_by_osism', help='Name of the tag used to identify managed images'),
+        filter: str = typer.Option(None, help='Filter images with a regex on their name'),
         deactivate: bool = typer.Option(False, '--deactivate', help='Deactivate images that should be deleted'),
         hide: bool = typer.Option(False, '--hide', help='Hide images that should be deleted'),
         delete: bool = typer.Option(False, '--delete', help='Delete outdated images'),
@@ -78,7 +79,11 @@ class ImageManager:
                     data = yaml.load(fp, Loader=yaml.SafeLoader)
                     images = data.get('images')
                     for image in images:
-                        all_images.append(image)
+                        if self.CONF.filter:
+                            if re.search(self.CONF.filter, image["name"]):
+                                all_images.append(image)
+                        else:
+                            all_images.append(image)
                 except yaml.YAMLError as exc:
                     logger.error(exc)
         return all_images
