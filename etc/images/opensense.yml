@@ -19,6 +19,7 @@ images:
       os_distro: freebsd
       replace_frequency: never
       uuid_validity: none
+      provided_until: none
     tags: []
     versions:
       - version: '21.7.1'

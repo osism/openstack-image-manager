@@ -30,7 +30,7 @@ meta:
   os_distro: enum('arch', 'centos', 'cirros', 'clearlinux', 'debian', 'fedora', 'freebsd', 'opensuse', 'rhel', 'ubuntu', 'windows')
   os_version: str(required=False)
   patchlevel: str(required=False)
-  provided_until: day(required=False)
+  provided_until: any(enum('none'), day())
   replace_frequency: enum('yearly', 'quarterly', 'monthly', 'weekly', 'daily', 'critical_bug', 'never')
   uuid_validity: any(enum('none', 'forever', 'notice'), str(starts_with='last-'), day())
 

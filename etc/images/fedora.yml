@@ -19,6 +19,7 @@ images:
       os_version: '36'
       replace_frequency: quarterly
       uuid_validity: last-3
+      provided_until: none
     tags: []
     versions:
       - version: '20220504'
