@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import typer
+import yamale
 
 from datetime import datetime
 from decimal import Decimal, ROUND_UP
@@ -13,6 +14,7 @@ from loguru import logger
 from munch import Munch
 from natsort import natsorted
 from typing import List, Optional
+from yamale import YamaleError
 from openstack.image.v2.image import Image
 from openstack.exceptions import DuplicateResource
 
@@ -127,6 +129,7 @@ class ImageManager:
 
         if self.CONF.validate:
             self.check_image_metadata()
+            self.validate_yaml_schema()
 
         else:
             images = self.read_image_files()
@@ -694,7 +697,7 @@ class ImageManager:
                     self.exit_with_error = True
 
             if "image_source" in image.properties:
-                if not re.match(r"^(http|ftp)s?://\w*..*", image.properties["image_source"]):
+                if not re.match(r"^(http|ftp)s?://\w*.*", image.properties["image_source"]):
                     logger.error("Image %s: image_source is not a valid URL" % image.name)
                     self.exit_with_error = True
 
@@ -720,6 +723,24 @@ class ImageManager:
             if image not in cloud_images:
                 logger.info("Recommended image %s is missing" % image)
         # Ignore sugg_images for now
+
+    def validate_yaml_schema(self):
+        """ Validate all image.yaml files against the SCS Metadata spec """
+        schema = yamale.make_schema('etc/schema.yaml')
+        try:
+            for file in os.listdir(self.CONF.images):
+                try:
+                    data = yamale.make_data(self.CONF.images + file)
+                    yamale.validate(schema, data)
+                except YamaleError as e:
+                    for result in e.results:
+                        logger.error("Error validating data '%s' with '%s'" % (result.data, result.schema))
+                        for error in result.errors:
+                            logger.error('\t%s' % error)
+                else:
+                    logger.debug("Image file %s is valid" % file)
+        except FileNotFoundError:
+            logger.error("Invalid path '%s'" % self.CONF.images)
 
 
 def main():
