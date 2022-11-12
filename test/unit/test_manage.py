@@ -86,7 +86,7 @@ class TestManage(TestCase):
         self.fake_image = Image(**FAKE_IMAGE_DATA)
         self.fake_name = '%s (%s)' % (self.fake_image_dict['name'], '1')
         self.fake_url = 'http://url.com'
-        self.versions = {'1': {'url': self.fake_url}}
+        self.versions = {'1': {'url': self.fake_url, 'meta': {'image_source': self.fake_url}}}
         self.sorted_versions = ['2', '1']
         self.previous_image = self.fake_image
         self.imported_image = self.fake_image
