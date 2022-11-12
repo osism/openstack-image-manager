@@ -16,6 +16,7 @@ images:
       hw_disk_bus: scsi
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      os_distro: freebsd
     tags: []
     versions:
       - version: '21.7.1'

@@ -15,7 +15,7 @@ images:
       hw_disk_bus: scsi
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
-      os_distro: fedora-coreos
+      os_distro: fedora
     tags: []
     versions:
       - version: '35.20211203.3.0'
