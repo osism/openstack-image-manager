@@ -16,6 +16,7 @@ images:
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
       os_distro: opensuse
+      replace_frequency: never
     tags: []
     versions:
       - version: '20211219'
@@ -38,6 +39,7 @@ images:
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
       os_distro: opensuse
+      replace_frequency: never
     tags: []
     versions:
       - version: '20211219'
@@ -61,6 +63,7 @@ images:
       hw_watchdog_action: reset
       os_distro: opensuse
       os_version: '15.3'
+      replace_frequency: never
     tags: []
     versions:
       - version: '20211213'
@@ -84,6 +87,7 @@ images:
       hw_watchdog_action: reset
       os_distro: opensuse
       os_version: '15.4'
+      replace_frequency: quarterly
     tags: []
     versions:
       - version: '20220805'
