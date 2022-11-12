@@ -1,0 +1,30 @@
+---
+name: Run real world tests
+
+"on":
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    paths:
+      - .github/workflows/run-real-world-tests.yml
+  pull_request:
+    paths:
+      - .github/workflows/run-real-world-tests.yml
+
+jobs:
+  run-real-world-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: osism/openstack-action@main
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - run: pip3 install tox
+      - run: tox -- --filter "Ubuntu 22.04"
+        env:
+          OS_CLIENT_CONFIG_FILE: .github/clouds.yml
+      - run: tox -- --validate
+        env:
+          OS_CLIENT_CONFIG_FILE: .github/clouds.yml
