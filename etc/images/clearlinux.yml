@@ -18,6 +18,7 @@ images:
       os_distro: clearlinux
       replace_frequency: never
       uuid_validity: none
+      provided_until: none
     tags: []
     versions:
       - version: '35440'

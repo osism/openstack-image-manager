@@ -17,6 +17,7 @@ images:
       os_distro: ubuntu
       replace_frequency: never
       uuid_validity: none
+      provided_until: none
     tags: []
     versions:
       - version: '1.22.9'
