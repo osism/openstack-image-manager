@@ -42,6 +42,8 @@ class ImageManager:
         yes_i_really_know_what_i_do: bool = typer.Option(False, '--yes-i-really-know-what-i-do',
                                                          help='Really delete images'),
         use_os_hidden: bool = typer.Option(False, '--use-os-hidden', help='Use the os_hidden property'),
+        check: bool = typer.Option(False, '--check',
+                                   help='Check the local image definitions against the SCS Image Metadata Standard'),
         validate: bool = typer.Option(False, '--validate',
                                       help='Validate the image metadata against the SCS Image Metadata Standard')
     ):
@@ -111,27 +113,35 @@ class ImageManager:
                         return elem
         return ''
 
-    def main(self) -> None:
-        '''
-        Read all files in etc/images/ and process each image
-        Rename outdated images when not dry-running
-        '''
+    def create_connection(self) -> None:
         if "OS_AUTH_URL" in os.environ:
             self.conn = openstack.connect()
         else:
             self.conn = openstack.connect(cloud=self.CONF.cloud)
 
+    def main(self) -> None:
+        '''
+        Read all files in etc/images/ and process each image
+        Rename outdated images when not dry-running
+        '''
         logger.debug("cloud = %s" % self.CONF.cloud)
         logger.debug("dry-run = %s" % self.CONF.dry_run)
         logger.debug("images = %s" % self.CONF.images)
         logger.debug("tag = %s" % self.CONF.tag)
         logger.debug("yes-i-really-know-what-i-do = %s" % self.CONF.yes_i_really_know_what_i_do)
 
+        # validate metadata of existing images
         if self.CONF.validate:
+            self.create_connection()
             self.check_image_metadata()
+
+        # check local image definitions with yamale
+        elif self.CONF.check:
             self.validate_yaml_schema()
 
+        # manage images
         else:
+            self.create_connection()
             images = self.read_image_files()
             managed_images = set()
 
@@ -733,6 +743,7 @@ class ImageManager:
                     data = yamale.make_data(self.CONF.images + file)
                     yamale.validate(schema, data)
                 except YamaleError as e:
+                    self.exit_with_error = True
                     for result in e.results:
                         logger.error("Error validating data '%s' with '%s'" % (result.data, result.schema))
                         for error in result.errors:

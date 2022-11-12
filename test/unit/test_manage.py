@@ -107,6 +107,7 @@ class TestManage(TestCase):
             name=None,
             tag='fake_tag',
             filter='',
+            check=False,
             validate=False
         )
 
@@ -313,6 +314,7 @@ class TestManage(TestCase):
         mock_check_metadata.assert_not_called()
         mock_validate_yaml.assert_not_called()
 
+        # reset
         mock_read_image_files.reset_mock()
         mock_get_images.reset_mock()
         mock_process_images.reset_mock()
@@ -330,6 +332,28 @@ class TestManage(TestCase):
         mock_process_images.assert_not_called()
         mock_manage_outdated.assert_not_called()
         mock_check_metadata.assert_called_once()
+        mock_validate_yaml.assert_not_called()
+
+        # reset
+        mock_read_image_files.reset_mock()
+        mock_get_images.reset_mock()
+        mock_process_images.reset_mock()
+        mock_manage_outdated.reset_mock()
+        mock_check_metadata.reset_mock()
+        mock_validate_yaml.reset_mock()
+
+        # test with check = True
+        self.sot.CONF.check = True
+
+        self.sot.CONF.dry_run = False
+        self.sot.CONF.validate = False
+
+        self.sot.main()
+        mock_read_image_files.assert_not_called()
+        mock_get_images.assert_not_called()
+        mock_process_images.assert_not_called()
+        mock_manage_outdated.assert_not_called()
+        mock_check_metadata.assert_not_called()
         mock_validate_yaml.assert_called_once()
 
     @mock.patch('src.manage.os.path.isfile')
