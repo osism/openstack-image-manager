@@ -17,6 +17,7 @@ images:
       hw_watchdog_action: reset
       os_distro: fedora
       os_version: '36'
+      replace_frequency: quarterly
     tags: []
     versions:
       - version: '20220504'

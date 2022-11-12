@@ -17,6 +17,7 @@ images:
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
       os_distro: freebsd
+      replace_frequency: never
     tags: []
     versions:
       - version: '21.7.1'
