@@ -5,15 +5,15 @@ name: Validate configuration
   push:
     paths:
       - .github/workflows/validate-configuration.yml
-      - .yamale.yml
       - etc/images/*.yml
+      - etc/schema.yaml
     branches:
       - main
   pull_request:
     paths:
       - .github/workflows/validate-configuration.yml
-      - .yamale.yml
       - etc/images/*.yml
+      - etc/schema.yaml
 
 jobs:
   validate-configuration:
@@ -23,5 +23,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      - run: pip3 install yamale ruamel.yaml
-      - run: yamale -s .yamale.yml -p ruamel etc/images.yml
+      - run: pip3 install tox
+      - run: tox -- --check
+        env:
+          OS_CLIENT_CONFIG_FILE: .github/clouds.yml
