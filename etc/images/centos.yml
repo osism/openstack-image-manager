@@ -17,6 +17,7 @@ images:
       os_distro: centos
       os_version: '7'
       replace_frequency: critical_bug
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://cloud.centos.org/centos/7/images/sha256sum.txt
     latest_url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS
@@ -41,6 +42,7 @@ images:
       os_distro: centos
       os_version: '8'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://cloud.centos.org/centos/8-stream/x86_64/images/CHECKSUM
     latest_url: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
@@ -65,6 +67,7 @@ images:
       os_distro: centos
       os_version: '9'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://cloud.centos.org/centos/9-stream/x86_64/images/CHECKSUM
     latest_url: https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2

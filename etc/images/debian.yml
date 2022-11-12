@@ -17,6 +17,7 @@ images:
       os_distro: debian
       os_version: '10'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
     latest_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
@@ -41,6 +42,7 @@ images:
       os_distro: debian
       os_version: '11'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/SHA512SUMS
     latest_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
