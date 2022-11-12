@@ -18,5 +18,15 @@ the time of the CI job execution is mirrored and made available as the current v
 Currently, the following images are updated once a week (every Sunday at 0 am):
 
 * Almalinux
+* CentOS
+* Debian
 * Rockylinux
 * Ubuntu
+
+Mapping to SCS Image Metadata
+=============================
+
+The value of ``login`` is stored as ``image_original_user`` in the metadata of an image.
+
+The value of ``build_date`` of a specific version of an image is stored as
+``image_build_date`` in the metadata of an image.
