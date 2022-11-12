@@ -162,6 +162,10 @@ def update_image(image, CONF):
         logger.info(f"New version is {new_version}")
         image["versions"][0]["version"] = new_version
 
+        new_build_date = dt.strftime("%Y-%m-%d")
+        logger.info(f"New build date is {new_build_date}")
+        image["versions"][0]["build_date"] = new_build_date
+
         logger.info(f"New checksum is {current_checksum}")
         image["versions"][0]["checksum"] = current_checksum
 
