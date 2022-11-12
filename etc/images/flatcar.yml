@@ -15,6 +15,7 @@ images:
       hw_disk_bus: scsi
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      os_distro: fedora
     tags: []
     versions:
       - version: '3227.2.4'
