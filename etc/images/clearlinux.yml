@@ -17,6 +17,7 @@ images:
       hw_watchdog_action: reset
       os_distro: clearlinux
       replace_frequency: never
+      uuid_validity: none
     tags: []
     versions:
       - version: '35440'

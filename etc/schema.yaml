@@ -32,7 +32,7 @@ meta:
   patchlevel: str(required=False)
   provided_until: day(required=False)
   replace_frequency: enum('yearly', 'quarterly', 'monthly', 'weekly', 'daily', 'critical_bug', 'never')
-  uuid_validity: any('none', 'forever', 'notice', str(starts_with='last-'), day(), required=False)
+  uuid_validity: any(enum('none', 'forever', 'notice'), str(starts_with='last-'), day())
 
 ---
 versions:

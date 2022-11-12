@@ -17,6 +17,7 @@ images:
       hw_watchdog_action: reset
       os_distro: fedora
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     versions:
       - version: '35.20211203.3.0'

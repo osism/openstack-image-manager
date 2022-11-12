@@ -16,6 +16,7 @@ images:
       hw_watchdog_action: reset
       os_distro: ubuntu
       replace_frequency: never
+      uuid_validity: none
     tags: []
     versions:
       - version: '1.22.9'

@@ -17,6 +17,7 @@ images:
       os_distro: centos
       os_version: '8'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://download.rockylinux.org/pub/rocky/8/images/CHECKSUM
     latest_url: https://download.rockylinux.org/pub/rocky/8/images/Rocky-8-GenericCloud.latest.x86_64.qcow2
@@ -41,6 +42,7 @@ images:
       os_distro: centos
       os_version: '9'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM
     latest_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2

@@ -17,6 +17,7 @@ images:
       os_distro: centos
       os_version: '8'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://repo.almalinux.org/almalinux/8/cloud/x86_64/images/CHECKSUM
     latest_url: https://repo.almalinux.org/almalinux/8/cloud/x86_64/images/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2
@@ -41,6 +42,7 @@ images:
       os_distro: centos
       os_version: '9'
       replace_frequency: quarterly
+      uuid_validity: last-3
     tags: []
     latest_checksum_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM
     latest_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
