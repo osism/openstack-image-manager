@@ -75,6 +75,7 @@ images:
     latest_checksum_url: https://cloud.centos.org/centos/9-stream/x86_64/images/CHECKSUM
     latest_url: https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20221102'
-        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-9/20221102-centos-stream-9.qcow2
-        checksum: sha256:99d0519ebe8475bb39ac5bd6eac87a1a19b77934b79c33bccbfe6be3b1d91ba9
+      - version: '20221111'
+        url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-9/20221111-centos-stream-9.qcow2
+        checksum: sha256:6bed5b2fe4bd2ff2cc62210a9fc2a7f55e129f0b1549a07ed26c42f8fa16ce4e
+        build_date: '2022-11-11'
