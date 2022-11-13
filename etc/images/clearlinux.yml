@@ -25,3 +25,4 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/clearlinux/35440/clear-35440-cloudguest.img
         source: https://cdn.download.clearlinux.org/releases/35440/clear/clear-35440-cloudguest.img.xz
         checksum: "sha256:5e03015be709a893e8d3b7134f7b453862287fea5aabe0b6cb17273bb963701f"
+        build_date: 2021-12-17

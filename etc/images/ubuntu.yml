@@ -27,6 +27,7 @@ images:
       - version: '20191107'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
         checksum: sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1
+        build_date: 2019-11-07
   - name: Ubuntu 16.04
     shortname: ubuntu-16.04
     format: qcow2
@@ -54,6 +55,7 @@ images:
       - version: '20211001'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
         checksum: sha256:fff2494a70bcaffb59f26f71ec49e137dd87d319341c35832dbe0ea65ff15140
+        build_date: 2021-10-01
   - name: Ubuntu 16.04 Minimal
     shortname: ubuntu-16.04-minimal
     format: qcow2
@@ -81,6 +83,7 @@ images:
       - version: '20210929'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
         checksum: sha256:7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9
+        build_date: 2021-09-20
   - name: Ubuntu 18.04
     shortname: ubuntu-18.04
     format: qcow2
@@ -108,6 +111,7 @@ images:
       - version: '20221102'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20221102-ubuntu-18.04.qcow2
         checksum: sha256:2fbd812e805811f8eaed83e878986f8bac03fe51fc4693c84ebdcecdb8ef7b89
+        build_date: 2022-11-02
   - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
     format: qcow2
@@ -135,6 +139,7 @@ images:
       - version: '20221014'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20221014-ubuntu-18.04-minimal.qcow2
         checksum: sha256:06dd15c9b6ec79181092a79d8a7e610e6046026aa7ec179924d1d8ac1d83794d
+        build_date: 2022-10-14
   - name: Ubuntu 20.04
     shortname: ubuntu-20.04
     format: qcow2
@@ -190,6 +195,7 @@ images:
       - version: '20221019'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20221019-ubuntu-20.04-minimal.qcow2
         checksum: sha256:fcfb88bc00c9a1e2b6115a8106094cea92cb14c7968110a36989a79bc361d470
+        build_date: 2022-10-19
   - name: Ubuntu 22.04
     shortname: ubuntu-22.04
     format: qcow2
@@ -245,3 +251,4 @@ images:
       - version: '20221102'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20221102-ubuntu-22.04-minimal.qcow2
         checksum: sha256:c3f12800775679a1832c71edbe227bd64d28bbd2ce84fdc5cac6f9126950a920
+        build_date: 2022-11-02

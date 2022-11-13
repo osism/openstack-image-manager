@@ -26,6 +26,7 @@ images:
       - version: '20220703'
         url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20220703-rocky-8.qcow2
         checksum: sha256:7b786a39eeb96e22dd85386377ff186737f6c1b9a5faa105b0a0a7a4895c29d0
+        build_date: 2022-07-03
   - name: Rocky 9
     shortname: rocky-9
     format: qcow2
@@ -52,3 +53,4 @@ images:
       - version: '20220830'
         url: https://minio.services.osism.tech/openstack-image-manager/rocky-9/20220830-rocky-9.qcow2
         checksum: sha256:f02570e0ad3653df7f56baa8157739dbe92a003234acd5824dcf94d24694e20b
+        build_date: 2022-08-30
