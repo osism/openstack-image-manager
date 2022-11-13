@@ -21,6 +21,7 @@ images:
     visibility: public
     multi: true
     meta:
+      image_description: Ubuntu 20.04
       os_distro: ubuntu
       os_version: '20.04'
     tags: []
@@ -41,6 +42,7 @@ FAKE_IMAGE_DICT = {
     'visibility': 'public',
     'multi': True,
     'meta': {
+        'image_description': 'Ubuntu 20.04',
         'os_distro': 'ubuntu',
         'os_version': '20.04'
     },
