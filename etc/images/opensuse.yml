@@ -25,3 +25,4 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/opensuse-leap-15.4/20220805/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
         source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.4/appliances/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
         checksum: "sha256:2521af728f47bdf7c18d18e1c95b576d2aedd9a8fb3668b4791f7f5ece7a1931"
+        build_date: 2022-08-05

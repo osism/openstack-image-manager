@@ -25,3 +25,4 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/fedora-coreos/35.20211203.3.0/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2
         source: https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/35.20211203.3.0/x86_64/fedora-coreos-35.20211203.3.0-openstack.x86_64.qcow2.xz
         checksum: "sha256:ab6cab3bf6269eae1cb6252a57f278255c2335655fdab06baeeb494e8ebfaa8b"
+        build_date: 2021-12-17

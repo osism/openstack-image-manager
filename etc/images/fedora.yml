@@ -26,3 +26,4 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/fedora-36/20220504/Fedora-Cloud-Base-36-1.5.x86_64.qcow2
         source: https://mirror.23m.com/fedora/linux/releases/36/Cloud/x86_64/images/Fedora-Cloud-Base-36-1.5.x86_64.qcow2
         checksum: "sha256:ca9e514cc2f4a7a0188e7c68af60eb4e573d2e6850cc65b464697223f46b4605"
+        build_date: 2022-05-04

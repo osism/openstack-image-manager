@@ -26,6 +26,7 @@ images:
       - version: '20201112'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-7/20201112-centos-7.qcow2
         checksum: sha256:e38bab0475cc6d004d2e17015969c659e5a308111851b0e2715e84646035bdd3
+        build_date: 2020-11-12
   - name: CentOS Stream 8
     shortname: centos-stream-8
     format: qcow2
@@ -52,6 +53,7 @@ images:
       - version: '20220913'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-8/20220913-centos-stream-8.qcow2
         checksum: sha256:8717251f8e4d2fe3e5032799caae89358c1ba68d65a16b5128a59ec6003aac1c
+        build_date: 2022-09-13
   - name: CentOS Stream 9
     shortname: centos-stream-9
     format: qcow2
