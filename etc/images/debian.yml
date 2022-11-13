@@ -52,4 +52,4 @@ images:
       - version: '20221109'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20221109-debian-11.qcow2
         checksum: sha512:71f1c376e585a87299f751e076689d7ebe2a897649b65071878eb5694be76b771f37c21d7a88630214f4650dec5307e9f73d597ec326f99bd3451e23f607e5b8
-        build_date: '2022-11-09'
+        build_date: 2022-11-09

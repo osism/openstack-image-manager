@@ -78,4 +78,4 @@ images:
       - version: '20221111'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-9/20221111-centos-stream-9.qcow2
         checksum: sha256:6bed5b2fe4bd2ff2cc62210a9fc2a7f55e129f0b1549a07ed26c42f8fa16ce4e
-        build_date: '2022-11-11'
+        build_date: 2022-11-11
