@@ -204,6 +204,10 @@ class ImageManager:
                             raise Exception()
                     if 'meta' in version:
                         versions[version['version']]['meta'] = version['meta']
+                    else:
+                        versions[version['version']]['meta'] = {}
+                    if 'url' in version:
+                        versions[version['version']]['meta']['image_source'] = version['url']
             except Exception:
                 logger.error('Key "checksums_url" is required when using version "latest"')
                 continue

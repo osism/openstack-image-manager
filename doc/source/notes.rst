@@ -30,3 +30,6 @@ The value of ``login`` is stored as ``image_original_user`` in the metadata of a
 
 The value of ``build_date`` of a specific version of an image is stored as
 ``image_build_date`` in the metadata of an image.
+
+The value of ``url`` of a specific version of an image is stored as
+``image_source`` in the metadata of an image.
