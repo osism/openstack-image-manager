@@ -208,6 +208,8 @@ class ImageManager:
                         versions[version['version']]['meta'] = {}
                     if 'url' in version:
                         versions[version['version']]['meta']['image_source'] = version['url']
+                    if 'build_date' in version:
+                        versions[version['version']]['meta']['image_build_date'] = version['build_date']
             except Exception:
                 logger.error('Key "checksums_url" is required when using version "latest"')
                 continue
@@ -430,10 +432,6 @@ class ImageManager:
             if 'min_ram' in image and image['min_ram'] != cloud_image.min_ram:
                 logger.info("Setting min_ram: %s != %s" % (image['min_ram'], cloud_image.min_ram))
                 self.conn.image.update_image(cloud_image.id, **{'min_ram': int(image['min_ram'])})
-
-            if 'build_date' in versions[version]:
-                logger.info("Setting image_build_date = %s" % versions[version]['build_date'])
-                image['meta']['image_build_date'] = versions[version]['build_date']
 
             if self.CONF.use_os_hidden:
                 if 'hidden' in versions[version]:
