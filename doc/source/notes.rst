@@ -28,6 +28,9 @@ Mapping to SCS Image Metadata
 
 The value of ``login`` is stored as ``image_original_user`` in the metadata of an image.
 
+If ``image_description`` is not set as meta information, ``image_description`` is set to
+the name of the image.
+
 The value of ``build_date`` of a specific version of an image is stored as
 ``image_build_date`` in the metadata of an image.
 

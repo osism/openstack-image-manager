@@ -218,6 +218,9 @@ class ImageManager:
             if 'os_distro' in image['meta']:
                 image['tags'].append("os:%s" % image['meta']['os_distro'])
 
+            if 'image_description' not in image['meta']:
+                image['meta']['image_description'] = image['name']
+
             existing_images, imported_image, previous_image = \
                 self.process_image(image, versions, sorted_versions, image['meta'].copy())
 
