@@ -20,15 +20,19 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '1.22.9'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.9.qcow2
-        checksum: "sha256:2376c7e1bf92a507a0f2c65f325cf5f66ce63e91c267de7018b7ed338317e77a"
-        build_date: 2022-05-12
-      - version: '1.23.9'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.23/ubuntu-2004-kube-v1.23.9.qcow2
-        checksum: "sha256:dcaa3d9eeb556fa3851af03ac63170fedc6d10a15e19475e79627f948b7b0bb0"
-        build_date: 2022-07-13
-      - version: '1.24.2'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.24/ubuntu-2004-kube-v1.24.2.qcow2
-        checksum: "sha256:03773232a1994a3181978f38d7a62b5807d9a643d9dcf1b910f5a8abb474cee0"
-        build_date: 2022-06-28
+      - version: '1.22.16'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.16.qcow2
+        checksum: "sha256:171880908101032cafaa547b4fbbaff21d283b6c594faa7a5f1d76133282a4b3"
+        build_date: 2022-11-11
+      - version: '1.23.14'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.23/ubuntu-2004-kube-v1.23.14.qcow2
+        checksum: "sha256:2931ea280a566dc3c250edb8c271c72eb8336ca2e810fe0c9b999f2169cdc9a3"
+        build_date: 2022-11-11
+      - version: '1.24.8'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.24/ubuntu-2004-kube-v1.24.8.qcow2
+        checksum: "sha256:c4ba13991b530c8cf909e52ebc2363d8e741b82bf342abb1000692c82a4bd96d"
+        build_date: 2022-11-11
+      - version: '1.25.4'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.25/ubuntu-2004-kube-v1.25.4.qcow2
+        checksum: "sha256:429ab76c1de9646d7c3fffd4a7d601a5459fcad310f1c11f23e2c5419ec50885"
+        build_date: 2022-11-11
