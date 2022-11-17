@@ -29,7 +29,7 @@ class TestManageAPI(TestCase):
             validate=False
         )
         self.image = self.sot.read_image_files()[0]
-        self.assertEqual(self.image['name'], 'ubuntu-20.04')
+        self.assertEqual(self.image['name'], 'Cirros_test')
         self.image['tags'].append(self.sot.CONF.tag)
         self.name = self.image['name'] + ' (1)'
 
@@ -47,7 +47,11 @@ class TestManageAPI(TestCase):
                          f'Please make sure to delete any preexisting images with tag {self.sot.CONF.tag}')
 
         # test the image import
-        imported_image = self.sot.import_image(self.image, self.name, self.image['versions'][0]['url'])
+        imported_image = self.sot.import_image(self.image,
+                                               self.name,
+                                               self.image['versions'][0]['url'],
+                                               {'1': self.image['versions'][0]},
+                                               '1')
         self.assertEqual(imported_image.properties['os_glance_failed_import'], '')
         self.assertEqual(imported_image.visibility, 'private')
         self.assertEqual(imported_image.name, self.name)
@@ -59,7 +63,8 @@ class TestManageAPI(TestCase):
         self.assertFalse(imported_image.is_hidden)
 
         # test set properties
-        self.sot.set_properties(self.image, self.name, {'1': dict()}, '1', '', self.image['meta'])
+        self.image['meta']['image_build_date'] = self.image['versions'][0]['build_date']
+        self.sot.set_properties(self.image, self.name, {'1': self.image['versions'][0]}, '1', '', self.image['meta'])
 
         # assert the properties of the image got updated
         image = self.sot.get_images()[self.name]
@@ -80,6 +85,10 @@ class TestManageAPI(TestCase):
         self.assertEqual(image.os_version, self.image['meta']['os_version'])
         self.assertEqual(image.properties['image_original_user'], self.image['login'])
         self.assertEqual(image.properties['internal_version'], '1')
+        self.assertEqual(image.properties['replace_frequency'], self.image['meta']['replace_frequency'])
+        self.assertEqual(image.properties['uuid_validity'], self.image['meta']['uuid_validity'])
+        self.assertEqual(image.properties['provided_until'], self.image['meta']['provided_until'])
+        self.assertEqual(image.properties['image_build_date'], str(self.image['versions'][0]['build_date']))
         self.assertFalse(image.is_hidden)
 
         # test image rename

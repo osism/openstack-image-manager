@@ -1,24 +1,28 @@
 ---
 images:
-  - name: ubuntu-20.04
-    shortname: ubuntu-20.04
+  - name: Cirros_test
+    shortname: cirrors
     format: qcow2
-    login: ubuntu
-    min_disk: 8
-    min_ram: 512
+    login: gocubsgo
+    min_disk: 1
+    min_ram: 32
     status: active
     visibility: public
-    multi: true
+    multi: True
     meta:
       architecture: x86_64
       hw_disk_bus: scsi
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
-      os_distro: ubuntu
-      os_version: '20.04'
+      replace_frequency: never
+      uuid_validity: none
+      provided_until: none
+      os_distro: cirros
+      os_version: '0.6.0'
     tags: []
     versions:
       - version: '1'
-        url: https://cloud-images.ubuntu.com/releases/focal/release-20220207/ubuntu-20.04-server-cloudimg-amd64.img
-        checksum: "sha256:d64bc2978f3b4e14017d8600715f3a67291df9141eec6bc3ac6daee0a7881fbc"
+        url: https://github.com/cirros-dev/cirros/releases/download/0.6.0/cirros-0.6.0-x86_64-disk.img
+        checksum: "sha256:94e1e2c94dbbae7d4bdc38e68590a1daf73c9de2d03dd693857b4b0a042548e8"
+        build_date: 2022-09-28
