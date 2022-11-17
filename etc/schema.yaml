@@ -48,3 +48,4 @@ versions:
   url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL')
   version: str()
   visibility: enum('public', 'private', 'community', 'shared', required=False)
+  id: regex('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', required=False)
