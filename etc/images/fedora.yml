@@ -14,6 +14,7 @@ images:
       architecture: x86_64
       hw_disk_bus: scsi
       hw_scsi_model: virtio-scsi
+      hw_rng_model: virtio
       hw_watchdog_action: reset
       os_distro: fedora
       os_version: '36'
