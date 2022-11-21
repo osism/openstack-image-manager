@@ -157,7 +157,7 @@ class TestManage(TestCase):
             'visibility': 'private'
         }
 
-        self.sot.import_image(self.fake_image_dict, self.fake_name, self.fake_url)
+        self.sot.import_image(self.fake_image_dict, self.fake_name, self.fake_url, self.versions, '1')
 
         mock_create.assert_called_once_with(**properties)
         mock_import.assert_called_once_with(self.fake_image, method='web-download', uri=self.fake_url)
@@ -177,7 +177,11 @@ class TestManage(TestCase):
 
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
-        mock_import_image.assert_called_once_with(self.fake_image_dict, self.fake_name, self.fake_url)
+        mock_import_image.assert_called_once_with(self.fake_image_dict,
+                                                  self.fake_name,
+                                                  self.fake_url,
+                                                  self.versions,
+                                                  '1')
         mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1', '', meta)
         self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.__getitem__(), None))
 
