@@ -1,6 +1,6 @@
 # OpenStack Image Manager
 
-**ToDo**: Image/Map SCS context
+<!---**ToDo**: Image/Map SCS context-->
 
 The OpenStack Image Manager is an easy to use Application for managing all images in the OpenStack horizont.
 
