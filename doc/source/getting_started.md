@@ -69,7 +69,7 @@ If you wanna use only images from a special filter use regex to find them: tox -
 
 #### Delete images
 
-Simply remove the version of an image you want to delete or the entire image from **etc/images/.** or use **tox -- --delete foo**
+Simply remove the version of an image you want to delete or the entire image from **etc/images/.** or use **tox -- --delete --name foo**
 
 #### Delete images fully
 
