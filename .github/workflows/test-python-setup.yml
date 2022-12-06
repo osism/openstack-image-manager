@@ -5,12 +5,14 @@ name: Test python setup
   push:
     paths:
       - '**.py'
+      - setup.cfg
       - .github/workflows/test-python-setup.yml
     branches:
       - main
   pull_request:
     paths:
       - '**.py'
+      - setup.cfg
       - .github/workflows/test-python-setup.yml
 
 jobs:
