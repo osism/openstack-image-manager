@@ -1,0 +1,90 @@
+---
+sources:
+
+  - name: Ubuntu
+    vendor: "Canonical Ltd."
+    releases:
+      - name: '18.04'
+        codename: bionic
+        baseURL: https://cloud-images.ubuntu.com/releases/bionic/
+        releasepath: release
+        imagename: ubuntu-18.04-server-cloudimg-amd64
+        extension: img
+        checksumname: SHA256SUMS
+        algorithm: sha256
+      - name: '20.04'
+        codename: focal
+        baseURL: https://cloud-images.ubuntu.com/releases/focal/
+        releasepath: release
+        imagename: ubuntu-20.04-server-cloudimg-amd64
+        extension: img
+        checksumname: SHA256SUMS
+        algorithm: sha256
+      - name: '22.04'
+        codename: jammy
+        baseURL: https://cloud-images.ubuntu.com/releases/jammy/
+        releasepath: release
+        imagename: ubuntu-22.04-server-cloudimg-amd64
+        extension: img
+        checksumname: SHA256SUMS
+        algorithm: sha256
+
+  - name: Ubuntu Minimal
+    vendor: "Canonical Ltd."
+    releases:
+      - name: '20.04'
+        codename: focal
+        baseURL: https://cloud-images.ubuntu.com/minimal/releases/focal/
+        releasepath: release
+        imagename: ubuntu-20.04-minimal-cloudimg-amd64
+        extension: img
+        checksumname: SHA256SUMS
+        algorithm: sha256
+      - name: '22.04'
+        codename: jammy
+        baseURL: https://cloud-images.ubuntu.com/minimal/releases/jammy/
+        releasepath: release
+        imagename: ubuntu-22.04-minimal-cloudimg-amd64
+        extension: img
+        checksumname: SHA256SUMS
+        algorithm: sha256
+
+  - name: Debian
+    vendor: "Debian Community"
+    releases:
+      - name: '10'
+        codename: buster
+        baseURL: https://cloud.debian.org/images/cloud/buster/
+        releasepath: latest
+        imagename: debian-10-genericcloud-amd64
+        extension: qcow2
+        checksumname: SHA512SUMS
+        algorithm: sha512
+      - name: '11'
+        codename: bullseye
+        baseURL: https://cloud.debian.org/images/cloud/bullseye/
+        releasepath: latest
+        imagename: debian-11-genericcloud-amd64
+        extension: qcow2
+        checksumname: SHA512SUMS
+        algorithm: sha512
+
+  - name: AlmaLinux
+    vendor: "AlmaLinux OS"
+    releases:
+      - name: '8'
+        codename: 'none'
+        baseURL: https://repo.almalinux.org/almalinux/8/
+        releasepath: cloud/x86_64/images
+        imagename: AlmaLinux-8-GenericCloud-latest.x86_64
+        extension: qcow2
+        checksumname: CHECKSUM
+        algorithm: sha256
+      - name: '9'
+        codename: 'none'
+        baseURL: https://repo.almalinux.org/almalinux/9/
+        releasepath: cloud/x86_64/images
+        imagename: AlmaLinux-9-GenericCloud-latest.x86_64
+        extension: qcow2
+        checksumname: CHECKSUM
+        algorithm: sha256

@@ -3,3 +3,5 @@ clouds.yml
 doc/build/
 secure.yml
 __pycache__
+crawler/lib/image-catalog.db
+crawler/repository
