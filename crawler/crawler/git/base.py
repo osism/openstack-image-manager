@@ -3,6 +3,7 @@ from pathlib import Path
 
 from crawler.core.database import db_get_release_versions
 
+
 def clone_or_pull(remote_repository, repository):
     path = Path(repository)
     if not path.is_dir():

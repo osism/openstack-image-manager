@@ -18,7 +18,8 @@ def release_update_check(release, last_checksum):
 
     current_checksum = web_get_checksum(checksum_url, imagename)
     if current_checksum is None:
-        print("ERROR: no matching checksum found - check image (%s) and checksum filename (%s)" % (imagename, release['checksumname']))
+        print("ERROR: no matching checksum found - check image (%s) "
+              "and checksum filename (%s)" % (imagename, release['checksumname']))
         return None
 
     current_checksum = release['algorithm'] + ":" + current_checksum

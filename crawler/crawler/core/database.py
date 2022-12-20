@@ -2,6 +2,7 @@ import sys
 import sqlite3
 from pathlib import Path
 
+
 def database_connect(name):
     path = Path(name)
     if path.is_file():
@@ -49,7 +50,10 @@ def database_initialize(name):
 def db_get_last_checksum(connection, distribution, release):
     try:
         database_cursor = connection.cursor()
-        database_cursor.execute("SELECT checksum FROM image_catalog WHERE distribution_name = '%s' AND distribution_release = '%s' ORDER BY id DESC LIMIT 1" % (distribution, release))
+        database_cursor.execute("SELECT checksum FROM image_catalog "
+                                "WHERE distribution_name = '%s' "
+                                "AND distribution_release = '%s' "
+                                "ORDER BY id DESC LIMIT 1" % (distribution, release))
     except sqlite3.OperationalError as error:
         raise SystemError("SQLite error: %s" % error)
 
@@ -67,13 +71,16 @@ def db_get_last_checksum(connection, distribution, release):
 
 
 def db_get_last_entry(connection, distribution, release):
-     return db_get_release_versions(connection, distribution, release, 1)
+    return db_get_release_versions(connection, distribution, release, 1)
 
 
 def db_get_release_versions(connection, distribution, release, limit):
     try:
         database_cursor = connection.cursor()
-        database_cursor.execute("SELECT name, release_date, version, distribution_name, distribution_release, url, checksum FROM image_catalog WHERE distribution_name = '%s' AND distribution_release = '%s' ORDER BY id DESC LIMIT %d" % (distribution, release, limit))
+        database_cursor.execute("SELECT name, release_date, version, distribution_name, "
+                                "distribution_release, url, checksum FROM image_catalog "
+                                "WHERE distribution_name = '%s' AND distribution_release = '%s' "
+                                "ORDER BY id DESC LIMIT %d" % (distribution, release, limit))
     except sqlite3.OperationalError as error:
         print("SQLite error: %s" % error)
         sys.exit(1)
@@ -97,7 +104,13 @@ def db_get_release_versions(connection, distribution, release, limit):
 def read_version_from_catalog(connection, distribution, release, version):
     try:
         database_cursor = connection.cursor()
-        database_cursor.execute("SELECT version,checksum,url,release_date FROM (SELECT * FROM image_catalog WHERE distribution_name = '%s' AND distribution_release = '%s' AND version ='%s' ORDER BY id DESC LIMIT 1) ORDER BY ID" % (distribution, release, version))
+        database_cursor.execute("SELECT version,checksum,url,release_date "
+                                "FROM (SELECT * FROM image_catalog "
+                                "WHERE distribution_name = '%s' "
+                                "AND distribution_release = '%s' "
+                                "AND version ='%s' "
+                                "ORDER BY id DESC LIMIT 1) "
+                                "ORDER BY ID" % (distribution, release, version))
     except sqlite3.OperationalError as error:
         raise SystemError("SQLite error: %s" % error)
 
@@ -117,8 +130,13 @@ def read_version_from_catalog(connection, distribution, release, version):
 def write_catalog_entry(connection, update):
     try:
         database_cursor = connection.cursor()
-        database_cursor.execute("INSERT INTO image_catalog (name, release_date, version, distribution_name, distribution_release, url, checksum) VALUES (?,?,?,?,?,?,?)",
-                                (update['name'], update['release_date'], update['version'], update['distribution_name'], update['distribution_release'], update['url'], update['checksum']))
+        database_cursor.execute("INSERT INTO image_catalog "
+                                "(name, release_date, version, distribution_name, "
+                                "distribution_release, url, checksum) "
+                                "VALUES (?,?,?,?,?,?,?)",
+                                (update['name'], update['release_date'], update['version'],
+                                 update['distribution_name'], update['distribution_release'],
+                                 update['url'], update['checksum']))
         connection.commit()
     except sqlite3.OperationalError as error:
         raise SystemError("SQLite error: %s" % error)
@@ -131,7 +149,10 @@ def write_catalog_entry(connection, update):
 def update_catalog_entry(connection, update):
     try:
         database_cursor = connection.cursor()
-        database_cursor.execute("UPDATE image_catalog set url=?, checksum=? WHERE name=? AND version=?", (update['url'], update['checksum'], update['name'], update['version']))
+        database_cursor.execute("UPDATE image_catalog set url=?, checksum=? "
+                                "WHERE name=? AND version=?",
+                                (update['url'], update['checksum'],
+                                 update['name'], update['version']))
         connection.commit()
     except sqlite3.OperationalError as error:
         raise SystemError("SQLite error: %s" % error)
@@ -142,7 +163,8 @@ def update_catalog_entry(connection, update):
 
 
 def write_or_update_catalog_entry(connection, update):
-    existing_entry = read_version_from_catalog(connection, update['distribution_name'], update['distribution_release'], update['version'])
+    existing_entry = read_version_from_catalog(connection, update['distribution_name'],
+                                               update['distribution_release'], update['version'])
 
     if update['version'] in existing_entry['versions']:
         print("Updating version " + update['version'])
@@ -154,7 +176,12 @@ def write_or_update_catalog_entry(connection, update):
 def read_release_from_catalog(connection, distribution, release):
     try:
         database_cursor = connection.cursor()
-        database_cursor.execute("SELECT version,checksum,url,release_date FROM (SELECT * FROM image_catalog WHERE distribution_name = '%s' AND distribution_release = '%s' ORDER BY id DESC LIMIT 3) ORDER BY ID" % (distribution, release))
+        database_cursor.execute("SELECT version,checksum,url,release_date "
+                                "FROM (SELECT * FROM image_catalog "
+                                "WHERE distribution_name = '%s' "
+                                "AND distribution_release = '%s' "
+                                "ORDER BY id DESC LIMIT 3) "
+                                "ORDER BY ID" % (distribution, release))
     except sqlite3.OperationalError as error:
         raise SystemError("SQLite error: %s" % error)
 

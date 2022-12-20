@@ -24,7 +24,8 @@ def main():
 
     working_directory = os.getcwd()
 
-    parser = argparse.ArgumentParser(description='checks cloud image repositories for new updates and keeps track of all images within its sqlite3 database')
+    parser = argparse.ArgumentParser(description='checks cloud image repositories for new updates and'
+                                     + ' keeps track of all images within its sqlite3 database')
     parser.add_argument('--config', type=str, required=False,
                         help='specify the config file to be used (default: etc/config.yaml)')
     parser.add_argument('--sources', type=str, required=False,

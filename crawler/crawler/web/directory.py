@@ -96,7 +96,8 @@ def web_get_current_image_metadata(release, image_filedate):
             else:
                 release_date = image_filedate
 
-            return({"url": release_build_image_url(release, release_version_path, new_version), "version": new_version, "release_date": release_date})
+            return ({"url": release_build_image_url(release, release_version_path, new_version),
+                    "version": new_version, "release_date": release_date})
 
     # release is behind file date
     filedate = datetime.date(int(version[0:4]), int(version[4:6]), int(version[6:8]))
@@ -125,7 +126,8 @@ def web_get_current_image_metadata(release, image_filedate):
                 if release_date is None:
                     return None
 
-                return({"url": release_build_image_url(release, release_version_path, new_version), "version": new_version, "release_date": release_date})
+                return ({"url": release_build_image_url(release, release_version_path, new_version),
+                         "version": new_version, "release_date": release_date})
 
         days_back = days_back + 1
 

@@ -115,7 +115,7 @@ def get_correct_version_path(release, version):
     for link in soup.find_all("a"):
         data = link.get('href')
         if data.endswith('/'):
-            path = data.replace('/','')
+            path = data.replace('/', '')
         else:
             path = data
 
@@ -127,11 +127,6 @@ def get_correct_version_path(release, version):
 
 
 def get_version_metadata(release, version):
-    if not release['baseURL'].endswith('/'):
-        base_url = release['baseURL'] + "/"
-    else:
-        base_url = release['baseURL']
-
     metadata = {}
 
     # 1. check path
@@ -222,6 +217,7 @@ def main():
                     write_catalog_entry(database, catalog_update)
 
     database_disconnect(database)
+
 
 if __name__ == "__main__":
     main()
