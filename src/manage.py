@@ -60,7 +60,7 @@ class ImageManager:
                    "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>")
         logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-        if __name__ == '__main__':
+        if __name__ == '__main__' or __name__ == 'openstack_image_manager.manage':
             self.main()
 
     def read_image_files(self) -> list:
