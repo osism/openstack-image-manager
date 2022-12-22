@@ -21,7 +21,7 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '576.1'
-        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.1.qcow2
-        checksum: "sha256:f5a41e8428e493b104f40e97dbcddbac4167ab4ad0f9241fe041addfa0efe563"
-        build_date: 2021-12-09
+      - version: '576.12'
+        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.576.12.qcow2
+        checksum: "sha256:6f1b68b2c36d22add37a81f89f30e47083ea473bfe92d36faf5bfe722e19e109"
+        build_date: 2022-09-09
