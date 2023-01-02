@@ -91,11 +91,13 @@ def main():
     else:
         if updated_sources:
             print("\nExporting catalog to %s/%s" % (working_directory, config['local_repository']))
-            export_image_catalog(database, image_source_catalog, updated_sources, config['local_repository'])
+            export_image_catalog(database, image_source_catalog, updated_sources,
+                                 config['local_repository'], config['template_path'])
         else:
             if args.export_only:
                 print("\nExporting all catalog files to %s/%s" % (working_directory, config['local_repository']))
-                export_image_catalog_all(database, image_source_catalog, config['local_repository'])
+                export_image_catalog_all(database, image_source_catalog, config['local_repository'],
+                                         config['template_path'])
 
     # push changes to git repository when configured
     if 'remote_repository' in config and updated_sources:
