@@ -4,7 +4,7 @@ import os
 from crawler.core.database import read_release_from_catalog
 
 
-def export_image_catalog(connection, sources_catalog, updated_sources, local_repository):
+def export_image_catalog(connection, sources_catalog, updated_sources, local_repository, template_path):
     # "smart" export - only releases with updates will be written
     # create directory (once) - only necessary when not created by git clone
     if not os.path.exists(local_repository):
@@ -18,11 +18,11 @@ def export_image_catalog(connection, sources_catalog, updated_sources, local_rep
         if source['name'] in updated_sources:
             distribution = source['name']
             print("Exporting image catalog for " + distribution)
-            header_file = open("templates/header.yml")
+            header_file = open(template_path + "/header.yml")
             catalog_export = header_file.read()
             header_file.close()
 
-            image_template_filename = "templates/" + distribution.lower().replace(" ", "_") + ".yml.j2"
+            image_template_filename = template_path + "/" + distribution.lower().replace(" ", "_") + ".yml.j2"
             image_template_file = open(image_template_filename, "r")
             image_template = Template(image_template_file.read())
             image_template_file.close()
@@ -44,7 +44,7 @@ def export_image_catalog(connection, sources_catalog, updated_sources, local_rep
             image_catalog_export_file.close()
 
 
-def export_image_catalog_all(connection, sources_catalog, local_repository):
+def export_image_catalog_all(connection, sources_catalog, local_repository, template_path):
     # export all releases - used with --export-only
     # create directory (once) - only necessary when not created by git clone
     if not os.path.exists(local_repository):
@@ -57,11 +57,11 @@ def export_image_catalog_all(connection, sources_catalog, local_repository):
     for source in sources_catalog['sources']:
         distribution = source['name']
         print("Exporting image catalog for " + distribution)
-        header_file = open("templates/header.yml")
+        header_file = open(template_path + "/header.yml")
         catalog_export = header_file.read()
         header_file.close()
 
-        image_template_filename = "templates/" + distribution.lower().replace(" ", "_") + ".yml.j2"
+        image_template_filename = template_path + "/" + distribution.lower().replace(" ", "_") + ".yml.j2"
         image_template_file = open(image_template_filename, "r")
         image_template = Template(image_template_file.read())
         image_template_file.close()
