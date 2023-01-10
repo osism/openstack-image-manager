@@ -66,13 +66,16 @@ As time permits the mechanismus relying on last entry = last version (and theref
 
 ## Changes
 
-- in etc/config.yaml exports: is now **local_repository**
-- renamed openstack-image-crawler to image-crawler
-- added git support
+### 2023-01-09
 
-ToDo:
+- added more documentation on usage and functionality
 
-- build container, docker-compose file
-- explain workflow
-- explain structure of config.yaml, image-sources.yaml
-- improve error handling
+### 2023-01-05
+
+- added ssh_git_command for git (costelter)
+- added branch support (costelter)
+- fixed output of export path informational (costelter)
+
+### 2023-01-02
+
+- fixed static path for templates (costelter)
