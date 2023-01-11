@@ -1,4 +1,4 @@
-# OpenStack Image Manager
+# Overview
 
 <!---**ToDo**: Image/Map SCS context-->
 
