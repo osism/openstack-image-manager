@@ -66,7 +66,15 @@ def main():
 
     # clone or update local repository when git is enabled
     if 'remote_repository' in config:
-        clone_or_pull(config['remote_repository'], config['local_repository'])
+        if 'git_ssh_command' in config:
+            git_ssh_command = config['git_ssh_command']
+        else:
+            git_ssh_command = None
+        if 'branch' in config:
+            working_branch = config['branch']
+        else:
+            working_branch = main
+        clone_or_pull(config['remote_repository'], config['local_repository'], working_branch, git_ssh_command)
     else:
         print("No image catalog repository configured")
 
@@ -89,19 +97,24 @@ def main():
     if args.updates_only:
         print("\nSkipping catalog export")
     else:
+        if config['local_repository'].startswith('/'):
+            export_path = config['local_repository']
+        else:
+            export_path = working_directory + "/" + config['local_repository']
+
         if updated_sources:
-            print("\nExporting catalog to %s/%s" % (working_directory, config['local_repository']))
+            print("\nExporting catalog to %s" % export_path)
             export_image_catalog(database, image_source_catalog, updated_sources,
                                  config['local_repository'], config['template_path'])
         else:
             if args.export_only:
-                print("\nExporting all catalog files to %s/%s" % (working_directory, config['local_repository']))
+                print("\nExporting all catalog files to %s" % export_path)
                 export_image_catalog_all(database, image_source_catalog, config['local_repository'],
                                          config['template_path'])
 
     # push changes to git repository when configured
     if 'remote_repository' in config and updated_sources:
-        update_repository(database, config['local_repository'], updated_sources)
+        update_repository(database, config['local_repository'], updated_sources, git_ssh_command)
     else:
         print("No remote repository update needed.")
 
