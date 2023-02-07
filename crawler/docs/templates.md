@@ -90,7 +90,7 @@ The name of the template is ubuntu.yaml. Image Crawler will find it under the "n
         {% set base, filename = catalog['versions'][release_version]['url'].rsplit('/', 1) -%}
         image_description: {{ base }}/unpacked/release_notes.txt
 {%- endfor %}
-````
+```
 
 The most exciting part is done in the versions part for a distribution. The for loop will walk through the versions dict part of the catalog dict (which is a nested dict) and will print out all information for the last 3 **release versions**.
 
