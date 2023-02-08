@@ -10,6 +10,7 @@ jobs:
   update-images:
     name: ${{ matrix.image }}
     strategy:
+      fail-fast: false
       matrix:
         image:
           - almalinux
