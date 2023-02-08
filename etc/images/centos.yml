@@ -83,4 +83,4 @@ images:
       - version: '20230208'
         url: https://minio.services.osism.tech/openstack-image-manager/centos-stream-9/20230208-centos-stream-9.qcow2
         checksum: sha256:5840c367e4e93233661bde632e9d940996e6ba80cabc3cad4c3fa9818f7e1aa6
-        build_date: '2023-02-08'
+        build_date: 2023-02-08

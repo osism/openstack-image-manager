@@ -27,7 +27,7 @@ images:
       - version: '20221111'
         url: https://minio.services.osism.tech/openstack-image-manager/almalinux-8/20221111-almalinux-8.qcow2
         checksum: sha256:9505239cbaf56fae0abc93a2dba312606540014fcc01e74f196edac0b5fbe783
-        build_date: '2022-11-11'
+        build_date: 2022-11-11
   - name: AlmaLinux 9
     shortname: almalinux-9
     format: qcow2
@@ -55,4 +55,4 @@ images:
       - version: '20221118'
         url: https://minio.services.osism.tech/openstack-image-manager/almalinux-9/20221118-almalinux-9.qcow2
         checksum: sha256:1e93210a0c534de76ae01dc02e8224be14264fa8d54ad6cff9af15b673c6db1a
-        build_date: '2022-11-18'
+        build_date: 2022-11-18
