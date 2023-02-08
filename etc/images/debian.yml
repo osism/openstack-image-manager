@@ -27,7 +27,7 @@ images:
       - version: '20221224'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20221224-debian-10.qcow2
         checksum: sha512:c8950be15827fd833379d9b5f3c84e84c11fd6c7af54436d82786cbccee8f742577eaee85adcfc5044017099102351979b5e73a1fe3ccd829088c68b66ee8d8b
-        build_date: '2022-12-24'
+        build_date: 2022-12-24
   - name: Debian 11
     shortname: debian-11
     format: qcow2
@@ -54,4 +54,4 @@ images:
       - version: '20230124'
         url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20230124-debian-11.qcow2
         checksum: sha512:7a7a546b9928f0d375c332a39db2d1af56fce3432b8a5dee0d4f71777efa7463a6b1fc797bcf3b12ca7d8f47d66824abbcbf0a0bdc94be5e90e5a90e8628fae6
-        build_date: '2023-01-24'
+        build_date: 2023-01-24

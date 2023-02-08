@@ -111,7 +111,7 @@ images:
       - version: '20230203'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20230203-ubuntu-18.04.qcow2
         checksum: sha256:9cb086803822ee3e3950d310901e471c958dc79b4805b3f60172c1c08b5c0064
-        build_date: '2023-02-03'
+        build_date: 2023-02-03
   - name: Ubuntu 18.04 Minimal
     shortname: ubuntu-18.04-minimal
     format: qcow2
@@ -139,7 +139,7 @@ images:
       - version: '20230208'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20230208-ubuntu-18.04-minimal.qcow2
         checksum: sha256:ef36b8e2bb82bba4d8fbd21327a58572feda07ea6970a829b8c6c6bd4eedd5d4
-        build_date: '2023-02-08'
+        build_date: 2023-02-08
   - name: Ubuntu 20.04
     shortname: ubuntu-20.04
     format: qcow2
@@ -167,7 +167,7 @@ images:
       - version: '20230207'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230207-ubuntu-20.04.qcow2
         checksum: sha256:3e49874b7fe9cbb4109f8fd4c4bc3ad38cd4b375f8b11b784669d96df1ff8c3c
-        build_date: '2023-02-07'
+        build_date: 2023-02-07
   - name: Ubuntu 20.04 Minimal
     shortname: ubuntu-20.04-minimal
     format: qcow2
@@ -195,7 +195,7 @@ images:
       - version: '20230208'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20230208-ubuntu-20.04-minimal.qcow2
         checksum: sha256:cd27081deb7da3ec210684f39fd3cf5bb894f29ff4e5c7053142412e7885f98a
-        build_date: '2023-02-08'
+        build_date: 2023-02-08
   - name: Ubuntu 22.04
     shortname: ubuntu-22.04
     format: qcow2
@@ -223,7 +223,7 @@ images:
       - version: '20230110'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230110-ubuntu-22.04.qcow2
         checksum: sha256:71657529fc067dbda2537762730904a68905ae1202a30ec00a645828506939df
-        build_date: '2023-01-10'
+        build_date: 2023-01-10
   - name: Ubuntu 22.04 Minimal
     shortname: ubuntu-22.04-minimal
     format: qcow2
@@ -251,4 +251,4 @@ images:
       - version: '20230208'
         url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20230208-ubuntu-22.04-minimal.qcow2
         checksum: sha256:86efe9eb15f328ec5e15f9e9a14f8f9acd77f8c5266c38303af7409e16394f26
-        build_date: '2023-02-08'
+        build_date: 2023-02-08
