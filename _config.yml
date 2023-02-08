@@ -1,0 +1,4 @@
+---
+exclude:
+  - crawler
+  - etc
