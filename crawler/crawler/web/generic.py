@@ -61,7 +61,7 @@ def url_get_last_modified(url):
     if request is None:
         return None
 
-    last_modified_date = request.headers['Last-Modified']
+    last_modified_date = request.headers["Last-Modified"]
     datestring = parsedate_to_datetime(last_modified_date).strftime("%Y-%m-%d")
 
     return datestring
