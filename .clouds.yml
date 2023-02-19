@@ -1,5 +1,5 @@
 ---
-# NOTE: This is the clouds.yml file for the integration tests run by GitHub Actions.
+# NOTE: This is the clouds.yml file for the integration tests run by Zuul.
 
 clouds:
   openstack:

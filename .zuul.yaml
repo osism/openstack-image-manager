@@ -1,7 +1,20 @@
 ---
+- job:
+    name: real-world-test
+    pre-run: playbooks/pre-real-world-test.yml
+    run: playbooks/real-world-test.yml
+    roles:
+      - zuul: osism/zuul-jobs
+        name: devstack
+
 - project:
     merge-mode: squash-merge
     default-branch: main
     check:
       jobs:
         - markdownlint
+        - real-world-test
+    gate:
+      jobs:
+        - markdownlint
+        - real-world-test
