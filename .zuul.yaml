@@ -12,9 +12,15 @@
     default-branch: main
     check:
       jobs:
+        - flake8
+        - hadolint
         - markdownlint
         - real-world-test
+        - yamllint
     gate:
       jobs:
+        - flake8
+        - hadolint
         - markdownlint
         - real-world-test
+        - yamllint
