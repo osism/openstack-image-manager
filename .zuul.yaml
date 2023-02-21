@@ -14,7 +14,9 @@
       jobs:
         - markdownlint
         - real-world-test
+        - yamllint
     gate:
       jobs:
         - markdownlint
         - real-world-test
+        - yamllint
