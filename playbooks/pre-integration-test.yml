@@ -1,5 +1,5 @@
 ---
-- name: Pre real world test play
+- name: Pre integration test play
   hosts: all
 
   vars:
