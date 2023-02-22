@@ -385,7 +385,7 @@ class ImageManager:
                     return existing_images, imported_image, previous_image
 
                 if image['multi'] and image['name'] in cloud_images:
-                    self.previous_image = cloud_images[image['name']]
+                    previous_image = cloud_images[image['name']]
 
                 if not self.CONF.dry_run:
                     self.import_image(image, name, url, versions, version)
