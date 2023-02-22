@@ -21,14 +21,6 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '1.22.16'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.22/ubuntu-2004-kube-v1.22.16.qcow2
-        checksum: "sha256:171880908101032cafaa547b4fbbaff21d283b6c594faa7a5f1d76133282a4b3"
-        build_date: 2022-11-11
-      - version: '1.23.14'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.23/ubuntu-2004-kube-v1.23.14.qcow2
-        checksum: "sha256:2931ea280a566dc3c250edb8c271c72eb8336ca2e810fe0c9b999f2169cdc9a3"
-        build_date: 2022-11-11
       - version: '1.24.8'
         url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.24/ubuntu-2004-kube-v1.24.8.qcow2
         checksum: "sha256:c4ba13991b530c8cf909e52ebc2363d8e741b82bf342abb1000692c82a4bd96d"
