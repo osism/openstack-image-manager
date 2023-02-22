@@ -143,17 +143,15 @@ class ImageManager:
         else:
             self.create_connection()
             images = self.read_image_files()
-            managed_images = set()
-
-            # get all active managed images, so they don't get deleted when using --name
-            cloud_images = self.get_images()
-            for image in cloud_images:
-                if cloud_images[image].visibility == "public":
-                    managed_images.add(image)
-
-            managed_images = set.union(managed_images, self.process_images(images))
+            self.process_images(images)
 
             if not self.CONF.dry_run:
+                # get all active managed images, so they don't get deleted when using --name
+                managed_images = set()
+                cloud_images = self.get_images()
+                for image in cloud_images:
+                    if self.CONF.tag in cloud_images[image].tags:
+                        managed_images.add(image)
                 self.manage_outdated_images(managed_images)
 
         if self.exit_with_error:
@@ -591,6 +589,7 @@ class ImageManager:
         Returns:
             List with all images that are unmanaged and get affected by this method
         '''
+
         cloud_images = self.get_images()
         unmanaged_images = [x for x in cloud_images if x not in managed_images]
 
