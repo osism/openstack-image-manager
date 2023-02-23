@@ -1,8 +1,8 @@
 ---
 - job:
-    name: real-world-test
-    pre-run: playbooks/pre-real-world-test.yml
-    run: playbooks/real-world-test.yml
+    name: integration-test
+    pre-run: playbooks/pre-integration-test.yml
+    run: playbooks/integration-test.yml
     roles:
       - zuul: osism/zuul-jobs
         name: devstack
@@ -15,12 +15,12 @@
         - flake8
         - hadolint
         - markdownlint
-        - real-world-test
+        - integration-test
         - yamllint
     gate:
       jobs:
         - flake8
         - hadolint
         - markdownlint
-        - real-world-test
+        - integration-test
         - yamllint
