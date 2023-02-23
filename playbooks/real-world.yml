@@ -1,0 +1,8 @@
+---
+- name: Real world play
+  hosts: all
+
+  roles:
+    - role: tox
+      vars:
+        tox_extra_args: -- --dry-run
