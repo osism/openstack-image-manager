@@ -1,0 +1,20 @@
+---
+- name: Pre real world play
+  hosts: all
+
+  vars:
+    zuul_work_dir: "{{ zuul.project.src_dir }}"
+
+  roles:
+    - role: ensure-tox
+
+  tasks:
+    - name: Copy clouds.yml configuration file
+      no_log: true
+      ansible.builtin.copy:
+        content: "{{ clouds.clouds }}"
+        dest: "{{ zuul_work_dir }}/clouds.yml"
+        remote_src: true
+        mode: '0600'
+        owner: zuul
+        group: zuul
