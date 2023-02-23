@@ -5,4 +5,4 @@
   roles:
     - role: tox
       vars:
-        tox_extra_args: -- --dry-run
+        tox_extra_args: -- --latest
