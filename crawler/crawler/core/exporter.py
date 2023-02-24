@@ -42,6 +42,7 @@ def export_image_catalog(
                 release_catalog["name"] = distribution
                 release_catalog["os_distro"] = distribution.lower()
                 release_catalog["os_version"] = release["name"]
+                release_catalog["codename"] = release["codename"]
 
                 catalog_export = (
                     catalog_export
