@@ -24,10 +24,10 @@ images:
     latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
     latest_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
-      - version: '20221224'
-        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20221224-debian-10.qcow2
-        checksum: sha512:c8950be15827fd833379d9b5f3c84e84c11fd6c7af54436d82786cbccee8f742577eaee85adcfc5044017099102351979b5e73a1fe3ccd829088c68b66ee8d8b
-        build_date: 2022-12-24
+      - version: '20230223'
+        url: https://minio.services.osism.tech/openstack-image-manager/debian-10/20230223-debian-10.qcow2
+        checksum: sha512:9522ebd80d7577d7a679bb876d7aa4da066947986809ccf75ae140b26550aa8cf7c46a38084941bd316cfab602565581aa5f1efd66538b9577b7559154c30356
+        build_date: '2023-02-23'
   - name: Debian 11
     shortname: debian-11
     format: qcow2
