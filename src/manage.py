@@ -40,10 +40,6 @@ class ImageManager:
             help="Path to the directory containing all image files or path to "
             "a single image file",
         ),
-        name: Optional[List[str]] = typer.Option(
-            [],
-            help="Name of the image to process, " "use repeatedly for multiple images",
-        ),
         tag: str = typer.Option(
             "managed_by_osism", help="Name of the tag used to identify managed images"
         ),
@@ -179,15 +175,15 @@ class ImageManager:
         else:
             self.create_connection()
             images = self.read_image_files()
-            self.process_images(images)
+            managed_images = self.process_images(images)
 
             if not self.CONF.dry_run:
-                # get all active managed images, so they don't get deleted when using --name
-                managed_images = set()
-                cloud_images = self.get_images()
-                for image in cloud_images:
-                    if self.CONF.tag in cloud_images[image].tags:
-                        managed_images.add(image)
+                # ignore all non-specified images when using --filter
+                if self.CONF.filter:
+                    cloud_images = self.get_images()
+                    for image in cloud_images:
+                        if not re.search(self.CONF.filter, image):
+                            managed_images.add(image)
                 self.manage_outdated_images(managed_images)
 
         if self.exit_with_error:
@@ -207,6 +203,7 @@ class ImageManager:
             "versions",
             "visibility",
         ]
+        managed_images = set()
 
         for image in images:
 
@@ -218,9 +215,6 @@ class ImageManager:
                     )
                     self.exit_with_error = True
                     continue
-
-            if self.CONF.name and image["name"] not in self.CONF.name:
-                continue
 
             logger.debug("Processing '%s'" % image["name"])
 
@@ -277,13 +271,14 @@ class ImageManager:
             existing_images, imported_image, previous_image = self.process_image(
                 image, versions, sorted_versions, image["meta"].copy()
             )
+            managed_images = managed_images.union(existing_images)
 
             if imported_image and image["multi"]:
                 self.rename_images(
                     image["name"], sorted_versions, imported_image, previous_image
                 )
 
-        return existing_images
+        return managed_images
 
     def import_image(
         self, image: dict, name: str, url: str, versions: dict, version: str
