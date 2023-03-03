@@ -23,7 +23,6 @@ class TestManageAPI(TestCase):
             deactivate=False,
             cloud='openstack',
             images='test/integration/fixtures/',
-            name=None,
             tag='fake_tag',
             filter='',
             validate=False

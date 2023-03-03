@@ -106,7 +106,6 @@ class TestManage(TestCase):
             deactivate=False,
             cloud='fake-cloud',
             images='etc/images/',
-            name=None,
             tag='fake_tag',
             filter='',
             check=False,
@@ -309,12 +308,12 @@ class TestManage(TestCase):
                   mock_process_images, mock_manage_outdated, mock_check_metadata, mock_validate_yaml):
         ''' test manage.ImageManager.main() '''
         mock_read_image_files.return_value = [self.fake_image_dict]
+        mock_process_images.return_value = set()
 
         self.sot.main()
 
         mock_connect.assert_called_once_with(cloud=self.sot.CONF.cloud)
         mock_read_image_files.assert_called_once()
-        mock_get_images.assert_called_once()
         mock_process_images.assert_called_once_with([self.fake_image_dict])
         mock_manage_outdated.assert_called_once_with(set())
         mock_check_metadata.assert_not_called()
