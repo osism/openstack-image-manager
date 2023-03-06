@@ -33,12 +33,20 @@ As you can do many things with this manager here a list with possible commands:
 |`--delete`                       |Delete outdated images. Only removes images, that are not used by any VM or snapshot any more.|
 |`--yes_i_really_know_what_i_do`  |Force delete an image. VMs using that image will break.|
 |`--use_os_hidden`                |Also manage hidden images in your OpenStack|
+|`--share-image Cirros`           |Name of the affected image|
+|`--share-action add`             |Either _add_ (default) or _del_ as valid options.|
+|                                 |Defines if the image is shared or unshared.|
+|`--share-domain default`         |Defines the OpenStack domain|
+|`--share-target`                 |Defines the OpenStack project|
+|`--share-type`                   |Either _project_ (default) or _domain_ as valid options.|
+|                                 |Defines the scope where the image is (un)shared.|
 |`--check`                        |Check your OpenStack images metadata against the SCS standards.|
 |                                 |Gives you a detailed list of missing metadata.|
 |`--validate`                     |Validate your image config files metadata against the SCS standard.|
-|                                 |Gives you a detailed list of unvalid metadata.|
+|                                 |Gives you a detailed list of invalid metadata.|
 
 Main command. Works through the image config files and applies the changes to your OpenStack as desired.
+Commands prefixed with **--share** make an image available (or unavailable). This can happen on a single project or on all projects of a domain.
 
 #### Validate config
 
@@ -120,22 +128,6 @@ Special images offer the login via a password. This can be specified via the par
 
 All images that are configures in the images config files are downloaded from upstream. After downloading they might be decompressed
 (only applies to _bz2_, _zip_ and _xz_ files). Now they are uploaded into the S3 backend. Remaining local files are removed.
-
-### share
-
-|Parameter                 |Description|
-|--------------------------|-----------|
-|`--dry-run`               |Perform a dry run without any changes|
-|`--action add`            |Either _add_ (default) or _del_ as valid options.|
-|                          |Defines if the image is shared or unshared.|
-|`--cloud openstack`       |The cloud you are working on|
-|`--image Cirros`          |Name of the affected image|
-|`--project_domain default`|Defines the OpenStack domain|
-|`--target`                |Defines the OpenStack project|
-|`--type`                  |Either _project_ (default) or _domain_ as valid options.|
-|                          |Defines the scope where the image is (un)shared.|
-
-Makes an image available (or unavailable). This can happen on a single project or on all projects of a domain.
 
 ### table
 
