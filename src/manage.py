@@ -59,6 +59,21 @@ class ImageManager:
         use_os_hidden: bool = typer.Option(
             False, "--use-os-hidden", help="Use the os_hidden property"
         ),
+        share_image: str = typer.Option(
+            None, "--share-image", help="Share - Image to share"
+        ),
+        share_action: str = typer.Option(
+            "add", "--share-action", help="Share - Action: 'del' or 'add'"
+        ),
+        share_domain: str = typer.Option(
+            "default", "--share-domain", help="Share - Project domain"
+        ),
+        share_target: str = typer.Option(
+            None, "--share-target", help="Share - Target project domain"
+        ),
+        share_type: str = typer.Option(
+            "project", "--share-type", help="Share - Type: 'project' or 'domain'"
+        ),
         check: bool = typer.Option(
             False,
             "--check",
@@ -171,6 +186,31 @@ class ImageManager:
         elif self.CONF.check:
             self.validate_yaml_schema()
 
+        # share image (previously share.py)
+        elif self.CONF.share_image:
+            self.create_connection()
+            image = self.conn.get_image(self.CONF.share_image)
+
+            if self.CONF.share_type == "project":
+                domain = self.conn.get_domain(name_or_id=self.CONF.share_domain)
+                project = self.conn.get_project(
+                    self.CONF.share_target, domain_id=domain.id
+                )
+
+                if self.CONF.share_action == "add":
+                    self.share_image_with_project(image, project)
+                elif self.CONF.share_action == "del":
+                    self.unshare_image_with_project(image, project)
+
+            elif self.CONF.share_type == "domain":
+                domain = self.conn.get_domain(name_or_id=self.CONF.share_target)
+                projects = self.conn.list_projects(domain_id=domain.id)
+                for project in projects:
+                    if self.CONF.share_action == "add":
+                        self.share_image_with_project(image, project)
+                    elif self.CONF.share_action == "del":
+                        self.unshare_image_with_project(image, project)
+
         # manage images
         else:
             self.create_connection()
@@ -206,7 +246,6 @@ class ImageManager:
         managed_images = set()
 
         for image in images:
-
             for required_key in REQUIRED_KEYS:
                 if required_key not in image:
                     logger.error(
@@ -472,7 +511,6 @@ class ImageManager:
                 and len(sorted_versions) > 1
                 and version != sorted_versions[-1]
             ):
-
                 url = versions[version]["url"]
                 r = requests.head(url)
 
@@ -719,7 +757,6 @@ class ImageManager:
                 self.conn.image.update_image(cloud_images[latest].id, name=name)
 
         elif len(sorted_versions) == 1 and name in cloud_images:
-
             if previous_image["properties"]["internal_version"] == "latest":
                 # if the last modification date cannot be found, use the creation date of the image instead
                 create_date = str(
@@ -1013,6 +1050,32 @@ class ImageManager:
                     logger.debug("Image file %s is valid" % file)
         except FileNotFoundError:
             logger.error("Invalid path '%s'" % self.CONF.images)
+
+    def share_image_with_project(self, image, project):
+        member = self.conn.image.find_member(project.id, image.id)
+
+        if not member:
+            logger.info(
+                "add - %s - %s (%s)" % (image.name, project.name, project.domain_id)
+            )
+            if not self.CONF.dry_run:
+                member = self.conn.image.add_member(image.id, member_id=project.id)
+
+        if not self.CONF.dry_run and member.status != "accepted":
+            logger.info(
+                "accept - %s - %s (%s)" % (image.name, project.name, project.domain_id)
+            )
+            self.conn.image.update_member(member, image.id, status="accepted")
+
+    def unshare_image_with_project(self, image, project):
+        member = self.conn.image.find_member(project.id, image.id)
+
+        if member:
+            logger.info(
+                "del - %s - %s (%s)" % (image.name, project.name, project.domain_id)
+            )
+            if not self.CONF.dry_run:
+                self.conn.image.remove_member(member, image.id)
 
 
 def main():

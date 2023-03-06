@@ -107,6 +107,11 @@ class TestManage(TestCase):
             cloud='fake-cloud',
             images='etc/images/',
             tag='fake_tag',
+            share_image='',
+            share_action='add',
+            share_domain='default',
+            share_target='',
+            share_type='project',
             filter='',
             check=False,
             validate=False
@@ -297,6 +302,8 @@ class TestManage(TestCase):
         mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
         mock_delete_image.assert_not_called()
 
+    @mock.patch('src.manage.ImageManager.unshare_image_with_project')
+    @mock.patch('src.manage.ImageManager.share_image_with_project')
     @mock.patch('src.manage.ImageManager.validate_yaml_schema')
     @mock.patch('src.manage.ImageManager.check_image_metadata')
     @mock.patch('src.manage.ImageManager.manage_outdated_images')
@@ -305,7 +312,8 @@ class TestManage(TestCase):
     @mock.patch('src.manage.ImageManager.read_image_files')
     @mock.patch('src.manage.openstack.connect')
     def test_main(self, mock_connect, mock_read_image_files, mock_get_images,
-                  mock_process_images, mock_manage_outdated, mock_check_metadata, mock_validate_yaml):
+                  mock_process_images, mock_manage_outdated, mock_check_metadata,
+                  mock_validate_yaml, mock_share_image, mock_unshare_image):
         ''' test manage.ImageManager.main() '''
         mock_read_image_files.return_value = [self.fake_image_dict]
         mock_process_images.return_value = set()
@@ -318,6 +326,8 @@ class TestManage(TestCase):
         mock_manage_outdated.assert_called_once_with(set())
         mock_check_metadata.assert_not_called()
         mock_validate_yaml.assert_not_called()
+        mock_share_image.assert_not_called()
+        mock_unshare_image.assert_not_called()
 
         # reset
         mock_read_image_files.reset_mock()
@@ -326,6 +336,8 @@ class TestManage(TestCase):
         mock_manage_outdated.reset_mock()
         mock_check_metadata.reset_mock()
         mock_validate_yaml.reset_mock()
+        mock_share_image.reset_mock()
+        mock_unshare_image.reset_mock()
 
         # test with dry_run = True and validate = True
         self.sot.CONF.dry_run = True
@@ -338,6 +350,8 @@ class TestManage(TestCase):
         mock_manage_outdated.assert_not_called()
         mock_check_metadata.assert_called_once()
         mock_validate_yaml.assert_not_called()
+        mock_share_image.assert_not_called()
+        mock_unshare_image.assert_not_called()
 
         # reset
         mock_read_image_files.reset_mock()
@@ -346,6 +360,8 @@ class TestManage(TestCase):
         mock_manage_outdated.reset_mock()
         mock_check_metadata.reset_mock()
         mock_validate_yaml.reset_mock()
+        mock_share_image.reset_mock()
+        mock_unshare_image.reset_mock()
 
         # test with check = True
         self.sot.CONF.check = True
@@ -360,6 +376,8 @@ class TestManage(TestCase):
         mock_manage_outdated.assert_not_called()
         mock_check_metadata.assert_not_called()
         mock_validate_yaml.assert_called_once()
+        mock_share_image.assert_not_called()
+        mock_unshare_image.assert_not_called()
 
     @mock.patch('src.manage.os.path.isfile')
     @mock.patch('src.manage.os.listdir')
