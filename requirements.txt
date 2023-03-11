@@ -3,7 +3,7 @@ minio==7.1.13
 munch==2.5.0
 natsort==8.3.1
 openstacksdk==1.0.1
-paramiko==3.0.0
+paramiko==3.1.0
 patool==1.12
 pbr==5.11.1
 requests==2.28.2
