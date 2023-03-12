@@ -114,7 +114,8 @@ class TestManage(TestCase):
             share_type='project',
             filter='',
             check=False,
-            validate=False
+            validate=False,
+            hypervisor=None,
         )
 
         # we can also mimick an openstack connection object with a Munch
