@@ -93,14 +93,18 @@ class ImageManager:
 
         if self.CONF.debug:
             level = "DEBUG"
+            log_fmt = (
+                "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
+                "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+            )
         else:
             level = "INFO"
+            log_fmt = (
+                "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
+                "<level>{message}</level>"
+            )
 
-        logger.remove()  # remove the default sink
-        log_fmt = (
-            "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
-            "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
-        )
+        logger.remove()
         logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
         if __name__ == "__main__" or __name__ == "openstack_image_manager.manage":
