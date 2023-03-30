@@ -98,7 +98,7 @@ def update_image(image, CONF):
         checksum_type = "sha512"
 
     for line in result.text.split("\n"):
-        if image["shortname"] == "rocky-9":
+        if image["shortname"] in ["rocky-8", "rocky-9"]:
             splitted_line = re.split("\s+", line)  # noqa W605
             if splitted_line[0] == "SHA256":
                 checksums[latest_filename] = splitted_line[3]

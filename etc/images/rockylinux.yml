@@ -21,8 +21,8 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://download.rockylinux.org/pub/rocky/8/images/CHECKSUM
-    latest_url: https://download.rockylinux.org/pub/rocky/8/images/Rocky-8-GenericCloud.latest.x86_64.qcow2
+    latest_checksum_url: https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2.CHECKSUM
+    latest_url: https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
     versions:
       - version: '20220703'
         url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20220703-rocky-8.qcow2
