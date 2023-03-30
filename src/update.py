@@ -152,12 +152,12 @@ def update_image(image, CONF):
     except IndexError:
         latest_checksum = None
         logger.info(f"No image available so far")
-        image["versions"][0] = {
+        image["versions"].append({
             "build_date": None,
             "checksum": None,
             "url": None,
             "version": None,
-        }
+        })
 
     if latest_checksum != current_checksum:
         logger.info(f"Checking {latest_url}")
