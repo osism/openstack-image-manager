@@ -55,3 +55,26 @@ images:
         url: https://minio.services.osism.tech/openstack-image-manager/debian-11/20230124-debian-11.qcow2
         checksum: sha512:7a7a546b9928f0d375c332a39db2d1af56fce3432b8a5dee0d4f71777efa7463a6b1fc797bcf3b12ca7d8f47d66824abbcbf0a0bdc94be5e90e5a90e8628fae6
         build_date: 2023-01-24
+  - name: Debian 12
+    shortname: debian-12
+    format: qcow2
+    login: debian
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: debian
+      os_version: '12'
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/SHA512SUMS
+    latest_url: https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
+    versions: []

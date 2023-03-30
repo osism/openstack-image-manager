@@ -94,7 +94,7 @@ def update_image(image, CONF):
     if image["shortname"] in ["centos-stream-8", "centos-stream-9", "centos-7"]:
         filename_pattern = latest_filename.replace("HEREBE", "")
         filename_pattern = filename_pattern.replace("DRAGONS", "")
-    elif image["shortname"] in ["debian-10", "debian-11"]:
+    elif image["shortname"] in ["debian-10", "debian-11", "debian-12"]:
         checksum_type = "sha512"
 
     for line in result.text.split("\n"):
