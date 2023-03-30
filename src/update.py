@@ -145,9 +145,13 @@ def update_image(image, CONF):
     current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
     logger.info(f"Checksum of current {latest_filename} is {current_checksum}")
 
-    latest_version = image["versions"][0]
-    latest_checksum = latest_version["checksum"]
-    logger.info(f"Our checksum is {latest_checksum}")
+    try:
+        latest_version = image["versions"][0]
+        latest_checksum = latest_version["checksum"]
+        logger.info(f"Our checksum is {latest_checksum}")
+    except IndexError:
+        latest_checksum = None
+        logger.info(f"No image available so far")
 
     if latest_checksum != current_checksum:
         logger.info(f"Checking {latest_url}")
