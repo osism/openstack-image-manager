@@ -3,7 +3,7 @@ images: list(include('image'), min=1)
 
 ---
 image:
-  enable: bool(required=False)
+  enable: bool()
   format: enum('aki', 'ari', 'ami', 'raw', 'iso', 'vhd', 'vdi', 'qcow2', 'vmdk')
   latest_checksum_url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)
   latest_url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)

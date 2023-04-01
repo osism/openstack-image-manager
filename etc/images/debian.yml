@@ -1,6 +1,7 @@
 ---
 images:
   - name: Debian 10
+    enable: true
     shortname: debian-10
     format: qcow2
     login: debian
@@ -29,6 +30,7 @@ images:
         checksum: sha512:9522ebd80d7577d7a679bb876d7aa4da066947986809ccf75ae140b26550aa8cf7c46a38084941bd316cfab602565581aa5f1efd66538b9577b7559154c30356
         build_date: '2023-02-23'
   - name: Debian 11
+    enable: true
     shortname: debian-11
     format: qcow2
     login: debian

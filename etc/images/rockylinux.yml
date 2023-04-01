@@ -1,6 +1,7 @@
 ---
 images:
   - name: Rocky 8
+    enable: true
     shortname: rocky-8
     format: qcow2
     login: rocky
@@ -29,6 +30,7 @@ images:
         checksum: sha256:f242e06b76124b8ea3495fc6d69eb6e89e0a1826e3d9bdabed0ef4e68880eb5a
         build_date: '2023-02-15'
   - name: Rocky 9
+    enable: true
     shortname: rocky-9
     format: qcow2
     login: rocky

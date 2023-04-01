@@ -2,6 +2,7 @@
 images:
 
   - name: Clear Linux
+    enable: false
     shortname: clearlinux
     format: qcow2
     login: root

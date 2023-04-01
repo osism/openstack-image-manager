@@ -2,6 +2,7 @@
 images:
 
   - name: Fedora 36
+    enable: true
     shortname: fedora-36
     format: qcow2
     login: fedora

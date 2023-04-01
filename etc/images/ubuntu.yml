@@ -1,6 +1,7 @@
 ---
 images:
   - name: Ubuntu 14.04
+    enable: false
     shortname: ubuntu-14.04
     format: qcow2
     login: ubuntu
@@ -29,6 +30,7 @@ images:
         checksum: sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1
         build_date: 2019-11-07
   - name: Ubuntu 16.04
+    enable: false
     shortname: ubuntu-16.04
     format: qcow2
     login: ubuntu
@@ -57,6 +59,7 @@ images:
         checksum: sha256:fff2494a70bcaffb59f26f71ec49e137dd87d319341c35832dbe0ea65ff15140
         build_date: 2021-10-01
   - name: Ubuntu 16.04 Minimal
+    enable: false
     shortname: ubuntu-16.04-minimal
     format: qcow2
     login: ubuntu
@@ -85,6 +88,7 @@ images:
         checksum: sha256:7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9
         build_date: 2021-09-20
   - name: Ubuntu 18.04
+    enable: false
     shortname: ubuntu-18.04
     format: qcow2
     login: ubuntu
@@ -113,6 +117,7 @@ images:
         checksum: sha256:128d2d5c582db5deb9e4e21e64c75f71788f56dfaaa58abd776539968e422afa
         build_date: '2023-03-29'
   - name: Ubuntu 18.04 Minimal
+    enable: false
     shortname: ubuntu-18.04-minimal
     format: qcow2
     login: ubuntu
@@ -141,6 +146,7 @@ images:
         checksum: sha256:41abb225400eef7e4e483f709a06550bcd36359d26dd76eba46cd99ece336057
         build_date: '2023-03-28'
   - name: Ubuntu 20.04
+    enable: true
     shortname: ubuntu-20.04
     format: qcow2
     login: ubuntu
@@ -169,6 +175,7 @@ images:
         checksum: sha256:786a425717f411be89c41c88420a14471e1888569f9193cfb3b7dbb56e6a538f
         build_date: '2023-02-15'
   - name: Ubuntu 20.04 Minimal
+    enable: true
     shortname: ubuntu-20.04-minimal
     format: qcow2
     login: ubuntu
@@ -197,6 +204,7 @@ images:
         checksum: sha256:e005de2b2412f78238f4a6654e7e53c75084b94d904b2dcc4b5bc422ef3d4d09
         build_date: '2023-03-28'
   - name: Ubuntu 22.04
+    enable: true
     shortname: ubuntu-22.04
     format: qcow2
     login: ubuntu
@@ -225,6 +233,7 @@ images:
         checksum: sha256:b8e4d5bd9b576c3fc5c5ad48bb6e0b92fbdeeb53c4af88a898ef4aba949e75d0
         build_date: '2023-03-30'
   - name: Ubuntu 22.04 Minimal
+    enable: true
     shortname: ubuntu-22.04-minimal
     format: qcow2
     login: ubuntu
