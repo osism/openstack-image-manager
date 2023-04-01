@@ -140,11 +140,15 @@ class ImageManager:
                                     or (not image["enable"] and self.CONF.force)
                                 ):
                                     all_images.append(image)
+                                elif "enable" not in image:
+                                    all_images.append(image)
                         else:
                             if "enable" in image and (
                                 (image["enable"])
                                 or (not image["enable"] and self.CONF.force)
                             ):
+                                all_images.append(image)
+                            elif "enable" not in image:
                                 all_images.append(image)
                 except yaml.YAMLError as exc:
                     logger.error(exc)
