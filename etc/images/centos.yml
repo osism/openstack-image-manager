@@ -1,6 +1,7 @@
 ---
 images:
   - name: CentOS 7
+    enable: false
     shortname: centos-7
     format: qcow2
     login: centos
@@ -29,6 +30,7 @@ images:
         checksum: sha256:e38bab0475cc6d004d2e17015969c659e5a308111851b0e2715e84646035bdd3
         build_date: 2020-11-12
   - name: CentOS Stream 8
+    enable: true
     shortname: centos-stream-8
     format: qcow2
     login: centos
@@ -57,6 +59,7 @@ images:
         checksum: sha256:1ab4a628211a9178979e916f9dc59c8db67b203666aab15743ea80e17f7d4083
         build_date: '2023-03-15'
   - name: CentOS Stream 9
+    enable: true
     shortname: centos-stream-9
     format: qcow2
     login: centos

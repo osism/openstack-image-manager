@@ -2,6 +2,7 @@
 images:
 
   - name: OPNsense
+    enable: false
     shortname: opnsense
     format: qcow2
     login: root

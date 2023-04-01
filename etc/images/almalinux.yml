@@ -1,6 +1,7 @@
 ---
 images:
   - name: AlmaLinux 8
+    enable: true
     shortname: almalinux-8
     format: qcow2
     login: almalinux
@@ -29,6 +30,7 @@ images:
         checksum: sha256:9505239cbaf56fae0abc93a2dba312606540014fcc01e74f196edac0b5fbe783
         build_date: 2022-11-11
   - name: AlmaLinux 9
+    enable: true
     shortname: almalinux-9
     format: qcow2
     login: almalinux

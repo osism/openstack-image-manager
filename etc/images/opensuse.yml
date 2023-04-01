@@ -1,6 +1,7 @@
 ---
 images:
   - name: openSUSE Leap 15.4
+    enable: true
     shortname: opensuse-leap-15.4
     format: qcow2
     login: opensuse

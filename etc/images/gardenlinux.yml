@@ -1,6 +1,7 @@
 ---
 images:
   - name: Garden Linux
+    enable: true
     format: qcow2
     login: admin
     min_disk: 10

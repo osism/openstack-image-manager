@@ -2,6 +2,7 @@
 images:
 
   - name: Flatcar Container Linux
+    enable: false
     shortname: flatcar
     format: qcow2
     login: root
