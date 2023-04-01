@@ -13,6 +13,7 @@ FAKE_YML = '''
 ---
 images:
   - name: Ubuntu 20.04
+    enable: True
     format: qcow2
     login: ubuntu
     min_disk: 8
@@ -34,6 +35,7 @@ images:
 # sample image dict as generated from FAKE_YML
 FAKE_IMAGE_DICT = {
     'name': 'Ubuntu 20.04',
+    'enable': True,
     'format': 'qcow2',
     'login': 'ubuntu',
     'min_disk': 8,

@@ -55,6 +55,9 @@ class ImageManager:
         hide: bool = typer.Option(
             False, "--hide", help="Hide images that should be deleted"
         ),
+        force: bool = typer.Option(
+            False, "--force", help="Force upload of disabled images"
+        ),
         delete: bool = typer.Option(False, "--delete", help="Delete outdated images"),
         yes_i_really_know_what_i_do: bool = typer.Option(
             False, "--yes-i-really-know-what-i-do", help="Really delete images"
@@ -132,9 +135,17 @@ class ImageManager:
                     for image in images:
                         if self.CONF.filter:
                             if re.search(self.CONF.filter, image["name"]):
-                                all_images.append(image)
+                                if "enable" in image and (
+                                    (image["enable"])
+                                    or (not image["enable"] and self.CONF.force)
+                                ):
+                                    all_images.append(image)
                         else:
-                            all_images.append(image)
+                            if "enable" in image and (
+                                (image["enable"])
+                                or (not image["enable"] and self.CONF.force)
+                            ):
+                                all_images.append(image)
                 except yaml.YAMLError as exc:
                     logger.error(exc)
         return all_images
