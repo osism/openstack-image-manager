@@ -29,7 +29,7 @@ meta:
   hw_scsi_model: enum('virtio-scsi', required=False)
   hw_watchdog_action: enum('disabled', 'reset', 'poweroff', 'pause', 'none', required=False)
   image_description: str(required=False)
-  os_distro: enum('arch', 'centos', 'cirros', 'clearlinux', 'debian', 'fedora', 'freebsd', 'opensuse', 'rhel', 'ubuntu', 'windows')
+  os_distro: enum('arch', 'centos', 'cirros', 'clearlinux', 'debian', 'fedora', 'freebsd', 'opensuse', 'rhel', 'talos', 'ubuntu', 'windows')
   os_version: str(required=False)
   patchlevel: str(required=False)
   provided_until: any(enum('none'), day())

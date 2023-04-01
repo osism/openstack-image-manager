@@ -1,0 +1,30 @@
+---
+images:
+
+  - name: Talos Linux
+    enable: false
+    shortname: talos
+    format: raw
+    login: none
+    min_disk: 2
+    min_ram: 1024
+    status: active
+    visibility: public
+    multi: false
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: talos
+      replace_frequency: never
+      uuid_validity: none
+      provided_until: none
+    tags: []
+    versions:
+      - version: '1.3.6'
+        url: https://minio.services.osism.tech/openstack-image-manager/talos/1.3.6/disk.raw
+        source: https://github.com/siderolabs/talos/releases/download/v1.3.6/openstack-amd64.tar.gz
+        checksum: "sha256:1db0cfd9bd9c3d3165911ab89ef05dad1d590cc442fb0702564cfe737b3f3dbd"
+        build_date: '2023-03-14'
