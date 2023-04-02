@@ -24,8 +24,8 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '21.7.1'
-        url: https://minio.services.osism.tech/openstack-image-manager/opnsense/21.7.1/OPNsense-21.7.1-OpenSSL-nano-amd64.img
-        source: https://mirror.dns-root.de/opnsense/releases/21.7/OPNsense-21.7.1-OpenSSL-nano-amd64.img.bz2
-        checksum: "sha256:331c2fca12a20fa1ab03919bbdd6a709b0974ea807cc4f14f6148a598d95af15"
-        build_date: 2021-08-04
+      - version: '23.1'
+        url: https://minio.services.osism.tech/openstack-image-manager/opnsense/23.1/OPNsense-23.1-OpenSSL-nano-amd64.img
+        source: https://mirror.dns-root.de/opnsense/releases/23.1/OPNsense-23.1-OpenSSL-nano-amd64.img.bz2
+        checksum: "sha256:8e2e5ab62f8d2bc5eb72296a0d7913789f370f445216d996a7d4d9e88e5e3733"
+        build_date: 2023-01-25
