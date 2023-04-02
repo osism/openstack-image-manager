@@ -228,10 +228,10 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20230330'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230330-ubuntu-22.04.qcow2
-        checksum: sha256:b8e4d5bd9b576c3fc5c5ad48bb6e0b92fbdeeb53c4af88a898ef4aba949e75d0
-        build_date: '2023-03-30'
+      - version: '20230401'
+        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230401-ubuntu-22.04.qcow2
+        checksum: sha256:685fa63110393b76d1c68dadde5b59fee55c5914af1b85d1233252e4dd3c6545
+        build_date: '2023-04-01'
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
