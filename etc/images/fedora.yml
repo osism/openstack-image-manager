@@ -1,9 +1,9 @@
 ---
 images:
 
-  - name: Fedora 36
+  - name: Fedora 37
     enable: true
-    shortname: fedora-36
+    shortname: fedora-37
     format: qcow2
     login: fedora
     min_disk: 4
@@ -18,14 +18,14 @@ images:
       hw_rng_model: virtio
       hw_watchdog_action: reset
       os_distro: fedora
-      os_version: '36'
+      os_version: '37'
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
     tags: []
     versions:
-      - version: '20220504'
-        url: https://minio.services.osism.tech/openstack-image-manager/fedora-36/20220504/Fedora-Cloud-Base-36-1.5.x86_64.qcow2
-        source: https://mirror.23m.com/fedora/linux/releases/36/Cloud/x86_64/images/Fedora-Cloud-Base-36-1.5.x86_64.qcow2
-        checksum: "sha256:ca9e514cc2f4a7a0188e7c68af60eb4e573d2e6850cc65b464697223f46b4605"
-        build_date: 2022-05-04
+      - version: '20230402'
+        url: https://minio.services.osism.tech/openstack-image-manager/fedora-37/20230402/Fedora-Cloud-Base-37-1.7.x86_64.qcow2
+        source: https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2
+        checksum: "sha256:b5b9bec91eee65489a5745f6ee620573b23337cbb1eb4501ce200b157a01f3a0"
+        build_date: '2022-11-05'
