@@ -38,7 +38,7 @@ def mirror_image(image, latest_url, CONF):
     dirname = image["shortname"]
     filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
-    if fileextension not in [".bz2", ".zip", ".xz"]:
+    if fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
         filename += fileextension
 
     shortname = image["shortname"]
@@ -57,7 +57,7 @@ def mirror_image(image, latest_url, CONF):
             shutil.copyfileobj(response.raw, fp)
         del response
 
-        if fileextension in [".bz2", ".zip", ".xz"]:
+        if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
             logger.info("Decompressing '%s'" % os.path.basename(path.path))
             patoolib.extract_archive(os.path.basename(path.path), outdir=".")
             os.remove(os.path.basename(path.path))
