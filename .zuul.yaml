@@ -50,3 +50,10 @@
     post:
       jobs:
         - real-world
+    periodic-daily:
+      jobs:
+        - flake8
+        - hadolint
+        - markdownlint
+        - integration-test
+        - yamllint
