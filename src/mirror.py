@@ -70,7 +70,7 @@ def main(
             dirname = "%s/%s" % (image['shortname'], version['version'])
             filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
-            if fileextension not in ['.bz2', '.zip', '.xz']:
+            if fileextension not in ['.bz2', '.zip', '.xz', '.gz']:
                 filename += fileextension
 
             logging.debug("dirname: %s" % dirname)
@@ -89,7 +89,7 @@ def main(
                         shutil.copyfileobj(response.raw, fp)
                     del response
 
-                    if fileextension in ['.bz2', '.zip', '.xz']:
+                    if fileextension in ['.bz2', '.zip', '.xz', '.gz']:
                         logging.info("Decompressing '%s'" % os.path.basename(path.path))
                         patoolib.extract_archive(os.path.basename(path.path), outdir='.')
                         os.remove(os.path.basename(path.path))
