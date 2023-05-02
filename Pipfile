@@ -13,7 +13,7 @@ openstacksdk = "==1.0.1"
 paramiko = "==3.1.0"
 patool = "==1.12"
 pbr = "==5.11.1"
-requests = "==2.28.2"
+requests = "==2.29.0"
 tabulate = "==0.9.0"
 typer = {version = "==0.7.0", extras = ["all"]}
 yamale = "==4.0.4"
