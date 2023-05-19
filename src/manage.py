@@ -13,7 +13,6 @@ from decimal import Decimal, ROUND_UP
 from loguru import logger
 from munch import Munch
 from natsort import natsorted
-from typing import List, Optional
 from yamale import YamaleError
 from openstack.image.v2.image import Image
 from openstack.exceptions import DuplicateResource
