@@ -12,7 +12,9 @@ app = typer.Typer(add_completion=False)
 
 @app.command()
 def main(
-    images: str = typer.Option('etc/images/', help='Path to the directory containing all image files')
+    images: str = typer.Option(
+        "etc/images/", help="Path to the directory containing all image files"
+    )
 ):
     CONF = Munch.fromDict(locals())
 
@@ -25,21 +27,19 @@ def main(
     for file in onlyfiles:
         with open(join(CONF.images, file)) as fp:
             data = yaml.load(fp, Loader=yaml.SafeLoader)
-            images = data.get('images')
+            images = data.get("images")
             for image in images:
                 all_images.append(image)
 
     data = []
     for image in all_images:
-        data.append([image['name'], image['login'], image.get('password', '')])
+        data.append([image["name"], image["login"], image.get("password", "")])
 
     result = tabulate.tabulate(
-        sorted(data),
-        headers=['Name', 'Login user', 'Password'],
-        tablefmt="rst"
+        sorted(data), headers=["Name", "Login user", "Password"], tablefmt="rst"
     )
     print(result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
