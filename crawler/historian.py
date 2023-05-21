@@ -10,7 +10,6 @@ from crawler.core.database import (
 
 import requests
 from bs4 import BeautifulSoup
-from pprint import pprint
 
 from crawler.core.config import config_read
 
@@ -60,9 +59,6 @@ def get_all_versions_with_paths_from_directory(release):
 
 # only Debian and Ubuntu?
 def get_version_path(release, version):
-
-    pprint(version)
-    pprint(release)
     # get release directory content
     if "debian" in release["imagename"]:
         requestURL = release["baseURL"]
@@ -207,7 +203,7 @@ def get_version_metadata(release, version):
 
 def main():
     # read configuration
-    config_filename = "etc/config.yaml"
+    config_filename = os.path.dirname(os.path.abspath(__file__)) + "etc/config.yaml"
 
     config = config_read(config_filename, "configuration")
     if config is None:
@@ -231,9 +227,7 @@ def main():
 
     for source in image_source_catalog["sources"]:
         for release in source["releases"]:
-            # pprint(release)
             print("Crawling %s %s" % (source["name"], release["name"]))
-            # print(get_all_versions_with_paths_from_directory(release))
             version_paths = get_all_versions_with_paths_from_directory(release)
             for version in version_paths:
                 print("Getting metadata for version %s" % version)

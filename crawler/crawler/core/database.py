@@ -20,18 +20,19 @@ def database_disconnect(connection):
     connection.close()
 
 
-def database_initialize(name):
+def database_initialize(name, prog_dirname):
     path = Path(name)
     if path.is_file():
         print("WARNING: database %s already exists. Cowardly refusing action." % name)
     else:
-        create_statement_file_path = Path("lib/initialize-image-catalog.sql")
+        create_statement_fqfn = prog_dirname + "/lib/initialize-image-catalog.sql"
+        create_statement_file_path = Path(create_statement_fqfn)
         if create_statement_file_path.is_file():
-            db_init_file = open("lib/initialize-image-catalog.sql")
+            db_init_file = open(create_statement_fqfn)
             create_statement = db_init_file.read()
             db_init_file.close()
         else:
-            raise SystemError("Template lib/initialize-image-catalog.sql not found")
+            raise SystemError("Template initialize-image-catalog.sql not found")
 
         try:
             connection = sqlite3.connect(name)

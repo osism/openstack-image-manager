@@ -6,7 +6,7 @@
 # whenever a new image is detected all relevant information needed for
 # maintaining an image catalog
 #
-# 2022-09-19 v0.1 christian.stelter@plusserver.com
+# 2023-03-19 v0.2 christian.stelter@plusserver.com
 
 import argparse
 import sys
@@ -24,9 +24,10 @@ from crawler.git.base import clone_or_pull, update_repository
 
 
 def main():
-    print("\nplusserver Image Crawler v0.1\n")
+    print("\nplusserver Image Crawler v0.2\n")
 
     working_directory = os.getcwd()
+    program_directory = os.path.dirname(os.path.abspath(__file__))
 
     parser = argparse.ArgumentParser(
         description="checks cloud image repositories for new updates and"
@@ -36,7 +37,7 @@ def main():
         "--config",
         type=str,
         required=False,
-        help="specify the config file to be used (default: etc/config.yaml)",
+        help="specify the config file to be used (default: <path_to_crawler_dir>/etc/config.yaml)",
     )
     parser.add_argument(
         "--sources",
@@ -69,7 +70,7 @@ def main():
         config_filename = args.config
     else:
         # default
-        config_filename = "etc/config.yaml"
+        config_filename = program_directory + "/etc/config.yaml"
 
     config = config_read(config_filename, "configuration")
     if config is None:
@@ -87,7 +88,7 @@ def main():
 
     # initialize database when run with --init-db
     if args.init_db:
-        database_initialize(config["database_name"])
+        database_initialize(config["database_name"], program_directory)
         sys.exit(0)
 
     # clone or update local repository when git is enabled

@@ -26,6 +26,9 @@ def release_build_image_url(release, versionpath, version):
     else:
         base_url = release["baseURL"]
 
+    if not versionpath.endswith("/"):
+        versionpath = versionpath + "/"
+
     if "debian" in release["imagename"]:
         return (
             base_url
@@ -55,6 +58,9 @@ def release_get_version_from_path(release, versionpath):
     elif "ubuntu" in release["imagename"]:
         if versionpath.endswith("/"):
             versionpath = versionpath.rstrip("/")
+        if versionpath.find(".") != -1:
+            parts = versionpath.split(".")
+            versionpath = parts[0]
         return versionpath.replace("release-", "")
     # we do not know this distribution
     else:
@@ -142,6 +148,7 @@ def web_get_current_image_metadata(release, image_filedate):
                 release_version_path = data
                 if release_version_path.endswith("/"):
                     release_version_path = release_version_path.rstrip("/")
+                ## DEBUG when do we need this?
                 new_version = release_get_version_from_path(
                     release, release_version_path
                 )
