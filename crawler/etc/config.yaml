@@ -1,8 +1,0 @@
----
-database_name: "lib/image-catalog.db"
-sources_name: "etc/image-sources.yaml"
-template_path: "templates"
-no_remote_repository: "git@git.coolcompany.com:openstack/image-catalogs.git"
-no_git_ssh_command: "git_ssh_wrapper.sh"
-local_repository: "image-catalog"
-branch: "main"
