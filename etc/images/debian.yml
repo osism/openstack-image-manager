@@ -57,12 +57,12 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20230501'
+      - version: '20230515'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/debian-11/20230501-debian-11.qcow2
+          https://minio.services.osism.tech/openstack-image-manager/debian-11/20230515-debian-11.qcow2
         checksum: 
-          sha512:4f5e75a52ee4112682550af0a3c295d5d70b21a0ae1e3c863bd5a9b4a2362b3110e4eb98979948ea9cb631b9a7d401d6ad21dbb25f218f1c55335e7601394791
-        build_date: '2023-05-01'
+          sha512:bf6e2e8550dd1f296338e8f6dedaa7bd3d4e31de73ef33e46882430af055a2ce0df9da27c30c159f8d544220a6cf428083724685c4472334fcd7c1191cbbfe27
+        build_date: '2023-05-15'
   - name: Debian 12
     enable: false
     shortname: debian-12
@@ -88,9 +88,9 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: '2023-05-13'
+      - build_date: '2023-05-27'
         checksum: 
-          sha512:fbc18ec0c0018e736f4521335cfb4c6e8fdbafeecfbfe699258347dd562bb08f56614d8ab6d413df0f4c95d52bebf4ae538f34340f0d32f07fb0d9fa3c750c45
+          sha512:75e9019f82f72b0e7c16a3dfd55b0c20d5c2a3ad82d082158bc219aa328119db0a356ed05fd9e8c3f3f9efa81cf8ebe87dffa2b2a7887db4d4601369b480178c
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/debian-12/20230513-debian-12.qcow2
-        version: '20230513'
+          https://minio.services.osism.tech/openstack-image-manager/debian-12/20230527-debian-12.qcow2
+        version: '20230527'
