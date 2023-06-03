@@ -33,6 +33,11 @@ class ImageManager:
             "--latest",
             help="Only import the latest version for images of type multi",
         ),
+        keep: bool = typer.Option(
+            False,
+            "--keep",
+            help="Keep versions of images where the version is not longer defined",
+        ),
         cloud: str = typer.Option("openstack", help="Cloud name in clouds.yaml"),
         images: str = typer.Option(
             "etc/images/",
@@ -834,12 +839,30 @@ class ImageManager:
             List with all images that are unmanaged and get affected by this method
         """
 
+        images = {}
+        for d in self.read_image_files():
+            images[d["name"]] = d
         cloud_images = self.get_images()
-        unmanaged_images = [x for x in cloud_images if x not in managed_images]
+
+        # NOTE: ensure to not handle images that should be not handled
+        if self.CONF.filter:
+            unmanaged_images = [
+                x
+                for x in cloud_images
+                if x not in managed_images and re.search(self.CONF.filter, x)
+            ]
+        else:
+            unmanaged_images = [x for x in cloud_images if x not in managed_images]
 
         for image in unmanaged_images:
+            logger.info(f"Processing unmanaged image '{image}'")
             cloud_image = cloud_images[image]
-            if self.CONF.delete and self.CONF.yes_i_really_know_what_i_do:
+            image_definition = images[cloud_image.properties["image_description"]]
+            if self.CONF.keep and not image_definition["multi"]:
+                logger.info(
+                    f"The image '{image}' is not deleted because undefined versions of defined images are kept"
+                )
+            elif self.CONF.delete and self.CONF.yes_i_really_know_what_i_do:
                 try:
                     logger.info("Deactivating image '%s'" % image)
                     self.conn.image.deactivate_image(cloud_image.id)
