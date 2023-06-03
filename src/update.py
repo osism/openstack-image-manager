@@ -23,6 +23,8 @@ import yaml
 
 app = typer.Typer()
 
+IMAGES = ["almalinux", "centos", "debian", "rockylinux", "ubuntu"]
+
 
 def mirror_image(image, latest_url, CONF):
     client = Minio(
@@ -202,7 +204,6 @@ def update_image(image, CONF):
 @app.command()
 def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
-    image: str = typer.Option("almalinux", help="Image to update"),
     minio_access_key: str = typer.Option(None, help="Minio access key"),
     minio_secret_key: str = typer.Option(None, help="Minio secret key"),
     minio_server: str = typer.Option("minio.services.osism.tech", help="Minio server"),
@@ -223,21 +224,22 @@ def main(
     )
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-    p = f"etc/images/{image}.yml"
+    for image in IMAGES:
+        p = f"etc/images/{image}.yml"
 
-    with open(p) as fp:
-        data = yaml.safe_load(fp)
+        with open(p) as fp:
+            data = yaml.safe_load(fp)
 
-    for index, image in enumerate(data["images"]):
-        if "latest_url" in image:
-            updated_image = update_image(image, CONF)
-            data["images"][index] = updated_image
+        for index, image in enumerate(data["images"]):
+            if "latest_url" in image:
+                updated_image = update_image(image, CONF)
+                data["images"][index] = updated_image
 
-    with open(p, "w+") as fp:
-        ryaml = ruamel.yaml.YAML()
-        ryaml.explicit_start = True
-        ryaml.indent(sequence=4, offset=2)
-        ryaml.dump(data, fp)
+        with open(p, "w+") as fp:
+            ryaml = ruamel.yaml.YAML()
+            ryaml.explicit_start = True
+            ryaml.indent(sequence=4, offset=2)
+            ryaml.dump(data, fp)
 
 
 if __name__ == "__main__":
