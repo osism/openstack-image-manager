@@ -3,7 +3,7 @@ from loguru import logger
 from munch import Munch
 from unittest import TestCase
 
-from src import manage
+from openstack_image_manager import manage
 
 logger.remove()   # disable all logging from manage.py
 
@@ -34,7 +34,7 @@ class TestManageAPI(TestCase):
 
     def test_api_functions(self):
         '''
-        Test all used API functions, as they appear in src.manage.py
+        Test all used API functions, as they appear in openstack_image_manager.manage.py
         Import the image, set its properties, rename it and delete it afterwards
         '''
         self.sot.conn = openstack.connect(cloud=self.sot.CONF.cloud)
