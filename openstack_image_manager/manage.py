@@ -846,53 +846,89 @@ class ImageManager:
 
         # NOTE: ensure to not handle images that should be not handled
         if self.CONF.filter:
-            unmanaged_images = [
-                x
-                for x in cloud_images
-                if x not in managed_images and re.search(self.CONF.filter, x)
-            ]
+            unmanaged_images = natsorted(
+                [
+                    x
+                    for x in cloud_images
+                    if x not in managed_images and re.search(self.CONF.filter, x)
+                ],
+                reverse=True,
+            )
         else:
-            unmanaged_images = [x for x in cloud_images if x not in managed_images]
+            unmanaged_images = natsorted(
+                [x for x in cloud_images if x not in managed_images], reverse=True
+            )
+
+        counter = {}
 
         for image in unmanaged_images:
-            logger.info(f"Processing unmanaged image '{image}'")
+            logger.info(f"Processing image '{image}' (removal candidate)")
+
             cloud_image = cloud_images[image]
-            image_definition = images[cloud_image.properties["image_description"]]
+            image_name = cloud_image.properties["image_description"]
+
+            if image_name not in images:
+                logger.warning(
+                    f"No image definition found for '{image}', image will be ignored"
+                )
+                continue
+
+            image_definition = images[image_name]
+            counter[image_name] = counter.get(image_name, 0) + 1
+
+            uuid_validity = cloud_image.properties["uuid_validity"]
+            if "last" in uuid_validity:
+                last = int(uuid_validity[5:]) - 1
+            else:
+                last = 0
+
             if self.CONF.keep and not image_definition["multi"]:
                 logger.info(
-                    f"The image '{image}' is not deleted because undefined versions of defined images are kept"
+                    f"Image '{image}' is not deleted because undefined versions of defined images are kept"
                 )
-            elif self.CONF.delete and self.CONF.yes_i_really_know_what_i_do:
-                try:
-                    logger.info("Deactivating image '%s'" % image)
-                    self.conn.image.deactivate_image(cloud_image.id)
 
-                    logger.info("Setting visibility of '%s' to 'community'" % image)
-                    self.conn.image.update_image(cloud_image.id, visibility="community")
-
-                    logger.info("Deleting %s" % image)
-                    self.conn.image.delete_image(cloud_image.id)
-                except Exception as e:
-                    logger.info(
-                        "%s is still in use and cannot be deleted\n %s" % (image, e)
-                    )
-
-            else:
-                logger.warning("Image %s should be deleted" % image)
-                try:
-                    if self.CONF.deactivate:
+            elif uuid_validity == "none":
+                logger.info(f"Image '{image}' is not deleted, UUID validity is 'none'")
+            elif counter[image_name] > last:
+                if self.CONF.delete and self.CONF.yes_i_really_know_what_i_do:
+                    try:
                         logger.info("Deactivating image '%s'" % image)
                         self.conn.image.deactivate_image(cloud_image.id)
 
-                    if self.CONF.hide:
-                        cloud_image = cloud_images[image]
                         logger.info("Setting visibility of '%s' to 'community'" % image)
                         self.conn.image.update_image(
                             cloud_image.id, visibility="community"
                         )
-                except Exception as e:
-                    logger.error("An Exception occurred: \n%s" % e)
-                    self.exit_with_error = True
+
+                        logger.info("Deleting %s" % image)
+                        self.conn.image.delete_image(cloud_image.id)
+                    except Exception as e:
+                        logger.info(
+                            "%s is still in use and cannot be deleted\n %s" % (image, e)
+                        )
+
+                else:
+                    logger.warning(
+                        "Image %s should be deleted, but deletion is disabled" % image
+                    )
+                    try:
+                        if self.CONF.deactivate:
+                            logger.info("Deactivating image '%s'" % image)
+                            self.conn.image.deactivate_image(cloud_image.id)
+
+                        if self.CONF.hide:
+                            logger.info(
+                                "Setting visibility of '%s' to 'community'" % image
+                            )
+                            self.conn.image.update_image(
+                                cloud_image.id, visibility="community"
+                            )
+                    except Exception as e:
+                        logger.error("An Exception occurred: \n%s" % e)
+                        self.exit_with_error = True
+            elif counter[image_name] < last and self.CONF.hide:
+                logger.info("Setting visibility of '%s' to 'community'" % image)
+                self.conn.image.update_image(cloud_image.id, visibility="community")
         return unmanaged_images
 
     def check_image_metadata(self):
