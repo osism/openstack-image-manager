@@ -22,13 +22,16 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2.CHECKSUM
-    latest_url: https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
+    latest_checksum_url: 
+      https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2.CHECKSUM
+    latest_url: 
+      https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20230215'
-        url: https://minio.services.osism.tech/openstack-image-manager/rocky-8/20230215-rocky-8.qcow2
-        checksum: sha256:f242e06b76124b8ea3495fc6d69eb6e89e0a1826e3d9bdabed0ef4e68880eb5a
-        build_date: '2023-02-15'
+      - version: '20230518'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/rocky-8/20230518-rocky-8.qcow2
+        checksum: sha256:086bf68f84c974cfcf533741c5be8752270df681a38f20423cf24b851d5edf77
+        build_date: '2023-05-18'
   - name: Rocky 9
     enable: true
     shortname: rocky-9
@@ -51,10 +54,13 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM
-    latest_url: https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
+    latest_checksum_url: 
+      https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM
+    latest_url: 
+      https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20230215'
-        url: https://minio.services.osism.tech/openstack-image-manager/rocky-9/20230215-rocky-9.qcow2
-        checksum: sha256:53850338cd7e918052e13fc0a34b8383675ac747e168f640cfb7f483e65eac65
-        build_date: '2023-02-15'
+      - version: '20230515'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/rocky-9/20230515-rocky-9.qcow2
+        checksum: sha256:50510f98abe1b20a548102a05a9be83153b0bf634fc502d5c8d1f508f6de1430
+        build_date: '2023-05-15'
