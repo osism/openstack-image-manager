@@ -4,7 +4,7 @@ name: Run unit tests
 "on":
   push:
     paths:
-      - src/**
+      - openstack_image_manager/**
       - test/**
       - .github/workflows/run-unit-tests.yml
       - requirements.txt
@@ -13,7 +13,7 @@ name: Run unit tests
       - main
   pull_request:
     paths:
-      - src/**
+      - openstack_image_manager/**
       - test/**
       - .github/workflows/run-unit-tests.yml
       - requirements.txt

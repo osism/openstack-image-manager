@@ -5,7 +5,6 @@ import os
 import patoolib
 import requests
 import shutil
-import tarfile
 import typer
 import yaml
 
@@ -71,12 +70,18 @@ def main(
             logging.debug("source: %s" % version["source"])
 
             path = urlparse(version["source"])
+            url = urlparse(version["url"])
 
             dirname = "%s/%s" % (image["shortname"], version["version"])
             filename, fileextension = os.path.splitext(os.path.basename(path.path))
+            _, fileextension2 = os.path.splitext(filename)
 
             if fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
                 filename += fileextension
+
+            if fileextension2 == ".tar":
+                filename2 = filename
+                filename = os.path.basename(url.path)
 
             logging.debug("dirname: %s" % dirname)
             logging.debug("filename: %s" % filename)
@@ -87,35 +92,26 @@ def main(
             except S3Error:
                 logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
+                logging.info("Downloading '%s'" % version["source"])
+                response = requests.get(version["source"], stream=True)
+                with open(os.path.basename(path.path), "wb") as fp:
+                    shutil.copyfileobj(response.raw, fp)
+                del response
+
+                if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
+                    logging.info("Decompressing '%s'" % os.path.basename(path.path))
+                    patoolib.extract_archive(os.path.basename(path.path), outdir=".")
+                    os.remove(os.path.basename(path.path))
+
                 if not CONF.dry_run:
-                    logging.info("Downloading '%s'" % version["source"])
-                    response = requests.get(version["source"], stream=True)
-                    with open(os.path.basename(path.path), "wb") as fp:
-                        shutil.copyfileobj(response.raw, fp)
-                    del response
-
-                    if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                        logging.info("Decompressing '%s'" % os.path.basename(path.path))
-                        patoolib.extract_archive(
-                            os.path.basename(path.path), outdir="."
-                        )
-                        os.remove(os.path.basename(path.path))
-
-                    # Handle tarballs
-                    _, fileextension2 = os.path.splitext(filename)
-                    if fileextension2 == ".tar":
-                        destination = urlparse(version["url"])
-                        filename2 = filename
-                        filename = os.path.basename(destination.path)
-
-                        with tarfile.open(filename2, "r:") as tar:
-                            tar.extract(filename)
-
                     logging.info("Uploading '%s' to '%s'" % (filename, dirname))
                     client.fput_object(
                         CONF.minio_bucket, os.path.join(dirname, filename), filename
                     )
-                    os.remove(filename)
+                else:
+                    logging.info("Not uploading '%s' to '%s' (dry-run enabled)" % (filename, dirname))
+
+                os.remove(filename)
 
 
 if __name__ == "__main__":
