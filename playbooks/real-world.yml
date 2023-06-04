@@ -13,4 +13,8 @@
 
     - role: tox
       vars:
+        tox_extra_args: -- --latest --hide --hypervisor kvm --force --keep --filter OPNsense
+
+    - role: tox
+      vars:
         tox_extra_args: -- --validate
