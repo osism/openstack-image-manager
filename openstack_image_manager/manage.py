@@ -117,7 +117,7 @@ class ImageManager:
         if __name__ == "__main__" or __name__ == "openstack_image_manager.manage":
             self.main()
 
-    def read_image_files(self) -> list:
+    def read_image_files(self, return_all_images=False) -> list:
         """Read all YAML files in self.CONF.images"""
         image_files = []
 
@@ -137,7 +137,10 @@ class ImageManager:
                     data = yaml.load(fp, Loader=yaml.SafeLoader)
                     images = data.get("images")
                     for image in images:
-                        if self.CONF.filter:
+                        if return_all_images:
+                            all_images.append(image)
+
+                        elif self.CONF.filter:
                             if re.search(self.CONF.filter, image["name"]):
                                 if "enable" in image and (
                                     (image["enable"])
@@ -243,14 +246,13 @@ class ImageManager:
             images = self.read_image_files()
             managed_images = self.process_images(images)
 
-            if not self.CONF.dry_run:
-                # ignore all non-specified images when using --filter
-                if self.CONF.filter:
-                    cloud_images = self.get_images()
-                    for image in cloud_images:
-                        if not re.search(self.CONF.filter, image):
-                            managed_images.add(image)
-                self.manage_outdated_images(managed_images)
+            # ignore all non-specified images when using --filter
+            if self.CONF.filter:
+                cloud_images = self.get_images()
+                for image in cloud_images:
+                    if not re.search(self.CONF.filter, image):
+                        managed_images.add(image)
+            self.manage_outdated_images(managed_images)
 
         if self.exit_with_error:
             sys.exit(
@@ -561,6 +563,10 @@ class ImageManager:
                     )
                     cloud_images = self.get_images()
                     imported_image = cloud_images[name]
+                else:
+                    logger.info(
+                        f"Skipping required import of image '{name}', running in dry-run mode"
+                    )
 
             elif self.CONF.latest and version != sorted_versions[-1]:
                 logger.info(
@@ -840,7 +846,7 @@ class ImageManager:
         """
 
         images = {}
-        for d in self.read_image_files():
+        for d in self.read_image_files(return_all_images=True):
             images[d["name"]] = d
         cloud_images = self.get_images()
 
@@ -873,6 +879,10 @@ class ImageManager:
                 )
                 continue
 
+            # Always skip the last imported image
+            if image_name == image:
+                continue
+
             image_definition = images[image_name]
             counter[image_name] = counter.get(image_name, 0) + 1
 
@@ -884,13 +894,13 @@ class ImageManager:
 
             if self.CONF.keep and not image_definition["multi"]:
                 logger.info(
-                    f"Image '{image}' is not deleted because undefined versions of defined images are kept"
+                    f"Image '{image}' will not be deleted, undefined versions of defined images are kept"
                 )
 
             elif uuid_validity == "none":
-                logger.info(f"Image '{image}' is not deleted, UUID validity is 'none'")
+                logger.info(f"Image '{image}' will not be deleted, UUID validity is 'none'")
             elif counter[image_name] > last:
-                if self.CONF.delete and self.CONF.yes_i_really_know_what_i_do:
+                if self.CONF.delete and self.CONF.yes_i_really_know_what_i_do and not self.CONF.dry_run:
                     try:
                         logger.info("Deactivating image '%s'" % image)
                         self.conn.image.deactivate_image(cloud_image.id)
@@ -912,11 +922,11 @@ class ImageManager:
                         "Image %s should be deleted, but deletion is disabled" % image
                     )
                     try:
-                        if self.CONF.deactivate:
+                        if self.CONF.deactivate and not self.CONF.dry_run:
                             logger.info("Deactivating image '%s'" % image)
                             self.conn.image.deactivate_image(cloud_image.id)
 
-                        if self.CONF.hide:
+                        if self.CONF.hide and not self.CONF.dry_run:
                             logger.info(
                                 "Setting visibility of '%s' to 'community'" % image
                             )
@@ -926,7 +936,7 @@ class ImageManager:
                     except Exception as e:
                         logger.error("An Exception occurred: \n%s" % e)
                         self.exit_with_error = True
-            elif counter[image_name] < last and self.CONF.hide:
+            elif counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run:
                 logger.info("Setting visibility of '%s' to 'community'" % image)
                 self.conn.image.update_image(cloud_image.id, visibility="community")
         return unmanaged_images
