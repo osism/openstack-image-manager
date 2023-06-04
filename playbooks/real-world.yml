@@ -9,4 +9,8 @@
 
     - role: tox
       vars:
+        tox_extra_args: -- --latest --hide --hypervisor kvm --force --keep --filter Talos
+
+    - role: tox
+      vars:
         tox_extra_args: -- --validate

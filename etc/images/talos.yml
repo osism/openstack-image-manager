@@ -28,3 +28,8 @@ images:
         source: https://github.com/siderolabs/talos/releases/download/v1.3.6/openstack-amd64.tar.gz
         checksum: "sha256:1db0cfd9bd9c3d3165911ab89ef05dad1d590cc442fb0702564cfe737b3f3dbd"
         build_date: '2023-03-14'
+      - version: '1.4.5'
+        url: https://minio.services.osism.tech/openstack-image-manager/talos/1.4.5/disk.raw
+        source: https://github.com/siderolabs/talos/releases/download/v1.4.5/openstack-amd64.tar.gz
+        checksum: "sha256:fc7dc71a6acece93196c8bace15139469b7bfbe4fa7d001336da0fdda9b437c9"
+        build_date: '2023-05-30'
