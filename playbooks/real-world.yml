@@ -5,19 +5,19 @@
   roles:
     - role: tox
       vars:
-        tox_extra_args: -- --latest --hide --hypervisor kvm --force --keep
+        tox_extra_args: -- --hide --hypervisor kvm --force --keep --filter Talos
 
     - role: tox
       vars:
-        tox_extra_args: -- --latest --hide --hypervisor kvm --force --keep --filter Talos
-
-    - role: tox
-      vars:
-        tox_extra_args: -- --latest --hide --hypervisor kvm --force --keep --filter OPNsense
+        tox_extra_args: -- --hide --hypervisor kvm --force --keep --filter OPNsense
 
     - role: tox
       vars:
         tox_extra_args: -- --hypervisor kvm --force --keep --filter "Kubernetes CAPI"
+
+    - role: tox
+      vars:
+        tox_extra_args: -- --hide --hypervisor kvm --force --keep --delete --yes-i-really-know-what-i-do
 
     - role: tox
       vars:
