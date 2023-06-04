@@ -2,18 +2,19 @@
 
 import logging
 import os
-import shutil
 import patoolib
 import requests
-import yaml
+import shutil
+import tarfile
 import typer
-from urllib.parse import urlparse
+import yaml
 
 from minio import Minio
 from minio.error import S3Error
 from munch import Munch
 from os import listdir
 from os.path import isfile, join
+from urllib.parse import urlparse
 
 
 app = typer.Typer(add_completion=False)
@@ -100,8 +101,17 @@ def main(
                         )
                         os.remove(os.path.basename(path.path))
 
-                    logging.info("Uploading '%s' to '%s'" % (filename, dirname))
+                    # Handle tarballs
+                    _, fileextension2 = os.path.splitext(filename)
+                    if fileextension2 == ".tar":
+                        destination = urlparse(version["url"])
+                        filename2 = filename
+                        filename = os.path.basename(destination.path)
 
+                        with tarfile.open(filename2, "r:") as tar:
+                            tar.extract(filename)
+
+                    logging.info("Uploading '%s' to '%s'" % (filename, dirname))
                     client.fput_object(
                         CONF.minio_bucket, os.path.join(dirname, filename), filename
                     )
