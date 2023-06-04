@@ -23,10 +23,12 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS
-    latest_url: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
+    latest_url: 
+      https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
     versions:
       - version: '20191107'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
         checksum: sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1
         build_date: 2019-11-07
   - name: Ubuntu 16.04
@@ -52,10 +54,12 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/xenial/current/SHA256SUMS
-    latest_url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+    latest_url: 
+      https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     versions:
       - version: '20211001'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
         checksum: sha256:fff2494a70bcaffb59f26f71ec49e137dd87d319341c35832dbe0ea65ff15140
         build_date: 2021-10-01
   - name: Ubuntu 16.04 Minimal
@@ -81,10 +85,12 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/xenial/release/SHA256SUMS
-    latest_url: https://cloud-images.ubuntu.com/minimal/releases/xenial/release/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
+    latest_url: 
+      https://cloud-images.ubuntu.com/minimal/releases/xenial/release/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
     versions:
       - version: '20210929'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
         checksum: sha256:7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9
         build_date: 2021-09-20
   - name: Ubuntu 18.04
@@ -112,10 +118,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
     versions:
-      - version: '20230425'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20230425-ubuntu-18.04.qcow2
-        checksum: sha256:1975f68897bb8489d389a04c3bd9674ecf15bd351498c938d37352a8b9edddc9
-        build_date: '2023-04-25'
+      - version: '20230530'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20230530-ubuntu-18.04.qcow2
+        checksum: sha256:c940c06cb9cc360b58588fa66a526f05672bd6659be741d0dbf71e047529b5da
+        build_date: '2023-05-30'
   - name: Ubuntu 18.04 Minimal
     enable: false
     shortname: ubuntu-18.04-minimal
@@ -139,12 +146,14 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/bionic/release/SHA256SUMS
-    latest_url: https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img
+    latest_url: 
+      https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20230427'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20230427-ubuntu-18.04-minimal.qcow2
-        checksum: sha256:81809141484334db24678993417581bd082dc815a17d7607ab96587186122b1b
-        build_date: '2023-04-27'
+      - version: '20230602'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20230602-ubuntu-18.04-minimal.qcow2
+        checksum: sha256:2d9755669c499e88d51da0638cd20e0983a248828e2153906c013bea0ee2f45a
+        build_date: '2023-06-02'
   - name: Ubuntu 20.04
     enable: true
     shortname: ubuntu-20.04
@@ -170,10 +179,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20230420'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230420-ubuntu-20.04.qcow2
-        checksum: sha256:5c55155af93c3b52077e9fac022392094e404a4fea246d89205e161f47b1d765
-        build_date: '2023-04-20'
+      - version: '20230530'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230530-ubuntu-20.04.qcow2
+        checksum: sha256:5605c285414bab81aa600b3ad7d0ee89f9882e148864cb0c59dd7fc6b8c8b9d0
+        build_date: '2023-05-30'
   - name: Ubuntu 20.04 Minimal
     enable: true
     shortname: ubuntu-20.04-minimal
@@ -197,12 +207,14 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/SHA256SUMS
-    latest_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
+    latest_url: 
+      https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20230429'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20230429-ubuntu-20.04-minimal.qcow2
-        checksum: sha256:9b7d3d44005c45193c2d1cdf1b74afb78a8fda07a1febd22af4f1c219265b491
-        build_date: '2023-04-29'
+      - version: '20230601'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20230601-ubuntu-20.04-minimal.qcow2
+        checksum: sha256:9212768c3b4bd3fe9f459d8600f3505c50edb47f831ba6a7342ff621051f5c7f
+        build_date: '2023-06-01'
   - name: Ubuntu 22.04
     enable: true
     shortname: ubuntu-22.04
@@ -228,10 +240,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20230428'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230428-ubuntu-22.04.qcow2
-        checksum: sha256:3e1898e9a0cc39df7d9c6af518584d53a647dabfbba6595d1a09dd82cabe8a87
-        build_date: '2023-04-28'
+      - version: '20230602'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230602-ubuntu-22.04.qcow2
+        checksum: sha256:7d830df583e86b6563ccfc45376a4d8d24f873267abf78e02439f28761174b22
+        build_date: '2023-06-02'
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -255,9 +268,11 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release/SHA256SUMS
-    latest_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
+    latest_url: 
+      https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20230421'
-        url: https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20230421-ubuntu-22.04-minimal.qcow2
-        checksum: sha256:e8102ef56b87de04437336e26b153d02615d1a3f3b497c72d57577eb70664dea
-        build_date: '2023-04-21'
+      - version: '20230531'
+        url: 
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20230531-ubuntu-22.04-minimal.qcow2
+        checksum: sha256:935b1c19f0f8e8ca147fe99d89a1e9bf6f4513e93ea70029e2c1c954312fd8b6
+        build_date: '2023-05-31'
