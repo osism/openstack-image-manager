@@ -93,7 +93,7 @@ def main(
                 logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
                 logging.info("Downloading '%s'" % version["source"])
-                response = requests.get(version["source"], stream=True)
+                response = requests.get(version["source"], stream=True, allow_redirects=True)
                 with open(os.path.basename(path.path), "wb") as fp:
                     shutil.copyfileobj(response.raw, fp)
                 del response
