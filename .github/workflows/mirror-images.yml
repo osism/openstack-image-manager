@@ -2,6 +2,7 @@
 name: Mirror images
 
 "on":
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/mirror-images.yml
