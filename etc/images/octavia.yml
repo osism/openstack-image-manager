@@ -1,0 +1,29 @@
+---
+images:
+  - name: OpenStack Octavia Amphora
+    enable: false
+    shortname: amphora
+    format: qcow2
+    login: ubuntu
+    min_disk: 2
+    min_ram: 512
+    status: active
+    visibility: shared
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags:
+      - amphora
+    versions:
+      - version: 'ZED-2023-05-05'
+        url: https://minio.services.osism.tech/openstack-octavia-amphora-image/octavia-amphora-haproxy-zed.qcow2
+        checksum: "sha256:f0ec47f052e9549b88b3ae86c805ab05036b2a711761b3e2595cb6325311588d"
+        build_date: '2023-05-05'
