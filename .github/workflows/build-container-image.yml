@@ -7,14 +7,14 @@ name: Build container image
     paths:
       - .github/workflows/build-container-image.yml
       - Containerfile
-      - src/**
+      - openstack_image_manager/**
     branches:
       - main
   pull_request:
     paths:
       - .github/workflows/build-container-image.yml
       - Containerfile
-      - src/**
+      - openstack_image_manager/**
 
 jobs:
   build-container-image:
