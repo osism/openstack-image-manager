@@ -76,7 +76,8 @@ FAKE_IMAGE_DATA = {
     'os_version': FAKE_IMAGE_DICT['meta']['os_version'],
     'properties': {
         'image_original_user': FAKE_IMAGE_DICT['login'],
-        'internal_version': FAKE_IMAGE_DICT['versions'][0]['version']
+        'internal_version': FAKE_IMAGE_DICT['versions'][0]['version'],
+        'image_description': FAKE_IMAGE_DICT['name']
     }
 }
 
@@ -274,9 +275,6 @@ class TestManage(TestCase):
     def test_manage_outdated_images(self, mock_get_images, mock_deactivate, mock_update_image, mock_delete_image):
         ''' test manage.ImageManager.manage_outdated_images '''
 
-        # test deletion of images
-        self.sot.CONF.delete = True
-        self.sot.CONF.yes_i_really_know_what_i_do = True
         managed_images = {'some_image_name'}
         mock_get_images.return_value = {
             self.fake_image.name: self.fake_image
@@ -284,25 +282,8 @@ class TestManage(TestCase):
 
         self.sot.manage_outdated_images(managed_images)
         mock_get_images.assert_called_once()
-        mock_deactivate.assert_called_once_with(self.fake_image.id)
-        mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
-        mock_delete_image.assert_called_once_with(self.fake_image.id)
-
-        mock_get_images.reset_mock()
-        mock_deactivate.reset_mock()
-        mock_update_image.reset_mock()
-        mock_delete_image.reset_mock()
-
-        # test hide and deactivate of images
-        self.sot.CONF.delete = False
-        self.sot.CONF.yes_i_really_know_what_i_do = False
-        self.sot.CONF.hide = True
-        self.sot.CONF.deactivate = True
-
-        self.sot.manage_outdated_images(managed_images)
-        mock_get_images.assert_called_once()
-        mock_deactivate.assert_called_once_with(self.fake_image.id)
-        mock_update_image.assert_called_once_with(self.fake_image.id, visibility='community')
+        mock_deactivate.assert_not_called()
+        mock_update_image.assert_not_called()
         mock_delete_image.assert_not_called()
 
     @mock.patch('openstack_image_manager.manage.ImageManager.unshare_image_with_project')

@@ -20,6 +20,7 @@ images:
       provided_until: none
       os_distro: cirros
       os_version: '0.6.0'
+      image_description: Cirros_test
     tags: []
     versions:
       - version: '1'

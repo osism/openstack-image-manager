@@ -25,6 +25,9 @@ class TestManageAPI(TestCase):
             images='test/integration/fixtures/',
             tag='fake_tag',
             filter='',
+            keep=False,
+            force=False,
+            hypervisor=None,
             validate=False
         )
         self.image = self.sot.read_image_files()[0]
@@ -97,10 +100,13 @@ class TestManageAPI(TestCase):
         cloud_images = self.sot.get_images()
         self.assertEqual(list(cloud_images.keys()), [self.image['name']])
 
-        # Finally delete the image, also works as a cleanup
-        res = self.sot.manage_outdated_images(set())
-        self.assertEqual(res, [self.image['name']])
+        # Make sure no images are considered unmanaged
+        res = self.sot.manage_outdated_images({'Cirros_test'})
+        self.assertEqual(res, [])
+
+        # Manually delete the image
+        self.sot.conn.image.delete_image(cloud_images['Cirros_test'].id)
 
         # make sure the image is gone
         cloud_images = self.sot.get_images()
-        self.assertEqual(cloud_images, {}, f"Cloud not delete image {self.image['name']}, please do so manually")
+        self.assertEqual(cloud_images, {}, f"Could not delete image {self.image['name']}, please do so manually")
