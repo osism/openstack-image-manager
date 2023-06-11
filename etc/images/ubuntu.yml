@@ -118,11 +118,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
     versions:
-      - version: '20230530'
+      - version: '20230607'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20230530-ubuntu-18.04.qcow2
-        checksum: sha256:c940c06cb9cc360b58588fa66a526f05672bd6659be741d0dbf71e047529b5da
-        build_date: '2023-05-30'
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20230607-ubuntu-18.04.qcow2
+        checksum: sha256:8dd2e6b5e5aad20c3f836123b300cba9861249408cbb07c359145a65d6bab6b6
+        build_date: '2023-06-07'
   - name: Ubuntu 18.04 Minimal
     enable: false
     shortname: ubuntu-18.04-minimal
@@ -179,11 +179,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20230530'
+      - version: '20230607'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230530-ubuntu-20.04.qcow2
-        checksum: sha256:5605c285414bab81aa600b3ad7d0ee89f9882e148864cb0c59dd7fc6b8c8b9d0
-        build_date: '2023-05-30'
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230607-ubuntu-20.04.qcow2
+        checksum: sha256:e386db128554f8b866cff311955e099efd00c3d51cda5d592ee430d76f67dcb0
+        build_date: '2023-06-07'
   - name: Ubuntu 20.04 Minimal
     enable: true
     shortname: ubuntu-20.04-minimal
@@ -210,11 +210,11 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20230601'
+      - version: '20230606'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20230601-ubuntu-20.04-minimal.qcow2
-        checksum: sha256:9212768c3b4bd3fe9f459d8600f3505c50edb47f831ba6a7342ff621051f5c7f
-        build_date: '2023-06-01'
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20230606-ubuntu-20.04-minimal.qcow2
+        checksum: sha256:201a642529acca34b731457d586ae21858098849b9bce39fe3936db19d689d65
+        build_date: '2023-06-06'
   - name: Ubuntu 22.04
     enable: true
     shortname: ubuntu-22.04
@@ -240,11 +240,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20230602'
+      - version: '20230608'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230602-ubuntu-22.04.qcow2
-        checksum: sha256:7d830df583e86b6563ccfc45376a4d8d24f873267abf78e02439f28761174b22
-        build_date: '2023-06-02'
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230608-ubuntu-22.04.qcow2
+        checksum: sha256:929965d004dd89417d3aedc3a05d13e6f208ce7177d1cc38c993c0e02538be93
+        build_date: '2023-06-08'
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -271,8 +271,8 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20230531'
+      - version: '20230606'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20230531-ubuntu-22.04-minimal.qcow2
-        checksum: sha256:935b1c19f0f8e8ca147fe99d89a1e9bf6f4513e93ea70029e2c1c954312fd8b6
-        build_date: '2023-05-31'
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20230606-ubuntu-22.04-minimal.qcow2
+        checksum: sha256:83b441bed3b65042d8993570ea7e9c35d3d88c5ae96dec25fc2efa4721d5a92f
+        build_date: '2023-06-06'
