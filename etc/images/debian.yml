@@ -64,7 +64,7 @@ images:
           sha512:83227f671b403b73ed6e870273500153240b828a2625b16090dd4e1a2847ce51a081503564a183506093fc24f10f6656dca4c9f6ac1e0a24e1e0f7986b32757c
         build_date: '2023-06-02'
   - name: Debian 12
-    enable: false
+    enable: true
     shortname: debian-12
     format: qcow2
     login: debian
