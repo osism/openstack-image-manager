@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c993714d80de25e65b893592ee6f3d8e6975749fe167c1fca5a2be3b772bf016"
+            "sha256": "a55c990d7cc0b1b427d7e48987128d950ac4a02dd03352795da4b45ab47db312"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -304,11 +304,11 @@
         },
         "keystoneauth1": {
             "hashes": [
-                "sha256:84feba003301c2042693eb9366b0008eabd47b221c65f8106f0049f54eba989d",
-                "sha256:af54bcb9cf3b5d8492894ff8b6680447c8ef1fb880734a5d3ce3a78ed8459844"
+                "sha256:d2fcfdcfe347df8d92390e0806b4969289d884cd9ec3519e4c5aec53e66d0767",
+                "sha256:f79b1c27ed5a69be4d03a5bc4967df3dfab0c5d76e85226fa2060cffadff74a1"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==5.2.0"
+            "version": "==5.2.1"
         },
         "loguru": {
             "hashes": [
@@ -352,11 +352,11 @@
         },
         "natsort": {
             "hashes": [
-                "sha256:517595492dde570a4fd6b6a76f644440c1ba51e2338c8a671d7f0475fda8f9fd",
-                "sha256:d583bc9050dd10538de36297c960b93f873f0cd01671a3c50df5bd86dd391dcb"
+                "sha256:45312c4a0e5507593da193dedd04abb1469253b601ecaf63445ad80f0a1ea581",
+                "sha256:4732914fb471f56b5cce04d7bae6f164a592c7712e1c85f9ef585e197299521c"
             ],
             "index": "pypi",
-            "version": "==8.3.1"
+            "version": "==8.4.0"
         },
         "netifaces": {
             "hashes": [
