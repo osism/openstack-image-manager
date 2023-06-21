@@ -32,7 +32,7 @@ images:
         checksum: sha256:e38bab0475cc6d004d2e17015969c659e5a308111851b0e2715e84646035bdd3
         build_date: 2020-11-12
   - name: CentOS Stream 8
-    enable: true
+    enable: false
     shortname: centos-stream-8
     format: qcow2
     login: centos
