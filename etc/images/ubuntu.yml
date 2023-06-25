@@ -179,11 +179,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20230616'
+      - version: '20230619'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230616-ubuntu-20.04.qcow2
-        checksum: sha256:d96b44ad6af07f98ee73cc46314941e3b096b1c05b7bde0bf3bcf3a703bf2754
-        build_date: '2023-06-16'
+          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230619-ubuntu-20.04.qcow2
+        checksum: sha256:b2b8e1048080f6112bd0c5fcb62846ad4dbef53527a2846fececa02111ac8378
+        build_date: '2023-06-19'
   - name: Ubuntu 20.04 Minimal
     enable: true
     shortname: ubuntu-20.04-minimal
