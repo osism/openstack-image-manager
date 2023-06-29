@@ -22,31 +22,19 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '1.24.13'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.24/ubuntu-2004-kube-v1.24.13.qcow2
-        checksum: "sha256:90152f4cb814b53b9e74b16b07475830a0ea7dadaa95213ac2ad27bf68344b2a"
-        build_date: '2023-04-19'
-      - version: '1.24.14'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.24/ubuntu-2204-kube-v1.24.14.qcow2
-        checksum: "sha256:51619fbe70e41101bd653679fca0c174d6d0cbd9b242acab4388e20b737b2149"
-        build_date: '2023-05-19'
-      - version: '1.25.9'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.25/ubuntu-2004-kube-v1.25.9.qcow2
-        checksum: "sha256:5f79c55d32072b483911c69be49e2f8ca9822c9d73571a5ece6123fbda1e8b68"
-        build_date: '2023-04-19'
-      - version: '1.25.10'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.25/ubuntu-2204-kube-v1.25.10.qcow2
-        checksum: "sha256:871db0170a567d839eb9f356588ed7ded03052b699e1213b6f28ba877c3f8748"
-        build_date: '2023-05-19'
-      - version: '1.26.4'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2004-kube-v1.26/ubuntu-2004-kube-v1.26.4.qcow2
-        checksum: "sha256:114a3d038135833a6abe3320fd0c5f5304b250dbfa17523165d0f3c3e450ece9"
-        build_date: '2023-04-19'
-      - version: '1.26.5'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.26/ubuntu-2204-kube-v1.26.5.qcow2
-        checksum: "sha256:ceb2d5e3af9b659ca6ca911a392b832aeb87c226fd587ff1bb45c674900441b9"
-        build_date: '2023-05-19'
-      - version: '1.27.1'
-        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.27/ubuntu-2204-kube-v1.27.1.qcow2
-        checksum: "sha256:a76a3bac9e5bba4d270de75b8f9e07489af9d389e8ec964e55315caa0bcb6e84"
-        build_date: '2023-05-19'
+      - version: '1.24.15'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.24/ubuntu-2204-kube-v1.24.15.qcow2
+        checksum: "sha256:12fbfead6400fae2fac20b8fae130e23afc351c44ad120deee2318b4bc7b2e59"
+        build_date: '2023-06-15'
+      - version: '1.25.11'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.25/ubuntu-2204-kube-v1.25.11.qcow2
+        checksum: "sha256:7870a6c7c1761c572c070ca7b776b39344d8d2fd0dca28718fff433e9dca1a8f"
+        build_date: '2023-06-21'
+      - version: '1.26.6'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.26/ubuntu-2204-kube-v1.26.6.qcow2
+        checksum: "sha256:0243eeee8a55ed9d9f920d4b168ec548541dc2504c996d58a20be5f6d6518409"
+        build_date: '2023-06-21'
+      - version: '1.27.3'
+        url: https://minio.services.osism.tech/openstack-k8s-capi-images/ubuntu-2204-kube-v1.27/ubuntu-2204-kube-v1.27.3.qcow2
+        checksum: "sha256:857bbb11f29faba71f9f6dc1c44ed657507e422b42f589e1d96da2711c41d5bf"
+        build_date: '2023-06-21'
