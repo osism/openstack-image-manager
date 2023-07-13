@@ -27,8 +27,8 @@ def main(
     for file in onlyfiles:
         with open(join(CONF.images, file)) as fp:
             data = yaml.load(fp, Loader=yaml.SafeLoader)
-            images = data.get("images")
-            for image in images:
+            imgs = data.get("images")
+            for image in imgs:
                 all_images.append(image)
 
     data = []

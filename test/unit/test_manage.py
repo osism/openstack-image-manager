@@ -3,6 +3,7 @@ from munch import Munch
 from unittest import TestCase, mock
 from openstack.image.v2.image import Image
 from openstack.image.v2._proxy import Proxy
+from typing import Any, Dict
 
 from openstack_image_manager import manage
 
@@ -33,7 +34,7 @@ images:
 '''
 
 # sample image dict as generated from FAKE_YML
-FAKE_IMAGE_DICT = {
+FAKE_IMAGE_DICT : Dict[str, Any] = {
     'name': 'Ubuntu 20.04',
     'enable': True,
     'format': 'qcow2',

@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import typer
+from typing import Dict, Set
 import yamale
 
 from datetime import datetime
@@ -271,7 +272,7 @@ class ImageManager:
             "versions",
             "visibility",
         ]
-        managed_images = set()
+        managed_images: Set[str] = set()
 
         for image in images:
             for required_key in REQUIRED_KEYS:
@@ -449,7 +450,7 @@ class ImageManager:
         """
         cloud_images = self.get_images()
 
-        existing_images = set()
+        existing_images: Set[str] = set()
         imported_image = None
         previous_image = None
         upstream_checksum = ""
@@ -865,7 +866,7 @@ class ImageManager:
                 [x for x in cloud_images if x not in managed_images], reverse=True
             )
 
-        counter = {}
+        counter: Dict[str, int] = {}
 
         for image in unmanaged_images:
             logger.info(f"Processing image '{image}' (removal candidate)")
