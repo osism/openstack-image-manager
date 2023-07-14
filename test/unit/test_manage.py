@@ -1,3 +1,4 @@
+import copy
 from loguru import logger
 from munch import Munch
 from unittest import TestCase, mock
@@ -97,6 +98,12 @@ class TestManage(TestCase):
         self.previous_image = self.fake_image
         self.imported_image = self.fake_image
 
+        self.file_image_dict = copy.deepcopy(FAKE_IMAGE_DICT)
+        self.file_image = Image(**self.file_image_dict)
+        self.file_url = 'file:///path/to/file.img'
+        self.file_image_dict['versions'][0]['url'] = self.file_url
+        self.file_versions = {'1': {'url': self.file_url, 'meta': {'image_source': self.file_url}}}
+
         self.sot = manage.ImageManager()
         # since oslo_config.cfg.ConfigOpts objects allow attribute-style access,
         # we can mimick its behaviour with a munch.Munch object
@@ -151,7 +158,8 @@ class TestManage(TestCase):
     @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.get_image')
     @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.import_image')
     @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.create_image')
-    def test_import_image(self, mock_create, mock_import, mock_get_image):
+    @mock.patch('builtins.open')
+    def test_import_image(self, mock_open, mock_create, mock_import, mock_get_image):
         ''' test manage.ImageManager.import_image() '''
 
         mock_create.return_value = self.fake_image
@@ -172,11 +180,37 @@ class TestManage(TestCase):
         mock_import.assert_called_once_with(self.fake_image, method='web-download', uri=self.fake_url)
         mock_get_image.assert_called_once_with(self.fake_image)
 
+        mock_create.reset_mock()
+        mock_import.reset_mock()
+        mock_get_image.reset_mock()
+
+        # test the same function for image with 'file://' url
+
+        # use a dedicated MagicMock for the image object because the
+        # implementation will call the upload() function on it
+        mock_image_obj = mock.MagicMock()
+        mock_image_obj.status = "active"
+        mock_create.return_value = mock_image_obj
+        mock_get_image.return_value = mock_image_obj
+        fake_file_buffer = mock.MagicMock()
+        mock_open.return_value = fake_file_buffer
+
+        self.sot.import_image(self.file_image_dict, self.fake_name, self.file_url, self.file_versions, '1')
+
+        mock_create.assert_called_once_with(**properties)
+        self.assertEqual(mock_image_obj.data, fake_file_buffer)
+        mock_import.assert_not_called()
+        mock_image_obj.upload.assert_called_with(self.sot.conn.image)
+        mock_get_image.assert_called_once_with(mock_image_obj)
+
     @mock.patch('openstack_image_manager.manage.ImageManager.set_properties')
     @mock.patch('openstack_image_manager.manage.ImageManager.import_image')
     @mock.patch('openstack_image_manager.manage.requests.head')
     @mock.patch('openstack_image_manager.manage.ImageManager.get_images')
-    def test_process_image(self, mock_get_images, mock_requests, mock_import_image, mock_set_properties):
+    @mock.patch('os.path.isfile')
+    @mock.patch('os.path.exists')
+    def test_process_image(self, mock_path_exists, mock_path_isfile, mock_get_images, mock_requests,
+                           mock_import_image, mock_set_properties):
         ''' test manage.ImageManager.process_image() '''
 
         mock_requests.return_value.status_code = 200
@@ -192,12 +226,35 @@ class TestManage(TestCase):
                                                   self.versions,
                                                   '1')
         mock_set_properties.assert_called_once_with(self.fake_image_dict, self.fake_name, self.versions, '1', '', meta)
-        self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.__getitem__(), None))
+        self.assertEqual(result, ({self.fake_image_dict['name']}, mock_get_images.return_value.get(), None))
 
         mock_get_images.reset_mock()
         mock_requests.reset_mock()
         mock_import_image.reset_mock()
         mock_set_properties.reset_mock()
+
+        # test the same function for image with 'file://' url
+        meta = self.file_image_dict['meta']
+
+        mock_path_exists.return_value = True
+        mock_path_isfile.return_value = True
+
+        result = self.sot.process_image(self.file_image_dict, self.file_versions, self.sorted_versions, meta)
+
+        self.assertEqual(mock_get_images.call_count, 2)
+        mock_requests.assert_not_called()
+        mock_import_image.assert_called_once_with(self.file_image_dict,
+                                                  self.fake_name,
+                                                  self.file_url,
+                                                  self.file_versions,
+                                                  '1')
+
+        mock_get_images.reset_mock()
+        mock_requests.reset_mock()
+        mock_import_image.reset_mock()
+        mock_set_properties.reset_mock()
+        mock_path_exists.reset_mock()
+        mock_path_isfile.reset_mock()
 
         # test the same function with dry_run = True
         self.sot.CONF.dry_run = True

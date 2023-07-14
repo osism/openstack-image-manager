@@ -8,6 +8,7 @@ import sys
 import typer
 from typing import Dict, Set
 import yamale
+import urllib.parse
 
 from datetime import datetime
 from decimal import Decimal, ROUND_UP
@@ -312,9 +313,12 @@ class ImageManager:
                     else:
                         versions[version["version"]]["meta"] = {}
                     if "url" in version:
-                        versions[version["version"]]["meta"]["image_source"] = version[
-                            "url"
-                        ]
+                        url = version["url"]
+                        # strip any directory path for file: urls in order to
+                        # avoid exposing local filesystem details to other users
+                        if url.startswith("file:") and "/" in url:
+                            url = "file:%s" % url.rsplit("/", 1)[1]
+                        versions[version["version"]]["meta"]["image_source"] = url
                     if "build_date" in version:
                         versions[version["version"]]["meta"][
                             "image_build_date"
@@ -376,7 +380,23 @@ class ImageManager:
             properties["id"] = versions[version]["id"]
 
         new_image = self.conn.image.create_image(**properties)
-        self.conn.image.import_image(new_image, method="web-download", uri=url)
+        parsed_url = urllib.parse.urlparse(url)
+        if parsed_url.scheme == "file":
+            local_file = open(parsed_url.path, "rb")
+            with local_file:
+                try:
+                    logger.info("Uploading local file '%s' as image %s"
+                                % (parsed_url.path, name))
+                    new_image.data = local_file
+                    new_image.upload(self.conn.image)
+                except Exception as e:
+                    self.conn.image.delete_image(new_image)
+                    logger.error("Failed to upload local file for image %s\n%s"
+                                 % (name, e))
+                    self.exit_with_error = True
+                    return None
+        else:
+            self.conn.image.import_image(new_image, method="web-download", uri=url)
 
         return self.wait_for_image(new_image)
 
@@ -571,29 +591,41 @@ class ImageManager:
                 and version != sorted_versions[-1]
             ):
                 url = versions[version]["url"]
-                r = requests.head(url)
-
-                if r.status_code in [200, 302]:
-                    logger.info("Tested URL %s: %s" % (url, r.status_code))
+                parsed_url = urllib.parse.urlparse(url)
+                if parsed_url.scheme == "file":
+                    file_path = parsed_url.path
+                    if not (os.path.exists(file_path) and os.path.isfile(file_path)):
+                        logger.error(
+                            "Skipping '%s' due to file '%s' not found locally"
+                            % (name, file_path)
+                        )
+                        self.exit_with_error = True
+                        return existing_images, imported_image, previous_image
                 else:
-                    logger.error("Tested URL %s: %s" % (url, r.status_code))
-                    logger.error(
-                        "Skipping '%s' due to HTTP status code %s"
-                        % (name, r.status_code)
-                    )
-                    self.exit_with_error = True
-                    return existing_images, imported_image, previous_image
+                    r = requests.head(url)
+
+                    if r.status_code in [200, 302]:
+                        logger.info("Tested URL %s: %s" % (url, r.status_code))
+                    else:
+                        logger.error("Tested URL %s: %s" % (url, r.status_code))
+                        logger.error(
+                            "Skipping '%s' due to HTTP status code %s"
+                            % (name, r.status_code)
+                        )
+                        self.exit_with_error = True
+                        return existing_images, imported_image, previous_image
 
                 if image["multi"] and image["name"] in cloud_images:
                     previous_image = cloud_images[image["name"]]
 
                 if not self.CONF.dry_run:
-                    self.import_image(image, name, url, versions, version)
-                    logger.info(
-                        "Import of '%s' successfully completed, reloading images" % name
-                    )
-                    cloud_images = self.get_images()
-                    imported_image = cloud_images[name]
+                    import_result = self.import_image(image, name, url, versions, version)
+                    if import_result:
+                        logger.info(
+                            "Import of '%s' successfully completed, reloading images" % name
+                        )
+                        cloud_images = self.get_images()
+                        imported_image = cloud_images.get(name, None)
                 else:
                     logger.info(
                         f"Skipping required import of image '{name}', running in dry-run mode"
@@ -1115,7 +1147,7 @@ class ImageManager:
 
             if "image_source" in image.properties:
                 if not re.match(
-                    r"^(http|ftp)s?://\w*.*", image.properties["image_source"]
+                    r"^(http|ftp)s?://\w*.*|^file:\w+.*", image.properties["image_source"]
                 ):
                     logger.error(
                         "Image %s: image_source is not a valid URL" % image.name
