@@ -378,18 +378,7 @@ class ImageManager:
         new_image = self.conn.image.create_image(**properties)
         self.conn.image.import_image(new_image, method="web-download", uri=url)
 
-        while True:
-            try:
-                imported_image = self.conn.image.get_image(new_image)
-                if imported_image.status != "active":
-                    logger.info("Waiting for import to complete...")
-                    time.sleep(10.0)
-                else:
-                    break
-            except Exception as e:
-                logger.error("Exception while importing image %s\n%s" % (name, e))
-                self.exit_with_error = True
-        return imported_image
+        return self.wait_for_image(new_image)
 
     def get_images(self) -> dict:
         """
@@ -432,6 +421,44 @@ class ImageManager:
                     )
         return result
 
+    def wait_for_image(self, image: dict) -> Image:
+        """
+        Wait for an imported image to reach "active" state
+
+        Returns:
+            the openstack.image.v2.image.Image object representing the imported image
+            if the image has reached "active" state or None if the image seems stuck
+            in "queued" state
+        """
+        retry_attempts_for_queued_state = 4
+        while True:
+            try:
+                imported_image = self.conn.image.get_image(image)
+                # An image's state in Glance transitions as follows:
+                #   queued > importing/saving > active
+                # If an import fails (e.g. web-download task API disabled),
+                # it silently falls back to "queued" state asynchronously in
+                # the background. We need to catch such cases where an image is
+                # indefinitely stuck in "queued" state.
+                if imported_image.status == "queued":
+                    if retry_attempts_for_queued_state < 0:
+                        logger.error(
+                            "Image %s seems stuck in queued state" % image.name)
+                        self.exit_with_error = True
+                        return None
+                    else:
+                        retry_attempts_for_queued_state -= 1
+                        logger.info("Waiting for image to leave queued state...")
+                        time.sleep(2.0)
+                elif imported_image.status != "active":
+                    logger.info("Waiting for import to complete...")
+                    time.sleep(10.0)
+                else:
+                    return imported_image
+            except Exception as e:
+                logger.error("Exception while importing image %s\n%s" % (image.name, e))
+                self.exit_with_error = True
+
     def process_image(
         self, image: dict, versions: dict, sorted_versions: list, meta: dict
     ) -> tuple:
@@ -464,6 +491,9 @@ class ImageManager:
             logger.info("Processing image '%s'" % name)
             logger.debug("Checking existence of '%s'" % name)
             existence = name in cloud_images
+
+            if existence and cloud_images[name].status != "active":
+                self.wait_for_image(cloud_images[name])
 
             if (
                 image["multi"]
