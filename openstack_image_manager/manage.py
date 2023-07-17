@@ -1044,6 +1044,10 @@ class ImageManager:
                 logger.error("Image %s not found" % image_name)
                 self.exit_with_error = True
                 continue
+            if image.status not in ["active", "deactivated"]:
+                logger.error("Image %s is in %s state" % (image_name, image.status))
+                self.exit_with_error = True
+                continue
 
             for prop in image_properties:
                 if prop in image:
