@@ -40,6 +40,10 @@
         - integration-test
         - markdownlint
         - mypy
+        - tox:
+            vars:
+              tox_envlist: test
+              tox_extra_args: -- test/unit
         - yamllint
     gate:
       jobs:
@@ -48,6 +52,10 @@
         - integration-test
         - markdownlint
         - mypy
+        - tox:
+            vars:
+              tox_envlist: test
+              tox_extra_args: -- test/unit
         - yamllint
     post:
       jobs:
@@ -59,4 +67,8 @@
         - integration-test
         - markdownlint
         - mypy
+        - tox:
+            vars:
+              tox_envlist: test
+              tox_extra_args: -- test/unit
         - yamllint
