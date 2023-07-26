@@ -350,7 +350,7 @@ class ImageManager:
 
     def import_image(
         self, image: dict, name: str, url: str, versions: dict, version: str
-    ) -> Image:
+    ) -> Image | None:
         """
         Create a new image in Glance and upload it using the web-download method
 
@@ -421,7 +421,7 @@ class ImageManager:
                     )
         return result
 
-    def wait_for_image(self, image: dict) -> Image:
+    def wait_for_image(self, image: Image) -> Image | None:
         """
         Wait for an imported image to reach "active" state
 
