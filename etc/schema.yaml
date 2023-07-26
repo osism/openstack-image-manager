@@ -46,7 +46,7 @@ versions:
   meta: include('meta', required=False)
   os_version: str(required=False)
   source: regex('^(http|ftp)s?:\/\/\w+.*|^private$', name='valid URL or private', required=False)
-  url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL')
+  url: regex('^(http|ftp)s?:\/\/\w+.*|^(file:|file:///)\w+.*', name='valid URL')
   version: str()
   visibility: enum('public', 'private', 'community', 'shared', required=False)
   id: regex('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', required=False)
