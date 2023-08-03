@@ -125,8 +125,7 @@ class TestManage(TestCase):
             share_type='project',
             filter='',
             check=False,
-            validate=False,
-            hypervisor=None,
+            hypervisor=None
         )
 
         # we can also mimick an openstack connection object with a Munch
@@ -347,15 +346,14 @@ class TestManage(TestCase):
     @mock.patch('openstack_image_manager.manage.ImageManager.unshare_image_with_project')
     @mock.patch('openstack_image_manager.manage.ImageManager.share_image_with_project')
     @mock.patch('openstack_image_manager.manage.ImageManager.validate_yaml_schema')
-    @mock.patch('openstack_image_manager.manage.ImageManager.check_image_metadata')
     @mock.patch('openstack_image_manager.manage.ImageManager.manage_outdated_images')
     @mock.patch('openstack_image_manager.manage.ImageManager.process_images')
     @mock.patch('openstack_image_manager.manage.ImageManager.get_images')
     @mock.patch('openstack_image_manager.manage.ImageManager.read_image_files')
     @mock.patch('openstack_image_manager.manage.openstack.connect')
     def test_main(self, mock_connect, mock_read_image_files, mock_get_images,
-                  mock_process_images, mock_manage_outdated, mock_check_metadata,
-                  mock_validate_yaml, mock_share_image, mock_unshare_image):
+                  mock_process_images, mock_manage_outdated, mock_validate_yaml,
+                  mock_share_image, mock_unshare_image):
         ''' test manage.ImageManager.main() '''
         mock_read_image_files.return_value = [self.fake_image_dict]
         mock_process_images.return_value = set()
@@ -366,7 +364,6 @@ class TestManage(TestCase):
         mock_read_image_files.assert_called_once()
         mock_process_images.assert_called_once_with([self.fake_image_dict])
         mock_manage_outdated.assert_called_once_with(set())
-        mock_check_metadata.assert_not_called()
         mock_validate_yaml.assert_not_called()
         mock_share_image.assert_not_called()
         mock_unshare_image.assert_not_called()
@@ -376,31 +373,6 @@ class TestManage(TestCase):
         mock_get_images.reset_mock()
         mock_process_images.reset_mock()
         mock_manage_outdated.reset_mock()
-        mock_check_metadata.reset_mock()
-        mock_validate_yaml.reset_mock()
-        mock_share_image.reset_mock()
-        mock_unshare_image.reset_mock()
-
-        # test with dry_run = True and validate = True
-        self.sot.CONF.dry_run = True
-        self.sot.CONF.validate = True
-
-        self.sot.main()
-        mock_read_image_files.assert_not_called()
-        mock_get_images.assert_not_called()
-        mock_process_images.assert_not_called()
-        mock_manage_outdated.assert_not_called()
-        mock_check_metadata.assert_called_once()
-        mock_validate_yaml.assert_not_called()
-        mock_share_image.assert_not_called()
-        mock_unshare_image.assert_not_called()
-
-        # reset
-        mock_read_image_files.reset_mock()
-        mock_get_images.reset_mock()
-        mock_process_images.reset_mock()
-        mock_manage_outdated.reset_mock()
-        mock_check_metadata.reset_mock()
         mock_validate_yaml.reset_mock()
         mock_share_image.reset_mock()
         mock_unshare_image.reset_mock()
@@ -409,14 +381,12 @@ class TestManage(TestCase):
         self.sot.CONF.check = True
 
         self.sot.CONF.dry_run = False
-        self.sot.CONF.validate = False
 
         self.sot.main()
         mock_read_image_files.assert_not_called()
         mock_get_images.assert_not_called()
         mock_process_images.assert_not_called()
         mock_manage_outdated.assert_not_called()
-        mock_check_metadata.assert_not_called()
         mock_validate_yaml.assert_called_once()
         mock_share_image.assert_not_called()
         mock_unshare_image.assert_not_called()

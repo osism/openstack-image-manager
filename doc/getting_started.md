@@ -42,8 +42,6 @@ As you can do many things with this manager here a list with possible commands:
 |                                 |Defines the scope where the image is (un)shared.|
 |`--check`                        |Check your OpenStack images metadata against the SCS standards.|
 |                                 |Gives you a detailed list of missing metadata.|
-|`--validate`                     |Validate your image config files metadata against the SCS standard.|
-|                                 |Gives you a detailed list of invalid metadata.|
 
 Main command. Works through the image config files and applies the changes to your OpenStack as desired.
 Commands prefixed with **--share** make an image available (or unavailable). This can happen on a single project or on all projects of a domain.
