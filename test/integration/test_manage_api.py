@@ -27,8 +27,7 @@ class TestManageAPI(TestCase):
             filter='',
             keep=False,
             force=False,
-            hypervisor=None,
-            validate=False
+            hypervisor=None
         )
         self.web_image = self.sot.read_image_files()[0]
         self.assertEqual(self.web_image['name'], 'Cirros_test')
