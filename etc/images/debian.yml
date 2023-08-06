@@ -26,12 +26,12 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
-      - version: '20230601'
+      - version: '20230802'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/debian-10/20230601-debian-10.qcow2
+          https://minio.services.osism.tech/openstack-image-manager/debian-10/20230802-debian-10.qcow2
         checksum: 
-          sha512:d8956fecfff4a176190b77484657e581bb1f7ceaacce6e905e5ab62a899d120e9a7a120c9c4acad89fb29b3e3b6c6666f9579e0e0409bb50ac642bf800b5b918
-        build_date: '2023-06-01'
+          sha512:a11252378a9573052b48fcec8cb0e5d6ab11338e81e960442eb8a9bf4504d8e25f5c2cd893c010f63ef99201b96e4f9cae7fce6c8f8132e18f1a561b9afd8eb3
+        build_date: '2023-08-02'
   - name: Debian 11
     enable: true
     shortname: debian-11
@@ -57,12 +57,12 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20230717'
+      - version: '20230802'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/debian-11/20230717-debian-11.qcow2
+          https://minio.services.osism.tech/openstack-image-manager/debian-11/20230802-debian-11.qcow2
         checksum: 
-          sha512:5c5e15e9ff65f2d1a6bdedbdc74a4521cd0ebb04eb01bd78bf3c59b85b6607b4dc43143b0502187264491898a5fabf2189dcb94761348fe1e074479659ba767b
-        build_date: '2023-07-17'
+          sha512:f16512174452ea49e34d302e86bb11b6f821013dde583bf703550998e87819f98c6e411d7737bd53f16c73007f1c039218f9cd40421ec3a6b5b1fe38044018c0
+        build_date: '2023-08-02'
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -88,9 +88,9 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: '2023-07-29'
+      - build_date: '2023-08-05'
         checksum: 
-          sha512:2bd09af7faacbc15f9975cca6451c6ef0c5c0788f6109c8e71c993b655837aecbdfcea596594051cf6cd755a387b7d0f453856ca57ad034ffd6fec4ef4859eab
+          sha512:c43510fb2f51f55e774cb9308b16d288e937916ea00db74865f8e3da51d8f573028017e761c135402c7b703151878b4c21bb08a2509aecc71f9bc1c701ff4933
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/debian-12/20230729-debian-12.qcow2
-        version: '20230729'
+          https://minio.services.osism.tech/openstack-image-manager/debian-12/20230805-debian-12.qcow2
+        version: '20230805'
