@@ -24,17 +24,21 @@ images:
     versions:
       - version: '1.24.15'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-k8s-capi-images/ubuntu-2204-kube-v1.24/ubuntu-2204-kube-v1.24.15.qcow2
-        checksum: "sha256:12fbfead6400fae2fac20b8fae130e23afc351c44ad120deee2318b4bc7b2e59"
+        checksum: sha256:12fbfead6400fae2fac20b8fae130e23afc351c44ad120deee2318b4bc7b2e59
+        verify_checksum: sha512:925cb6f95ff6029dd58ca4e6d96c194abe7444e013f94db350b25955bc6d64eaf55470a37e9e1aca26b2c40e89870a1669f96752a88840c062a82e1aab76077b
         build_date: 2023-06-15
       - version: '1.25.11'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-k8s-capi-images/ubuntu-2204-kube-v1.25/ubuntu-2204-kube-v1.25.11.qcow2
-        checksum: "sha256:7870a6c7c1761c572c070ca7b776b39344d8d2fd0dca28718fff433e9dca1a8f"
+        checksum: sha256:7870a6c7c1761c572c070ca7b776b39344d8d2fd0dca28718fff433e9dca1a8f
+        verify_checksum: sha512:6e0f2dd88f2887c57c24b01b18cf5c8dcfb9742c358ea9307eb5bdaa2929c28a1d1f2338ecb8fc7fadbac5933647ac9b2ed1ec2dbdcacb26fd50866724317fe3
         build_date: 2023-06-21
       - version: '1.26.6'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-k8s-capi-images/ubuntu-2204-kube-v1.26/ubuntu-2204-kube-v1.26.6.qcow2
-        checksum: "sha256:0243eeee8a55ed9d9f920d4b168ec548541dc2504c996d58a20be5f6d6518409"
+        checksum: sha256:0243eeee8a55ed9d9f920d4b168ec548541dc2504c996d58a20be5f6d6518409
+        verify_checksum: sha512:cf9c2ac1e36d6e421ed50e477d4c58fdcf67323e00beae57b3f64f027e6af0f6c880bd228bba7710c2a39fb007482d29c2b3f9e24b79d367711481bb5357afe6
         build_date: 2023-06-21
       - version: '1.27.3'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-k8s-capi-images/ubuntu-2204-kube-v1.27/ubuntu-2204-kube-v1.27.3.qcow2
-        checksum: "sha256:857bbb11f29faba71f9f6dc1c44ed657507e422b42f589e1d96da2711c41d5bf"
+        checksum: sha256:857bbb11f29faba71f9f6dc1c44ed657507e422b42f589e1d96da2711c41d5bf
+        verify_checksum: sha512:190e231749b48406270bd34f05cd729488a239de65d35429b92913af39332b1e69dd077d974257e1aa280d27df38c5288298f4174474bb112ab16190cf7c9fdc
         build_date: 2023-06-21

@@ -27,5 +27,6 @@ images:
       - version: '20230402'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/fedora-37/20230402/Fedora-Cloud-Base-37-1.7.x86_64.qcow2
         source: https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2
-        checksum: "sha256:b5b9bec91eee65489a5745f6ee620573b23337cbb1eb4501ce200b157a01f3a0"
+        checksum: sha256:b5b9bec91eee65489a5745f6ee620573b23337cbb1eb4501ce200b157a01f3a0
+        verify_checksum: sha512:41f6d3e6184245bc8c92977f235030bb9c859b2e65b5e668d1ffbc436e1f655a17289bc6955e82e87c921a11e6e646a5d5cee1771e6012e3c8a24c7c5d01c421
         build_date: 2022-11-05

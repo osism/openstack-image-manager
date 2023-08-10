@@ -25,9 +25,11 @@ images:
     versions:
       - version: '0.6.0'
         url: https://github.com/cirros-dev/cirros/releases/download/0.6.0/cirros-0.6.0-x86_64-disk.img
-        checksum: "sha256:94e1e2c94dbbae7d4bdc38e68590a1daf73c9de2d03dd693857b4b0a042548e8"
+        checksum: sha256:94e1e2c94dbbae7d4bdc38e68590a1daf73c9de2d03dd693857b4b0a042548e8
+        verify_checksum: sha512:3460af14752a95f57992321bdd90d5a1157363173f4d2b3c45c47a2bff283a1ac0eb8b0c60e9a013488f40fad3c04bf8b4241de00a68624eff7ec55b3b5a5b11
         build_date: 2022-09-28
       - version: '0.6.1'
         url: https://github.com/cirros-dev/cirros/releases/download/0.6.1/cirros-0.6.1-x86_64-disk.img
-        checksum: "sha256:cc704ab14342c1c8a8d91b66a7fc611d921c8b8f1aaf4695f9d6463d913fa8d1"
+        checksum: sha256:cc704ab14342c1c8a8d91b66a7fc611d921c8b8f1aaf4695f9d6463d913fa8d1
+        verify_checksum: sha512:df88bac2791254f68941229792539621516bd480aa3d6fe4c0ca16057393d024a4944d644959f323dc01a25e3417c0b581776ab3c8db8da542039f2a67230579
         build_date: 2022-11-22
