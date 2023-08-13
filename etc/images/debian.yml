@@ -88,9 +88,9 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: '2023-08-05'
+      - build_date: '2023-08-12'
         checksum: 
-          sha512:c43510fb2f51f55e774cb9308b16d288e937916ea00db74865f8e3da51d8f573028017e761c135402c7b703151878b4c21bb08a2509aecc71f9bc1c701ff4933
+          sha512:309d572c5de53fd6398da8cfe100171f0bfd9e88e774af5e3c80984d5c1a461a0d1924e641ccad66bac7320fd50bd30a8d8ee32a3c521e576db2e63aea82e3ba
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/debian-12/20230805-debian-12.qcow2
-        version: '20230805'
+          https://minio.services.osism.tech/openstack-image-manager/debian-12/20230812-debian-12.qcow2
+        version: '20230812'
