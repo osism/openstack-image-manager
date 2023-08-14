@@ -61,6 +61,6 @@ Only run it against config files where the name matches _Cirr_.
 Also provide the location of your image files (_~/images/_).
 
 ```bash
-openstack-image-manager --cloud my-cloud --name "*Cirr*" --images ~/images/
+openstack-image-manager --cloud my-cloud --filter ".*Cirr.*" --images ~/images/
 ```
 
