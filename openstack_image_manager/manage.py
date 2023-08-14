@@ -1055,8 +1055,11 @@ class ImageManager:
                             cloud_image.id, visibility="community"
                         )
 
-                        logger.info("Deleting %s" % image)
-                        self.conn.image.delete_image(cloud_image.id)
+                        if "keep" not in image_definition or not image_definition["keep"]:
+                            logger.info("Deleting %s" % image)
+                            self.conn.image.delete_image(cloud_image.id)
+                        else:
+                            logger.info("Image '%s' will not be deleted, because 'keep' flag is True" % image)
                     except Exception as e:
                         logger.info(
                             "%s is still in use and cannot be deleted\n %s" % (image, e)

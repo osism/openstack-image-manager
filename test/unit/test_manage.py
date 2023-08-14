@@ -84,7 +84,9 @@ FAKE_IMAGE_DATA = {
         'image_build_date': '2021-01-01',
         'image_original_user': FAKE_IMAGE_DICT['login'],
         'internal_version': FAKE_IMAGE_DICT['versions'][0]['version'],
-        'image_description': FAKE_IMAGE_DICT['name']
+        'image_description': FAKE_IMAGE_DICT['name'],
+        'uuid_validity': {
+        }
     }
 }
 
@@ -119,6 +121,7 @@ class TestManage(TestCase):
             dry_run=False,
             use_os_hidden=False,
             delete=False,
+            keep=False,
             yes_i_really_know_what_i_do=False,
             hide=False,
             deactivate=False,
@@ -368,6 +371,43 @@ class TestManage(TestCase):
         mock_get_images.assert_called_once()
         mock_deactivate.assert_not_called()
         mock_update_image.assert_not_called()
+        mock_delete_image.assert_not_called()
+
+    @mock.patch('openstack_image_manager.manage.ImageManager.read_image_files')
+    @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.delete_image')
+    @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.update_image')
+    @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.deactivate_image')
+    @mock.patch('openstack_image_manager.manage.ImageManager.get_images')
+    def test_manage_outdated_images_2(self, mock_get_images, mock_deactivate, mock_update_image, mock_delete_image, mock_read_image_files):
+        ''' test manage.ImageManager.manage_outdated_images in delete conditions '''
+
+        managed_images = {'some_image_name'}
+        mock_get_images.return_value = {
+            self.fake_image.name + "_2" : self.fake_image
+        }
+        mock_read_image_files.return_value = [self.fake_image_dict]
+
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        self.sot.manage_outdated_images(managed_images)
+        mock_get_images.assert_called_once()
+        mock_deactivate.assert_called_once()
+        mock_update_image.assert_called_once()
+        mock_delete_image.assert_called_once()
+
+        fake_image_dict_2 = dict(self.fake_image_dict)
+        fake_image_dict_2["keep"] = True
+        mock_read_image_files.return_value = [fake_image_dict_2]
+
+        mock_get_images.reset_mock()
+        mock_deactivate.reset_mock()
+        mock_update_image.reset_mock()
+        mock_delete_image.reset_mock()
+        self.sot.manage_outdated_images(managed_images)
+        mock_get_images.assert_called_once()
+        mock_deactivate.assert_called_once()
+        mock_update_image.assert_called_once()
         mock_delete_image.assert_not_called()
 
     @mock.patch('openstack_image_manager.manage.ImageManager.unshare_image_with_project')
