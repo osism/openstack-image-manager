@@ -12,6 +12,7 @@ image:
   min_disk: int(min=0)
   min_ram: int(min=0)
   multi: bool()
+  keep_old: bool(required=False)
   name: str()
   password: str(required=False)
   shortname: str(required=False)
