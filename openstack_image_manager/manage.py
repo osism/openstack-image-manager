@@ -10,7 +10,7 @@ from typing import Dict, Set
 import yamale
 import urllib.parse
 
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal, ROUND_UP
 from loguru import logger
 from munch import Munch
@@ -29,6 +29,12 @@ class ImageManager:
         debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
         dry_run: bool = typer.Option(
             False, "--dry-run", help="Do not perform any changes"
+        ),
+        check_age: bool = typer.Option(
+            False, "--check-age", help="Check openstack image age against definition"
+        ),
+        max_age: int = typer.Option(
+            90, "--max-age", help="The age of an image in days to be considered too old"
         ),
         latest: bool = typer.Option(
             False,
@@ -244,6 +250,10 @@ class ImageManager:
                 for image in cloud_images:
                     if not re.search(self.CONF.filter, image):
                         managed_images.add(image)
+
+            if self.CONF.check_age:
+                self.check_image_age()
+
             self.manage_outdated_images(managed_images)
 
         if self.exit_with_error:
@@ -884,6 +894,82 @@ class ImageManager:
             if latest in cloud_images:
                 logger.info("Renaming %s to %s" % (latest, name))
                 self.conn.image.update_image(cloud_images[latest].id, name=name)
+
+    def build_date_from_definition(self, build_date):
+        if isinstance(build_date, str):
+            # Convert string date to a datetime.date object (we always want datetime.date in return)
+            return datetime.strptime(build_date, '%Y-%m-%d').date()
+        elif isinstance(build_date, date):
+            return build_date
+        else:
+            raise ValueError("The input must be either a string in 'YYYY-MM-DD' format or a datetime.date object.")
+
+    def check_image_age(self) -> set:
+        """
+        Check the age of the images in OpenStack and compare with the
+        image definitions. Return a set of image names that are too old.
+
+        Returns:
+            set: A set of image names that are older than the max age.
+        """
+        logger.info(
+            f"Checking for openstack images of age {str(self.CONF.max_age)}"
+        )
+
+        images = {}
+        for d in self.read_image_files(return_all_images=True):
+            images[d["name"]] = d
+
+        cloud_images = self.get_images()
+
+        too_old_images = set()
+
+        for cloud_image_name, cloud_image in cloud_images.items():
+            image_name = cloud_image.properties["image_description"]
+
+            if image_name not in images:
+                logger.warning(
+                    f"No image definition found for '{image_name}', image will be ignored"
+                )
+                continue
+
+            image_definition = images[image_name]
+
+            build_date_backend = self.build_date_from_definition(cloud_image.properties["image_build_date"])
+
+            if image_definition["multi"]:
+                build_date_definition_candidates = [
+                    self.build_date_from_definition(x["build_date"]) for x in image_definition["versions"]
+                ]
+            else:
+                build_date_definition_candidates = []
+                for v in image_definition["versions"]:
+                    if v["version"] != cloud_image.os_version:
+                        continue
+                    build_date_definition_candidates.append(self.build_date_from_definition(v["build_date"]))
+
+            if len(build_date_definition_candidates) == 0:
+                logger.warning(
+                    f"No compatible version definition found for '{cloud_image_name}', image will be ignored"
+                )
+                continue
+
+            build_date_definition_candidates.sort(reverse=True)
+            build_date_definition = build_date_definition_candidates[0]
+
+            logger.info(
+                f"Image '{cloud_image_name}' was created on {str(build_date_backend)}"
+            )
+
+            age_difference_days = (build_date_definition - build_date_backend).days
+            if age_difference_days > self.CONF.max_age:
+                logger.warning(
+                    f"Image '{cloud_image_name}' is {age_difference_days} days "
+                    f"older than the newest image in the definition"
+                )
+                too_old_images.add(cloud_image_name)
+
+        return too_old_images
 
     def manage_outdated_images(self, managed_images: set) -> list:
         """

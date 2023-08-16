@@ -24,12 +24,14 @@ images:
     visibility: public
     multi: true
     meta:
+      image_build_date: '2021-01-01'
       image_description: Ubuntu 20.04
       os_distro: ubuntu
       os_version: '20.04'
     tags: []
     versions:
       - version: '1'
+        build_date: '2021-01-21'
         url: http://url.com
         checksum: '1234'
 '''
@@ -46,6 +48,7 @@ FAKE_IMAGE_DICT : Dict[str, Any] = {
     'visibility': 'public',
     'multi': True,
     'meta': {
+        'image_build_date': '2021-01-01',
         'image_description': 'Ubuntu 20.04',
         'os_distro': 'ubuntu',
         'os_version': '20.04'
@@ -53,6 +56,7 @@ FAKE_IMAGE_DICT : Dict[str, Any] = {
     'tags': [],
     'versions': [
         {
+            'build_date': '2021-01-21',
             'version': '1',
             'url': 'http://url.com',
             'checksum': '1234'
@@ -77,6 +81,7 @@ FAKE_IMAGE_DATA = {
     'os_distro': FAKE_IMAGE_DICT['meta']['os_distro'],
     'os_version': FAKE_IMAGE_DICT['meta']['os_version'],
     'properties': {
+        'image_build_date': '2021-01-01',
         'image_original_user': FAKE_IMAGE_DICT['login'],
         'internal_version': FAKE_IMAGE_DICT['versions'][0]['version'],
         'image_description': FAKE_IMAGE_DICT['name']
@@ -93,7 +98,7 @@ class TestManage(TestCase):
         self.fake_image = Image(**FAKE_IMAGE_DATA)
         self.fake_name = '%s (%s)' % (self.fake_image_dict['name'], '1')
         self.fake_url = 'http://url.com'
-        self.versions = {'1': {'url': self.fake_url, 'meta': {'image_source': self.fake_url}}}
+        self.versions = {'1': {'url': self.fake_url, 'meta': {'image_source': self.fake_url, 'image_build_date': '2021-01-21'}}}
         self.sorted_versions = ['2', '1']
         self.previous_image = self.fake_image
         self.imported_image = self.fake_image
@@ -109,6 +114,8 @@ class TestManage(TestCase):
         # we can mimick its behaviour with a munch.Munch object
         self.sot.CONF = Munch(
             latest=True,
+            check_age=False,
+            max_age=90,
             dry_run=False,
             use_os_hidden=False,
             delete=False,
@@ -201,6 +208,26 @@ class TestManage(TestCase):
         mock_import.assert_not_called()
         mock_image_obj.upload.assert_called_with(self.sot.conn.image)
         mock_get_image.assert_called_once_with(mock_image_obj)
+
+    @mock.patch('openstack_image_manager.manage.ImageManager.get_images')
+    @mock.patch('openstack_image_manager.manage.ImageManager.read_image_files')
+    def test_check_image_age(self, mock_read_image_files, mock_get_images):
+        """
+        test manage.ImageManager.check_image_age()
+        """
+
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        mock_get_images.return_value = {self.fake_name: self.fake_image}
+        too_old_images = self.sot.check_image_age()
+        mock_get_images.assert_called_once()
+        mock_read_image_files.assert_called_once()
+        self.assertEqual(set(), too_old_images)
+
+        mock_read_image_files.reset_mock()
+        mock_get_images.reset_mock()
+        self.sot.CONF.max_age = 10
+        too_old_images = self.sot.check_image_age()
+        self.assertIn(self.fake_name, too_old_images)
 
     @mock.patch('openstack_image_manager.manage.ImageManager.set_properties')
     @mock.patch('openstack_image_manager.manage.ImageManager.import_image')
