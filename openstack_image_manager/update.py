@@ -190,7 +190,8 @@ def update_image(image, CONF):
         minio_bucket = str(CONF.minio_bucket)
         new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{new_version}-{shortname}.{format}"
         logger.info(f"New URL is {new_url}")
-        image["versions"][0]["url"] = new_url
+        image["versions"][0]["mirror_url"] = new_url
+        image["versions"][0]["url"] = latest_url
 
         mirror_image(image, latest_url, CONF)
         del image["versions"][0]["source"]

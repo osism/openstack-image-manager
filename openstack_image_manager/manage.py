@@ -281,6 +281,10 @@ class ImageManager:
                 versions = dict()
                 for version in image["versions"]:
                     versions[str(version["version"])] = {"url": version["url"]}
+                    if "mirror_url" in version:
+                        versions[version["version"]]["mirror_url"] = version[
+                            "mirror_url"
+                        ]
                     if "visibility" in version:
                         versions[version["version"]]["visibility"] = version[
                             "visibility"
@@ -580,7 +584,9 @@ class ImageManager:
                 and len(sorted_versions) > 1
                 and version != sorted_versions[-1]
             ):
-                url = versions[version]["url"]
+                # use `mirror_url` for download if given, else fall back to `url`
+                # in any case, `url` will be used to set `image_source` property
+                url = versions[version].get("mirror_url", versions[version]["url"])
                 parsed_url = urllib.parse.urlparse(url)
                 if parsed_url.scheme == "file":
                     file_path = parsed_url.path
