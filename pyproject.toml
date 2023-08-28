@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel", "setuptools-git-versioning"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openstack-image-manager"
+description = "OpenStack image manager"
+authors = [
+  { name = "OSISM community", email = "info@osism.tech" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+requires-python = ">=3.8"
+dynamic = ["dependencies", "version"]
+
+[tool.mypy]
+exclude = ["doc"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["openstack_image_manager"]
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[project.scripts]
+openstack-image-manager = "openstack_image_manager.manage:main"
+
+[project.urls]
+"Homepage" = "https://github.com/osism/openstack-image-manager"
+"Bug Tracker" = "https://github.com/osism/openstack-image-manager/issues"
