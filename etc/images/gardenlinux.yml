@@ -33,3 +33,7 @@ images:
         url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.934.9.qcow2
         checksum: "sha256:314aa8369a46a7c9fd97343a688c75b9c282f654fb05e9bb4d6b94646bf3670c"
         build_date: 2023-06-03
+      - version: '934.10'
+        url: https://minio.services.osism.tech/openstack-image-gardenlinux/gardenlinux-amd64.934.10.qcow2
+        checksum: "sha256:995e40bb7dcf044f82650f8131bc8b440215e5f1023c4edca81da585e7068b4f"
+        build_date: 2023-08-28
