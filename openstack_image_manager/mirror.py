@@ -26,10 +26,16 @@ def main(
     images: str = typer.Option(
         "etc/images/", help="Path to the directory containing all image files"
     ),
-    minio_access_key: str = typer.Option(None, help="Minio access key"),
-    minio_secret_key: str = typer.Option(None, help="Minio secret key"),
-    minio_server: str = typer.Option("minio.services.osism.tech", help="Minio server"),
-    minio_bucket: str = typer.Option("openstack-image-manager", help="Minio bucket"),
+    minio_access_key: str = typer.Option(
+        None, help="Minio access key", envvar="MINIO_ACCESS_KEY"
+    ),
+    minio_secret_key: str = typer.Option(
+        None, help="Minio secret key", envvar="MINIO_SECRET_KEY"
+    ),
+    minio_server: str = typer.Option(
+        "swift.services.a.regiocloud.tech", help="Minio server"
+    ),
+    minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
 ):
     CONF = Munch.fromDict(locals())
 
@@ -93,7 +99,9 @@ def main(
                 logging.info("'%s' not yet available in '%s'" % (filename, dirname))
 
                 logging.info("Downloading '%s'" % version["source"])
-                response = requests.get(version["source"], stream=True, allow_redirects=True)
+                response = requests.get(
+                    version["source"], stream=True, allow_redirects=True
+                )
                 with open(os.path.basename(path.path), "wb") as fp:
                     shutil.copyfileobj(response.raw, fp)
                 del response
@@ -109,7 +117,10 @@ def main(
                         CONF.minio_bucket, os.path.join(dirname, filename), filename
                     )
                 else:
-                    logging.info("Not uploading '%s' to '%s' (dry-run enabled)" % (filename, dirname))
+                    logging.info(
+                        "Not uploading '%s' to '%s' (dry-run enabled)"
+                        % (filename, dirname)
+                    )
 
                 os.remove(filename)
 

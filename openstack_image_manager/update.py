@@ -205,10 +205,16 @@ def update_image(image, CONF):
 @app.command()
 def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
-    minio_access_key: str = typer.Option(None, help="Minio access key"),
-    minio_secret_key: str = typer.Option(None, help="Minio secret key"),
-    minio_server: str = typer.Option("minio.services.osism.tech", help="Minio server"),
-    minio_bucket: str = typer.Option("openstack-image-manager", help="Minio bucket"),
+    minio_access_key: str = typer.Option(
+        None, help="Minio access key", envvar="MINIO_ACCESS_KEY"
+    ),
+    minio_secret_key: str = typer.Option(
+        None, help="Minio secret key", envvar="MINIO_SECRET_KEY"
+    ),
+    minio_server: str = typer.Option(
+        "swift.services.a.regiocloud.tech", help="Minio server"
+    ),
+    minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
 ):
 
     CONF = Munch.fromDict(locals())

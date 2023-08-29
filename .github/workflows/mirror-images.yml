@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip3 install tox
-      - run: tox -e mirror -- --minio-access-key ${{ secrets.MINIO_ACCESS_KEY }} --minio-secret-key ${{ secrets.MINIO_SECRET_KEY }}
+      - run: tox -e mirror
         if: |
           github.repository == 'osism/openstack-image-manager' &&
           github.ref == 'refs/heads/main'
