@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "783c367aaa4d7d2e0b417803ade48e3d5633b0cf8c970fad9be137249ab1e299"
+            "sha256": "3646205dacd89cb915317130b82226e3ce3e0e106f89a62bfd6fffc76d60e38b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -210,11 +210,11 @@
         },
         "click": {
             "hashes": [
-                "sha256:48ee849951919527a045bfe3bf7baa8a959c423134e1a5b98c05c20ba75a1cbd",
-                "sha256:fa244bb30b3b5ee2cae3da8f55c9e5e0c0e86093306301fb418eb9dc40fbded5"
+                "sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+                "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==8.1.6"
+            "version": "==8.1.7"
         },
         "colorama": {
             "hashes": [
@@ -342,11 +342,11 @@
         },
         "minio": {
             "hashes": [
-                "sha256:1afdf01c1bc8b57ddd12d438e3e168d625465b56f4d1c2af7576744c688e84c6",
-                "sha256:fcf8ac2cef310d5ddff2bef2c42f4e5a8bb546b87bca5bf8832135db054ca4e1"
+                "sha256:56ecb1e7e0103d2dc212fb460fdb70ab2abb7fa5685db378429325d96d95587a",
+                "sha256:8073bed2b4b1853f3d69ab2f01a0de86264071083032985921201cfbb0950b15"
             ],
             "index": "pypi",
-            "version": "==7.1.15"
+            "version": "==7.1.16"
         },
         "munch": {
             "hashes": [
@@ -447,11 +447,11 @@
         },
         "pygments": {
             "hashes": [
-                "sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c",
-                "sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1"
+                "sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692",
+                "sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==2.15.1"
+            "version": "==2.16.1"
         },
         "pynacl": {
             "hashes": [
@@ -591,10 +591,10 @@
         },
         "shellingham": {
             "hashes": [
-                "sha256:368bf8c00754fd4f55afb7bbb86e272df77e4dc76ac29dbcbb81a59e9fc15744",
-                "sha256:823bc5fb5c34d60f285b624e7264f4dda254bc803a3774a147bf99c0e3004a28"
+                "sha256:419c6a164770c9c7cfcaeddfacb3d31ac7a8db0b0f3e9c1287679359734107e9",
+                "sha256:cb4a6fec583535bc6da17b647dd2330cf7ef30239e05d547d99ae3705fd0f7f8"
             ],
-            "version": "==1.5.0.post1"
+            "version": "==1.5.3"
         },
         "stevedore": {
             "hashes": [

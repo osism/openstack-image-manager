@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 "ruamel.yaml" = "==0.17.32"
 loguru = "==0.7.0"
-minio = "==7.1.15"
+minio = "==7.1.16"
 munch = "==4.0.0"
 natsort = "==8.4.0"
 openstacksdk = "==1.4.0"
