@@ -28,7 +28,7 @@ images:
     versions:
       - version: '20230524'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/almalinux-8/20230524-almalinux-8.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/almalinux-8/20230524-almalinux-8.qcow2
         checksum: sha256:c0ad09255d91288dac590d99c95197d83a2846f1bcbec3f4222fb04265a2a4d7
         build_date: '2023-05-24'
   - name: AlmaLinux 9
@@ -59,6 +59,6 @@ images:
     versions:
       - version: '20230513'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/almalinux-9/20230513-almalinux-9.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/almalinux-9/20230513-almalinux-9.qcow2
         checksum: sha256:207d885ca8140e3106098e946cfc04088b0e21f50d24815051520d452eae0a50
         build_date: '2023-05-13'

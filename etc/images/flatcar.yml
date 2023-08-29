@@ -24,7 +24,7 @@ images:
     tags: []
     versions:
       - version: '3227.2.4'
-        url: https://minio.services.osism.tech/openstack-image-manager/flatcar/3227.2.4/flatcar_production_openstack_image.img
+        url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/flatcar/3227.2.4/flatcar_production_openstack_image.img
         source: https://stable.release.flatcar-linux.net/amd64-usr/3227.2.4/flatcar_production_openstack_image.img.bz2
         checksum: "sha256:774a4fd77da47a7c91714e6424891d6887ed7b9b72daadc40d56bb2f7527b4f5"
         build_date: 2022-10-27

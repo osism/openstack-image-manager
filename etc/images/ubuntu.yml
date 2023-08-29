@@ -28,7 +28,7 @@ images:
     versions:
       - version: '20191107'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
         checksum: sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1
         build_date: 2019-11-07
   - name: Ubuntu 16.04
@@ -59,7 +59,7 @@ images:
     versions:
       - version: '20211001'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
         checksum: sha256:fff2494a70bcaffb59f26f71ec49e137dd87d319341c35832dbe0ea65ff15140
         build_date: 2021-10-01
   - name: Ubuntu 16.04 Minimal
@@ -90,7 +90,7 @@ images:
     versions:
       - version: '20210929'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
         checksum: sha256:7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9
         build_date: 2021-09-20
   - name: Ubuntu 18.04
@@ -120,7 +120,7 @@ images:
     versions:
       - version: '20230607'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04/20230607-ubuntu-18.04.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-18.04/20230607-ubuntu-18.04.qcow2
         checksum: sha256:8dd2e6b5e5aad20c3f836123b300cba9861249408cbb07c359145a65d6bab6b6
         build_date: '2023-06-07'
   - name: Ubuntu 18.04 Minimal
@@ -151,7 +151,7 @@ images:
     versions:
       - version: '20230602'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-18.04-minimal/20230602-ubuntu-18.04-minimal.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-18.04-minimal/20230602-ubuntu-18.04-minimal.qcow2
         checksum: sha256:2d9755669c499e88d51da0638cd20e0983a248828e2153906c013bea0ee2f45a
         build_date: '2023-06-02'
   - name: Ubuntu 20.04
@@ -181,7 +181,7 @@ images:
     versions:
       - version: '20230823'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04/20230823-ubuntu-20.04.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20230823-ubuntu-20.04.qcow2
         checksum: sha256:ecfb2e07fce2a273e845ca328b96b64390a0bf0efad70fd1d57a0ebbc0549717
         build_date: '2023-08-23'
   - name: Ubuntu 20.04 Minimal
@@ -212,7 +212,7 @@ images:
     versions:
       - version: '20230811'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-20.04-minimal/20230811-ubuntu-20.04-minimal.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20230811-ubuntu-20.04-minimal.qcow2
         checksum: sha256:95536fe95112fff650012867afbf36d31f61ec06dea4269f8133bd6a1596bf95
         build_date: '2023-08-11'
   - name: Ubuntu 22.04
@@ -242,7 +242,7 @@ images:
     versions:
       - version: '20230823'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04/20230823-ubuntu-22.04.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20230823-ubuntu-22.04.qcow2
         checksum: sha256:a7845be05e3a5c9e031be35d27ecb6f4c1cdab8df89475cd1943d57ff94294c9
         build_date: '2023-08-23'
   - name: Ubuntu 22.04 Minimal
@@ -273,6 +273,6 @@ images:
     versions:
       - version: '20230815'
         url: 
-          https://minio.services.osism.tech/openstack-image-manager/ubuntu-22.04-minimal/20230815-ubuntu-22.04-minimal.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04-minimal/20230815-ubuntu-22.04-minimal.qcow2
         checksum: sha256:72ca6ba4f8b7305479ed32ed79890a52aec4f0629762286dbc9a5e5b3997489c
         build_date: '2023-08-15'

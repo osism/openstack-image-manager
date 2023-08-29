@@ -25,7 +25,7 @@ jobs:
         uses: technote-space/create-pr-action@v2
         with:
           EXECUTE_COMMANDS: |
-            tox -e update -- --minio-access-key ${{ secrets.MINIO_ACCESS_KEY }} --minio-secret-key ${{ secrets.MINIO_SECRET_KEY }}
+            tox -e update
           COMMIT_EMAIL: 'bot@osism.tech'
           COMMIT_MESSAGE: |
             chore: update images
