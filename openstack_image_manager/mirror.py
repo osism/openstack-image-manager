@@ -10,7 +10,6 @@ import yaml
 
 from minio import Minio
 from minio.error import S3Error
-from munch import Munch
 from os import listdir
 from os.path import isfile, join
 from urllib.parse import urlparse
@@ -37,9 +36,7 @@ def main(
     ),
     minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
 ):
-    CONF = Munch.fromDict(locals())
-
-    if CONF.debug:
+    if debug:
         level = logging.DEBUG
         logging.getLogger("paramiko").setLevel(logging.DEBUG)
     else:
@@ -50,22 +47,22 @@ def main(
     )
 
     onlyfiles = []
-    for f in listdir(CONF.images):
-        if isfile(join(CONF.images, f)):
+    for f in listdir(images):
+        if isfile(join(images, f)):
             onlyfiles.append(f)
 
     all_images = []
     for file in onlyfiles:
-        with open(join(CONF.images, file)) as fp:
+        with open(join(images, file)) as fp:
             data = yaml.load(fp, Loader=yaml.SafeLoader)
             imgs = data.get("images")
             for image in imgs:
                 all_images.append(image)
 
     client = Minio(
-        CONF.minio_server,
-        access_key=CONF.minio_access_key,
-        secret_key=CONF.minio_secret_key,
+        minio_server,
+        access_key=minio_access_key,
+        secret_key=minio_secret_key,
     )
 
     for image in all_images:
@@ -93,7 +90,7 @@ def main(
             logging.debug("filename: %s" % filename)
 
             try:
-                client.stat_object(CONF.minio_bucket, os.path.join(dirname, filename))
+                client.stat_object(minio_bucket, os.path.join(dirname, filename))
                 logging.info("'%s' available in '%s'" % (filename, dirname))
             except S3Error:
                 logging.info("'%s' not yet available in '%s'" % (filename, dirname))
@@ -111,10 +108,10 @@ def main(
                     patoolib.extract_archive(os.path.basename(path.path), outdir=".")
                     os.remove(os.path.basename(path.path))
 
-                if not CONF.dry_run:
+                if not dry_run:
                     logging.info("Uploading '%s' to '%s'" % (filename, dirname))
                     client.fput_object(
-                        CONF.minio_bucket, os.path.join(dirname, filename), filename
+                        minio_bucket, os.path.join(dirname, filename), filename
                     )
                 else:
                     logging.info(
