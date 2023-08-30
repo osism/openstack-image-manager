@@ -13,7 +13,6 @@ from urllib.request import urlopen
 from loguru import logger
 from minio import Minio
 from minio.error import S3Error
-from munch import Munch
 from natsort import natsorted
 import patoolib
 import requests
@@ -26,11 +25,13 @@ app = typer.Typer()
 IMAGES = ["almalinux", "centos", "debian", "rockylinux", "ubuntu"]
 
 
-def mirror_image(image, latest_url, CONF):
+def mirror_image(
+    image, latest_url, minio_server, minio_bucket, minio_access_key, minio_secret_key
+):
     client = Minio(
-        CONF.minio_server,
-        access_key=CONF.minio_access_key,
-        secret_key=CONF.minio_secret_key,
+        minio_server,
+        access_key=minio_access_key,
+        secret_key=minio_secret_key,
     )
 
     version = image["versions"][0]
@@ -49,7 +50,7 @@ def mirror_image(image, latest_url, CONF):
     new_filename = f"{new_version}-{shortname}.{format}"
 
     try:
-        client.stat_object(CONF.minio_bucket, os.path.join(dirname, new_filename))
+        client.stat_object(minio_bucket, os.path.join(dirname, new_filename))
         logger.info("'%s' available in '%s'" % (new_filename, dirname))
     except S3Error:
         logger.info("'%s' not yet available in '%s'" % (new_filename, dirname))
@@ -68,13 +69,11 @@ def mirror_image(image, latest_url, CONF):
             "Uploading '%s' to '%s' as '%s'" % (filename, dirname, new_filename)
         )
 
-        client.fput_object(
-            CONF.minio_bucket, os.path.join(dirname, new_filename), filename
-        )
+        client.fput_object(minio_bucket, os.path.join(dirname, new_filename), filename)
         os.remove(filename)
 
 
-def update_image(image, CONF):
+def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secret_key):
     name = image["name"]
     logger.info(f"Checking image {name}")
 
@@ -186,14 +185,21 @@ def update_image(image, CONF):
         shortname = image["shortname"]
         format = image["format"]
 
-        minio_server = str(CONF.minio_server)
-        minio_bucket = str(CONF.minio_bucket)
+        minio_server = str(minio_server)
+        minio_bucket = str(minio_bucket)
         new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{new_version}-{shortname}.{format}"
         logger.info(f"New URL is {new_url}")
         image["versions"][0]["mirror_url"] = new_url
         image["versions"][0]["url"] = latest_url
 
-        mirror_image(image, latest_url, CONF)
+        mirror_image(
+            image,
+            latest_url,
+            minio_server,
+            minio_bucket,
+            minio_access_key,
+            minio_secret_key,
+        )
         del image["versions"][0]["source"]
 
     else:
@@ -217,9 +223,7 @@ def main(
     minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
 ):
 
-    CONF = Munch.fromDict(locals())
-
-    if CONF.debug:
+    if debug:
         level = "DEBUG"
     else:
         level = "INFO"
@@ -239,7 +243,13 @@ def main(
 
         for index, image in enumerate(data["images"]):
             if "latest_url" in image:
-                updated_image = update_image(image, CONF)
+                updated_image = update_image(
+                    image,
+                    minio_server,
+                    minio_bucket,
+                    minio_access_key,
+                    minio_secret_key,
+                )
                 data["images"][index] = updated_image
 
         with open(p, "w+") as fp:
