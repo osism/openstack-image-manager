@@ -30,7 +30,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-7/20221112-centos-7.qcow2
         checksum: sha256:284aab2b23d91318f169ff464bce4d53404a15a0618ceb34562838c59af4adea
-        build_date: '2022-11-12'
+        build_date: 2022-11-12
   - name: CentOS Stream 8
     enable: true
     shortname: centos-stream-8
@@ -61,7 +61,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-8/20230826-centos-stream-8.qcow2
         checksum: sha256:3d0b45bacb0355d7f0542d302a7a71146b425f41b513782b4dc554daffe72e9e
-        build_date: '2023-08-26'
+        build_date: 2023-08-26
   - name: CentOS Stream 9
     enable: true
     shortname: centos-stream-9
@@ -92,4 +92,4 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20230821-centos-stream-9.qcow2
         checksum: sha256:ce7828ea362f4c63d5a73567ee4adce11248b017473ac3bdfa1c155af8796fe5
-        build_date: '2023-08-21'
+        build_date: 2023-08-21

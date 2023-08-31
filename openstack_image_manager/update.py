@@ -177,7 +177,7 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
 
         new_build_date = dt.strftime("%Y-%m-%d")
         logger.info(f"New build date is {new_build_date}")
-        image["versions"][0]["build_date"] = new_build_date
+        image["versions"][0]["build_date"] = dt.date()
 
         logger.info(f"New checksum is {current_checksum}")
         image["versions"][0]["checksum"] = current_checksum

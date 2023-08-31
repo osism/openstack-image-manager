@@ -5,7 +5,7 @@ from unittest import TestCase, mock
 from openstack.image.v2.image import Image
 from openstack.image.v2._proxy import Proxy
 from typing import Any, Dict
-
+from datetime import date
 from openstack_image_manager import manage
 
 logger.remove()   # disable all logging from manage.py
@@ -31,7 +31,7 @@ images:
     tags: []
     versions:
       - version: '1'
-        build_date: '2021-01-21'
+        build_date: 2021-01-21
         url: http://url.com
         checksum: '1234'
 '''
@@ -56,7 +56,7 @@ FAKE_IMAGE_DICT : Dict[str, Any] = {
     'tags': [],
     'versions': [
         {
-            'build_date': '2021-01-21',
+            'build_date': date.fromisoformat("2021-01-21"),
             'version': '1',
             'url': 'http://url.com',
             'checksum': '1234'

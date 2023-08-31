@@ -31,7 +31,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-8/20230518-rocky-8.qcow2
         checksum: sha256:086bf68f84c974cfcf533741c5be8752270df681a38f20423cf24b851d5edf77
-        build_date: '2023-05-18'
+        build_date: 2023-05-18
   - name: Rocky 9
     enable: true
     shortname: rocky-9
@@ -63,4 +63,4 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20230515-rocky-9.qcow2
         checksum: sha256:50510f98abe1b20a548102a05a9be83153b0bf634fc502d5c8d1f508f6de1430
-        build_date: '2023-05-15'
+        build_date: 2023-05-15

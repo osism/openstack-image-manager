@@ -326,7 +326,7 @@ class ImageManager:
                     if "build_date" in version:
                         versions[version["version"]]["meta"][
                             "image_build_date"
-                        ] = version["build_date"]
+                        ] = date.isoformat(version["build_date"])
                     if "id" in version:
                         versions[version["version"]]["id"] = version["id"]
             except Exception:
@@ -901,15 +901,6 @@ class ImageManager:
                 logger.info("Renaming %s to %s" % (latest, name))
                 self.conn.image.update_image(cloud_images[latest].id, name=name)
 
-    def build_date_from_definition(self, build_date):
-        if isinstance(build_date, str):
-            # Convert string date to a datetime.date object (we always want datetime.date in return)
-            return datetime.strptime(build_date, '%Y-%m-%d').date()
-        elif isinstance(build_date, date):
-            return build_date
-        else:
-            raise ValueError("The input must be either a string in 'YYYY-MM-DD' format or a datetime.date object.")
-
     def check_image_age(self) -> set:
         """
         Check the age of the images in OpenStack and compare with the
@@ -941,18 +932,18 @@ class ImageManager:
 
             image_definition = images[image_name]
 
-            build_date_backend = self.build_date_from_definition(cloud_image.properties["image_build_date"])
+            build_date_backend = date.fromisoformat(cloud_image.properties["image_build_date"])
 
             if image_definition["multi"]:
                 build_date_definition_candidates = [
-                    self.build_date_from_definition(x["build_date"]) for x in image_definition["versions"]
+                    x["build_date"] for x in image_definition["versions"]
                 ]
             else:
                 build_date_definition_candidates = []
                 for v in image_definition["versions"]:
                     if v["version"] != cloud_image.os_version:
                         continue
-                    build_date_definition_candidates.append(self.build_date_from_definition(v["build_date"]))
+                    build_date_definition_candidates.append(v["build_date"])
 
             if len(build_date_definition_candidates) == 0:
                 logger.warning(
