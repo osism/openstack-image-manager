@@ -253,15 +253,16 @@ def main(
             data = ryaml.load(fp)
 
         for index, image in enumerate(data["images"]):
-            if "latest_url" in image:
-                update_image(
-                    image,
-                    getter,
-                    minio_server,
-                    minio_bucket,
-                    minio_access_key,
-                    minio_secret_key,
-                )
+            if "latest_url" not in image:
+                continue
+            update_image(
+                image,
+                getter,
+                minio_server,
+                minio_bucket,
+                minio_access_key,
+                minio_secret_key,
+            )
 
         with open(p, "w+") as fp:
             ryaml.explicit_start = True
