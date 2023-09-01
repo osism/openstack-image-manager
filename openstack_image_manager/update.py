@@ -24,39 +24,32 @@ DEBUBU_REGEX = r'<a href="([^"]+)/">(?:release-)?([0-9]+)(\-[0-9]+)?/</a>'
 
 
 def get_latest_default(shortname, latest_checksum_url, latest_url, checksum_type="sha256"):
-    parsed_url = urlparse(latest_url)
-    latest_filename = os.path.basename(parsed_url.path)
-
     result = requests.get(latest_checksum_url)
+    result.raise_for_status()
 
-    checksums = {}
-    
+    latest_filename = os.path.basename(urlparse(latest_url).path)
     filename_pattern = None
-
     if shortname in ["centos-stream-8", "centos-stream-9", "centos-7"]:
         filename_pattern = latest_filename.replace("HEREBE", "")
         filename_pattern = filename_pattern.replace("DRAGONS", "")
 
+    checksums = {}
     for line in result.text.split("\n"):
+        cs = re.split("\s+", line)  # noqa W605
         if shortname in ["rocky-8", "rocky-9"]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if splitted_line[0] == "SHA256":
-                checksums[latest_filename] = splitted_line[3]
+            if len(cs) == 4 and cs[0] == "SHA256":
+                checksums[latest_filename] = cs[3]
         elif shortname in ["centos-7"]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if len(splitted_line) == 2:
-                if re.search(filename_pattern, splitted_line[1]):
-                    checksums[splitted_line[1]] = splitted_line[0]
+            if len(cs) == 2 and re.search(filename_pattern, cs[1]):
+                checksums[cs[1]] = cs[0]
         elif shortname in ["centos-stream-8", "centos-stream-9"]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if splitted_line[0] == "SHA256" and re.search(
-                filename_pattern, splitted_line[1][1:-1]
+            if len(cs) == 4 and cs[0] == "SHA256" and re.search(
+                filename_pattern, cs[1][1:-1]
             ):
-                checksums[splitted_line[1][1:-1]] = splitted_line[3]
+                checksums[cs[1][1:-1]] = cs[3]
         else:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if len(splitted_line) == 2:
-                checksums[splitted_line[1]] = splitted_line[0]
+            if len(cs) == 2:
+                checksums[cs[1]] = cs[0]
 
     if filename_pattern:
         new_latest_filename = natsorted(checksums.keys())[-1]
