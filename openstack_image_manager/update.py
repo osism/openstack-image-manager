@@ -21,7 +21,80 @@ import typer
 
 app = typer.Typer()
 
-IMAGES = ["almalinux", "centos", "debian", "rockylinux", "ubuntu"]
+
+def get_latest_default(shortname, latest_checksum_url, latest_url):
+    parsed_url = urlparse(latest_url)
+    latest_filename = os.path.basename(parsed_url.path)
+
+    result = requests.get(latest_checksum_url)
+
+    checksums = {}
+
+    checksum_type = "sha256"
+    filename_pattern = None
+
+    if shortname in ["centos-stream-8", "centos-stream-9", "centos-7"]:
+        filename_pattern = latest_filename.replace("HEREBE", "")
+        filename_pattern = filename_pattern.replace("DRAGONS", "")
+    elif shortname in ["debian-10", "debian-11", "debian-12"]:
+        checksum_type = "sha512"
+
+    for line in result.text.split("\n"):
+        if shortname in ["rocky-8", "rocky-9"]:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if splitted_line[0] == "SHA256":
+                checksums[latest_filename] = splitted_line[3]
+        elif shortname in [
+            "ubuntu-14.04",
+            "ubuntu-16.04",
+            "ubuntu-16.04-minimal",
+            "ubuntu-18.04",
+            "ubuntu-18.04-minimal",
+            "ubuntu-20.04",
+            "ubuntu-20.04-minimal",
+            "ubuntu-22.04",
+            "ubuntu-22.04-minimal",
+        ]:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if len(splitted_line) == 2:
+                checksums[splitted_line[1][1:]] = splitted_line[0]
+        elif shortname in ["centos-7"]:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if len(splitted_line) == 2:
+                if re.search(filename_pattern, splitted_line[1]):
+                    checksums[splitted_line[1]] = splitted_line[0]
+        elif shortname in ["centos-stream-8", "centos-stream-9"]:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if splitted_line[0] == "SHA256" and re.search(
+                filename_pattern, splitted_line[1][1:-1]
+            ):
+                checksums[splitted_line[1][1:-1]] = splitted_line[3]
+        else:
+            splitted_line = re.split("\s+", line)  # noqa W605
+            if len(splitted_line) == 2:
+                checksums[splitted_line[1]] = splitted_line[0]
+
+    if filename_pattern:
+        new_latest_filename = natsorted(checksums.keys())[-1]
+        new_latest_url = latest_url.replace(latest_filename, new_latest_filename)
+
+        logger.info(f"Latest URL is now {new_latest_url}")
+        logger.info(f"Latest filename is now {new_latest_filename}")
+
+        latest_filename = new_latest_filename
+        latest_url = new_latest_url
+
+    current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
+    return current_checksum, latest_url
+
+
+IMAGES = {
+    "almalinux": get_latest_default,
+    "centos": get_latest_default,
+    "debian": get_latest_default, 
+    "rockylinux": get_latest_default, 
+    "ubuntu": get_latest_default,
+}
 
 
 def mirror_image(
@@ -72,78 +145,20 @@ def mirror_image(
         os.remove(filename)
 
 
-def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secret_key):
+def update_image(image, getter, minio_server, minio_bucket, minio_access_key, minio_secret_key):
     name = image["name"]
     logger.info(f"Checking image {name}")
 
     latest_url = image["latest_url"]
     logger.info(f"Latest download URL is {latest_url}")
 
-    parsed_url = urlparse(latest_url)
-    latest_filename = os.path.basename(parsed_url.path)
-
     latest_checksum_url = image["latest_checksum_url"]
     logger.info(f"Getting checksums from {latest_checksum_url}")
+    
+    shortname = image["shortname"]
+    current_checksum, current_url = getter(shortname, latest_checksum_url, latest_url)
 
-    result = requests.get(latest_checksum_url)
-    checksums = {}
-
-    checksum_type = "sha256"
-    filename_pattern = None
-
-    if image["shortname"] in ["centos-stream-8", "centos-stream-9", "centos-7"]:
-        filename_pattern = latest_filename.replace("HEREBE", "")
-        filename_pattern = filename_pattern.replace("DRAGONS", "")
-    elif image["shortname"] in ["debian-10", "debian-11", "debian-12"]:
-        checksum_type = "sha512"
-
-    for line in result.text.split("\n"):
-        if image["shortname"] in ["rocky-8", "rocky-9"]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if splitted_line[0] == "SHA256":
-                checksums[latest_filename] = splitted_line[3]
-        elif image["shortname"] in [
-            "ubuntu-14.04",
-            "ubuntu-16.04",
-            "ubuntu-16.04-minimal",
-            "ubuntu-18.04",
-            "ubuntu-18.04-minimal",
-            "ubuntu-20.04",
-            "ubuntu-20.04-minimal",
-            "ubuntu-22.04",
-            "ubuntu-22.04-minimal",
-        ]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if len(splitted_line) == 2:
-                checksums[splitted_line[1][1:]] = splitted_line[0]
-        elif image["shortname"] in ["centos-7"]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if len(splitted_line) == 2:
-                if re.search(filename_pattern, splitted_line[1]):
-                    checksums[splitted_line[1]] = splitted_line[0]
-        elif image["shortname"] in ["centos-stream-8", "centos-stream-9"]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if splitted_line[0] == "SHA256" and re.search(
-                filename_pattern, splitted_line[1][1:-1]
-            ):
-                checksums[splitted_line[1][1:-1]] = splitted_line[3]
-        else:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if len(splitted_line) == 2:
-                checksums[splitted_line[1]] = splitted_line[0]
-
-    if filename_pattern:
-        new_latest_filename = natsorted(checksums.keys())[-1]
-        new_latest_url = latest_url.replace(latest_filename, new_latest_filename)
-
-        logger.info(f"Latest URL is now {new_latest_url}")
-        logger.info(f"Latest filename is now {new_latest_filename}")
-
-        latest_filename = new_latest_filename
-        latest_url = new_latest_url
-
-    current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
-    logger.info(f"Checksum of current {latest_filename} is {current_checksum}")
+    logger.info(f"Checksum of current {current_url.rsplit('/', 1)[-1]} is {current_checksum}")
 
     if not image["versions"]:
         logger.info("No image available so far")
@@ -163,9 +178,9 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
         logger.info(f"Image {name} is up-to-date, nothing to do")
         return
 
-    logger.info(f"Checking {latest_url}")
+    logger.info(f"Checking {current_url}")
 
-    conn = urlopen(latest_url, timeout=30)
+    conn = urlopen(current_url, timeout=30)
     struct = time.strptime(
         conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
     )
@@ -190,7 +205,7 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
     new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{new_version}-{shortname}.{format}"
     logger.info(f"New URL is {new_url}")
     image["versions"][0]["mirror_url"] = new_url
-    image["versions"][0]["url"] = latest_url
+    image["versions"][0]["url"] = current_url
 
     mirror_image(
         image,
@@ -230,7 +245,7 @@ def main(
     )
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-    for image in IMAGES:
+    for image, getter in IMAGES.items():
         p = f"etc/images/{image}.yml"
 
         ryaml = ruamel.yaml.YAML()
@@ -241,6 +256,7 @@ def main(
             if "latest_url" in image:
                 update_image(
                     image,
+                    getter,
                     minio_server,
                     minio_bucket,
                     minio_access_key,
