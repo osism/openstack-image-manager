@@ -31,7 +31,7 @@ images:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-10/20230802-debian-10.qcow2
         checksum: 
           sha512:a11252378a9573052b48fcec8cb0e5d6ab11338e81e960442eb8a9bf4504d8e25f5c2cd893c010f63ef99201b96e4f9cae7fce6c8f8132e18f1a561b9afd8eb3
-        build_date: '2023-08-02'
+        build_date: 2023-08-02
   - name: Debian 11
     enable: true
     shortname: debian-11
@@ -62,7 +62,7 @@ images:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20230802-debian-11.qcow2
         checksum: 
           sha512:f16512174452ea49e34d302e86bb11b6f821013dde583bf703550998e87819f98c6e411d7737bd53f16c73007f1c039218f9cd40421ec3a6b5b1fe38044018c0
-        build_date: '2023-08-02'
+        build_date: 2023-08-02
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -88,7 +88,7 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: '2023-08-26'
+      - build_date: 2023-08-26
         checksum: 
           sha512:b9b01448d1572326622e7e5bcf060b995bf5c66326e826f0149c21807cfbda4000224aeb2f43a1991ab486c05d0e184e13de3dd4e0be48611626377fb10d9263
         url: 

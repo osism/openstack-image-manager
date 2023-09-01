@@ -39,7 +39,7 @@ meta:
 
 ---
 versions:
-  build_date: any(day(), timestamp(), str())
+  build_date: any(day(), timestamp())
   checksum: regex('\w+:([a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64}|[a-f0-9]{128})$', name='valid checksum', required=False)
   checksums_url: regex('^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)
   hidden: bool(required=False)
