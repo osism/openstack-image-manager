@@ -161,48 +161,48 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
             }
         )
 
-    if latest_checksum != current_checksum:
-        logger.info(f"Checking {latest_url}")
-
-        conn = urlopen(latest_url, timeout=30)
-        struct = time.strptime(
-            conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
-        )
-        dt = datetime.fromtimestamp(time.mktime(struct))
-
-        new_version = dt.strftime("%Y%m%d")
-        logger.info(f"New version is {new_version}")
-        image["versions"][0]["version"] = new_version
-
-        new_build_date = dt.strftime("%Y-%m-%d")
-        logger.info(f"New build date is {new_build_date}")
-        image["versions"][0]["build_date"] = dt.date()
-
-        logger.info(f"New checksum is {current_checksum}")
-        image["versions"][0]["checksum"] = current_checksum
-
-        shortname = image["shortname"]
-        format = image["format"]
-
-        minio_server = str(minio_server)
-        minio_bucket = str(minio_bucket)
-        new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{new_version}-{shortname}.{format}"
-        logger.info(f"New URL is {new_url}")
-        image["versions"][0]["mirror_url"] = new_url
-        image["versions"][0]["url"] = latest_url
-
-        mirror_image(
-            image,
-            latest_url,
-            minio_server,
-            minio_bucket,
-            minio_access_key,
-            minio_secret_key,
-        )
-        del image["versions"][0]["source"]
-
-    else:
+    if latest_checksum == current_checksum:
         logger.info(f"Image {name} is up-to-date, nothing to do")
+        return
+
+    logger.info(f"Checking {latest_url}")
+
+    conn = urlopen(latest_url, timeout=30)
+    struct = time.strptime(
+        conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
+    )
+    dt = datetime.fromtimestamp(time.mktime(struct))
+
+    new_version = dt.strftime("%Y%m%d")
+    logger.info(f"New version is {new_version}")
+    image["versions"][0]["version"] = new_version
+
+    new_build_date = dt.strftime("%Y-%m-%d")
+    logger.info(f"New build date is {new_build_date}")
+    image["versions"][0]["build_date"] = dt.date()
+
+    logger.info(f"New checksum is {current_checksum}")
+    image["versions"][0]["checksum"] = current_checksum
+
+    shortname = image["shortname"]
+    format = image["format"]
+
+    minio_server = str(minio_server)
+    minio_bucket = str(minio_bucket)
+    new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{new_version}-{shortname}.{format}"
+    logger.info(f"New URL is {new_url}")
+    image["versions"][0]["mirror_url"] = new_url
+    image["versions"][0]["url"] = latest_url
+
+    mirror_image(
+        image,
+        latest_url,
+        minio_server,
+        minio_bucket,
+        minio_access_key,
+        minio_secret_key,
+    )
+    del image["versions"][0]["source"]
 
 
 @app.command()
