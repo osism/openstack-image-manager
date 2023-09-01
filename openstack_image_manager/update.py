@@ -204,8 +204,6 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
     else:
         logger.info(f"Image {name} is up-to-date, nothing to do")
 
-    return image
-
 
 @app.command()
 def main(
@@ -243,14 +241,13 @@ def main(
 
         for index, image in enumerate(data["images"]):
             if "latest_url" in image:
-                updated_image = update_image(
+                update_image(
                     image,
                     minio_server,
                     minio_bucket,
                     minio_access_key,
                     minio_secret_key,
                 )
-                data["images"][index] = updated_image
 
         with open(p, "w+") as fp:
             ryaml.explicit_start = True
