@@ -119,7 +119,7 @@ IMAGES = {
 
 
 def mirror_image(
-    image, latest_url, minio_server, minio_bucket, minio_access_key, minio_secret_key
+    image, minio_server, minio_bucket, minio_access_key, minio_secret_key
 ):
     client = Minio(
         minio_server,
@@ -128,9 +128,8 @@ def mirror_image(
     )
 
     version = image["versions"][0]
-    version["source"] = latest_url
 
-    path = urlparse(version["source"])
+    path = urlparse(version["url"])
     dirname = image["shortname"]
     filename, fileextension = os.path.splitext(os.path.basename(path.path))
 
@@ -147,8 +146,8 @@ def mirror_image(
         logger.info("'%s' available in '%s'" % (new_filename, dirname))
     except S3Error:
         logger.info("'%s' not yet available in '%s'" % (new_filename, dirname))
-        logger.info("Downloading '%s'" % version["source"])
-        response = requests.get(version["source"], stream=True)
+        logger.info("Downloading '%s'" % version["url"])
+        response = requests.get(version["url"], stream=True)
         with open(os.path.basename(path.path), "wb") as fp:
             shutil.copyfileobj(response.raw, fp)
         del response
@@ -212,6 +211,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
         "version": current_version,
         "build_date": datetime.strptime(current_version, "%Y%m%d").date(),
         "checksum": current_checksum,
+        "url": current_url,
     }
     logger.info(f"New values are {new_values}")
     image["versions"][0].update(new_values)
@@ -224,17 +224,14 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
     new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
     logger.info(f"New URL is {new_url}")
     image["versions"][0]["mirror_url"] = new_url
-    image["versions"][0]["url"] = current_url
 
     mirror_image(
         image,
-        latest_url,
         minio_server,
         minio_bucket,
         minio_access_key,
         minio_secret_key,
     )
-    del image["versions"][0]["source"]
     return 1
 
 
