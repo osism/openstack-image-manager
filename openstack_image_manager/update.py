@@ -20,6 +20,7 @@ import ruamel.yaml
 import typer
 
 app = typer.Typer()
+DEBUBU_REGEX = r'<a href="([^"]+)/">(?:release-)?([0-9]+)(\-[0-9]+)?/</a>'
 
 
 def get_latest_default(shortname, latest_checksum_url, latest_url, checksum_type="sha256"):
@@ -71,31 +72,34 @@ def get_latest_default(shortname, latest_checksum_url, latest_url, checksum_type
     return current_checksum, latest_url, None
 
 
-def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=None):
-    base_url, _, filename = latest_url.rsplit("/", 2)
+def resolve_debubu(base_url, rex=re.compile(DEBUBU_REGEX)):
     result = requests.get(base_url)
     result.raise_for_status()
-    rex = re.compile(r'<a href="([^"]+)/">(?:release-)?([0-9]+)(\-[0-9]+)?/</a>')
-    items = sorted(rex.findall(result.text))
-    latest_folder, latest_date, latest_build = items[-1]
+    latest_folder, latest_date, latest_build = sorted(rex.findall(result.text))[-1]
+    return latest_folder, latest_date, latest_build
+
+
+def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=None):
+    base_url, _, filename = latest_url.rsplit("/", 2)
+    latest_folder, latest_date, latest_build = resolve_debubu(base_url)
     current_base_url = f"{base_url}/{latest_folder}"
     current_checksum_url = f"{current_base_url}/{latest_checksum_url.rsplit('/', 1)[-1]}"
     result = requests.get(current_checksum_url)
     result.raise_for_status()
     current_checksum = None
     current_filename = filename
-    if latest_build:
+    if latest_build:  # Debian includes date-build in file name
         fn_pre, fn_suf = filename.rsplit('.', 1)
         current_filename = f"{fn_pre}-{latest_date}{latest_build}.{fn_suf}"
     for line in result.text.splitlines():
         cs = line.split()
         if len(cs) != 2:
             continue
-        if cs[1].startswith("*"):
+        if cs[1].startswith("*"):  # Ubuntu has the asterisk in front of the name
             cs[1] = cs[1][1:]
         if cs[1] != current_filename:
             continue
-        if checksum_type is None:
+        if checksum_type is None:  # use heuristics to distinguish sha256/sha512
             checksum_type = "sha256" if len(cs[0]) == 64 else "sha512"
         current_checksum = f"{checksum_type}:{cs[0]}"
         break
@@ -193,7 +197,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
 
     if latest_checksum == current_checksum:
         logger.info(f"Image {name} is up-to-date, nothing to do")
-        return
+        return 0
 
     if current_version is None:
         logger.info(f"Checking {current_url}")
@@ -231,6 +235,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
         minio_secret_key,
     )
     del image["versions"][0]["source"]
+    return 1
 
 
 @app.command()
@@ -267,10 +272,11 @@ def main(
         with open(p) as fp:
             data = ryaml.load(fp)
 
+        updates = 0
         for index, image in enumerate(data["images"]):
             if "latest_url" not in image:
                 continue
-            update_image(
+            updates += update_image(
                 image,
                 getter,
                 minio_server,
@@ -279,6 +285,8 @@ def main(
                 minio_secret_key,
             )
 
+        if not updates:
+            continue
         with open(p, "w+") as fp:
             ryaml.explicit_start = True
             ryaml.indent(sequence=4, offset=2)
