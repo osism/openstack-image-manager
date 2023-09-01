@@ -145,12 +145,7 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
     current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
     logger.info(f"Checksum of current {latest_filename} is {current_checksum}")
 
-    try:
-        latest_version = image["versions"][0]
-        latest_checksum = latest_version["checksum"]
-        logger.info(f"Our checksum is {latest_checksum}")
-    except IndexError:
-        latest_checksum = None
+    if not image["versions"]:
         logger.info("No image available so far")
         image["versions"].append(
             {
@@ -160,6 +155,9 @@ def update_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
                 "version": None,
             }
         )
+
+    latest_checksum = image["versions"][0]["checksum"]
+    logger.info(f"Our checksum is {latest_checksum}")
 
     if latest_checksum == current_checksum:
         logger.info(f"Image {name} is up-to-date, nothing to do")
