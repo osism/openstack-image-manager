@@ -22,42 +22,25 @@ import typer
 app = typer.Typer()
 
 
-def get_latest_default(shortname, latest_checksum_url, latest_url):
+def get_latest_default(shortname, latest_checksum_url, latest_url, checksum_type="sha256"):
     parsed_url = urlparse(latest_url)
     latest_filename = os.path.basename(parsed_url.path)
 
     result = requests.get(latest_checksum_url)
 
     checksums = {}
-
-    checksum_type = "sha256"
+    
     filename_pattern = None
 
     if shortname in ["centos-stream-8", "centos-stream-9", "centos-7"]:
         filename_pattern = latest_filename.replace("HEREBE", "")
         filename_pattern = filename_pattern.replace("DRAGONS", "")
-    elif shortname in ["debian-10", "debian-11", "debian-12"]:
-        checksum_type = "sha512"
 
     for line in result.text.split("\n"):
         if shortname in ["rocky-8", "rocky-9"]:
             splitted_line = re.split("\s+", line)  # noqa W605
             if splitted_line[0] == "SHA256":
                 checksums[latest_filename] = splitted_line[3]
-        elif shortname in [
-            "ubuntu-14.04",
-            "ubuntu-16.04",
-            "ubuntu-16.04-minimal",
-            "ubuntu-18.04",
-            "ubuntu-18.04-minimal",
-            "ubuntu-20.04",
-            "ubuntu-20.04-minimal",
-            "ubuntu-22.04",
-            "ubuntu-22.04-minimal",
-        ]:
-            splitted_line = re.split("\s+", line)  # noqa W605
-            if len(splitted_line) == 2:
-                checksums[splitted_line[1][1:]] = splitted_line[0]
         elif shortname in ["centos-7"]:
             splitted_line = re.split("\s+", line)  # noqa W605
             if len(splitted_line) == 2:
@@ -85,15 +68,49 @@ def get_latest_default(shortname, latest_checksum_url, latest_url):
         latest_url = new_latest_url
 
     current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
-    return current_checksum, latest_url
+    return current_checksum, latest_url, None
+
+
+def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=None):
+    base_url, _, filename = latest_url.rsplit("/", 2)
+    result = requests.get(base_url)
+    result.raise_for_status()
+    rex = re.compile(r'<a href="([^"]+)/">(?:release-)?([0-9]+)(\-[0-9]+)?/</a>')
+    items = sorted(rex.findall(result.text))
+    latest_folder, latest_date, latest_build = items[-1]
+    current_base_url = f"{base_url}/{latest_folder}"
+    current_checksum_url = f"{current_base_url}/{latest_checksum_url.rsplit('/', 1)[-1]}"
+    result = requests.get(current_checksum_url)
+    result.raise_for_status()
+    current_checksum = None
+    current_filename = filename
+    if latest_build:
+        fn_pre, fn_suf = filename.rsplit('.', 1)
+        current_filename = f"{fn_pre}-{latest_date}{latest_build}.{fn_suf}"
+    for line in result.text.splitlines():
+        cs = line.split()
+        if len(cs) != 2:
+            continue
+        if cs[1].startswith("*"):
+            cs[1] = cs[1][1:]
+        if cs[1] != current_filename:
+            continue
+        if checksum_type is None:
+            checksum_type = "sha256" if len(cs[0]) == 64 else "sha512"
+        current_checksum = f"{checksum_type}:{cs[0]}"
+        break
+    if current_checksum is None:
+        raise RuntimeError(f"{current_checksum_url} does not contain {current_filename}")
+    current_url = f"{current_base_url}/{current_filename}"
+    return current_checksum, current_url, latest_date
 
 
 IMAGES = {
     "almalinux": get_latest_default,
     "centos": get_latest_default,
-    "debian": get_latest_default, 
+    "debian": get_latest_debubu, 
     "rockylinux": get_latest_default, 
-    "ubuntu": get_latest_default,
+    "ubuntu": get_latest_debubu,
 }
 
 
@@ -156,7 +173,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
     logger.info(f"Getting checksums from {latest_checksum_url}")
     
     shortname = image["shortname"]
-    current_checksum, current_url = getter(shortname, latest_checksum_url, latest_url)
+    current_checksum, current_url, current_version = getter(shortname, latest_checksum_url, latest_url)
 
     logger.info(f"Checksum of current {current_url.rsplit('/', 1)[-1]} is {current_checksum}")
 
@@ -178,31 +195,29 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
         logger.info(f"Image {name} is up-to-date, nothing to do")
         return
 
-    logger.info(f"Checking {current_url}")
+    if current_version is None:
+        logger.info(f"Checking {current_url}")
 
-    conn = urlopen(current_url, timeout=30)
-    struct = time.strptime(
-        conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
-    )
-    dt = datetime.fromtimestamp(time.mktime(struct))
+        conn = urlopen(current_url, timeout=30)
+        dt = datetime.strptime(
+            conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
+        )
+        current_version = dt.strftime("%Y%m%d")
 
-    new_version = dt.strftime("%Y%m%d")
-    logger.info(f"New version is {new_version}")
-    image["versions"][0]["version"] = new_version
-
-    new_build_date = dt.strftime("%Y-%m-%d")
-    logger.info(f"New build date is {new_build_date}")
-    image["versions"][0]["build_date"] = dt.date()
-
-    logger.info(f"New checksum is {current_checksum}")
-    image["versions"][0]["checksum"] = current_checksum
+    new_values = {
+        "version": current_version,
+        "build_date": datetime.strptime(current_version, "%Y%m%d").date(),
+        "checksum": current_checksum,
+    }
+    logger.info(f"New values are {new_values}")
+    image["versions"][0].update(new_values)
 
     shortname = image["shortname"]
     format = image["format"]
 
     minio_server = str(minio_server)
     minio_bucket = str(minio_bucket)
-    new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{new_version}-{shortname}.{format}"
+    new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
     logger.info(f"New URL is {new_url}")
     image["versions"][0]["mirror_url"] = new_url
     image["versions"][0]["url"] = current_url
