@@ -18,7 +18,6 @@ import patoolib
 import requests
 import ruamel.yaml
 import typer
-import yaml
 
 app = typer.Typer()
 
@@ -238,8 +237,9 @@ def main(
     for image in IMAGES:
         p = f"etc/images/{image}.yml"
 
+        ryaml = ruamel.yaml.YAML()
         with open(p) as fp:
-            data = yaml.safe_load(fp)
+            data = ryaml.load(fp)
 
         for index, image in enumerate(data["images"]):
             if "latest_url" in image:
@@ -253,7 +253,6 @@ def main(
                 data["images"][index] = updated_image
 
         with open(p, "w+") as fp:
-            ryaml = ruamel.yaml.YAML()
             ryaml.explicit_start = True
             ryaml.indent(sequence=4, offset=2)
             ryaml.dump(data, fp)
