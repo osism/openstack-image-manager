@@ -1,4 +1,4 @@
-loguru==0.7.0
+loguru==0.7.1
 minio==7.1.16
 munch==4.0.0
 natsort==8.4.0
