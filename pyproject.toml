@@ -39,6 +39,8 @@ include = ["openstack_image_manager"]
 
 [tool.setuptools-git-versioning]
 enabled = true
+dev_template = "{tag}"
+dirty_template = "{tag}"
 
 [project.scripts]
 openstack-image-manager = "openstack_image_manager.manage:main"
