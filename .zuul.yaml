@@ -21,6 +21,8 @@
     roles:
       - zuul: osism/zuul-jobs
         name: devstack
+        vars:
+          devstack_release: stable/2023.1
 
 - job:
     name: real-world
