@@ -1,7 +1,7 @@
 ---
 images:
   - name: AlmaLinux 8
-    enable: true
+    enable: false
     shortname: almalinux-8
     format: qcow2
     login: almalinux

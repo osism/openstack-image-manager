@@ -1,7 +1,7 @@
 ---
 images:
   - name: Rocky 8
-    enable: true
+    enable: false
     shortname: rocky-8
     format: qcow2
     login: rocky
