@@ -1,16 +1,17 @@
-# Quickstart
+# Getting started
 
 This quickstart guide will upload a single, small, private image to your OpenStack.
 
 ## Installation
 
-First, you need to install the openstack-image-manager. You can either use pip:
+First, you need to install the `openstack-image-manager`. You can either use pip:
 
 ```sh
 pip3 install openstack-image-manager
 ```
 
-Or you can clone the repository and run it via `tox`:
+Or you can clone the repository from https://github.com/osism/openstack-image-manager
+and run it via `tox`:
 
 ```sh
 tox -- --help
@@ -63,4 +64,3 @@ Also provide the location of your image files (_~/images/_).
 ```bash
 openstack-image-manager --cloud my-cloud --filter ".*Cirr.*" --images ~/images/
 ```
-
