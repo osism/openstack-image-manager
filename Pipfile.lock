@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "018f5003d1ae95708969a8374d842dd4d19766d5fde2fa624ba05883df26b6b9"
+            "sha256": "b570b705138e590cd6656f2632bd87983938d7a0c9cf50e9497fbf3ef40c2095"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -318,12 +318,12 @@
         },
         "loguru": {
             "hashes": [
-                "sha256:046bf970cb3cad77a28d607cbf042ac25a407db987a1e801c7f7e692469982f9",
-                "sha256:7ba2a7d81b79a412b0ded69bd921e012335e80fd39937a633570f273a343579e"
+                "sha256:003d71e3d3ed35f0f8984898359d65b79e5b21943f78af86aa5491210429b8eb",
+                "sha256:e671a53522515f34fd406340ee968cb9ecafbc4b36c679da03c18fd8d0bd51ac"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.5'",
-            "version": "==0.7.1"
+            "version": "==0.7.2"
         },
         "markdown-it-py": {
             "hashes": [
