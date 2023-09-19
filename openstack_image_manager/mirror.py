@@ -83,7 +83,6 @@ def main(
                 filename += fileextension
 
             if fileextension2 == ".tar":
-                filename2 = filename
                 filename = os.path.basename(url.path)
 
             logging.debug("dirname: %s" % dirname)
