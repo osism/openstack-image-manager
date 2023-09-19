@@ -17,7 +17,6 @@ from munch import Munch
 from natsort import natsorted
 from yamale import YamaleError
 from openstack.image.v2.image import Image
-from openstack.exceptions import DuplicateResource
 
 
 class ImageManager:
@@ -291,31 +290,30 @@ class ImageManager:
                 versions = dict()
                 for version in image["versions"]:
                     versions[str(version["version"])] = {"url": version["url"]}
+
                     if "mirror_url" in version:
-                        versions[version["version"]]["mirror_url"] = version[
-                            "mirror_url"
-                        ]
+                        versions[version["version"]]["mirror_url"] = version["mirror_url"]
+
                     if "visibility" in version:
-                        versions[version["version"]]["visibility"] = version[
-                            "visibility"
-                        ]
+                        versions[version["version"]]["visibility"] = version["visibility"]
+
                     if "os_version" in version:
-                        versions[version["version"]]["os_version"] = version[
-                            "os_version"
-                        ]
+                        versions[version["version"]]["os_version"] = version["os_version"]
+
                     if "hidden" in version:
                         versions[version["version"]]["hidden"] = version["hidden"]
-                    if version["version"] == "latest":
+
+                    if version["version"] == "latest":#
                         if "checksums_url" in version:
-                            versions[version["version"]]["checksums_url"] = version[
-                                "checksums_url"
-                            ]
+                            versions[version["version"]]["checksums_url"] = version["checksums_url"]
                         else:
-                            raise Exception()
+                            raise ValueError('Key "checksums_url" is required when using version "latest"')
+
                     if "meta" in version:
                         versions[version["version"]]["meta"] = version["meta"]
                     else:
                         versions[version["version"]]["meta"] = {}
+
                     if "url" in version:
                         url = version["url"]
                         # strip any directory path for file: urls in order to
@@ -323,16 +321,17 @@ class ImageManager:
                         if url.startswith("file:") and "/" in url:
                             url = "file:%s" % url.rsplit("/", 1)[1]
                         versions[version["version"]]["meta"]["image_source"] = url
+
                     if "build_date" in version:
-                        versions[version["version"]]["meta"][
-                            "image_build_date"
-                        ] = date.isoformat(version["build_date"])
+                        versions[version["version"]]["meta"]["image_build_date"] = date.isoformat(version["build_date"])
+
                     if "id" in version:
                         versions[version["version"]]["id"] = version["id"]
-            except Exception:
-                logger.error(
-                    'Key "checksums_url" is required when using version "latest"'
-                )
+            except ValueError as e:
+                logger.error(str(e))
+                continue
+            except Exception as e:
+                logger.error(f"An unexpected error occurred: {e}")
                 continue
 
             sorted_versions = natsorted(versions.keys())
