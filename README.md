@@ -5,4 +5,4 @@
 
 Easily manage and keep up to date a large number of images on an OpenStack environment
 
-Documentation: <https://docs.scs.community/docs/category/openstack-image-manager/>
+Documentation: <https://osism.github.io/docs/guides/operations-guide/openstack/image-manager>

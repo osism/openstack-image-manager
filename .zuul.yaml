@@ -38,7 +38,6 @@
         - flake8
         - hadolint
         - integration-test
-        - markdownlint
         - mypy
         - tox:
             vars:
@@ -50,7 +49,6 @@
         - flake8
         - hadolint
         - integration-test
-        - markdownlint
         - mypy
         - tox:
             vars:
@@ -65,7 +63,6 @@
         - flake8
         - hadolint
         - integration-test
-        - markdownlint
         - mypy
         - tox:
             vars:
