@@ -30,6 +30,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
         checksum: sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1
+        verify_checksum: sha512:68a5054c2588605e779c131589ecf7a737a71b856a31c0e2fd97c1026ad97cf7371ab5e431cf3519f0a924238cc05cc11e27a2a317967c118774020976808d6d
         build_date: 2019-11-07
   - name: Ubuntu 16.04
     enable: false
@@ -61,6 +62,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
         checksum: sha256:fff2494a70bcaffb59f26f71ec49e137dd87d319341c35832dbe0ea65ff15140
+        verify_checksum: sha512:811b6092b6825f2b1a6c409560e81fd63b6f0f68d906d45f9a35a7bdba482c121db0c8219e5ab9fde306f1ada3e5ab7a717d1570261340642dab8979928ddd11
         build_date: 2021-10-01
   - name: Ubuntu 16.04 Minimal
     enable: false
@@ -92,6 +94,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
         checksum: sha256:7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9
+        verify_checksum: sha512:2f4ede2f19dd8d8f09bb1a11f604ecd75e80be8ac6d73a0ea340a860ef46c801e580f172f24a6af202b50095feb7758fe80eede7e03acf4ab7510425a910272f
         build_date: 2021-09-20
   - name: Ubuntu 18.04
     enable: false
@@ -122,6 +125,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-18.04/20230607-ubuntu-18.04.qcow2
         checksum: sha256:8dd2e6b5e5aad20c3f836123b300cba9861249408cbb07c359145a65d6bab6b6
+        verify_checksum: sha512:6eaa852740f958a2d37d5444452ff202e909950919b332de7b007e19a31c4af6ae66cf2b3bcf2890a259e5e9d8cfd4d87dfbf15d0a4d7d1d87dc482278cc69bd
         build_date: 2023-06-07
   - name: Ubuntu 18.04 Minimal
     enable: false
@@ -153,6 +157,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-18.04-minimal/20230602-ubuntu-18.04-minimal.qcow2
         checksum: sha256:2d9755669c499e88d51da0638cd20e0983a248828e2153906c013bea0ee2f45a
+        verify_checksum: sha512:aac9f92833ffd4c435ddd842cc1856ddab9ba58250fb8bb7ac271c9e54f2ac69bbf6dc9d09b9b9d66d485923ba7d6b21566b6d2462d1904b997edd7754e2fdc6
         build_date: 2023-06-02
   - name: Ubuntu 20.04
     enable: true
@@ -183,6 +188,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20230823-ubuntu-20.04.qcow2
         checksum: sha256:ecfb2e07fce2a273e845ca328b96b64390a0bf0efad70fd1d57a0ebbc0549717
+        verify_checksum: sha512:64f640756b746d352173c2ed20cdfbbc87c9f75b08c5b4bec1fbd4ddad6781d8c961edabc32e9abbcd086a080e7d3a15deeeee32a608e698844be830caae5e22
         build_date: 2023-08-23
   - name: Ubuntu 20.04 Minimal
     enable: true
@@ -214,6 +220,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20230811-ubuntu-20.04-minimal.qcow2
         checksum: sha256:95536fe95112fff650012867afbf36d31f61ec06dea4269f8133bd6a1596bf95
+        verify_checksum: sha512:8af1aeefa8950934b48761717d395ae4d486dcefd985a03e9e1d55f7a821ab12c285da70277e1c6a66d7767fac66f9558fc14088962c8ce9a650e2d43730da3c
         build_date: 2023-08-11
   - name: Ubuntu 22.04
     enable: true
@@ -244,6 +251,7 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20230823-ubuntu-22.04.qcow2
         checksum: sha256:a7845be05e3a5c9e031be35d27ecb6f4c1cdab8df89475cd1943d57ff94294c9
+        verify_checksum: sha512:caec92b6a20c7b23869c44e7536d039aec929799c4a7960a9b3c691eb405d3bb4604df1a00eb4b21e02820e5bee2a921b9ea67e142e91700f8a9dd82d38576be
         build_date: 2023-08-23
   - name: Ubuntu 22.04 Minimal
     enable: true
@@ -275,4 +283,5 @@ images:
         url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04-minimal/20230815-ubuntu-22.04-minimal.qcow2
         checksum: sha256:72ca6ba4f8b7305479ed32ed79890a52aec4f0629762286dbc9a5e5b3997489c
+        verify_checksum: sha512:48e0145d110dbaa7e5a74f510aad107188993321ecf77126c8397c0611ef89d099857f0ea3a0c39b92f91c60b2a4461992c2f465ba99e63ac9c463cae9967ee1
         build_date: 2023-08-15

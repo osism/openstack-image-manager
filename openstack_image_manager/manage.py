@@ -303,7 +303,7 @@ class ImageManager:
                     if "hidden" in version:
                         versions[version["version"]]["hidden"] = version["hidden"]
 
-                    if version["version"] == "latest":#
+                    if version["version"] == "latest":
                         if "checksums_url" in version:
                             versions[version["version"]]["checksums_url"] = version["checksums_url"]
                         else:
@@ -324,6 +324,9 @@ class ImageManager:
 
                     if "build_date" in version:
                         versions[version["version"]]["meta"]["image_build_date"] = date.isoformat(version["build_date"])
+
+                    if "verify_checksum" in version:
+                        versions[version["version"]]["verify_checksum"] = version["verify_checksum"]
 
                     if "id" in version:
                         versions[version["version"]]["id"] = version["id"]
@@ -626,11 +629,43 @@ class ImageManager:
                 if not self.CONF.dry_run:
                     import_result = self.import_image(image, name, url, versions, version)
                     if import_result:
-                        logger.info(
-                            "Import of '%s' successfully completed, reloading images" % name
-                        )
-                        cloud_images = self.get_images()
-                        imported_image = cloud_images.get(name, None)
+
+                        hash_check_success = True
+                        if "verify_checksum" in versions[version]:
+                            hash_algo, hash_value = versions[version]["verify_checksum"].split(":", 2)
+                            if hash_algo != import_result.hash_algo:
+                                logger.warning(
+                                    "Provided verify_checksum algorithm '%s' does not equal the expected algorithm '%s'"
+                                    % (hash_algo, import_result.hash_algo)
+                                )
+                                logger.warning(
+                                    "Verification checksum for '%s' will be ignored..."
+                                    % name
+                                )
+                            elif hash_value != import_result.hash_value:
+                                logger.error(
+                                    "Provided verify_checksum for '%s' does not match backend checksum!"
+                                    % name
+                                )
+                                hash_check_success = False
+                            else:
+                                logger.info("Backend checksum matches expected value")
+                        else:
+                            logger.warning(
+                                "No verification checksum for '%s'. Ignoring..."
+                                % name
+                            )
+
+                        if hash_check_success:
+                            logger.info(
+                                "Import of '%s' successfully completed, reloading images" % name
+                            )
+                            cloud_images = self.get_images()
+                            imported_image = cloud_images.get(name, None)
+                        else:
+                            logger.info("Deleting possibly corrupt image %s" % import_result.id)
+                            self.conn.image.delete_image(import_result.id)
+                            continue
                 else:
                     logger.info(
                         f"Skipping required import of image '{name}', running in dry-run mode"

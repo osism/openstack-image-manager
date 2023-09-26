@@ -23,13 +23,16 @@ images:
     versions:
       - version: '934.8'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.8.qcow2
-        checksum: "sha256:68a4cb768224aec313a8c974cec412fe8b2754f0189a318ce9dbdba13fd89597"
+        checksum: sha256:68a4cb768224aec313a8c974cec412fe8b2754f0189a318ce9dbdba13fd89597
+        verify_checksum: sha512:fafc1bee465c7492fe274ef426158deb84a35053ffd442de2e57921435933b6da2a58bc78de7c819efc376af6acf82f428cecad8fd792a67aeeafa8d011cb43f
         build_date: 2023-05-12
       - version: '934.9'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.9.qcow2
-        checksum: "sha256:314aa8369a46a7c9fd97343a688c75b9c282f654fb05e9bb4d6b94646bf3670c"
+        checksum: sha256:314aa8369a46a7c9fd97343a688c75b9c282f654fb05e9bb4d6b94646bf3670c
+        verify_checksum: sha512:be5811738e938dcc5c018e0307a6c1c1784c86a69c920817361f1ec1085761d3b354def13a99c89ac15a7a0b570076774b37d238d961e876813ef475d4f39eb3
         build_date: 2023-06-03
       - version: '934.10'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.10.qcow2
-        checksum: "sha256:995e40bb7dcf044f82650f8131bc8b440215e5f1023c4edca81da585e7068b4f"
+        checksum: sha256:995e40bb7dcf044f82650f8131bc8b440215e5f1023c4edca81da585e7068b4f
+        verify_checksum: sha512:987eae0cafd4e49c2a4feaea188df4dfc0d43e753ce03d4191a72641285518e412a8b3c1866bb5e852f4cb2521f21d6990381d090bfc34de9474794446a4f0b2
         build_date: 2023-08-28

@@ -26,5 +26,6 @@ images:
       - version: '38700'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/clearlinux/38700/clear-38700-cloudguest.img
         source: https://cdn.download.clearlinux.org/releases/38700/clear/clear-38700-cloudguest.img.xz
-        checksum: "sha256:554f2e9f1c5cd3caa7ca9043e9379ab7bac36f8004ae6023f2fb642b80ace173"
+        checksum: sha256:554f2e9f1c5cd3caa7ca9043e9379ab7bac36f8004ae6023f2fb642b80ace173
+        verify_checksum: sha512:67c8e08daa554103b13c6bf56da00334a9bb9634a22ec27591ddf2cc3135175dd343bdce38f2bfb54e21e6fa9e167a6f7b5980a5f116802de2e7cf2ab29bcf39
         build_date: 2023-03-31

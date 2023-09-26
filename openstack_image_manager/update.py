@@ -2,13 +2,12 @@
 # source of latest URLs: https://gitlab.com/libosinfo/osinfo-db
 
 from datetime import datetime
+import hashlib
+import math
 import os
 import re
-import shutil
 import sys
-import time
 from urllib.parse import urlparse
-from urllib.request import urlopen
 
 from loguru import logger
 from minio import Minio
@@ -105,14 +104,14 @@ def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=
 IMAGES = {
     "almalinux": get_latest_default,
     "centos": get_latest_default,
-    "debian": get_latest_debubu, 
-    "rockylinux": get_latest_default, 
+    "debian": get_latest_debubu,
+    "rockylinux": get_latest_default,
     "ubuntu": get_latest_debubu,
 }
 
 
 def mirror_image(
-    image, minio_server, minio_bucket, minio_access_key, minio_secret_key
+    image, extracted_file, minio_server, minio_bucket, minio_access_key, minio_secret_key
 ):
     client = Minio(
         minio_server,
@@ -121,14 +120,7 @@ def mirror_image(
     )
 
     version = image["versions"][0]
-
-    path = urlparse(version["url"])
     dirname = image["shortname"]
-    filename, fileextension = os.path.splitext(os.path.basename(path.path))
-
-    if fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
-        filename += fileextension
-
     shortname = image["shortname"]
     format = image["format"]
     new_version = version["version"]
@@ -139,23 +131,73 @@ def mirror_image(
         logger.info("'%s' available in '%s'" % (new_filename, dirname))
     except S3Error:
         logger.info("'%s' not yet available in '%s'" % (new_filename, dirname))
-        logger.info("Downloading '%s'" % version["url"])
-        response = requests.get(version["url"], stream=True)
-        with open(os.path.basename(path.path), "wb") as fp:
-            shutil.copyfileobj(response.raw, fp)
-        del response
-
-        if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-            logger.info("Decompressing '%s'" % os.path.basename(path.path))
-            patoolib.extract_archive(os.path.basename(path.path), outdir=".")
-            os.remove(os.path.basename(path.path))
 
         logger.info(
-            "Uploading '%s' to '%s' as '%s'" % (filename, dirname, new_filename)
+            "Uploading '%s' to '%s' as '%s'" % (extracted_file, dirname, new_filename)
         )
 
-        client.fput_object(minio_bucket, os.path.join(dirname, new_filename), filename)
-        os.remove(filename)
+        client.fput_object(minio_bucket, os.path.join(dirname, new_filename), extracted_file)
+
+
+def size_clean(size):
+    size_name = ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+    i = int(math.floor(math.log(size, 1024)))
+    s = size / 1024 ** i
+    return f"{s:.2f} {size_name[i]}"
+
+
+def download_and_hash(download_url: str):
+    path = urlparse(download_url)
+    filename, fileextension = os.path.splitext(os.path.basename(path.path))
+    is_archive = fileextension in [".bz2", ".zip", ".xz", ".gz"]
+    if not is_archive:
+        filename += fileextension
+    download_filename = os.path.basename(path.path)
+    http_headers = None
+    hash_obj = hashlib.new("sha512")
+
+    with requests.get(url=download_url, stream=True, timeout=30) as response:
+        if response.status_code != 200:
+            logger.error(f"Downloading image '{download_url}' failed with error code {response.status_code}")
+            return None, None, None
+
+        http_headers = response.headers
+        file_size = int(http_headers["Content-Length"])
+        logger.info(f"Image size {size_clean(file_size)}")
+
+        downloadedBytes = 0
+        lastProgress = 0
+        with open(download_filename, "wb") as fp:
+            for chunk in response.iter_content(chunk_size=8192):
+                downloadedBytes += 8192
+                progressPercent = (downloadedBytes / file_size) * 100
+                progress = round(min(max(progressPercent, 0), 100))
+                if progress - lastProgress >= 5:
+                    logger.info(f"Downloading image: {progress}%")
+                    lastProgress = progress
+
+                fp.write(chunk)
+
+                if not is_archive:
+                    hash_obj.update(chunk)
+
+    if not is_archive:
+        sha512 = hash_obj.hexdigest()
+        return http_headers, f"sha512:{sha512}", download_filename
+    else:
+        assert download_filename not in ["", ".", " ", "/", ".."]
+        logger.info("Decompressing '%s'" % download_filename)
+        patoolib.extract_archive(download_filename, outdir=".")
+        os.remove(download_filename)
+
+        with open(filename, 'rb') as fp:
+            chunk = fp.read(8192)
+            while chunk:
+                hash_obj.update(chunk)
+                chunk = fp.read(8192)
+
+        sha512 = hash_obj.hexdigest()
+        return http_headers, f"sha512:{sha512}", filename
 
 
 def update_image(image, getter, minio_server, minio_bucket, minio_access_key, minio_secret_key):
@@ -167,7 +209,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
 
     latest_checksum_url = image["latest_checksum_url"]
     logger.info(f"Getting checksums from {latest_checksum_url}")
-    
+
     shortname = image["shortname"]
     current_checksum, current_url, current_version = getter(shortname, latest_checksum_url, latest_url)
 
@@ -181,6 +223,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
                 "checksum": None,
                 "url": None,
                 "version": None,
+                "verify_checksum": None,
             }
         )
 
@@ -191,12 +234,20 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
         logger.info(f"Image {name} is up-to-date, nothing to do")
         return 0
 
-    if current_version is None:
-        logger.info(f"Checking {current_url}")
+    logger.info(f"Image {name} change detected. Downloading Image...")
 
-        conn = urlopen(current_url, timeout=30)
+    headers, verify_checksum, extracted_file = download_and_hash(current_url)
+    if verify_checksum is None or extracted_file in ["", ".", " ", "/", ".."]:
+        logger.error(f"Downloading and hashing {name} failed")
+        return 0
+
+    logger.info(f"Image {name} has the verification checksum {verify_checksum}")
+
+    if current_version is None:
+        logger.info("Using HTTP 'last-modified' header as current version")
+
         dt = datetime.strptime(
-            conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
+            headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
         )
         current_version = dt.strftime("%Y%m%d")
 
@@ -205,6 +256,7 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
         "build_date": datetime.strptime(current_version, "%Y%m%d").date(),
         "checksum": current_checksum,
         "url": current_url,
+        "verify_checksum": verify_checksum,
     }
     logger.info(f"New values are {new_values}")
     image["versions"][0].update(new_values)
@@ -220,11 +272,15 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
 
     mirror_image(
         image,
+        extracted_file,
         minio_server,
         minio_bucket,
         minio_access_key,
         minio_secret_key,
     )
+
+    os.remove(extracted_file)
+
     return 1
 
 

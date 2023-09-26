@@ -27,5 +27,6 @@ images:
       - version: '23.1'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/opnsense/23.1/OPNsense-23.1-OpenSSL-nano-amd64.img
         source: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/23.1/OPNsense-23.1-OpenSSL-nano-amd64.img.bz2
-        checksum: "sha256:8e2e5ab62f8d2bc5eb72296a0d7913789f370f445216d996a7d4d9e88e5e3733"
+        checksum: sha256:8e2e5ab62f8d2bc5eb72296a0d7913789f370f445216d996a7d4d9e88e5e3733
+        verify_checksum: sha512:06c0e8049ddeeb51c0fc7aaa93e4e6169d464e5bca30a84d55620482c5456066e7ebf30e0ff0fc667795349c2f70779917acd65a4287854984a2ae49acca796c
         build_date: 2023-01-25

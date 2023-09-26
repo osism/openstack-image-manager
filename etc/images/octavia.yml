@@ -25,5 +25,6 @@ images:
     versions:
       - version: 'ZED-2023-05-05'
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-octavia-amphora-image/octavia-amphora-haproxy-zed.qcow2
-        checksum: "sha256:f0ec47f052e9549b88b3ae86c805ab05036b2a711761b3e2595cb6325311588d"
+        checksum: sha256:f0ec47f052e9549b88b3ae86c805ab05036b2a711761b3e2595cb6325311588d
+        verify_checksum: sha512:7ba43bb611dc419b478eb7aeee2758dac7b6f6b829e6149a08675e7b0992d92f1b4d2e520ea39c4da8195a7436d8f884c1f5bed512fb519f5e05b94a66c27b3d
         build_date: 2023-05-05

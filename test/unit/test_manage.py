@@ -34,6 +34,7 @@ images:
         build_date: 2021-01-21
         url: http://url.com
         checksum: '1234'
+        verify_checksum: 'sha512:abcd'
 '''
 
 # sample image dict as generated from FAKE_YML
@@ -59,7 +60,8 @@ FAKE_IMAGE_DICT : Dict[str, Any] = {
             'build_date': date.fromisoformat("2021-01-21"),
             'version': '1',
             'url': 'http://url.com',
-            'checksum': '1234'
+            'checksum': '1234',
+            'verify_checksum': 'sha512:abcd'
         }
     ]
 }
@@ -100,7 +102,8 @@ class TestManage(TestCase):
         self.fake_image = Image(**FAKE_IMAGE_DATA)
         self.fake_name = '%s (%s)' % (self.fake_image_dict['name'], '1')
         self.fake_url = 'http://url.com'
-        self.versions = {'1': {'url': self.fake_url, 'meta': {'image_source': self.fake_url, 'image_build_date': '2021-01-21'}}}
+        self.fake_verify_checksum = 'sha512:abcd'
+        self.versions = {'1': {'url': self.fake_url, 'meta': {'image_source': self.fake_url, 'image_build_date': '2021-01-21'}, 'verify_checksum': self.fake_verify_checksum}}
         self.sorted_versions = ['2', '1']
         self.previous_image = self.fake_image
         self.imported_image = self.fake_image
@@ -232,6 +235,7 @@ class TestManage(TestCase):
         too_old_images = self.sot.check_image_age()
         self.assertIn(self.fake_name, too_old_images)
 
+    @mock.patch('openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.delete_image')
     @mock.patch('openstack_image_manager.manage.ImageManager.set_properties')
     @mock.patch('openstack_image_manager.manage.ImageManager.import_image')
     @mock.patch('openstack_image_manager.manage.requests.head')
@@ -239,7 +243,7 @@ class TestManage(TestCase):
     @mock.patch('os.path.isfile')
     @mock.patch('os.path.exists')
     def test_process_image(self, mock_path_exists, mock_path_isfile, mock_get_images, mock_requests,
-                           mock_import_image, mock_set_properties):
+                           mock_import_image, mock_set_properties, mock_delete_image):
         ''' test manage.ImageManager.process_image() '''
 
         mock_requests.return_value.status_code = 200
@@ -249,6 +253,7 @@ class TestManage(TestCase):
 
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
+        mock_delete_image.assert_not_called()
         mock_import_image.assert_called_once_with(self.fake_image_dict,
                                                   self.fake_name,
                                                   self.fake_url,
@@ -259,6 +264,29 @@ class TestManage(TestCase):
 
         mock_get_images.reset_mock()
         mock_requests.reset_mock()
+        mock_delete_image.reset_mock()
+        mock_import_image.reset_mock()
+        mock_set_properties.reset_mock()
+
+        # test wrong checksum
+        mock_import_image.return_value.hash_algo = "sha512"
+        mock_import_image.return_value.hash_value = "wrong-checksum"
+        result = self.sot.process_image(self.fake_image_dict, self.versions, self.sorted_versions, meta)
+
+        self.assertEqual(mock_get_images.call_count, 1)
+        mock_requests.assert_called_once_with(self.fake_url)
+        mock_delete_image.assert_called_once()
+        mock_import_image.assert_called_once_with(self.fake_image_dict,
+                                                  self.fake_name,
+                                                  self.fake_url,
+                                                  self.versions,
+                                                  '1')
+        mock_set_properties.assert_not_called()
+        self.assertEqual(result, ({self.fake_image_dict['name']}, None, None))
+
+        mock_get_images.reset_mock()
+        mock_requests.reset_mock()
+        mock_delete_image.reset_mock()
         mock_import_image.reset_mock()
         mock_set_properties.reset_mock()
 
@@ -272,6 +300,7 @@ class TestManage(TestCase):
 
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_not_called()
+        mock_delete_image.assert_not_called()
         mock_import_image.assert_called_once_with(self.file_image_dict,
                                                   self.fake_name,
                                                   self.file_url,
@@ -280,6 +309,7 @@ class TestManage(TestCase):
 
         mock_get_images.reset_mock()
         mock_requests.reset_mock()
+        mock_delete_image.reset_mock()
         mock_import_image.reset_mock()
         mock_set_properties.reset_mock()
         mock_path_exists.reset_mock()
@@ -291,6 +321,7 @@ class TestManage(TestCase):
 
         mock_get_images.assert_called_once()
         mock_requests.assert_called_once_with(self.fake_url)
+        mock_delete_image.assert_not_called()
         mock_import_image.assert_not_called()
         mock_set_properties.assert_not_called()
         self.assertEqual(result, ({self.fake_image_dict['name']}, None, None))
