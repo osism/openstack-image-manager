@@ -14,6 +14,10 @@
           yAU/TbgmxtRUmOr9YZUoXr1bT5BPd3h+QLpQBG2OTBhNH7LNT3IJ6Ce1Tjbh7nzupDXEE
           V4+C8M1SyCIJsoudTUSuqFRqOrN4cNVVEgHVo8JOhp0q/rv15wYuDzM42lMUXw=
 
+- semaphore:
+    name: semaphore-openstack-image-manager-real-world
+    max: 1
+
 - job:
     name: integration-test
     pre-run: playbooks/pre-integration-test.yml
@@ -24,6 +28,8 @@
 
 - job:
     name: real-world
+    semaphores:
+      - name: semaphore-openstack-image-manager-real-world
     pre-run: playbooks/pre-real-world.yml
     run: playbooks/real-world.yml
     secrets:
