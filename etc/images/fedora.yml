@@ -2,7 +2,7 @@
 images:
 
   - name: Fedora 37
-    enable: true
+    enable: false
     shortname: fedora-37
     format: qcow2
     login: fedora
