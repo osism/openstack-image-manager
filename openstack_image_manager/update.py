@@ -120,7 +120,9 @@ IMAGES = {
 }
 
 
-def mirror_image(image, latest_url, minio_server, minio_bucket, minio_access_key, minio_secret_key):
+def mirror_image(
+    image, latest_url, minio_server, minio_bucket, minio_access_key, minio_secret_key
+):
     client = Minio(
         minio_server,
         access_key=minio_access_key,
@@ -179,6 +181,7 @@ def update_image(
     minio_access_key,
     minio_secret_key,
     dry_run=False,
+    swift_prefix="",
 ):
     name = image["name"]
     logger.info(f"Checking image {name}")
@@ -239,7 +242,7 @@ def update_image(
 
     minio_server = str(minio_server)
     minio_bucket = str(minio_bucket)
-    new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
+    new_url = f"https://{minio_server}/{swift_prefix}{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
     logger.info(f"New URL is {new_url}")
     image["versions"][0]["url"] = new_url
 
@@ -268,9 +271,12 @@ def main(
         None, help="Minio secret key", envvar="MINIO_SECRET_KEY"
     ),
     minio_server: str = typer.Option(
-        "swift.services.a.regiocloud.tech", help="Minio server"
+        "swift.services.a.regiocloud.tech", help="Minio server", envvar="MINIO_SERVER"
     ),
-    minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
+    minio_bucket: str = typer.Option(
+        "openstack-images", help="Minio bucket", envvar="MINIO_BUCKET"
+    ),
+    swift_prefix: str = typer.Option("", help="Swift prefix", envvar="SWIFT_PREFIX"),
 ):
 
     if debug:
@@ -306,6 +312,7 @@ def main(
                 minio_access_key,
                 minio_secret_key,
                 dry_run,
+                swift_prefix,
             )
 
         if not updates:
