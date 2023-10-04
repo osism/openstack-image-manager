@@ -276,7 +276,11 @@ def main(
     minio_bucket: str = typer.Option(
         "openstack-images", help="Minio bucket", envvar="MINIO_BUCKET"
     ),
-    swift_prefix: str = typer.Option("", help="Swift prefix", envvar="SWIFT_PREFIX"),
+    swift_prefix: str = typer.Option(
+        "swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/",
+        help="Swift prefix",
+        envvar="SWIFT_PREFIX",
+    ),
 ):
 
     if debug:
