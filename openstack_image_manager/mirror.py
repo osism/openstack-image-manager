@@ -1,4 +1,4 @@
-# NOTE(berendt): quick & dirty (but it works for the moment)
+# SPDX-License-Identifier: Apache-2.0
 
 import logging
 import os
