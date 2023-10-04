@@ -23,7 +23,9 @@ app = typer.Typer()
 DEBUBU_REGEX = r'<a href="([^"]+)/">(?:release-)?([0-9]+)(\-[0-9]+)?/</a>'
 
 
-def get_latest_default(shortname, latest_checksum_url, latest_url, checksum_type="sha256"):
+def get_latest_default(
+    shortname, latest_checksum_url, latest_url, checksum_type="sha256"
+):
     result = requests.get(latest_checksum_url)
     result.raise_for_status()
 
@@ -43,8 +45,10 @@ def get_latest_default(shortname, latest_checksum_url, latest_url, checksum_type
             if len(cs) == 2 and re.search(filename_pattern, cs[1]):
                 checksums[cs[1]] = cs[0]
         elif shortname in ["centos-stream-8", "centos-stream-9"]:
-            if len(cs) == 4 and cs[0] == "SHA256" and re.search(
-                filename_pattern, cs[1][1:-1]
+            if (
+                len(cs) == 4
+                and cs[0] == "SHA256"
+                and re.search(filename_pattern, cs[1][1:-1])
             ):
                 checksums[cs[1][1:-1]] = cs[3]
         else:
@@ -76,13 +80,15 @@ def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=
     base_url, _, filename = latest_url.rsplit("/", 2)
     latest_folder, latest_date, latest_build = resolve_debubu(base_url)
     current_base_url = f"{base_url}/{latest_folder}"
-    current_checksum_url = f"{current_base_url}/{latest_checksum_url.rsplit('/', 1)[-1]}"
+    current_checksum_url = (
+        f"{current_base_url}/{latest_checksum_url.rsplit('/', 1)[-1]}"
+    )
     result = requests.get(current_checksum_url)
     result.raise_for_status()
     current_checksum = None
     current_filename = filename
     if latest_build:  # Debian includes date-build in file name
-        fn_pre, fn_suf = filename.rsplit('.', 1)
+        fn_pre, fn_suf = filename.rsplit(".", 1)
         current_filename = f"{fn_pre}-{latest_date}{latest_build}.{fn_suf}"
     for line in result.text.splitlines():
         cs = line.split()
@@ -97,7 +103,9 @@ def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=
         current_checksum = f"{checksum_type}:{cs[0]}"
         break
     if current_checksum is None:
-        raise RuntimeError(f"{current_checksum_url} does not contain {current_filename}")
+        raise RuntimeError(
+            f"{current_checksum_url} does not contain {current_filename}"
+        )
     current_url = f"{current_base_url}/{current_filename}"
     return current_checksum, current_url, latest_date
 
@@ -105,20 +113,23 @@ def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=
 IMAGES = {
     "almalinux": get_latest_default,
     "centos": get_latest_default,
-    "debian": get_latest_debubu, 
-    "rockylinux": get_latest_default, 
+    "debian": get_latest_debubu,
+    "rockylinux": get_latest_default,
     "ubuntu": get_latest_debubu,
 }
 
 
-def mirror_image(
-    image, minio_server, minio_bucket, minio_access_key, minio_secret_key
-):
+def mirror_image(image, minio_server, minio_bucket, minio_access_key, minio_secret_key):
     client = Minio(
         minio_server,
         access_key=minio_access_key,
         secret_key=minio_secret_key,
     )
+
+    result = client.bucket_exists(minio_bucket)
+    if not result:
+        logger.error(f"Create bucket '{minio_bucket}' first")
+        return
 
     version = image["versions"][0]
 
@@ -158,7 +169,15 @@ def mirror_image(
         os.remove(filename)
 
 
-def update_image(image, getter, minio_server, minio_bucket, minio_access_key, minio_secret_key):
+def update_image(
+    image,
+    getter,
+    minio_server,
+    minio_bucket,
+    minio_access_key,
+    minio_secret_key,
+    dry_run=False,
+):
     name = image["name"]
     logger.info(f"Checking image {name}")
 
@@ -167,11 +186,15 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
 
     latest_checksum_url = image["latest_checksum_url"]
     logger.info(f"Getting checksums from {latest_checksum_url}")
-    
-    shortname = image["shortname"]
-    current_checksum, current_url, current_version = getter(shortname, latest_checksum_url, latest_url)
 
-    logger.info(f"Checksum of current {current_url.rsplit('/', 1)[-1]} is {current_checksum}")
+    shortname = image["shortname"]
+    current_checksum, current_url, current_version = getter(
+        shortname, latest_checksum_url, latest_url
+    )
+
+    logger.info(
+        f"Checksum of current {current_url.rsplit('/', 1)[-1]} is {current_checksum}"
+    )
 
     if not image["versions"]:
         logger.info("No image available so far")
@@ -216,21 +239,25 @@ def update_image(image, getter, minio_server, minio_bucket, minio_access_key, mi
     minio_bucket = str(minio_bucket)
     new_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
     logger.info(f"New URL is {new_url}")
-    image["versions"][0]["mirror_url"] = new_url
+    image["versions"][0]["url"] = new_url
 
-    mirror_image(
-        image,
-        minio_server,
-        minio_bucket,
-        minio_access_key,
-        minio_secret_key,
-    )
+    if dry_run:
+        logger.info(f"Not mirroring {new_url}, dry-run enabled")
+    else:
+        mirror_image(
+            image,
+            minio_server,
+            minio_bucket,
+            minio_access_key,
+            minio_secret_key,
+        )
     return 1
 
 
 @app.command()
 def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Do not perform any changes"),
     minio_access_key: str = typer.Option(
         None, help="Minio access key", envvar="MINIO_ACCESS_KEY"
     ),
@@ -257,6 +284,7 @@ def main(
 
     for image, getter in IMAGES.items():
         p = f"etc/images/{image}.yml"
+        logger.info(f"Processing file {p}")
 
         ryaml = ruamel.yaml.YAML()
         with open(p) as fp:
@@ -266,6 +294,7 @@ def main(
         for index, image in enumerate(data["images"]):
             if "latest_url" not in image:
                 continue
+
             updates += update_image(
                 image,
                 getter,
@@ -273,10 +302,12 @@ def main(
                 minio_bucket,
                 minio_access_key,
                 minio_secret_key,
+                dry_run,
             )
 
         if not updates:
             continue
+
         with open(p, "w+") as fp:
             ryaml.explicit_start = True
             ryaml.indent(sequence=4, offset=2)
