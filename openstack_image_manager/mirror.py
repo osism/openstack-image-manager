@@ -49,14 +49,15 @@ def main(
     onlyfiles = []
     for f in listdir(images):
         if isfile(join(images, f)):
+            logging.debug(f"Adding {f} to the list of files")
             onlyfiles.append(f)
 
     all_images = []
     for file in onlyfiles:
         with open(join(images, file)) as fp:
             data = yaml.load(fp, Loader=yaml.SafeLoader)
-            imgs = data.get("images")
-            for image in imgs:
+            for image in data.get("images"):
+                logging.debug(f"Adding {image['name']} to the list of images")
                 all_images.append(image)
 
     client = Minio(
@@ -65,17 +66,26 @@ def main(
         secret_key=minio_secret_key,
     )
 
+    result = client.bucket_exists(minio_bucket)
+    if not result:
+        logging.error(f"Create bucket '{minio_bucket}' first")
+
     for image in all_images:
+        if "versions" not in image:
+            continue
+
         for version in image["versions"]:
             if "source" not in version:
                 continue
+            else:
+                source = version["source"]
 
-            logging.debug("source: %s" % version["source"])
+            logging.debug(f"source: {source}")
 
-            path = urlparse(version["source"])
+            path = urlparse(source)
             url = urlparse(version["url"])
 
-            dirname = "%s/%s" % (image["shortname"], version["version"])
+            dirname = f"{image['shortname']}/{version['version']}"
             filename, fileextension = os.path.splitext(os.path.basename(path.path))
             _, fileextension2 = os.path.splitext(filename)
 
@@ -85,16 +95,16 @@ def main(
             if fileextension2 == ".tar":
                 filename = os.path.basename(url.path)
 
-            logging.debug("dirname: %s" % dirname)
-            logging.debug("filename: %s" % filename)
+            logging.debug(f"dirname: {dirname}")
+            logging.debug(f"filename: {filename}")
 
             try:
                 client.stat_object(minio_bucket, os.path.join(dirname, filename))
-                logging.info("'%s' available in '%s'" % (filename, dirname))
+                logging.info(f"'{filename}' available in '{dirname}'")
             except S3Error:
-                logging.info("'%s' not yet available in '%s'" % (filename, dirname))
+                logging.info(f"'{filename}' not yet available in '{dirname}'")
 
-                logging.info("Downloading '%s'" % version["source"])
+                logging.info(f"Downloading {version['source']}")
                 response = requests.get(
                     version["source"], stream=True, allow_redirects=True
                 )
@@ -103,19 +113,18 @@ def main(
                 del response
 
                 if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                    logging.info("Decompressing '%s'" % os.path.basename(path.path))
+                    logging.info(f"Decompressing '{os.path.basename(path.path)}'")
                     patoolib.extract_archive(os.path.basename(path.path), outdir=".")
                     os.remove(os.path.basename(path.path))
 
                 if not dry_run:
-                    logging.info("Uploading '%s' to '%s'" % (filename, dirname))
+                    logging.info(f"Uploading '{filename}' to '{dirname}'")
                     client.fput_object(
                         minio_bucket, os.path.join(dirname, filename), filename
                     )
                 else:
                     logging.info(
-                        "Not uploading '%s' to '%s' (dry-run enabled)"
-                        % (filename, dirname)
+                        f"Not uploading '{filename}' to '{dirname}' (dry-run enabled)"
                     )
 
                 os.remove(filename)
