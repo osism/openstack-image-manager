@@ -119,7 +119,7 @@ IMAGES = {
 }
 
 
-def mirror_image(image, minio_server, minio_bucket, minio_access_key, minio_secret_key):
+def mirror_image(image, latest_url, minio_server, minio_bucket, minio_access_key, minio_secret_key):
     client = Minio(
         minio_server,
         access_key=minio_access_key,
@@ -150,8 +150,9 @@ def mirror_image(image, minio_server, minio_bucket, minio_access_key, minio_secr
         logger.info("'%s' available in '%s'" % (new_filename, dirname))
     except S3Error:
         logger.info("'%s' not yet available in '%s'" % (new_filename, dirname))
-        logger.info("Downloading '%s'" % version["url"])
-        response = requests.get(version["url"], stream=True)
+        logger.info("Downloading '%s'" % latest_url)
+
+        response = requests.get(latest_url, stream=True)
         with open(os.path.basename(path.path), "wb") as fp:
             shutil.copyfileobj(response.raw, fp)
         del response
@@ -246,6 +247,7 @@ def update_image(
     else:
         mirror_image(
             image,
+            current_url,
             minio_server,
             minio_bucket,
             minio_access_key,
