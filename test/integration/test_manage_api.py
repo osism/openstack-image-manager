@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 import openstack
 from loguru import logger
 from munch import Munch

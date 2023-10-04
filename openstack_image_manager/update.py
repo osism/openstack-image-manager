@@ -1,4 +1,5 @@
-# NOTE(berendt): quick & dirty (but it works for the moment)
+# SPDX-License-Identifier: Apache-2.0
+
 # source of latest URLs: https://gitlab.com/libosinfo/osinfo-db
 
 from datetime import datetime
