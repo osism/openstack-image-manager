@@ -7,7 +7,6 @@ import os
 import re
 import shutil
 import sys
-import time
 from urllib.parse import urlparse
 from urllib.request import urlopen
 

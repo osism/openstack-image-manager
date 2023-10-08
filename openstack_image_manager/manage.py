@@ -294,22 +294,32 @@ class ImageManager:
                     versions[str(version["version"])] = {"url": version["url"]}
 
                     if "mirror_url" in version:
-                        versions[version["version"]]["mirror_url"] = version["mirror_url"]
+                        versions[version["version"]]["mirror_url"] = version[
+                            "mirror_url"
+                        ]
 
                     if "visibility" in version:
-                        versions[version["version"]]["visibility"] = version["visibility"]
+                        versions[version["version"]]["visibility"] = version[
+                            "visibility"
+                        ]
 
                     if "os_version" in version:
-                        versions[version["version"]]["os_version"] = version["os_version"]
+                        versions[version["version"]]["os_version"] = version[
+                            "os_version"
+                        ]
 
                     if "hidden" in version:
                         versions[version["version"]]["hidden"] = version["hidden"]
 
-                    if version["version"] == "latest":#
+                    if version["version"] == "latest":  #
                         if "checksums_url" in version:
-                            versions[version["version"]]["checksums_url"] = version["checksums_url"]
+                            versions[version["version"]]["checksums_url"] = version[
+                                "checksums_url"
+                            ]
                         else:
-                            raise ValueError('Key "checksums_url" is required when using version "latest"')
+                            raise ValueError(
+                                'Key "checksums_url" is required when using version "latest"'
+                            )
 
                     if "meta" in version:
                         versions[version["version"]]["meta"] = version["meta"]
@@ -325,7 +335,9 @@ class ImageManager:
                         versions[version["version"]]["meta"]["image_source"] = url
 
                     if "build_date" in version:
-                        versions[version["version"]]["meta"]["image_build_date"] = date.isoformat(version["build_date"])
+                        versions[version["version"]]["meta"][
+                            "image_build_date"
+                        ] = date.isoformat(version["build_date"])
 
                     if "id" in version:
                         versions[version["version"]]["id"] = version["id"]
@@ -390,14 +402,17 @@ class ImageManager:
             local_file = open(parsed_url.path, "rb")
             with local_file:
                 try:
-                    logger.info("Uploading local file '%s' as image %s"
-                                % (parsed_url.path, name))
+                    logger.info(
+                        "Uploading local file '%s' as image %s"
+                        % (parsed_url.path, name)
+                    )
                     new_image.data = local_file
                     new_image.upload(self.conn.image)
                 except Exception as e:
                     self.conn.image.delete_image(new_image)
-                    logger.error("Failed to upload local file for image %s\n%s"
-                                 % (name, e))
+                    logger.error(
+                        "Failed to upload local file for image %s\n%s" % (name, e)
+                    )
                     self.exit_with_error = True
                     return None
         else:
@@ -468,7 +483,8 @@ class ImageManager:
                 if imported_image.status == "queued":
                     if retry_attempts_for_queued_state < 0:
                         logger.error(
-                            "Image %s seems stuck in queued state" % image.name)
+                            "Image %s seems stuck in queued state" % image.name
+                        )
                         self.exit_with_error = True
                         return None
                     else:
@@ -626,10 +642,13 @@ class ImageManager:
                     previous_image = cloud_images[image["name"]]
 
                 if not self.CONF.dry_run:
-                    import_result = self.import_image(image, name, url, versions, version)
+                    import_result = self.import_image(
+                        image, name, url, versions, version
+                    )
                     if import_result:
                         logger.info(
-                            "Import of '%s' successfully completed, reloading images" % name
+                            "Import of '%s' successfully completed, reloading images"
+                            % name
                         )
                         cloud_images = self.get_images()
                         imported_image = cloud_images.get(name, None)
@@ -910,9 +929,7 @@ class ImageManager:
         Returns:
             set: A set of image names that are older than the max age.
         """
-        logger.info(
-            f"Checking for openstack images of age {str(self.CONF.max_age)}"
-        )
+        logger.info(f"Checking for openstack images of age {str(self.CONF.max_age)}")
 
         images = {}
         for d in self.read_image_files(return_all_images=True):
@@ -933,7 +950,9 @@ class ImageManager:
 
             image_definition = images[image_name]
 
-            build_date_backend = date.fromisoformat(cloud_image.properties["image_build_date"])
+            build_date_backend = date.fromisoformat(
+                cloud_image.properties["image_build_date"]
+            )
 
             if image_definition["multi"]:
                 build_date_definition_candidates = [
@@ -1035,9 +1054,15 @@ class ImageManager:
                 )
 
             elif uuid_validity == "none":
-                logger.info(f"Image '{image}' will not be deleted, UUID validity is 'none'")
+                logger.info(
+                    f"Image '{image}' will not be deleted, UUID validity is 'none'"
+                )
             elif counter[image_name] > last:
-                if self.CONF.delete and self.CONF.yes_i_really_know_what_i_do and not self.CONF.dry_run:
+                if (
+                    self.CONF.delete
+                    and self.CONF.yes_i_really_know_what_i_do
+                    and not self.CONF.dry_run
+                ):
                     try:
                         logger.info("Deactivating image '%s'" % image)
                         self.conn.image.deactivate_image(cloud_image.id)
@@ -1047,11 +1072,17 @@ class ImageManager:
                             cloud_image.id, visibility="community"
                         )
 
-                        if "keep" not in image_definition or not image_definition["keep"]:
+                        if (
+                            "keep" not in image_definition
+                            or not image_definition["keep"]
+                        ):
                             logger.info("Deleting %s" % image)
                             self.conn.image.delete_image(cloud_image.id)
                         else:
-                            logger.info("Image '%s' will not be deleted, because 'keep' flag is True" % image)
+                            logger.info(
+                                "Image '%s' will not be deleted, because 'keep' flag is True"
+                                % image
+                            )
                     except Exception as e:
                         logger.info(
                             "%s is still in use and cannot be deleted\n %s" % (image, e)
@@ -1076,7 +1107,9 @@ class ImageManager:
                     except Exception as e:
                         logger.error("An Exception occurred: \n%s" % e)
                         self.exit_with_error = True
-            elif counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run:
+            elif (
+                counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run
+            ):
                 logger.info("Setting visibility of '%s' to 'community'" % image)
                 self.conn.image.update_image(cloud_image.id, visibility="community")
         return unmanaged_images
