@@ -2,7 +2,7 @@ loguru==0.7.2
 minio==7.1.17
 munch==4.0.0
 natsort==8.4.0
-openstacksdk==1.5.0
+openstacksdk==2.0.0
 paramiko==3.3.1
 patool==1.12
 requests==2.31.0
