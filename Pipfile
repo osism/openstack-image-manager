@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"ruamel.yaml" = "==0.17.36"
+"ruamel.yaml" = "==0.17.39"
 loguru = "==0.7.2"
 minio = "==7.1.17"
 munch = "==4.0.0"
