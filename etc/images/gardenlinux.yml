@@ -33,3 +33,7 @@ images:
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.10.qcow2
         checksum: "sha256:995e40bb7dcf044f82650f8131bc8b440215e5f1023c4edca81da585e7068b4f"
         build_date: 2023-08-28
+      - version: '934.11'
+        url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.11.qcow2
+        checksum: "sha256:616a217afe692ba8b6a9eca3a99291414b77a819c18430e6cba1b01a7ba6238b"
+        build_date: 2023-10-25
