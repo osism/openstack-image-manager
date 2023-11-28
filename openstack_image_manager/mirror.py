@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
 import os
 import patoolib
 import requests
 import shutil
+import sys
 import typer
 import yaml
 
+from loguru import logger
 from minio import Minio
 from minio.error import S3Error
 from os import listdir
@@ -36,20 +37,24 @@ def main(
     ),
     minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
 ):
+
     if debug:
-        level = logging.DEBUG
-        logging.getLogger("paramiko").setLevel(logging.DEBUG)
+        level = "DEBUG"
     else:
-        level = logging.INFO
-        logging.getLogger("paramiko").setLevel(logging.WARNING)
-    logging.basicConfig(
-        format="%(asctime)s - %(message)s", level=level, datefmt="%Y-%m-%d %H:%M:%S"
+        level = "INFO"
+
+    log_fmt = (
+        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
+        "<level>{message}</level>"
     )
+
+    logger.remove()
+    logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
     onlyfiles = []
     for f in listdir(images):
         if isfile(join(images, f)):
-            logging.debug(f"Adding {f} to the list of files")
+            logger.debug(f"Adding {f} to the list of files")
             onlyfiles.append(f)
 
     all_images = []
@@ -57,7 +62,7 @@ def main(
         with open(join(images, file)) as fp:
             data = yaml.load(fp, Loader=yaml.SafeLoader)
             for image in data.get("images"):
-                logging.debug(f"Adding {image['name']} to the list of images")
+                logger.debug(f"Adding {image['name']} to the list of images")
                 all_images.append(image)
 
     client = Minio(
@@ -68,7 +73,7 @@ def main(
 
     result = client.bucket_exists(minio_bucket)
     if not result:
-        logging.error(f"Create bucket '{minio_bucket}' first")
+        logger.error(f"Create bucket '{minio_bucket}' first")
 
     for image in all_images:
         if "versions" not in image:
@@ -80,7 +85,7 @@ def main(
             else:
                 source = version["source"]
 
-            logging.debug(f"source: {source}")
+            logger.debug(f"source: {source}")
 
             path = urlparse(source)
             url = urlparse(version["url"])
@@ -95,16 +100,16 @@ def main(
             if fileextension2 == ".tar":
                 filename = os.path.basename(url.path)
 
-            logging.debug(f"dirname: {dirname}")
-            logging.debug(f"filename: {filename}")
+            logger.debug(f"dirname: {dirname}")
+            logger.debug(f"filename: {filename}")
 
             try:
                 client.stat_object(minio_bucket, os.path.join(dirname, filename))
-                logging.info(f"'{filename}' available in '{dirname}'")
+                logger.info(f"'{filename}' available in '{dirname}'")
             except S3Error:
-                logging.info(f"'{filename}' not yet available in '{dirname}'")
+                logger.info(f"'{filename}' not yet available in '{dirname}'")
 
-                logging.info(f"Downloading {version['source']}")
+                logger.info(f"Downloading {version['source']}")
                 response = requests.get(
                     version["source"], stream=True, allow_redirects=True
                 )
@@ -113,17 +118,17 @@ def main(
                 del response
 
                 if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                    logging.info(f"Decompressing '{os.path.basename(path.path)}'")
+                    logger.info(f"Decompressing '{os.path.basename(path.path)}'")
                     patoolib.extract_archive(os.path.basename(path.path), outdir=".")
                     os.remove(os.path.basename(path.path))
 
                 if not dry_run:
-                    logging.info(f"Uploading '{filename}' to '{dirname}'")
+                    logger.info(f"Uploading '{filename}' to '{dirname}'")
                     client.fput_object(
                         minio_bucket, os.path.join(dirname, filename), filename
                     )
                 else:
-                    logging.info(
+                    logger.info(
                         f"Not uploading '{filename}' to '{dirname}' (dry-run enabled)"
                     )
 
