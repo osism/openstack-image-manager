@@ -179,11 +179,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20231130'
+      - version: '20231207'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20231130-ubuntu-20.04.qcow2
-        checksum: sha256:549e22e567679082453325874a1e50b404e56fed82523c6ad8a41f0ff202d5d4
-        build_date: 2023-11-30
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20231207-ubuntu-20.04.qcow2
+        checksum: sha256:2b9d7a5caea114fa202614ddb8e5d3b947e42b070252072d502c396483af5bcf
+        build_date: 2023-12-07
   - name: Ubuntu 20.04 Minimal
     enable: true
     shortname: ubuntu-20.04-minimal
@@ -210,11 +210,11 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20231130'
+      - version: '20231208'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20231130-ubuntu-20.04-minimal.qcow2
-        checksum: sha256:6b8e4f05673a06ada75cb3f8c13f1cdd562fad3e0f49aaa9f0250c02e699781a
-        build_date: 2023-11-30
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20231208-ubuntu-20.04-minimal.qcow2
+        checksum: sha256:42fc7f41eaeae416e949f6caa43385153ebee7c7e40bdcf6ed15a0f530cd8536
+        build_date: 2023-12-08
   - name: Ubuntu 22.04
     enable: true
     shortname: ubuntu-22.04
@@ -240,11 +240,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20231201'
+      - version: '20231207'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20231201-ubuntu-22.04.qcow2
-        checksum: sha256:d2078ad6fb08db252ac4f22f79a1d9df4f1d37db992c514c919087c5369451c7
-        build_date: 2023-12-01
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20231207-ubuntu-22.04.qcow2
+        checksum: sha256:e2dc89ef7c12b7138fa20d93ca3c4ff1bb0420f739ff557ff4ff6b56ad62bc42
+        build_date: 2023-12-07
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -271,8 +271,8 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20231127'
+      - version: '20231207'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04-minimal/20231127-ubuntu-22.04-minimal.qcow2
-        checksum: sha256:fa1d10623c8c782a8bf68a6be40015910a79296f6df8c649ff33580ac8d122e8
-        build_date: 2023-11-27
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04-minimal/20231207-ubuntu-22.04-minimal.qcow2
+        checksum: sha256:a1af5cec732afebf21df98f7fa27c13ebc481d5afb2e732641e67a7d2a266642
+        build_date: 2023-12-07
