@@ -240,11 +240,11 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20231207'
+      - version: '20231211'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20231207-ubuntu-22.04.qcow2
-        checksum: sha256:e2dc89ef7c12b7138fa20d93ca3c4ff1bb0420f739ff557ff4ff6b56ad62bc42
-        build_date: 2023-12-07
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20231211-ubuntu-22.04.qcow2
+        checksum: sha256:6d6af17f28c895d87e29092725370387c5e19efe57e58b96dc574feed4245f89
+        build_date: 2023-12-11
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
