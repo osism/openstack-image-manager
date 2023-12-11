@@ -51,20 +51,6 @@ def main(
     logger.remove()
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-    onlyfiles = []
-    for f in listdir(images):
-        if isfile(join(images, f)):
-            logger.debug(f"Adding {f} to the list of files")
-            onlyfiles.append(f)
-
-    all_images = []
-    for file in onlyfiles:
-        with open(join(images, file)) as fp:
-            data = yaml.load(fp, Loader=yaml.SafeLoader)
-            for image in data.get("images"):
-                logger.debug(f"Adding {image['name']} to the list of images")
-                all_images.append(image)
-
     client = Minio(
         minio_server,
         access_key=minio_access_key,
@@ -74,8 +60,27 @@ def main(
     result = client.bucket_exists(minio_bucket)
     if not result:
         logger.error(f"Create bucket '{minio_bucket}' first")
+        if not dry_run:
+            sys.exit(1)
+
+    onlyfiles = []
+    for f in listdir(images):
+        if isfile(join(images, f)):
+            logger.debug(f"Adding {f} to the list of files")
+            onlyfiles.append(f)
+
+    all_images = []
+    for file in [x for x in onlyfiles if x.endswith(".yml")]:
+        logger.info(f"Processing file {file}")
+        with open(join(images, file)) as fp:
+            data = yaml.load(fp, Loader=yaml.SafeLoader)
+            for image in data.get("images"):
+                logger.debug(f"Adding {image['name']} to the list of images")
+                all_images.append(image)
 
     for image in all_images:
+        logger.info(f"Processing image {image['name']}")
+
         if "versions" not in image:
             continue
 
@@ -105,9 +110,9 @@ def main(
 
             try:
                 client.stat_object(minio_bucket, os.path.join(dirname, filename))
-                logger.info(f"'{filename}' available in '{dirname}'")
+                logger.info(f"File {filename} available in bucket {dirname}")
             except S3Error:
-                logger.info(f"'{filename}' not yet available in '{dirname}'")
+                logger.info(f"File {filename} not yet available in bucket {dirname}")
 
                 logger.info(f"Downloading {version['source']}")
                 response = requests.get(
