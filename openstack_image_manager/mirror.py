@@ -114,27 +114,28 @@ def main(
             except S3Error:
                 logger.info(f"File {filename} not yet available in bucket {dirname}")
 
-                logger.info(f"Downloading {version['source']}")
-                response = requests.get(
-                    version["source"], stream=True, allow_redirects=True
-                )
-                with open(os.path.basename(path.path), "wb") as fp:
-                    shutil.copyfileobj(response.raw, fp)
-                del response
+                if not isfile(os.path.basename(path.path)):
+                    logger.info(f"Downloading {version['source']}")
+                    response = requests.get(
+                        version["source"], stream=True, allow_redirects=True
+                    )
+                    with open(os.path.basename(path.path), "wb") as fp:
+                        shutil.copyfileobj(response.raw, fp)
+                    del response
 
                 if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                    logger.info(f"Decompressing '{os.path.basename(path.path)}'")
+                    logger.info(f"Decompressing {os.path.basename(path.path)}")
                     patoolib.extract_archive(os.path.basename(path.path), outdir=".")
                     os.remove(os.path.basename(path.path))
 
                 if not dry_run:
-                    logger.info(f"Uploading '{filename}' to '{dirname}'")
+                    logger.info(f"Uploading {filename} to bucket {dirname}")
                     client.fput_object(
                         minio_bucket, os.path.join(dirname, filename), filename
                     )
                 else:
                     logger.info(
-                        f"Not uploading '{filename}' to '{dirname}' (dry-run enabled)"
+                        f"Not uploading {filename} to bucket {dirname} (dry-run enabled)"
                     )
 
                 os.remove(filename)
