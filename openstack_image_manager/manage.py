@@ -1107,6 +1107,10 @@ class ImageManager:
                     except Exception as e:
                         logger.error("An Exception occurred: \n%s" % e)
                         self.exit_with_error = True
+            elif counter[image_name] <= last:
+                logger.info(
+                    f"Image '{image}' will not be deleted, {counter[image_name]} <= {last}"
+                )
             elif (
                 counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run
             ):
