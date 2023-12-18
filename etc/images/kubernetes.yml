@@ -34,3 +34,7 @@ images:
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-k8s-capi-images/ubuntu-2204-kube-v1.28/ubuntu-2204-kube-v1.28.4.qcow2
         checksum: "sha256:ad9cb2fd07c0b9bd25e5476cc8daf0e9037f1b9d0bfef95ce2346f18f03bf58c"
         build_date: 2023-11-16
+      - version: '1.29.0'
+        url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-k8s-capi-images/ubuntu-2204-kube-v1.29/ubuntu-2204-kube-v1.29.0.qcow2
+        checksum: "sha256:d6576f6f920e84070f86a67ca9b6b6c7e48b2baff32fde70840e3f7df09b87c4"
+        build_date: 2023-12-18
