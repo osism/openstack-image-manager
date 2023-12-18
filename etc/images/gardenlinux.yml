@@ -2,6 +2,7 @@
 images:
   - name: Garden Linux
     enable: true
+    shortname: gardenlinux
     format: qcow2
     login: admin
     min_disk: 10
@@ -37,3 +38,8 @@ images:
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.11.qcow2
         checksum: "sha256:616a217afe692ba8b6a9eca3a99291414b77a819c18430e6cba1b01a7ba6238b"
         build_date: 2023-10-25
+      - version: '1312.1'
+        url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/1312.1/openstack-gardener_prod-amd64-1312.1-c6ebc74e.qcow2
+        source: https://github.com/gardenlinux/gardenlinux/releases/download/1312.1/openstack-gardener_prod-amd64-1312.1-c6ebc74e.tar.xz
+        checksum: "sha256:12a67458959dabd8c4fa38f0224aa37f8e18629c218bbb716f411575a068663c"
+        build_date: 2023-11-22
