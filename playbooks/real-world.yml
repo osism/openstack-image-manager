@@ -9,4 +9,4 @@
 
     - role: tox
       vars:
-        tox_extra_args: -- --hide --hypervisor kvm --force --keep --delete --yes-i-really-know-what-i-do
+        tox_extra_args: -- --hypervisor kvm --force --keep --latest --hide

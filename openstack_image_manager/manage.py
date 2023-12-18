@@ -1097,7 +1097,11 @@ class ImageManager:
                             logger.info("Deactivating image '%s'" % image)
                             self.conn.image.deactivate_image(cloud_image.id)
 
-                        if self.CONF.hide and not self.CONF.dry_run:
+                        if (
+                            self.CONF.hide
+                            and not self.CONF.dry_run
+                            and cloud_image.visibility != "community"
+                        ):
                             logger.info(
                                 "Setting visibility of '%s' to 'community'" % image
                             )
@@ -1111,6 +1115,13 @@ class ImageManager:
                 logger.info(
                     f"Image '{image}' will not be deleted, {counter[image_name]} <= {last}"
                 )
+                if (
+                    self.CONF.hide
+                    and not self.CONF.dry_run
+                    and cloud_image.visibility != "community"
+                ):
+                    logger.info("Setting visibility of '%s' to 'community'" % image)
+                    self.conn.image.update_image(cloud_image.id, visibility="community")
             elif (
                 counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run
             ):
