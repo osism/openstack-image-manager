@@ -8,4 +8,4 @@
   roles:
     - role: tox
       vars:
-        tox_extra_args: -- --filter 'Ubuntu 22.04'
+        tox_extra_args: -- --filter 'Cirros'
