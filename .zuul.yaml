@@ -1,8 +1,8 @@
 ---
 - secret:
-    name: CLOUDS
+    name: SECRET_OPENSTACK_IMAGE_MANAGER
     data:
-      clouds: !encrypted/pkcs1-oaep
+      CLOUDS: !encrypted/pkcs1-oaep
         - LffnVb8+3O07qmDvnLP2fvzuTwHBg++m2mfw6YJZNAXiFiHzsKEXWGxAknY3Vmzhb2mvY
           Isp//o5gdwZ/mWRoQjrP1hyTX2INPgruwOwC67YACkAKUqAaaYsuHl9oCVCxKlbcP7k1m
           416ANG3+l91kC9xuOAEJb1jOqvLsFl9RbKzBgb0QfWcZ5phAherZfaJN0dFz7X4DnTVyy
@@ -13,9 +13,35 @@
           cZ5nX/UmBYd5+e8y48jKKAHZMV81PGbyE9Az+MKJLMaKO4DT5P4kEGMEPmGEveTzcG2nh
           yAU/TbgmxtRUmOr9YZUoXr1bT5BPd3h+QLpQBG2OTBhNH7LNT3IJ6Ce1Tjbh7nzupDXEE
           V4+C8M1SyCIJsoudTUSuqFRqOrN4cNVVEgHVo8JOhp0q/rv15wYuDzM42lMUXw=
+      MINIO_ACCESS_KEY: !encrypted/pkcs1-oaep
+        - kP0iv6kwNGr36ZykcnaVE1QneArQkAg/ahIhFeA6JZIKfp5/8sN/ZZzKwyp303NM17iUL
+          OiT8Di9TDpISP8hCJwiA5IftasU4bW8//oNfUVwF22O0ahQrlEWYRfhpW5G4rp3t1zJch
+          yPW15JgKiY/4uLLCDUzq2XmnsnHjsH4bdWlDal5clrvooUxIfM1m4Pu45WFRzjEd+FohQ
+          MER2YWaFN4mmSbXFgldvYyx7UU6i/aUaMAXOo4Tpw0wHtM0LuUsdy9GId/AxMkUsoP80a
+          kWBJtOxvjULjEIzbr9KUdSWsslp93Wt1HitHdwGcIEVuihQoR5xNhdFPOok6TqUEKnBwH
+          cuQcyewODZhY7Pb+eu/9SNcuk+uDV/XlY38xbFwi9RZzuebOY7zw3m2o0FB4d6hdSabSu
+          acTW5FpjXW4wmNMT4cJNPlqmgJMHF12bL1vdsEiJlU8GqWRFxCkCJC9UisJ3DPIvnAjmm
+          1cHXImgwy1w1JhvhfyprrcdPxhNKOV7LQyLVmVXOMC2Xtmx06LFxTuRrjdhwK1oWsllMY
+          8KVE3a1PUukqxoiRE7mKmrQNTeLe3n825FCt51YzJFeTc8k8aRQGq8mH6mL35JcONg8br
+          8Uat5TgmQq5eMzB7mZdxeKai/nq6u6ZhhQsQ7hrEDmN19jdiFUuw/2xllFpH4Y=
+      MINIO_SECRET_KEY: !encrypted/pkcs1-oaep
+        - qNhXfTquoSLOzqMn2cJuq8JG5HN6WqIo4i4A1sCgHqMRaGMgIeA88QdYqK/qS6BzVNpPT
+          YY0nlI17+BpIPc7nprLlGXuxicN0M/rzI3lJ1YMttuVuxL5i56yPdOluuexlM+45Aj/3N
+          f+K2Hgm3raguLzKGl8CQ+5y6GCip2FI21ZW+un7Ej3CQtaajlub9Vel+AKGfa/JjTpnsh
+          DoJ/oMrIiRamY3X2DaUfAaGdkxLH3eJeJHOSBF4IRAu66kPTiXc2wU8YxPpnGBe904O90
+          CYMtzYyCjY9nbMMVAWY0vHb4qpQOHOyy1E9Ac8665JsSFnoM7+kfqJcsfvBwcsbhtM2yw
+          Q2B6biyL4hNVDP+JpVxs1POlnmAvAObR/LvWFHWSyTn6kbq1nydcv2V8fqJBK76JHjpgi
+          AV+0MvtsM7XI+KAYcjU9ctAk2wHiPPhSKYPrzYrBlFQlBfpP4iMyvXbOBvnUozLyLUXaP
+          6NiMZQwjtojWjajIMCKl1xD2WR7x4ZhOnMx2CA9EysFQWO8rBtA8aCu8SghU66u6uTN5x
+          aT7UuWlWGs+/WXsA/dgvJjmiBCFbK/82vhPLa3HXuwlUJFpRTPp6i6J2uk/5h+YIKXOFv
+          lMVbx9QIDyRft0q/Z6mk0u2fW1wXPKVR/Su4cV24zgjtodxo2/Qum9SyCC7dh8=
 
 - semaphore:
     name: semaphore-openstack-image-manager-real-world
+    max: 1
+
+- semaphore:
+    name: semaphore-openstack-image-manager-mirror-images
     max: 1
 
 - job:
@@ -33,8 +59,17 @@
     pre-run: playbooks/pre-real-world.yml
     run: playbooks/real-world.yml
     secrets:
-      - name: clouds
-        secret: CLOUDS
+      - name: secret
+        secret: SECRET_OPENSTACK_IMAGE_MANAGER
+
+- job:
+    name: mirror-images
+    semaphores:
+      - name: semaphore-openstack-image-manager-mirror-images
+    run: playbooks/mirror-images.yml
+    secrets:
+      - name: secret
+        secret: SECRET_OPENSTACK_IMAGE_MANAGER
 
 - project:
     merge-mode: squash-merge
@@ -64,6 +99,7 @@
     post:
       jobs:
         - real-world
+        - mirror-images
     periodic-daily:
       jobs:
         - flake8

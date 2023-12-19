@@ -1,0 +1,12 @@
+---
+- name: Mirror images
+  hosts: all
+
+  environment:
+    MINIO_ACCESS_KEY: "{{ secret.MINIO_ACCESS_KEY }}"
+    MINIO_SECRET_KEY: "{{ secret.MINIO_SECRET_KEY }}"
+
+  roles:
+    - role: tox
+      vars:
+        tox_extra_args: -e mirror
