@@ -81,6 +81,7 @@
         - hadolint
         - mypy
         - openstack-image-manager-integration-test
+        - python-black
         - tox:
             vars:
               tox_envlist: test
@@ -92,6 +93,7 @@
         - hadolint
         - mypy
         - openstack-image-manager-integration-test
+        - python-black
         - tox:
             vars:
               tox_envlist: test
@@ -107,6 +109,7 @@
         - hadolint
         - mypy
         - openstack-image-manager-integration-test
+        - python-black
         - tox:
             vars:
               tox_envlist: test

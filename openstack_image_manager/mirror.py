@@ -37,7 +37,6 @@ def main(
     ),
     minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
 ):
-
     if debug:
         level = "DEBUG"
     else:
