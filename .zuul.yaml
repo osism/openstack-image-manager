@@ -45,7 +45,7 @@
     max: 1
 
 - job:
-    name: integration-test
+    name: openstack-image-manager-integration-test
     pre-run: playbooks/pre-integration-test.yml
     run: playbooks/integration-test.yml
     roles:
@@ -53,7 +53,7 @@
         name: devstack
 
 - job:
-    name: real-world
+    name: openstack-image-manager-real-world
     semaphores:
       - name: semaphore-openstack-image-manager-real-world
     pre-run: playbooks/pre-real-world.yml
@@ -63,7 +63,7 @@
         secret: SECRET_OPENSTACK_IMAGE_MANAGER
 
 - job:
-    name: mirror-images
+    name: openstack-image-manager-mirror-images
     semaphores:
       - name: semaphore-openstack-image-manager-mirror-images
     pre-run: playbooks/pre-mirror-images.yml
@@ -79,8 +79,8 @@
       jobs:
         - flake8
         - hadolint
-        - integration-test
         - mypy
+        - openstack-image-manager-integration-test
         - tox:
             vars:
               tox_envlist: test
@@ -90,8 +90,8 @@
       jobs:
         - flake8
         - hadolint
-        - integration-test
         - mypy
+        - openstack-image-manager-integration-test
         - tox:
             vars:
               tox_envlist: test
@@ -99,14 +99,14 @@
         - yamllint
     post:
       jobs:
-        - real-world
-        - mirror-images
+        - openstack-image-manager-real-world
+        - openstack-image-manager-mirror-images
     periodic-daily:
       jobs:
         - flake8
         - hadolint
-        - integration-test
         - mypy
+        - openstack-image-manager-integration-test
         - tox:
             vars:
               tox_envlist: test
