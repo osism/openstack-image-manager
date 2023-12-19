@@ -1,0 +1,6 @@
+---
+- name: Pre mirror images play
+  hosts: all
+
+  roles:
+    - role: ensure-tox
