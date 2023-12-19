@@ -14,27 +14,27 @@
           yAU/TbgmxtRUmOr9YZUoXr1bT5BPd3h+QLpQBG2OTBhNH7LNT3IJ6Ce1Tjbh7nzupDXEE
           V4+C8M1SyCIJsoudTUSuqFRqOrN4cNVVEgHVo8JOhp0q/rv15wYuDzM42lMUXw=
       MINIO_ACCESS_KEY: !encrypted/pkcs1-oaep
-        - kP0iv6kwNGr36ZykcnaVE1QneArQkAg/ahIhFeA6JZIKfp5/8sN/ZZzKwyp303NM17iUL
-          OiT8Di9TDpISP8hCJwiA5IftasU4bW8//oNfUVwF22O0ahQrlEWYRfhpW5G4rp3t1zJch
-          yPW15JgKiY/4uLLCDUzq2XmnsnHjsH4bdWlDal5clrvooUxIfM1m4Pu45WFRzjEd+FohQ
-          MER2YWaFN4mmSbXFgldvYyx7UU6i/aUaMAXOo4Tpw0wHtM0LuUsdy9GId/AxMkUsoP80a
-          kWBJtOxvjULjEIzbr9KUdSWsslp93Wt1HitHdwGcIEVuihQoR5xNhdFPOok6TqUEKnBwH
-          cuQcyewODZhY7Pb+eu/9SNcuk+uDV/XlY38xbFwi9RZzuebOY7zw3m2o0FB4d6hdSabSu
-          acTW5FpjXW4wmNMT4cJNPlqmgJMHF12bL1vdsEiJlU8GqWRFxCkCJC9UisJ3DPIvnAjmm
-          1cHXImgwy1w1JhvhfyprrcdPxhNKOV7LQyLVmVXOMC2Xtmx06LFxTuRrjdhwK1oWsllMY
-          8KVE3a1PUukqxoiRE7mKmrQNTeLe3n825FCt51YzJFeTc8k8aRQGq8mH6mL35JcONg8br
-          8Uat5TgmQq5eMzB7mZdxeKai/nq6u6ZhhQsQ7hrEDmN19jdiFUuw/2xllFpH4Y=
+        - W1KDWzWV32Z8rfF2jNk0qngHUhxik3X5kwRouZn0RVosB+xJDtTEiewGO6xrhlZSNz9VU
+          ej5L69fvjq08uKWLluJkUl8lYqurhW3CNeTKnC23IewtFtQMcgJdRxY8jrkYljZNummzH
+          0PhcqqNaBxZn0LdjPglkWUXDY/2zQDfP/gqo47vQbAzaAdP1qjSQQ2O/WIrIkauWkmFd+
+          wB8ACYgtU6j36Z0ChhwZCgov1JSr/ctDfvdDek0q6Rz7FcIWD5YEbCTWDQ0YKjTB7CO/H
+          zzMPmHXl8gAWMHqVQugyNCMm0tTaaSrMgntCP/z26nBJ3/sH6xK1lDE04ff7Fklybj2gw
+          3fWgQ/85yyDJOTs0fRjxZTzJ2aRGxscGOZWRGn+EjySY2YW+YHDLl6tptXKE0usk5pzOA
+          +UlT43tsOGb6M/Tw3rMSYXfU+gPV9rOi5smKCtPctpvq47tnIg0JvsCpZHhXGeOrTpTeO
+          oshp6DEYnGFuCLmCP6Y+4lq3VMb/P8cCGG6jXqku8Z4IMKtFYlkcvWG/1iTZYF8A5rEik
+          DKb4ZLjYOea2qIPRdstulQY3skPw+2oj4Lm61Ds9qKKdcJ0UC9MsoONBV/1KTlTKGfKHp
+          +r1idUwVrTjvk8eJ55P2mW00A+Ecs5aYX9rYd2chVHKlx/6IsSF/elDIh+6S4o=
       MINIO_SECRET_KEY: !encrypted/pkcs1-oaep
-        - qNhXfTquoSLOzqMn2cJuq8JG5HN6WqIo4i4A1sCgHqMRaGMgIeA88QdYqK/qS6BzVNpPT
-          YY0nlI17+BpIPc7nprLlGXuxicN0M/rzI3lJ1YMttuVuxL5i56yPdOluuexlM+45Aj/3N
-          f+K2Hgm3raguLzKGl8CQ+5y6GCip2FI21ZW+un7Ej3CQtaajlub9Vel+AKGfa/JjTpnsh
-          DoJ/oMrIiRamY3X2DaUfAaGdkxLH3eJeJHOSBF4IRAu66kPTiXc2wU8YxPpnGBe904O90
-          CYMtzYyCjY9nbMMVAWY0vHb4qpQOHOyy1E9Ac8665JsSFnoM7+kfqJcsfvBwcsbhtM2yw
-          Q2B6biyL4hNVDP+JpVxs1POlnmAvAObR/LvWFHWSyTn6kbq1nydcv2V8fqJBK76JHjpgi
-          AV+0MvtsM7XI+KAYcjU9ctAk2wHiPPhSKYPrzYrBlFQlBfpP4iMyvXbOBvnUozLyLUXaP
-          6NiMZQwjtojWjajIMCKl1xD2WR7x4ZhOnMx2CA9EysFQWO8rBtA8aCu8SghU66u6uTN5x
-          aT7UuWlWGs+/WXsA/dgvJjmiBCFbK/82vhPLa3HXuwlUJFpRTPp6i6J2uk/5h+YIKXOFv
-          lMVbx9QIDyRft0q/Z6mk0u2fW1wXPKVR/Su4cV24zgjtodxo2/Qum9SyCC7dh8=
+        - bqqJvV+51zBp4WDxrKyO23EvwhnOWuyDAPoHrJ3vXX1k97nIhk/Nsnxwdeos8Iw9j3Vpa
+          NglXfKZ2939q4yT3GotUNz7Bh8hMbxZOfsx0bsO7zCcB6k03sJHL5jQjyRKY8vTdU8Y6o
+          pwr8jRaBGdE/gnLeg80U0H5yisxYhpeqLWli16HiiDSRgm/0srG5faPJqgEbzbFZ+AMhn
+          dME4Mmv/JN8fHsT9iPyZsv98esSPks84TB+I0caqBWzYXfrr30dtEDnyA7KCpRmv4CvF5
+          //HVldJa1a6pktdJCO0ushnJdX4CRI2W9JGJr8SQDp3GrQMogWncRS9K38GARixMoTo3i
+          DzvBgEtlqUlw8f6zAYoxLeRxV7doSquhBOeS7aBXNb2nN7edEEXPjEUfbUBoRscBlGN9U
+          77FaymJY6SJ77DXXcJTmYIoPPyrv6rECbYZsJTVLkbDDInI+fgI1ftQYom6EUTJJTt94Y
+          uPbtONYM+KsUZLJepB9vFISaKrh4kOPZiEr4h94tepBosNatEwI1n7m7kfHFONJ+3rVzA
+          JMIed4v23rKBKJF51nQd75LlMn1YDoLPD48WKaQ/UDndyDsPKtipocegI+xixcuFmYgyh
+          vAM4jdXy/DElDQRvUcI8QA8KcPlZGIz5bYZalF2ipyrnfM4Bl4tcyngduEtHBc=
 
 - semaphore:
     name: semaphore-openstack-image-manager-real-world
