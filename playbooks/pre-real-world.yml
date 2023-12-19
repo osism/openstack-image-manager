@@ -12,7 +12,7 @@
     - name: Copy clouds.yml configuration file
       no_log: true
       ansible.builtin.copy:
-        content: "{{ clouds.clouds }}"
+        content: "{{ secret.CLOUDS }}"
         dest: "{{ zuul_work_dir }}/clouds.yml"
         remote_src: true
         mode: '0600'
