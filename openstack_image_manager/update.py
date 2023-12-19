@@ -281,7 +281,6 @@ def main(
         envvar="SWIFT_PREFIX",
     ),
 ):
-
     if debug:
         level = "DEBUG"
     else:
