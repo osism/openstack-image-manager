@@ -33,3 +33,8 @@ images:
         source: https://github.com/siderolabs/talos/releases/download/v1.4.5/openstack-amd64.tar.gz
         checksum: "sha256:fc7dc71a6acece93196c8bace15139469b7bfbe4fa7d001336da0fdda9b437c9"
         build_date: 2023-05-30
+      - version: '1.6.0'
+        url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/talos/1.6.0/openstack-amd64.raw
+        source: https://github.com/siderolabs/talos/releases/download/v1.6.0/openstack-amd64.raw.xz
+        checksum: "sha256:e3754c2338b4ce831db5442cf62deab260d56b64227a07cfc26e4b73eef5abaf"
+        build_date: 2023-12-15
