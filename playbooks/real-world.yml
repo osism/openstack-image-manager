@@ -9,4 +9,8 @@
 
     - role: tox
       vars:
+        tox_extra_args: -- --hypervisor kvm --force --keep --filter "OSISM CI"
+
+    - role: tox
+      vars:
         tox_extra_args: -- --hypervisor kvm --force --keep --latest --hide
