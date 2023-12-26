@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "bbfec80cf38bab755e8cea5c6460087229431a1e28cf42ad9d461fc770977985"
+            "sha256": "44e3a21802a0510a60d8bd92f4e05f7a8f69e80c5dc573379a3cefbf3a09bef5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -300,11 +300,11 @@
         },
         "dogpile.cache": {
             "hashes": [
-                "sha256:f6c2c6ff3a3dc7dc0d662b3f30983f684502fd7a91a45be680879d7d8cc177d7",
-                "sha256:fd9022c0d9cbadadf20942391a95adaf296be80b42daa8e202f8de1c21f198b2"
+                "sha256:0a387f1932c071ee8fd971d2ff51f8aba1106c559439a51b8c74a207f40e215d",
+                "sha256:c0d33baeff2b823c12e4aa8a662ce2beaf0297f8f2aca1fc2cb178e8bc4b476d"
             ],
-            "markers": "python_version >= '3.6'",
-            "version": "==1.2.2"
+            "markers": "python_version >= '3.8'",
+            "version": "==1.3.0"
         },
         "idna": {
             "hashes": [
@@ -381,11 +381,11 @@
         },
         "minio": {
             "hashes": [
-                "sha256:10656272c16156fa08436ce2b27e25e4134ef5142a8c259513ee26fb514531a6",
-                "sha256:4b015b018d10c1505f7c3e724fa7c2267760ac7bee6463a624cbf22cd272877b"
+                "sha256:65fb962f7f8dad68da197d118cb0e1039a420f6b858f7960cbc5ed816935c05f",
+                "sha256:d195fd6cc09a403635534215aaf231f0e2b82ac072444a39a7bc3f0ea6a4ba91"
             ],
             "index": "pypi",
-            "version": "==7.2.0"
+            "version": "==7.2.1"
         },
         "munch": {
             "hashes": [
