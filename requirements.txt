@@ -1,5 +1,5 @@
 loguru==0.7.2
-minio==7.2.2
+minio==7.2.3
 munch==4.0.0
 natsort==8.4.0
 openstacksdk==2.0.0
