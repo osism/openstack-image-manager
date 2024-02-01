@@ -335,9 +335,9 @@ class ImageManager:
                         versions[version["version"]]["meta"]["image_source"] = url
 
                     if "build_date" in version:
-                        versions[version["version"]]["meta"][
-                            "image_build_date"
-                        ] = date.isoformat(version["build_date"])
+                        versions[version["version"]]["meta"]["image_build_date"] = (
+                            date.isoformat(version["build_date"])
+                        )
 
                     if "id" in version:
                         versions[version["version"]]["id"] = version["id"]
