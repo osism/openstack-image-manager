@@ -3,7 +3,7 @@
   hosts: all
 
   tasks:
-    - name: Run test script
+    - name: Run mirror script
       ansible.builtin.shell:
         executable: /bin/bash
         chdir: "{{ zuul.project.src_dir }}"
@@ -14,8 +14,6 @@
 
           export PATH=$PATH:$HOME/.local/bin
 
-          pip3 install pipenv
-          pipenv install
           pipenv run python3 openstack_image_manager/mirror.py
       no_log: true
       environment:

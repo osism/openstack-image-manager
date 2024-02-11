@@ -41,6 +41,7 @@
     name: openstack-image-manager-mirror-images
     semaphores:
       - name: semaphore-openstack-image-manager-mirror-images
+    pre-run: playbooks/pre-mirror-images.yml
     run: playbooks/mirror-images.yml
     secrets:
       - name: secret
