@@ -2,11 +2,22 @@
 - name: Mirror images
   hosts: all
 
-  environment:
-    MINIO_ACCESS_KEY: "{{ secret.ACCESS_KEY }}"
-    MINIO_SECRET_KEY: "{{ secret.SECRET_KEY }}"
+  tasks:
+    - name: Run test script
+      ansible.builtin.shell:
+        executable: /bin/bash
+        chdir: "{{ zuul.project.src_dir }}"
+        cmd: |
+          set -e
+          set -o pipefail
+          set -x
 
-  roles:
-    - role: tox
-      vars:
-        tox_extra_args: -e mirror
+          export PATH=$PATH:$HOME/.local/bin
+
+          pip3 install pipenv
+          pipenv install
+          pipenv run python3 openstack_image_manager/mirror.py
+      no_log: true
+      environment:
+        MINIO_ACCESS_KEY: "{{ secret.ACCESS_KEY }}"
+        MINIO_SECRET_KEY: "{{ secret.SECRET_KEY }}"

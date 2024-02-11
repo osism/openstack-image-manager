@@ -3,27 +3,27 @@
     name: SECRET_OPENSTACK_IMAGE_MANAGER
     data:
       ACCESS_KEY: !encrypted/pkcs1-oaep
-        - DyOidBiQrhtAefo1bqpN/hrNWRGdqRezg7rpwAbQIjjQrp9g9+vPMp6gM5X3w7Hao5CUB
-          xrlE0M51+LW9o+xXh6MPpx707a0wmfv9T4XsiRS0aDnpx0mKnYWjOHtoFu7u0z0ZcJ/Rv
-          CHXmGOQp13t5yEyBV5sZiyiidu1CbCN9q5SUmmNXEUKQ8JwnNoupTlj+qSRMbeaTeDs2/
-          NxHoPrvizF/zCpBMKYgEix2d6PldHhx5ZtMtdOQbxCiUZwUxdQjSElI6jvHcT0Kk26omv
-          /plba2Q5v2NYaUplsdHB9EQ8sM1oGbivBt59TVxyoiPrHOgDbkb+J7ZBemshJGWKDrgKb
-          VCYQC89rf5BJK9/xPrjD7sLlkp5KyD0fIPC7cevVuTZv8FTzvrlVR1jBtD6U7tCTKwKFZ
-          vPP3wCxScb4mlcUW5s5nDekyVtMyM6i1GhNYlD4nwFDyqiniW/wCPHELyU0aHVk3q/ZB/
-          3vvWVE/PFhSc45z5juEzeYQvkrchExJ2/wd/mj7QrtAFcGfkvaY8P3CmZdh2X0VWxxjQD
-          +RXr/yO7gMTBYDpQMapijgC0veWc6SIfOO7/T1emIFWwYrxFaT7h3lzgpuGmWxTe6dKEq
-          C8fx39Mpy1ntPcIZ0klJxy1EzhLOswow+uAXnI1oliQTtdBuxhJ/xhU/DV9kJg=
+        - LzzmvR711ckVzmzZjNrEwHPaiRDa8kHuvm2DiSDd0l0yChItoBZBsiZ8cX8b4RJ/t7s90
+          d2DTFlGxPu125g097kAxoxSqOBBrumIXgKDIZHV6WtfRmnDhJpiSA+HH/3RhTnbibVhKn
+          f7rzLG1xBjx4cAHzFsB6vPT2OyIECZSVKM2wQ762974ajz+GMuiKWMtLYxAeu/3vNzHo0
+          bpRPy5b4KdKYp+H8zo3YCzksx6oGe+K9Z4E888tc6E3QuPSvLtxwNoqDd0lHciYAbtOu5
+          Kc8l0ANMK24C96ZJXCdn3GqbxLUK5muno0luIEc1RWB2VYimyH5pPEaU+X38aC0rqbAig
+          44Cj1fSkM7y5eaJYuLG6w464+LF9d1fuSWisWO0RMg9DCDiSd058gTLYOL959h9G17tXC
+          HDILdywBmegx1l+eRtGXNu3/IO6N8Ynhg5UHyY04qkZW4NZD8XNu9lBJMed1gma1PTlh+
+          DTOvqgmE5kVhEuseccBwKkqniLHUniIJ9+B1HbJWfw+XvxtHgqqtuRkxtEz+TD7yTcTCo
+          OQdtHs65R/T/GABzQ1RSIfJHGZl6gkGpBvxaBMaymSsLynbCVS5hTz2QBnmWj1DsX1z9e
+          Jndb1MqRmGCGDAHtYAWjoKBrpNYIvv2qXsxSecK6e7ojRIePMfTRA/5Yu0wwMQ=
       SECRET_KEY: !encrypted/pkcs1-oaep
-        - XzpF0BT5x97af4RxC16cDmuDUiSpLiplcGCulDZ2rNwHez9glhi7/lQXhKWWgD2rnNM86
-          nZ1IOFOrovUUFti3Qhx0gy5fS4g5QtQWxGDj5A0auywInwxLdnLEjpaAkbygdmYHBq2h/
-          W+7vwpcbLRtQHwQX3RL7wEQ/coMZSahYJ2MGK4AJjUahzPZHq/EgWRwjKqZGbkoQX69Kc
-          xkFSoI+6sRKAGm2wI2yTOPFyCEhfGRb5XdbM9ZQPpMpCdpQzYkcx/DoEQygRaekyZzjTU
-          RT5uYEfX4EFe9AW26X54lIA82L3ozdkXiRZBA+lNBu/tuPl6DTdVVb+1A89wOfd3q/eWa
-          CjoB9AjcP7qxmioNH5Qr/38DyDLZuQ6xVJmSFEwrybjdjfzYAg1fiS3t920ww5E43CxZ+
-          jyEnIV8pWaDq/hU+A5EmAHslssDwdZIX8zeZ9keq4UYt8gxFiNSf+KaNeuEcfKwvG/VSJ
-          Lp/xKK1F0WbngkCsGH7ehz0VY5M2nfiqxIVGP3hEnIlJsM/YPUnfdKDHvpGmSVpBzHoyo
-          Lbs9ps1n1W3HAma7K541oTFPesZiEC9Xv1/ROw1Y5fEWm4i1/JRXMYFwWBmnltysezk1B
-          b/pGFRzygcXh3buMfwNmIql5N14szFeHe05bGJyCgps07+xVB+R2lXAN0XEWEc=
+        - IB3eGqZcgvSMolhAVo75FPTT6WHrojveiOCrPLRPN284FDhFymrm17GHZRoDslA4ybnAs
+          05y9y0hb5ZLU7aYZtfPQkUL4Fs9QTa/eJZQ1FB8bAIxkZ1ERiC8pvfOph0lHQ7Raivvlv
+          JkXsXruvj9ztMzJVuqTvrjOCUb/3GUXwrII7A9nQyYWeI6O9suR6q0Jg4Ov1YOFesb7tQ
+          MQHY36icig9N6mbbpRnEvK/3iaaPUY6bJ3O+iLKCT33XiHisnJjS3rfukoEH0XB2+kr4p
+          4/73bZJL28vgq7KGXzB6XuzKBRueARA09zq1eDPYX+J4YqUNhZx8f2S3i6dvS/8M/0Iz3
+          Pv56Xzg17PAKyv99n7/AcWnIi/b67PVz4PqWeomQcWJJwfMtjPmWSgWwxp8hQz9vpyiLA
+          fL+gIkDKRCILlJxjmPGCSAeGz3eZLnPToxXYOwNlJ0D3gj3lkP/ARgxlY6vYNnHbHGJi7
+          q8su0bY5iUmV14AsawIId9NWi+K5M5F4teAJlDgp9Lvs7VNQxAKthjod9M9U0V661K20T
+          C0+YD0rfcuFY3/N1DofTYW/hd6a9jr2XpXAhEo0Hbqg+Iakt9QMPe9R4pCMz9LdnuOmXt
+          CK5u2AGRO0n8/+7meV8509qzGe46K+w6W54wNYcX7ntqEDrofdPcnPZ+E2zylU=
 
 - semaphore:
     name: semaphore-openstack-image-manager-mirror-images
@@ -41,7 +41,6 @@
     name: openstack-image-manager-mirror-images
     semaphores:
       - name: semaphore-openstack-image-manager-mirror-images
-    pre-run: playbooks/pre-mirror-images.yml
     run: playbooks/mirror-images.yml
     secrets:
       - name: secret
