@@ -1,34 +1,4 @@
 ---
-- secret:
-    name: SECRET_OPENSTACK_IMAGE_MANAGER
-    data:
-      ACCESS_KEY: !encrypted/pkcs1-oaep
-        - LzzmvR711ckVzmzZjNrEwHPaiRDa8kHuvm2DiSDd0l0yChItoBZBsiZ8cX8b4RJ/t7s90
-          d2DTFlGxPu125g097kAxoxSqOBBrumIXgKDIZHV6WtfRmnDhJpiSA+HH/3RhTnbibVhKn
-          f7rzLG1xBjx4cAHzFsB6vPT2OyIECZSVKM2wQ762974ajz+GMuiKWMtLYxAeu/3vNzHo0
-          bpRPy5b4KdKYp+H8zo3YCzksx6oGe+K9Z4E888tc6E3QuPSvLtxwNoqDd0lHciYAbtOu5
-          Kc8l0ANMK24C96ZJXCdn3GqbxLUK5muno0luIEc1RWB2VYimyH5pPEaU+X38aC0rqbAig
-          44Cj1fSkM7y5eaJYuLG6w464+LF9d1fuSWisWO0RMg9DCDiSd058gTLYOL959h9G17tXC
-          HDILdywBmegx1l+eRtGXNu3/IO6N8Ynhg5UHyY04qkZW4NZD8XNu9lBJMed1gma1PTlh+
-          DTOvqgmE5kVhEuseccBwKkqniLHUniIJ9+B1HbJWfw+XvxtHgqqtuRkxtEz+TD7yTcTCo
-          OQdtHs65R/T/GABzQ1RSIfJHGZl6gkGpBvxaBMaymSsLynbCVS5hTz2QBnmWj1DsX1z9e
-          Jndb1MqRmGCGDAHtYAWjoKBrpNYIvv2qXsxSecK6e7ojRIePMfTRA/5Yu0wwMQ=
-      SECRET_KEY: !encrypted/pkcs1-oaep
-        - IB3eGqZcgvSMolhAVo75FPTT6WHrojveiOCrPLRPN284FDhFymrm17GHZRoDslA4ybnAs
-          05y9y0hb5ZLU7aYZtfPQkUL4Fs9QTa/eJZQ1FB8bAIxkZ1ERiC8pvfOph0lHQ7Raivvlv
-          JkXsXruvj9ztMzJVuqTvrjOCUb/3GUXwrII7A9nQyYWeI6O9suR6q0Jg4Ov1YOFesb7tQ
-          MQHY36icig9N6mbbpRnEvK/3iaaPUY6bJ3O+iLKCT33XiHisnJjS3rfukoEH0XB2+kr4p
-          4/73bZJL28vgq7KGXzB6XuzKBRueARA09zq1eDPYX+J4YqUNhZx8f2S3i6dvS/8M/0Iz3
-          Pv56Xzg17PAKyv99n7/AcWnIi/b67PVz4PqWeomQcWJJwfMtjPmWSgWwxp8hQz9vpyiLA
-          fL+gIkDKRCILlJxjmPGCSAeGz3eZLnPToxXYOwNlJ0D3gj3lkP/ARgxlY6vYNnHbHGJi7
-          q8su0bY5iUmV14AsawIId9NWi+K5M5F4teAJlDgp9Lvs7VNQxAKthjod9M9U0V661K20T
-          C0+YD0rfcuFY3/N1DofTYW/hd6a9jr2XpXAhEo0Hbqg+Iakt9QMPe9R4pCMz9LdnuOmXt
-          CK5u2AGRO0n8/+7meV8509qzGe46K+w6W54wNYcX7ntqEDrofdPcnPZ+E2zylU=
-
-- semaphore:
-    name: semaphore-openstack-image-manager-mirror-images
-    max: 1
-
 - job:
     name: openstack-image-manager-integration-test
     pre-run: playbooks/pre-integration-test.yml
@@ -36,16 +6,6 @@
     roles:
       - zuul: osism/zuul-jobs
         name: devstack
-
-- job:
-    name: openstack-image-manager-mirror-images
-    semaphores:
-      - name: semaphore-openstack-image-manager-mirror-images
-    pre-run: playbooks/pre-mirror-images.yml
-    run: playbooks/mirror-images.yml
-    secrets:
-      - name: secret
-        secret: SECRET_OPENSTACK_IMAGE_MANAGER
 
 - project:
     merge-mode: squash-merge
@@ -74,9 +34,6 @@
               tox_envlist: test
               tox_extra_args: -- test/unit
         - yamllint
-    post:
-      jobs:
-        - openstack-image-manager-mirror-images
     periodic-daily:
       jobs:
         - flake8
