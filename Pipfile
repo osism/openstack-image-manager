@@ -20,4 +20,4 @@ yamale = "==4.0.4"
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
