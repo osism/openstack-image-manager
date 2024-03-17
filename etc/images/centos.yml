@@ -57,11 +57,11 @@ images:
     latest_url: 
       https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20240307'
+      - version: '20240313'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-8/20240307-centos-stream-8.qcow2
-        checksum: sha256:0c837e0049c3370e30ef09dd1553077cc3af804ecfcfd7975e5c4527c84fab27
-        build_date: 2024-03-07
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-8/20240313-centos-stream-8.qcow2
+        checksum: sha256:bde1730abc0e05278d2e0284b6499f054cfcedb1b2ca4f1437731c35fb5a89fb
+        build_date: 2024-03-13
   - name: CentOS Stream 9
     enable: true
     shortname: centos-stream-9
@@ -88,8 +88,8 @@ images:
     latest_url: 
       https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20240308'
+      - version: '20240313'
         url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20240308-centos-stream-9.qcow2
-        checksum: sha256:280c6facf0752d2b412c197cebed8b0bfa28e2bb7c4adc0e279c6e4a4af96ae7
-        build_date: 2024-03-08
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20240313-centos-stream-9.qcow2
+        checksum: sha256:965116dc23c95a9455b9d647c6834f15f45044e1a2d36788f768aaadb7a5d7fd
+        build_date: 2024-03-13
