@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import typer
+import typing
 from typing import Dict, Set
 import yamale
 import urllib.parse
@@ -371,7 +372,7 @@ class ImageManager:
 
     def import_image(
         self, image: dict, name: str, url: str, versions: dict, version: str
-    ) -> Image | None:
+    ) -> typing.Union[Image, None]:
         """
         Create a new image in Glance and upload it using the web-download method
 
@@ -461,7 +462,7 @@ class ImageManager:
                     )
         return result
 
-    def wait_for_image(self, image: Image) -> Image | None:
+    def wait_for_image(self, image: Image) -> typing.Union[Image, None]:
         """
         Wait for an imported image to reach "active" state
 
