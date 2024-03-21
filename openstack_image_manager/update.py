@@ -243,7 +243,8 @@ def update_image(
     minio_bucket = str(minio_bucket)
     new_url = f"https://{minio_server}/{swift_prefix}{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
     logger.info(f"New URL is {new_url}")
-    image["versions"][0]["url"] = new_url
+    image["versions"][0]["mirror_url"] = new_url
+    image["versions"][0]["url"] = current_url
 
     if dry_run:
         logger.info(f"Not mirroring {new_url}, dry-run enabled")
