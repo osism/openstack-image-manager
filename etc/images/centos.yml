@@ -28,6 +28,8 @@ images:
     versions:
       - version: '20221112'
         url: 
+          https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS
+        mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-7/20221112-centos-7.qcow2
         checksum: sha256:284aab2b23d91318f169ff464bce4d53404a15a0618ceb34562838c59af4adea
         build_date: 2022-11-12
@@ -59,6 +61,8 @@ images:
     versions:
       - version: '20240326'
         url: 
+          https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
+        mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-8/20240326-centos-stream-8.qcow2
         checksum: sha256:35f5b4323026887470954cb458fa1628fac9db451663b37495067c5bbe7b345d
         build_date: 2024-03-26
@@ -90,6 +94,8 @@ images:
     versions:
       - version: '20240326'
         url: 
+          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
+        mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20240326-centos-stream-9.qcow2
         checksum: sha256:26a4d6d9750266d3a68cee2813aee0cc58751bf87303418b4fcdeeaa3f6dad96
         build_date: 2024-03-26
