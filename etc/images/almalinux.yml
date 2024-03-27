@@ -28,6 +28,8 @@ images:
     versions:
       - version: '20231128'
         url: 
+          https://repo.almalinux.org/almalinux/8/cloud/x86_64/images/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2
+        mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/almalinux-8/20231128-almalinux-8.qcow2
         checksum: sha256:a1686bc537bce699b512e3233666f5b8f69ed797ff1ce0af52c17fdc52942621
         build_date: 2023-11-28
@@ -59,6 +61,8 @@ images:
     versions:
       - version: '20231113'
         url: 
+          https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
+        mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/almalinux-9/20231113-almalinux-9.qcow2
         checksum: sha256:6bbd060c971fd827a544c7e5e991a7d9e44460a449d2d058a0bb1290dec5a114
         build_date: 2023-11-13
