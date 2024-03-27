@@ -24,7 +24,7 @@ images:
     tags: []
     versions:
       - version: '20231221'
-        url: 
+        url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/osism-ci-image/osism-ci-image.qcow2
         checksum: sha256:c736498ac352fb8a8c9825a56270363bea6e9dfcfc805ff1017cc0ec9e382f83
         build_date: 2023-12-21
