@@ -2,8 +2,6 @@
 extends: default
 
 rules:
-  trailing-spaces:
-    level: warning
   line-length:
-    max: 200
+    max: 250
     level: warning
