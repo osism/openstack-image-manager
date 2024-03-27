@@ -37,7 +37,7 @@ def get_latest_default(
 
     checksums = {}
     for line in result.text.split("\n"):
-        cs = re.split("\s+", line)  # noqa W605
+        cs = re.split(r"\s+", line)
         if shortname in ["rocky-8", "rocky-9"]:
             if len(cs) == 4 and cs[0] == "SHA256":
                 checksums[latest_filename] = cs[3]
