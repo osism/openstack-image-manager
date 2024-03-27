@@ -24,7 +24,7 @@ images:
     tags: []
     versions:
       - version: '20220805'
-        url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/opensuse-leap-15.4/20220805/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
-        source: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.4/appliances/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
+        url: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.4/appliances/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
+        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/opensuse-leap-15.4/20220805/openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2
         checksum: "sha256:2521af728f47bdf7c18d18e1c95b576d2aedd9a8fb3668b4791f7f5ece7a1931"
         build_date: 2022-08-05
