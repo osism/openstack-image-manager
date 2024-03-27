@@ -48,6 +48,7 @@ versions:
   os_version: str(required=False)
   source: regex('^(http|ftp)s?:\/\/\w+.*|^private$', name='valid URL or private', required=False)
   url: regex('^(http|ftp)s?:\/\/\w+.*|^(file:|file:///)\w+.*', name='valid URL')
+  mirror_url: regex('^(http|ftp)s?:\/\/\w+.*|^(file:|file:///)\w+.*', name='valid URL', required=False)
   version: str()
   visibility: enum('public', 'private', 'community', 'shared', required=False)
   id: regex('^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', required=False)
