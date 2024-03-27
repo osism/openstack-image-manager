@@ -241,12 +241,25 @@ def update_image(
 
     minio_server = str(minio_server)
     minio_bucket = str(minio_bucket)
-    new_url = f"https://{minio_server}/{swift_prefix}{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"
-    logger.info(f"New URL is {new_url}")
-    image["versions"][0]["url"] = new_url
+    mirror_url = f"https://{minio_server}/{swift_prefix}{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"  # noqa E501
+    logger.info(f"New URL is {mirror_url}")
+
+    # If `mirror_url` is given, the manage.py script will
+    # use `mirror_url` for the download and will use `url`
+    # to set the `image_source` property. This way we keep
+    # track of the original source of the image.
+
+    image["versions"][0]["mirror_url"] = mirror_url
+
+    # We use `current_url` here and not `latest_url` to keep track
+    # of the original source of the image. Even if we know that `current_url`
+    # will not be available in the future. The `latest_url` will always
+    # be part of the image definition itself.
+
+    image["versions"][0]["url"] = current_url
 
     if dry_run:
-        logger.info(f"Not mirroring {new_url}, dry-run enabled")
+        logger.info(f"Not mirroring {mirror_url}, dry-run enabled")
     else:
         mirror_image(
             image,
