@@ -8,7 +8,7 @@ images:
     min_ram: 32
     status: active
     visibility: public
-    multi: True
+    multi: true
     meta:
       architecture: x86_64
       hw_disk_bus: scsi
@@ -35,7 +35,7 @@ images:
     min_ram: 32
     status: active
     visibility: public
-    multi: True
+    multi: true
     meta:
       architecture: x86_64
       hw_disk_bus: scsi
