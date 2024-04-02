@@ -149,10 +149,10 @@ def mirror_image(
 
     try:
         client.stat_object(minio_bucket, os.path.join(dirname, new_filename))
-        logger.info("'%s' available in '%s'" % (new_filename, dirname))
+        logger.info(f"'{new_filename}' available in '{dirname}'")
     except S3Error:
-        logger.info("'%s' not yet available in '%s'" % (new_filename, dirname))
-        logger.info("Downloading '%s'" % latest_url)
+        logger.info(f"'{new_filename}' not yet available in '{dirname}'")
+        logger.info(f"Downloading '{latest_url}'")
 
         response = requests.get(latest_url, stream=True)
         with open(os.path.basename(path.path), "wb") as fp:
@@ -160,13 +160,11 @@ def mirror_image(
         del response
 
         if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-            logger.info("Decompressing '%s'" % os.path.basename(path.path))
+            logger.info(f"Decompressing '{os.path.basename(path.path)}'")
             patoolib.extract_archive(os.path.basename(path.path), outdir=".")
             os.remove(os.path.basename(path.path))
 
-        logger.info(
-            "Uploading '%s' to '%s' as '%s'" % (filename, dirname, new_filename)
-        )
+        logger.info(f"Uploading '{filename}' to '{dirname}' as '{new_filename}'")
 
         client.fput_object(minio_bucket, os.path.join(dirname, new_filename), filename)
         os.remove(filename)

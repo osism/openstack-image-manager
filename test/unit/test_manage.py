@@ -98,7 +98,7 @@ class TestManage(TestCase):
 
         self.fake_image_dict = FAKE_IMAGE_DICT.copy()
         self.fake_image = Image(**FAKE_IMAGE_DATA)
-        self.fake_name = "%s (%s)" % (self.fake_image_dict["name"], "1")
+        self.fake_name = f"{self.fake_image_dict['name']} (1)"
         self.fake_url = "http://url.com"
         self.versions = {
             "1": {
@@ -570,7 +570,7 @@ class TestManage(TestCase):
         meta = self.fake_image_dict["meta"]
         self.fake_image_dict["tags"] = [
             self.sot.CONF.tag,
-            "os:%s" % self.fake_image_dict["meta"]["os_distro"],
+            f"os:{self.fake_image_dict['meta']['os_distro']}",
         ]
         mock_process_image.return_value = (
             {self.fake_image_dict["name"]},
