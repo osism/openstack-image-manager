@@ -384,6 +384,7 @@ class ImageManager:
             version: currently processed version
         """
         logger.info("Importing image %s" % name)
+        logger.info("Importing from URL %s" % url)
 
         properties = {
             "container_format": "bare",
