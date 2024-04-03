@@ -26,18 +26,13 @@ images:
         url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-image-gardenlinux/gardenlinux-amd64.934.11.qcow2
         checksum: "sha256:616a217afe692ba8b6a9eca3a99291414b77a819c18430e6cba1b01a7ba6238b"
         build_date: 2023-10-25
-      - version: '1312.1'
-        url: https://github.com/gardenlinux/gardenlinux/releases/download/1312.1/openstack-gardener_prod-amd64-1312.1-c6ebc74e.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1312.1/openstack-gardener_prod-amd64-1312.1-c6ebc74e.qcow2
-        checksum: "sha256:12a67458959dabd8c4fa38f0224aa37f8e18629c218bbb716f411575a068663c"
-        build_date: 2023-11-22
       - version: '1312.2'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1312.2/openstack-gardener_prod-amd64-1312.2-77c8471d.tar.xz
         mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1312.2/openstack-gardener_prod-amd64-1312.2-77c8471d.qcow2
         checksum: "sha256:12e09c1c82a65e9a2fe9651bbe5ec54f4c1cf2791b26f57c061cf0fb3190ee70"
         build_date: 2024-01-15
-      - version: '1443.1'
-        url: https://github.com/gardenlinux/gardenlinux/releases/download/1443.1/openstack-gardener_prod-amd64-1443.1-36c740a4.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1443.1/openstack-gardener_prod-amd64-1443.1-36c740a4.qcow2
-        checksum: "sha256:82a35d7a12ea7118458a6fe0d2cb95fd0b1b207b38ea4960ab623f547e690358"
-        build_date: 2024-03-25
+      - version: '1443.2'
+        url: https://github.com/gardenlinux/gardenlinux/releases/download/1443.2/openstack-gardener_prod-amd64-1443.2-7c14ae22.tar.xz
+        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1443.2/openstack-gardener_prod-amd64-1443.2-7c14ae22.qcow2
+        checksum: "sha256:09e43e9847797786e4ef642c5b2de52b3ccab3dd3c74fc6acc4c060642a74982"
+        build_date: 2024-04-02
