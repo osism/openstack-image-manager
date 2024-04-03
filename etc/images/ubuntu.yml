@@ -291,3 +291,34 @@ images:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04-minimal/20240319-ubuntu-22.04-minimal.qcow2
         checksum: sha256:24c513a5c10cd57c68403c800dc47495ff0eceea81d7946b512f0260a9c55f6e
         build_date: 2024-03-19
+  - name: Ubuntu 24.04
+    enable: true
+    shortname: ubuntu-24.04
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      os_distro: ubuntu
+      os_version: '24.04'
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/noble/current/SHA256SUMS
+    latest_url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+    versions:
+      - version: '20240312'
+        url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+        mirror_url:
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20240312-ubuntu-24.04.qcow2
+        checksum: sha256:c8297d73ab524f33ded309e1f4fb9febdb95ecd66d85a648987bb3432aef6ebe
+        build_date: 2024-03-12
