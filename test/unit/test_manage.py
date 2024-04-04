@@ -8,9 +8,9 @@ from openstack.image.v2.image import Image
 from openstack.image.v2._proxy import Proxy
 from typing import Any, Dict
 from datetime import date
-from openstack_image_manager import manage
+from openstack_image_manager import main
 
-logger.remove()  # disable all logging from manage.py
+logger.remove()  # disable all logging from main.py
 
 # sample config from images.yml
 FAKE_YML = """
@@ -121,7 +121,7 @@ class TestManage(TestCase):
             "1": {"url": self.file_url, "meta": {"image_source": self.file_url}}
         }
 
-        self.sot = manage.ImageManager()
+        self.sot = main.ImageManager()
         # since oslo_config.cfg.ConfigOpts objects allow attribute-style access,
         # we can mimick its behaviour with a munch.Munch object
         self.sot.CONF = Munch(
@@ -151,9 +151,9 @@ class TestManage(TestCase):
         # we can also mimick an openstack connection object with a Munch
         self.sot.conn = Munch(current_project_id="123456789", image=Proxy)
 
-    @mock.patch("openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.images")
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.images")
     def test_get_images(self, mock_images):
-        """test manage.ImageManager.get_images()"""
+        """test main.ImageManager.get_images()"""
 
         mock_images.return_value = [self.fake_image]
         expected_result = {self.fake_image.name: self.fake_image}
@@ -172,17 +172,17 @@ class TestManage(TestCase):
         self.assertEqual(result, expected_result)
 
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.get_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.import_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.import_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.create_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
     )
     @mock.patch("builtins.open")
     def test_import_image(self, mock_open, mock_create, mock_import, mock_get_image):
-        """test manage.ImageManager.import_image()"""
+        """test main.ImageManager.import_image()"""
 
         mock_create.return_value = self.fake_image
         mock_get_image.return_value = self.fake_image
@@ -231,11 +231,11 @@ class TestManage(TestCase):
         mock_image_obj.upload.assert_called_with(self.sot.conn.image)
         mock_get_image.assert_called_once_with(mock_image_obj)
 
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
-    @mock.patch("openstack_image_manager.manage.ImageManager.read_image_files")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
     def test_check_image_age(self, mock_read_image_files, mock_get_images):
         """
-        test manage.ImageManager.check_image_age()
+        test main.ImageManager.check_image_age()
         """
 
         mock_read_image_files.return_value = [self.fake_image_dict]
@@ -251,10 +251,10 @@ class TestManage(TestCase):
         too_old_images = self.sot.check_image_age()
         self.assertIn(self.fake_name, too_old_images)
 
-    @mock.patch("openstack_image_manager.manage.ImageManager.set_properties")
-    @mock.patch("openstack_image_manager.manage.ImageManager.import_image")
-    @mock.patch("openstack_image_manager.manage.requests.head")
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     @mock.patch("os.path.isfile")
     @mock.patch("os.path.exists")
     def test_process_image(
@@ -266,7 +266,7 @@ class TestManage(TestCase):
         mock_import_image,
         mock_set_properties,
     ):
-        """test manage.ImageManager.process_image()"""
+        """test main.ImageManager.process_image()"""
 
         mock_requests.return_value.status_code = 200
         meta = self.fake_image_dict["meta"]
@@ -329,18 +329,16 @@ class TestManage(TestCase):
         self.assertEqual(result, ({self.fake_image_dict["name"]}, None, None))
 
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.deactivate_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.remove_tag"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
     )
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.add_tag")
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.add_tag"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
-    @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.update_image"
-    )
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     def test_set_properties(
         self,
         mock_get_images,
@@ -349,7 +347,7 @@ class TestManage(TestCase):
         mock_remove_tag,
         mock_deactivate,
     ):
-        """test manage.ImageManager.set_properties()"""
+        """test main.ImageManager.set_properties()"""
 
         meta = self.fake_image_dict["meta"]
         mock_get_images.return_value = {self.fake_name: self.fake_image}
@@ -368,11 +366,11 @@ class TestManage(TestCase):
         mock_deactivate.assert_called_once_with(self.fake_image.id)
 
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.update_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     def test_rename_images(self, mock_get_images, mock_update_image):
-        """test manage.ImageManager.rename_images()"""
+        """test main.ImageManager.rename_images()"""
 
         # test with len(sorted_versions) > 1
         mock_get_images.return_value = {
@@ -423,19 +421,19 @@ class TestManage(TestCase):
         mock_update_image.assert_called_once_with(self.fake_image.id, name=mock.ANY)
 
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.delete_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.update_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.deactivate_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
     )
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     def test_manage_outdated_images(
         self, mock_get_images, mock_deactivate, mock_update_image, mock_delete_image
     ):
-        """test manage.ImageManager.manage_outdated_images"""
+        """test main.ImageManager.manage_outdated_images"""
 
         managed_images = {"some_image_name"}
         mock_get_images.return_value = {self.fake_image.name: self.fake_image}
@@ -446,17 +444,17 @@ class TestManage(TestCase):
         mock_update_image.assert_not_called()
         mock_delete_image.assert_not_called()
 
-    @mock.patch("openstack_image_manager.manage.ImageManager.read_image_files")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.delete_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.update_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
     @mock.patch(
-        "openstack_image_manager.manage.openstack.image.v2._proxy.Proxy.deactivate_image"
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
     )
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     def test_manage_outdated_images_2(
         self,
         mock_get_images,
@@ -465,7 +463,7 @@ class TestManage(TestCase):
         mock_delete_image,
         mock_read_image_files,
     ):
-        """test manage.ImageManager.manage_outdated_images in delete conditions"""
+        """test main.ImageManager.manage_outdated_images in delete conditions"""
 
         managed_images = {"some_image_name"}
         mock_get_images.return_value = {self.fake_image.name + "_2": self.fake_image}
@@ -494,16 +492,14 @@ class TestManage(TestCase):
         mock_update_image.assert_called_once()
         mock_delete_image.assert_not_called()
 
-    @mock.patch(
-        "openstack_image_manager.manage.ImageManager.unshare_image_with_project"
-    )
-    @mock.patch("openstack_image_manager.manage.ImageManager.share_image_with_project")
-    @mock.patch("openstack_image_manager.manage.ImageManager.validate_yaml_schema")
-    @mock.patch("openstack_image_manager.manage.ImageManager.manage_outdated_images")
-    @mock.patch("openstack_image_manager.manage.ImageManager.process_images")
-    @mock.patch("openstack_image_manager.manage.ImageManager.get_images")
-    @mock.patch("openstack_image_manager.manage.ImageManager.read_image_files")
-    @mock.patch("openstack_image_manager.manage.openstack.connect")
+    @mock.patch("openstack_image_manager.main.ImageManager.unshare_image_with_project")
+    @mock.patch("openstack_image_manager.main.ImageManager.share_image_with_project")
+    @mock.patch("openstack_image_manager.main.ImageManager.validate_yaml_schema")
+    @mock.patch("openstack_image_manager.main.ImageManager.manage_outdated_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.process_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch("openstack_image_manager.main.openstack.connect")
     def test_main(
         self,
         mock_connect,
@@ -515,7 +511,7 @@ class TestManage(TestCase):
         mock_share_image,
         mock_unshare_image,
     ):
-        """test manage.ImageManager.main()"""
+        """test main.ImageManager.main()"""
         mock_read_image_files.return_value = [self.fake_image_dict]
         mock_process_images.return_value = set()
 
@@ -552,21 +548,21 @@ class TestManage(TestCase):
         mock_share_image.assert_not_called()
         mock_unshare_image.assert_not_called()
 
-    @mock.patch("openstack_image_manager.manage.os.path.isfile")
-    @mock.patch("openstack_image_manager.manage.os.listdir")
+    @mock.patch("openstack_image_manager.main.os.path.isfile")
+    @mock.patch("openstack_image_manager.main.os.listdir")
     @mock.patch("builtins.open", mock.mock_open(read_data=str(FAKE_YML)))
     def test_read_image_files(self, mock_listdir, mock_isfile):
-        """test manage.ImageManager.read_image_files()"""
+        """test main.ImageManager.read_image_files()"""
         mock_listdir.return_value = ["fake.yml"]
         mock_isfile.return_value = True
 
         result = self.sot.read_image_files()
         self.assertEqual(result, [FAKE_IMAGE_DICT])
 
-    @mock.patch("openstack_image_manager.manage.ImageManager.rename_images")
-    @mock.patch("openstack_image_manager.manage.ImageManager.process_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.rename_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.process_image")
     def test_process_images(self, mock_process_image, mock_rename_images):
-        """test manage.ImageManager.process_images()"""
+        """test main.ImageManager.process_images()"""
         meta = self.fake_image_dict["meta"]
         self.fake_image_dict["tags"] = [
             self.sot.CONF.tag,

@@ -43,7 +43,7 @@ dev_template = "{tag}"
 dirty_template = "{tag}"
 
 [project.scripts]
-openstack-image-manager = "openstack_image_manager.manage:main"
+openstack-image-manager = "openstack_image_manager.main:main"
 
 [project.urls]
 "Homepage" = "https://github.com/osism/openstack-image-manager"

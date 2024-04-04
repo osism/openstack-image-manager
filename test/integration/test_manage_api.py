@@ -5,14 +5,14 @@ from loguru import logger
 from munch import Munch
 from unittest import TestCase
 
-from openstack_image_manager import manage
+from openstack_image_manager import main
 
-logger.remove()  # disable all logging from manage.py
+logger.remove()  # disable all logging from main.py
 
 
 class TestManageAPI(TestCase):
     def setUp(self):
-        self.sot = manage.ImageManager()
+        self.sot = main.ImageManager()
 
         self.sot.CONF = Munch(
             latest=True,
@@ -42,7 +42,7 @@ class TestManageAPI(TestCase):
 
     def test_api_functions_for_web_download(self):
         """
-        Test all used API functions for web imports, as they appear in openstack_image_manager.manage.py
+        Test all used API functions for web imports, as they appear in openstack_image_manager.main
         Import the image via web-download, set its properties, rename it and delete it afterwards
         """
         self.sot.conn = openstack.connect(cloud=self.sot.CONF.cloud)
@@ -149,7 +149,7 @@ class TestManageAPI(TestCase):
 
     def test_api_functions_for_file_upload(self):
         """
-        Test all used API functions for file uploads, as they appear in openstack_image_manager.manage.py
+        Test all used API functions for file uploads, as they appear in openstack_image_manager.main
         Import the image via local file upload, set its properties, rename it and delete it afterwards
         """
         self.sot.conn = openstack.connect(cloud=self.sot.CONF.cloud)
