@@ -252,12 +252,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20240328'
-        url: https://cloud-images.ubuntu.com/jammy/20240328/jammy-server-cloudimg-amd64.img
+      - version: '20240403'
+        url: https://cloud-images.ubuntu.com/jammy/20240403/jammy-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20240328-ubuntu-22.04.qcow2
-        checksum: sha256:172e6fe4a4bd5d38fb097772f856706f8866d9666d98f54b2146e368ed76f32e
-        build_date: 2024-03-28
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20240403-ubuntu-22.04.qcow2
+        checksum: sha256:ceacfb01f542b1eb3b08651cc9ea9e90611ad3790a3e7eeac6f76fd553c76fe3
+        build_date: 2024-04-03
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
