@@ -16,6 +16,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: centos
       os_version: '8'
       replace_frequency: quarterly
@@ -49,6 +50,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: centos
       os_version: '9'
       replace_frequency: quarterly

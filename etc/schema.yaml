@@ -24,6 +24,7 @@ image:
 ---
 meta:
   architecture: enum('x86_64', 'aarch64', 'risc-v')
+  hypervisor_type: enum('hyperv', 'ironic', 'lxc', 'qemu', 'uml', 'vmware', 'xen')
   hotfix_hours: int(min=0, required=False)
   hw_disk_bus: enum('virtio', 'scsi', None)
   hw_rng_model: enum('virtio', None, required=False)

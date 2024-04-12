@@ -16,6 +16,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '14.04'
       replace_frequency: never
@@ -49,6 +50,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '16.04'
       replace_frequency: never
@@ -82,6 +84,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '16.04'
       replace_frequency: never
@@ -115,6 +118,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '18.04'
       replace_frequency: quarterly
@@ -146,6 +150,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '18.04'
       replace_frequency: quarterly
@@ -179,6 +184,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '20.04'
       replace_frequency: quarterly
@@ -210,6 +216,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '20.04'
       replace_frequency: quarterly
@@ -243,6 +250,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '22.04'
       replace_frequency: quarterly
@@ -274,6 +282,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '22.04'
       replace_frequency: quarterly
@@ -307,6 +316,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '24.04'
       replace_frequency: quarterly

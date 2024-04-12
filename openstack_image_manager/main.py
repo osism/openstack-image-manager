@@ -60,9 +60,6 @@ class ImageManager:
         filter: str = typer.Option(
             None, help="Filter images with a regex on their name"
         ),
-        hypervisor: str = typer.Option(
-            None, help="Set hypervisor type meta information"
-        ),
         deactivate: bool = typer.Option(
             False, "--deactivate", help="Deactivate images that should be deleted"
         ),
@@ -753,10 +750,6 @@ class ImageManager:
 
             logger.info(f"Setting image_original_user = {image['login']}")
             image["meta"]["image_original_user"] = image["login"]
-
-            if self.CONF.hypervisor:
-                logger.info(f"Setting hypervisor type = {self.CONF.hypervisor}")
-                image["meta"]["hypervisor_type"] = self.CONF.hypervisor
 
             if version == "latest" and upstream_checksum:
                 image["meta"]["upstream_checksum"] = upstream_checksum
