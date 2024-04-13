@@ -119,7 +119,7 @@ class ImageManager:
         logger.remove()
         logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-        if __name__ == "__main__" or __name__ == "openstack_image_manager.manage":
+        if __name__ == "__main__" or __name__ == "openstack_image_manager.main":
             self.main()
 
     def read_image_files(self, return_all_images=False) -> list:
