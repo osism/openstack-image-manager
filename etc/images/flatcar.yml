@@ -17,6 +17,7 @@ images:
       hw_rng_model: virtio
       hw_scsi_model: virtio-scsi
       hw_watchdog_action: reset
+      hypervisor_type: qemu
       os_distro: fedora
       replace_frequency: never
       uuid_validity: none
