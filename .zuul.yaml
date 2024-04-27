@@ -3,6 +3,8 @@
     name: openstack-image-manager-integration-test
     pre-run: playbooks/pre-integration-test.yml
     run: playbooks/integration-test.yml
+    # The deployment of Devstack can take more time than our default timeout.
+    timeout: 7200
     roles:
       - zuul: osism/zuul-jobs
         name: devstack
