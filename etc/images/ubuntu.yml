@@ -188,12 +188,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20240416'
-        url: https://cloud-images.ubuntu.com/focal/20240416/focal-server-cloudimg-amd64.img
+      - version: '20240430'
+        url: https://cloud-images.ubuntu.com/focal/20240430/focal-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20240416-ubuntu-20.04.qcow2
-        checksum: sha256:c661fd999a826e2f01efc4e5b6d3aed63e39acc4198e5a09dfc42d5b59c2b4d7
-        build_date: 2024-04-16
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20240430-ubuntu-20.04.qcow2
+        checksum: sha256:f1d83ad0c738d4fde4af12ed80f8c6148e2d531c67681ee10bd427655314c309
+        build_date: 2024-04-30
   - name: Ubuntu 20.04 Minimal
     enable: true
     shortname: ubuntu-20.04-minimal
