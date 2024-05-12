@@ -22,15 +22,15 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url:
+    latest_checksum_url: 
       https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2.CHECKSUM
-    latest_url:
+    latest_url: 
       https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
     versions:
       - version: '20231119'
-        url:
+        url: 
           https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
-        mirror_url:
+        mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-8/20231119-rocky-8.qcow2
         checksum: sha256:d17f15a7649dd064795306c114b90fc5062e7d5fefa9e9f0bd6b7ce1aeac3ae5
         build_date: 2023-11-19
@@ -56,15 +56,15 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url:
+    latest_checksum_url: 
       https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM
-    latest_url:
+    latest_url: 
       https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20231113'
-        url:
+      - version: '20240509'
+        url: 
           https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
-        mirror_url:
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20231113-rocky-9.qcow2
-        checksum: sha256:7713278c37f29b0341b0a841ca3ec5c3724df86b4d97e7ee4a2a85def9b2e651
-        build_date: 2023-11-13
+        mirror_url: 
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20240509-rocky-9.qcow2
+        checksum: sha256:2b521fdff4e4d1a0f1a10b53579a34bba8081ce5eb08e64e3ff22289557f0cfa
+        build_date: 2024-05-09
