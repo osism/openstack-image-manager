@@ -25,8 +25,8 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '23.1'
-        url: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/23.1/OPNsense-23.1-OpenSSL-nano-amd64.img.bz2
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/opnsense/23.1/OPNsense-23.1-OpenSSL-nano-amd64.img
-        checksum: "sha256:8e2e5ab62f8d2bc5eb72296a0d7913789f370f445216d996a7d4d9e88e5e3733"
-        build_date: 2023-01-25
+      - version: '24.1'
+        url: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/24.1/OPNsense-24.1-nano-amd64.img.bz2
+        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/opnsense/24.1/OPNsense-24.1-OpenSSL-nano-amd64.img
+        checksum: "sha256:149641d45243bdbd7da3527408f31c3c4b02b5c6ca29b261b10c9af4236d11e7"
+        build_date: 2024-01-29
