@@ -1,4 +1,7 @@
 #!/bin/sh
+# setting default if not set
+SCHEDULE=${SCHEDULE:-0 1 * * 7}
+CLOUD=${CLOUD:-openstack}
 
 env >> /etc/environment
 # build cronjob entry

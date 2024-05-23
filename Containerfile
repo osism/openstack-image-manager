@@ -1,7 +1,7 @@
 ARG PYTHON_VERSION=3.12
 FROM python:${PYTHON_VERSION}-slim 
 
-COPY requirements.txt /src/requirements.txt
+COPY . /src
 COPY scripts/entrypoint.sh /entrypoint.sh
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -21,10 +21,9 @@ apt-get install -y --no-install-recommends \
 rm -f /etc/cron.d/*
 rm -f /etc/cron.daily/*
 
-mkdir /wheels
-python3 -m pip --no-cache-dir install -U 'pip==24.0'
-python3 -m pip --no-cache-dir install -r /src/requirements.txt
-python3 -m pip --no-cache-dir install 'openstack-image-manager==0.20240417.0' 
+# install openstack-image-manager
+python3 -m pip --no-cache-dir install /src
+
 
 # cleanup
 apt-get clean
@@ -35,6 +34,10 @@ rm -rf \
   /usr/share/man/* \
   /var/lib/apt/lists/* \
   /var/tmp/*
+
+pip3 install --no-cache-dir pyclean==3.0.0
+pyclean /usr
+pip3 uninstall -y pyclean
 EOF
 
 COPY etc/images/* /etc/images/
