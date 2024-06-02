@@ -188,12 +188,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
     versions:
-      - version: '20240524'
-        url: https://cloud-images.ubuntu.com/focal/20240524/focal-server-cloudimg-amd64.img
+      - version: '20240531'
+        url: https://cloud-images.ubuntu.com/focal/20240531/focal-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20240524-ubuntu-20.04.qcow2
-        checksum: sha256:545ab0bac48bda6e1a62b4f13d4b1e8ad9141bb85b89ccb90bec7ee55386a71b
-        build_date: 2024-05-24
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20240531-ubuntu-20.04.qcow2
+        checksum: sha256:b0d3ad1b4d9ca66d5becab2da8cade7a71ef85a81e719f2aab006d462a9eea28
+        build_date: 2024-05-31
   - name: Ubuntu 20.04 Minimal
     enable: true
     shortname: ubuntu-20.04-minimal
@@ -252,12 +252,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20240522'
-        url: https://cloud-images.ubuntu.com/jammy/20240522/jammy-server-cloudimg-amd64.img
+      - version: '20240601'
+        url: https://cloud-images.ubuntu.com/jammy/20240601/jammy-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20240522-ubuntu-22.04.qcow2
-        checksum: sha256:8ccfcbe50e0e7beb75e91878da6303f4fef371e3f21ac6d86dc616b7acbcac9d
-        build_date: 2024-05-22
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20240601-ubuntu-22.04.qcow2
+        checksum: sha256:1eaa1df5794122e3419c963d88f043121c164936b9b828adac650c9f5e22c3e6
+        build_date: 2024-06-01
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -316,9 +316,9 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/noble/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
     versions:
-      - version: '20240521'
-        url: https://cloud-images.ubuntu.com/noble/20240521/noble-server-cloudimg-amd64.img
+      - version: '20240601'
+        url: https://cloud-images.ubuntu.com/noble/20240601/noble-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20240521-ubuntu-24.04.qcow2
-        checksum: sha256:3d44c2029bdcda95538bff0db1eed393f5a115ead27f8c986ae335a7b5398c84
-        build_date: 2024-05-21
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20240601-ubuntu-24.04.qcow2
+        checksum: sha256:6c9665c874141e6310f6f862796a0c37f280c6180f294bd1385b39aca22cbaf2
+        build_date: 2024-06-01
