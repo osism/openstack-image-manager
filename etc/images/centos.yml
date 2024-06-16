@@ -92,10 +92,10 @@ images:
     latest_url: 
       https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20240528'
+      - version: '20240612'
         url: 
-          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20240527.0.x86_64.qcow2
+          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20240610.0.x86_64.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20240528-centos-stream-9.qcow2
-        checksum: sha256:8fccb1c8e89aac2af38923e024dd9ef523e12f5c28c9f12bb00fd4b0b94a6976
-        build_date: 2024-05-28
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20240612-centos-stream-9.qcow2
+        checksum: sha256:f10428fe616276cccde4b3073dc86ef0c04bbf2efc07ea3ef59c22e419aad798
+        build_date: 2024-06-12
