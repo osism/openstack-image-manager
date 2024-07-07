@@ -26,14 +26,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
-      - version: '20240430'
+      - version: '20240703'
         url: 
-          https://cdimage.debian.org/cdimage/cloud/buster/20240430-1733/debian-10-genericcloud-amd64-20240430-1733.qcow2
+          https://cdimage.debian.org/cdimage/cloud/buster/20240703-1797/debian-10-genericcloud-amd64-20240703-1797.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-10/20240430-debian-10.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-10/20240703-debian-10.qcow2
         checksum: 
-          sha512:8ef93d6438b91d6bfb6a23434c6afd2b9fff911c8be615dd327ea6476d8b4777a29478c53018e3d0ea2941482d98c643882a94e28d5da56c3eb2af6a4200f6c7
-        build_date: 2024-04-30
+          sha512:416bca009f83884ceab49bf8ad944c9fe0091ac90cf80856fcb5d2a8300a949b3f19573b27c34d3e6d44224e716c122c4b884071d1f1634c5ce52c4dc109c5d1
+        build_date: 2024-07-03
   - name: Debian 11
     enable: true
     shortname: debian-11
@@ -60,14 +60,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20240603'
+      - version: '20240702'
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bullseye/20240603-1767/debian-11-genericcloud-amd64-20240603-1767.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bullseye/20240702-1796/debian-11-genericcloud-amd64-20240702-1796.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20240603-debian-11.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20240702-debian-11.qcow2
         checksum: 
-          sha512:9df7b948c9842ce5721bec04c831315a74911c09884028406f40c9012abc04342edd3d2c91c555c45bb0922079a465ce62c8ad10e9f072e14e07370b7ce4cdf7
-        build_date: 2024-06-03
+          sha512:83f2e94a1a32c0546c8e8a2c1f99ab86c9d94a973ffb816bbf48e6733ba99fae9d674a6996a40bbe22830c4574995b78b8fb8925aecf9f23d5f808ee1a1591a7
+        build_date: 2024-07-02
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -94,11 +94,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2024-06-29
+      - build_date: 2024-07-05
         checksum: 
-          sha512:95dec549e2987e60826bc96140e398dc1ff3d744c3dee05f6cb1818b8c9b7095753f1344ce8972f3f669d1d71bc85fc75ff0625d780d5b6801b50639a5464f43
+          sha512:b966ee3b3c14e1294bd9bbb6132873d56a38a28b8d58bbb264b81ca7cc96f056a92f1289b6e07a4d8969439744d64c5ace3da386fb218a2fd08d1bebc0e777e9
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20240629-1793/debian-12-genericcloud-amd64-daily-20240629-1793.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20240705-1799/debian-12-genericcloud-amd64-daily-20240705-1799.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20240629-debian-12.qcow2
-        version: '20240629'
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20240705-debian-12.qcow2
+        version: '20240705'
