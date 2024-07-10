@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import sys
+from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
@@ -219,7 +220,12 @@ def update_image(
     if current_version is None:
         logger.info(f"Checking {current_url}")
 
-        conn = urlopen(current_url, timeout=30)
+        try:
+            conn = urlopen(current_url, timeout=30)
+        except HTTPError as e:
+            logger.warning(f"Image {name} cannot be processed, skipping: {e}")
+            return 0
+
         dt = datetime.strptime(
             conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
         )
