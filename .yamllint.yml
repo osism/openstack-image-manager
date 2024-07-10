@@ -5,3 +5,4 @@ rules:
   line-length:
     max: 250
     level: warning
+  trailing-spaces: disable
