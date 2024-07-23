@@ -169,7 +169,7 @@ images:
         checksum: sha256:2d9755669c499e88d51da0638cd20e0983a248828e2153906c013bea0ee2f45a
         build_date: 2023-06-02
   - name: Ubuntu 20.04
-    enable: true
+    enable: false
     shortname: ubuntu-20.04
     format: qcow2
     login: ubuntu
@@ -201,7 +201,7 @@ images:
         checksum: sha256:70f0345ca9a1b3b0bbc4719a9c5992c456cf766d0d84ce3d7716ecc21a421778
         build_date: 2024-07-04
   - name: Ubuntu 20.04 Minimal
-    enable: true
+    enable: false
     shortname: ubuntu-20.04-minimal
     format: qcow2
     login: ubuntu
