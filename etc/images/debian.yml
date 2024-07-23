@@ -1,7 +1,7 @@
 ---
 images:
   - name: Debian 10
-    enable: true
+    enable: false
     shortname: debian-10
     format: qcow2
     login: debian
