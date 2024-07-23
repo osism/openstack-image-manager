@@ -2,7 +2,7 @@
 images:
 
   - name: Kubernetes CAPI
-    enable: true
+    enable: false
     format: qcow2
     login: ubuntu
     min_disk: 20
