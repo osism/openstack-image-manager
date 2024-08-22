@@ -15,15 +15,10 @@ apt-get update
 apt-get install -y --no-install-recommends \
   build-essential \
   gcc \
-  git \
-  cron 
-
-rm -f /etc/cron.d/*
-rm -f /etc/cron.daily/*
+  git
 
 # install openstack-image-manager
 python3 -m pip --no-cache-dir install /src
-
 
 # cleanup
 apt-get clean
@@ -40,7 +35,15 @@ pyclean /usr
 pip3 uninstall -y pyclean
 EOF
 
-COPY etc/images/* /etc/images/
+ENV USER=oim
+ENV UID=8000
+ENV GROUP=oim
+ENV GID=8000
+
+RUN addgroup --gid ${GID} ${GROUP} && adduser --shell /bin/bash --gid ${GID} --uid ${UID} ${USER}
+RUN mkdir -p /oim/src
+RUN chown -R oim:oim /oim
+
+USER oim
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["cron","-f", "-l", "2"]
