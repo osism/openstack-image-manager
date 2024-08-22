@@ -107,9 +107,9 @@ class TestManage(TestCase):
                     "image_source": self.fake_url,
                     "image_build_date": "2021-01-21",
                 },
-            }
+            },
         }
-        self.sorted_versions = ["2", "1"]
+        self.sorted_versions = ["1"]
         self.previous_image = self.fake_image
         self.imported_image = self.fake_image
 
@@ -328,6 +328,73 @@ class TestManage(TestCase):
         mock_set_properties.assert_not_called()
         self.assertEqual(result, ({self.fake_image_dict["name"]}, None, None))
 
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_separator(
+        self,
+        mock_get_images,
+        mock_requests,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        mock_requests.return_value.status_code = 200
+        meta = self.fake_image_dict["meta"]
+        self.fake_image_dict["separator"] = "-"
+        self.fake_image_dict["multi"] = False
+
+        result = self.sot.process_image(
+            self.fake_image_dict, self.versions, self.sorted_versions, meta
+        )
+
+        self.assertIn("Ubuntu 20.04-1", result[0])
+
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_separator_multi(
+        self,
+        mock_get_images,
+        mock_requests,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        mock_old_image = mock.MagicMock()
+        mock_old_image.status = "active"
+        mock_get_images.return_value = {"Ubuntu 20.04": mock_old_image}
+
+        mock_requests.return_value.status_code = 200
+        meta = self.fake_image_dict["meta"]
+        self.fake_image_dict["separator"] = "-"
+        self.fake_image_dict["multi"] = True
+
+        self.fake_image_dict["versions"].append(
+            {
+                "build_date": date.fromisoformat("2022-02-22"),
+                "version": "2",
+                "url": "http://url.com2",
+                "checksum": "5678",
+            }
+        )
+
+        self.versions["2"] = {
+            "url": self.fake_url + "2",
+            "meta": {
+                "image_source": self.fake_url + "2",
+                "image_build_date": "2022-02-22",
+            },
+        }
+        self.sorted_versions = ["1", "2"]
+
+        result = self.sot.process_image(
+            self.fake_image_dict, self.versions, self.sorted_versions, meta
+        )
+
+        self.assertIn("Ubuntu 20.04", result[0])
+        self.assertEqual(result[2], mock_old_image)
+
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
     )
@@ -378,7 +445,7 @@ class TestManage(TestCase):
             self.fake_image.name: self.fake_image,
         }
         self.sot.rename_images(
-            self.fake_image.name,
+            self.fake_image_dict,
             self.sorted_versions,
             self.imported_image,
             self.previous_image,
@@ -396,7 +463,7 @@ class TestManage(TestCase):
         self.sorted_versions = ["1"]
 
         self.sot.rename_images(
-            self.fake_image.name,
+            self.fake_image_dict,
             self.sorted_versions,
             self.imported_image,
             self.previous_image,
@@ -412,7 +479,66 @@ class TestManage(TestCase):
         mock_get_images.return_value = {self.fake_name: self.fake_image}
 
         self.sot.rename_images(
-            self.fake_image.name,
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            self.previous_image,
+        )
+        mock_get_images.assert_called_once()
+        mock_update_image.assert_called_once_with(self.fake_image.id, name=mock.ANY)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_separator(self, mock_get_images, mock_update_image):
+        """test main.ImageManager.rename_images()"""
+
+        self.fake_image_dict["separator"] = "-"
+
+        # test with len(sorted_versions) > 1
+        mock_get_images.return_value = {
+            f"{self.fake_image_dict['name']}-(1)": self.fake_image,
+            self.fake_image.name: self.fake_image,
+        }
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            self.previous_image,
+        )
+
+        mock_get_images.assert_called_once()
+        mock_update_image.assert_called_with(self.fake_image.id, name=mock.ANY)
+
+        self.assertEqual(mock_update_image.call_count, 2)
+        mock_get_images.reset_mock()
+        mock_update_image.reset_mock()
+
+        # test with len(sorted_versions) == 1 and name in cloud_images
+        mock_get_images.return_value = {self.fake_image.name: self.fake_image}
+        self.sorted_versions = ["1"]
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            self.previous_image,
+        )
+        mock_get_images.assert_called_once()
+        mock_update_image.assert_called_with(self.fake_image.id, name=mock.ANY)
+        self.assertEqual(mock_update_image.call_count, 2)
+
+        mock_get_images.reset_mock()
+        mock_update_image.reset_mock()
+
+        # test with len(sorted_versions) == 1
+        mock_get_images.return_value = {
+            f"{self.fake_image_dict['name']}-(1)": self.fake_image
+        }
+
+        self.sot.rename_images(
+            self.fake_image_dict,
             self.sorted_versions,
             self.imported_image,
             self.previous_image,
@@ -580,7 +706,7 @@ class TestManage(TestCase):
             self.fake_image_dict, self.versions, ["1"], meta
         )
         mock_rename_images.assert_called_once_with(
-            self.fake_image_dict["name"],
+            self.fake_image_dict,
             ["1"],
             self.imported_image,
             self.previous_image,

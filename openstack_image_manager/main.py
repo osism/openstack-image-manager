@@ -365,7 +365,7 @@ class ImageManager:
 
             if imported_image and image["multi"]:
                 self.rename_images(
-                    image["name"], sorted_versions, imported_image, previous_image
+                    image, sorted_versions, imported_image, previous_image
                 )
 
         return managed_images
@@ -514,11 +514,14 @@ class ImageManager:
         previous_image = None
         upstream_checksum = ""
 
+        separator = image.get("separator", " ")
+        image_name = image["name"]
+
         for version in sorted_versions:
             if image["multi"]:
-                name = f"{image['name']} ({version})"
+                name = f"{image_name}{separator}({version})"
             else:
-                name = f"{image['name']} {version}"
+                name = f"{image_name}{separator}{version}"
 
             logger.info(f"Processing image '{name}'")
             logger.debug(f"Checking existence of '{name}'")
@@ -553,7 +556,7 @@ class ImageManager:
                 and version == sorted_versions[-1]
                 and not existence
             ):
-                previous = f"{image['name']} ({sorted_versions[-2]})"
+                previous = f"{image['name']}{separator}({sorted_versions[-2]})"
                 existence = previous in cloud_images and image["name"] in cloud_images
 
             elif (
@@ -828,7 +831,7 @@ class ImageManager:
 
     def rename_images(
         self,
-        name: str,
+        image: dict,
         sorted_versions: list,
         imported_image: Image,
         previous_image: Image,
@@ -837,16 +840,18 @@ class ImageManager:
         Rename outdated images in Glance (only applies to images of type multi)
 
         Params:
-            name: the name of the image from images.yml
+            image: image dict from images.yml
             sorted_versions: list with all sorted image versions
             imported_image: the newly imported image
             previous_image: the previous latest image
         """
+        name = image["name"]
+        separator = image.get("separator", " ")
         cloud_images = self.get_images()
 
         if len(sorted_versions) > 1:
-            latest = f"{name} ({sorted_versions[-1]})"
-            previous_latest = f"{name} ({sorted_versions[-2]})"
+            latest = f"{name}{separator}({sorted_versions[-1]})"
+            previous_latest = f"{name}{separator}({sorted_versions[-2]})"
 
             if name in cloud_images and previous_latest not in cloud_images:
                 logger.info(f"Renaming {name} to {previous_latest}")
@@ -868,7 +873,7 @@ class ImageManager:
                 )
                 create_date = create_date.replace("-", "")
 
-                previous_latest = f"{name} ({create_date})"
+                previous_latest = f"{name}{separator}({create_date})"
 
                 logger.info(
                     f"Setting internal_version: {create_date} for {previous_latest}"
@@ -877,9 +882,7 @@ class ImageManager:
                     previous_image.id, **{"internal_version": create_date}
                 )
             else:
-                previous_latest = (
-                    f"{name} ({previous_image['properties']['internal_version']})"
-                )
+                previous_latest = f"{name}{separator}({previous_image['properties']['internal_version']})"
 
             logger.info(f"Renaming old latest '{name}' to '{previous_latest}'")
             self.conn.image.update_image(previous_image.id, name=previous_latest)
@@ -888,7 +891,7 @@ class ImageManager:
             self.conn.image.update_image(imported_image.id, name=name)
 
         elif len(sorted_versions) == 1:
-            latest = f"{name} ({sorted_versions[-1]})"
+            latest = f"{name}{separator}({sorted_versions[-1]})"
 
             if latest in cloud_images:
                 logger.info(f"Renaming {latest} to {name}")
