@@ -40,7 +40,7 @@ ENV UID=8000
 ENV GROUP=oim
 ENV GID=8000
 
-RUN addgroup --gid ${GID} ${GROUP} && adduser --shell /bin/bash --gid ${GID} --uid ${UID} ${USER}
+RUN addgroup --gid ${GID} ${GROUP} && adduser --shell /bin/bash --disabled-password --gecos "" --gid ${GID} --uid ${UID} ${USER}
 RUN mkdir -p /oim/src
 RUN chown -R oim:oim /oim
 
