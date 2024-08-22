@@ -355,6 +355,9 @@ class ImageManager:
             if "image_description" not in image["meta"]:
                 image["meta"]["image_description"] = image["name"]
 
+            if "image_name" not in image["meta"]:
+                image["meta"]["image_name"] = image["name"]
+
             existing_images, imported_image, previous_image = self.process_image(
                 image, versions, sorted_versions, image["meta"].copy()
             )

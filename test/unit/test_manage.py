@@ -96,7 +96,7 @@ class TestManage(TestCase):
     def setUp(self):
         """create all necessary test data, gets called before each test"""
 
-        self.fake_image_dict = FAKE_IMAGE_DICT.copy()
+        self.fake_image_dict = copy.deepcopy(FAKE_IMAGE_DICT)
         self.fake_image = Image(**FAKE_IMAGE_DATA)
         self.fake_name = f"{self.fake_image_dict['name']} (1)"
         self.fake_url = "http://url.com"
@@ -557,7 +557,7 @@ class TestManage(TestCase):
         mock_isfile.return_value = True
 
         result = self.sot.read_image_files()
-        self.assertEqual(result, [FAKE_IMAGE_DICT])
+        self.assertEqual(result, [self.fake_image_dict])
 
     @mock.patch("openstack_image_manager.main.ImageManager.rename_images")
     @mock.patch("openstack_image_manager.main.ImageManager.process_image")
@@ -587,3 +587,6 @@ class TestManage(TestCase):
         )
 
         self.assertEqual(result, {self.fake_image_dict["name"]})
+        self.assertEqual(
+            self.fake_image_dict["meta"]["image_name"], self.fake_image_dict["name"]
+        )
