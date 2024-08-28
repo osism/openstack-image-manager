@@ -652,6 +652,7 @@ class TestManage(TestCase):
         mock_unshare_image.assert_not_called()
 
         # reset
+        mock_connect.reset_mock()
         mock_read_image_files.reset_mock()
         mock_get_images.reset_mock()
         mock_process_images.reset_mock()
@@ -666,13 +667,27 @@ class TestManage(TestCase):
         self.sot.CONF.dry_run = False
 
         self.sot.main()
-        mock_read_image_files.assert_not_called()
-        mock_get_images.assert_not_called()
-        mock_process_images.assert_not_called()
-        mock_manage_outdated.assert_not_called()
+        mock_connect.assert_called_once_with(cloud=self.sot.CONF.cloud)
+        mock_read_image_files.assert_called_once()
+        mock_process_images.assert_called_once_with([self.fake_image_dict])
+        mock_manage_outdated.assert_called_once_with(set())
         mock_validate_yaml.assert_called_once()
         mock_share_image.assert_not_called()
         mock_unshare_image.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch("openstack_image_manager.main.openstack.connect")
+    def test_validate_images(
+        self,
+        mock_connect,
+        mock_read_image_files,
+    ):
+        """Validate the image definitions in this repo against the schema"""
+        self.sot.CONF.check = True
+        self.sot.CONF.dry_run = True
+
+        # When image validation fails, we sys.exit and fail the test
+        self.sot.main()
 
     @mock.patch("openstack_image_manager.main.os.path.isfile")
     @mock.patch("openstack_image_manager.main.os.listdir")
