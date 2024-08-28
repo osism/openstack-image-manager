@@ -94,7 +94,12 @@ class ImageManager:
         check: bool = typer.Option(
             True,
             "--check/--no-check",
-            help="Check the local image definitions against the SCS Image Metadata Standard",
+            help="Check the local image definitions against the SCS Image Metadata Standard (and process the images)",
+        ),
+        check_only: bool = typer.Option(
+            False,
+            "--check-only",
+            help="Quit after checking the image definitions against the SCS Image Metadata Standard",
         ),
     ):
         self.CONF = Munch.fromDict(locals())
@@ -209,8 +214,11 @@ class ImageManager:
         )
 
         # check local image definitions with yamale
-        if self.CONF.check:
+        if self.CONF.check or self.CONF.check_only:
             self.validate_yaml_schema()
+
+        if self.CONF.check_only:
+            return
 
         # share image (previously share.py)
         if self.CONF.share_image:
