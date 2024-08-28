@@ -17,6 +17,7 @@ image:
   password: str(required=False)
   shortname: str(required=False)
   status: enum('active', 'deactivated')
+  separator: str(required=False)
   tags: list(str())
   versions: list(include('versions'))
   visibility: enum('public', 'private', 'community', 'shared')
