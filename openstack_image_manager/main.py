@@ -92,8 +92,8 @@ class ImageManager:
             "project", "--share-type", help="Share - Type: 'project' or 'domain'"
         ),
         check: bool = typer.Option(
-            False,
-            "--check",
+            True,
+            "--check/--no-check",
             help="Check the local image definitions against the SCS Image Metadata Standard",
         ),
     ):
@@ -213,7 +213,7 @@ class ImageManager:
             self.validate_yaml_schema()
 
         # share image (previously share.py)
-        elif self.CONF.share_image:
+        if self.CONF.share_image:
             self.create_connection()
             image = self.conn.get_image(self.CONF.share_image)
 
@@ -1108,22 +1108,28 @@ class ImageManager:
         """Validate all image.yaml files against the SCS Metadata spec"""
         schema = yamale.make_schema("etc/schema.yaml")
         try:
+            validation_error_log = []
             for file in os.listdir(self.CONF.images):
                 try:
                     data = yamale.make_data(self.CONF.images + file)
                     yamale.validate(schema, data)
                 except YamaleError as e:
-                    self.exit_with_error = True
                     for result in e.results:
                         logger.error(
                             f"Error validating data '{result.data}' with '{result.schema}'"
                         )
                         for error in result.errors:
                             logger.error(f"\t{error}")
+                            validation_error_log.append((file, error))
                 else:
                     logger.debug(f"Image file {file} is valid")
         except FileNotFoundError:
             logger.error(f"Invalid path '{self.CONF.images}'")
+
+        if len(validation_error_log) > 0:
+            sys.exit(
+                f"Image definition validation failed with these error(s): {validation_error_log}"
+            )
 
     def share_image_with_project(self, image, project):
         member = self.conn.image.find_member(project.id, image.id)
