@@ -24,6 +24,6 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip3 install tox
-      - run: tox -- --check
+      - run: tox -- --check-only
         env:
           OS_CLIENT_CONFIG_FILE: .github/clouds.yml

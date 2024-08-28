@@ -145,6 +145,7 @@ class TestManage(TestCase):
             share_type="project",
             filter="",
             check=False,
+            check_only=False,
             hypervisor=None,
         )
 
@@ -663,7 +664,6 @@ class TestManage(TestCase):
 
         # test with check = True
         self.sot.CONF.check = True
-
         self.sot.CONF.dry_run = False
 
         self.sot.main()
@@ -675,16 +675,57 @@ class TestManage(TestCase):
         mock_share_image.assert_not_called()
         mock_unshare_image.assert_not_called()
 
-    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
-    @mock.patch("openstack_image_manager.main.openstack.connect")
-    def test_validate_images(
-        self,
-        mock_connect,
-        mock_read_image_files,
-    ):
-        """Validate the image definitions in this repo against the schema"""
+        # reset
+        mock_connect.reset_mock()
+        mock_read_image_files.reset_mock()
+        mock_get_images.reset_mock()
+        mock_process_images.reset_mock()
+        mock_manage_outdated.reset_mock()
+        mock_validate_yaml.reset_mock()
+        mock_share_image.reset_mock()
+        mock_unshare_image.reset_mock()
+
+        # test with check_only = True
+        self.sot.CONF.check = False
+        self.sot.CONF.check_only = True
+        self.sot.CONF.dry_run = False
+
+        self.sot.main()
+        mock_connect.assert_not_called()
+        mock_read_image_files.assert_not_called()
+        mock_process_images.assert_not_called()
+        mock_manage_outdated.assert_not_called()
+        mock_validate_yaml.assert_called_once()
+        mock_share_image.assert_not_called()
+        mock_unshare_image.assert_not_called()
+
+        # reset
+        mock_connect.reset_mock()
+        mock_read_image_files.reset_mock()
+        mock_get_images.reset_mock()
+        mock_process_images.reset_mock()
+        mock_manage_outdated.reset_mock()
+        mock_validate_yaml.reset_mock()
+        mock_share_image.reset_mock()
+        mock_unshare_image.reset_mock()
+
+        # test with check_only = True and check = True
         self.sot.CONF.check = True
-        self.sot.CONF.dry_run = True
+        self.sot.CONF.check_only = True
+        self.sot.CONF.dry_run = False
+
+        self.sot.main()
+        mock_connect.assert_not_called()
+        mock_read_image_files.assert_not_called()
+        mock_process_images.assert_not_called()
+        mock_manage_outdated.assert_not_called()
+        mock_validate_yaml.assert_called_once()
+        mock_share_image.assert_not_called()
+        mock_unshare_image.assert_not_called()
+
+    def test_validate_images(self):
+        """Validate the image definitions in this repo against the schema"""
+        self.sot.CONF.check_only = True
 
         # When image validation fails, we sys.exit and fail the test
         self.sot.main()
