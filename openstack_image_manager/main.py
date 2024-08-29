@@ -12,6 +12,7 @@ import typing
 from typing import Dict, Set
 import yamale
 import urllib.parse
+import pkgutil
 
 from datetime import datetime, date
 from decimal import Decimal, ROUND_UP
@@ -1114,7 +1115,13 @@ class ImageManager:
 
     def validate_yaml_schema(self):
         """Validate all image.yaml files against the SCS Metadata spec"""
-        schema = yamale.make_schema("etc/schema.yaml")
+        try:
+            # We are a pip package
+            schema_data = pkgutil.get_data(__name__, "etc/schema.yaml").decode("utf-8")
+            schema = yamale.make_schema(content=schema_data)
+        except Exception:
+            # We are a cloned repo
+            schema = yamale.make_schema("etc/schema.yaml")
         try:
             validation_error_log = []
             for file in os.listdir(self.CONF.images):
