@@ -1122,11 +1122,12 @@ class ImageManager:
         except Exception:
             # We are a cloned repo
             schema = yamale.make_schema("etc/schema.yaml")
+
         try:
             validation_error_log = []
             for file in os.listdir(self.CONF.images):
                 try:
-                    data = yamale.make_data(self.CONF.images + file)
+                    data = yamale.make_data(os.path.join(self.CONF.images, file))
                     yamale.validate(schema, data)
                 except YamaleError as e:
                     for result in e.results:
