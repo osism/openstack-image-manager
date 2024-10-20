@@ -227,13 +227,13 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20240927'
+      - version: '20241016'
         url: 
-          https://cloud-images.ubuntu.com/minimal/releases/focal/release-20240927/ubuntu-20.04-minimal-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/minimal/releases/focal/release-20241016/ubuntu-20.04-minimal-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20240927-ubuntu-20.04-minimal.qcow2
-        checksum: sha256:8b657d734636d072d9adeef6897f354b38f568c56d2b14711a1feb3190b6835b
-        build_date: 2024-09-27
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20241016-ubuntu-20.04-minimal.qcow2
+        checksum: sha256:258a3e1ba8407c95d8eb4eedde57961090ac281637ae42862ccc58f9ae7ef0ba
+        build_date: 2024-10-16
   - name: Ubuntu 22.04
     enable: true
     shortname: ubuntu-22.04
