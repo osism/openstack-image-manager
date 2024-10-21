@@ -11,7 +11,7 @@ munch = "==4.0.0"
 natsort = "==8.4.0"
 openstacksdk = "==4.1.0"
 paramiko = "==3.5.0"
-patool = "==3.0.1"
+patool = "==3.0.2"
 requests = "==2.32.3"
 tabulate = "==0.9.0"
 typer = {version = "==0.12.5", extras = ["all"]}
