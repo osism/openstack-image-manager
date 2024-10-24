@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3e1803dc11984282d4cc0ea560aa349abfd09c31b73bde052807c172ef16a7ec"
+            "sha256": "5d042c1bd32ddfc9805c36953f541f0074919f7fcb7e0f08afd5c1d3c86f6fa3"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -406,12 +406,12 @@
         },
         "minio": {
             "hashes": [
-                "sha256:a83c2fcd981944602a8dc11e8e07543ed9cda0a9462264e3f46a13171c56bccb",
-                "sha256:fe5523d9c4a4d6cfc07e96905852841bccdb22b22770e1efca4bf5ae8b65774b"
+                "sha256:418c31ac79346a580df04a0e14db1becbc548a6e7cca61f9bc4ef3bcd336c449",
+                "sha256:5961c58192b1d70d3a2a362064b8e027b8232688998a6d1251dadbb02ab57a7d"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==7.2.9"
+            "version": "==7.2.10"
         },
         "munch": {
             "hashes": [
@@ -663,11 +663,11 @@
         },
         "rich": {
             "hashes": [
-                "sha256:51a2c62057461aaf7152b4d611168f93a9fc73068f8ded2790f29fe2b5366d0c",
-                "sha256:8c82a3d3f8dcfe9e734771313e606b39d8247bb6b826e196f4914b333b743cf1"
+                "sha256:9836f5096eb2172c9e77df411c1b009bace4193d6a481d534fea75ebba758283",
+                "sha256:bc1e01b899537598cf02579d2b9f4a415104d3fc439313a7a2c165d76557a08e"
             ],
             "markers": "python_full_version >= '3.8.0'",
-            "version": "==13.9.2"
+            "version": "==13.9.3"
         },
         "ruamel.yaml": {
             "hashes": [
