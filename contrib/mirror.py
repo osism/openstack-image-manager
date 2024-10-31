@@ -83,6 +83,14 @@ def main(
         if "versions" not in image:
             continue
 
+        if "shortname" not in image:
+            continue
+
+        if not image["shortname"].startswith(
+            "almalinux", "centos", "debian", "rockylinux", "ubuntu"
+        ):
+            continue
+
         for version in image["versions"]:
             if "url" not in version or "mirror_url" not in version:
                 continue
@@ -92,9 +100,11 @@ def main(
             path = urlparse(version["url"])
             url = urlparse(version["url"])
 
-            dirname = f"{image['shortname']}/{version['version']}"
+            dirname = f"{image['shortname']}"
             filename, fileextension = os.path.splitext(os.path.basename(path.path))
             _, fileextension2 = os.path.splitext(filename)
+
+            filename = f"{version['version']}-{image['shortname']}"
 
             if fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
                 filename += fileextension
