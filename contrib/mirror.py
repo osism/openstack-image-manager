@@ -87,7 +87,7 @@ def main(
             continue
 
         if not image["shortname"].startswith(
-            "almalinux", "centos", "debian", "rockylinux", "ubuntu"
+            ("almalinux", "centos", "debian", "rockylinux", "ubuntu")
         ):
             continue
 
@@ -121,31 +121,33 @@ def main(
             except S3Error:
                 logger.info(f"File {filename} not yet available in bucket {dirname}")
 
-            if not dry_run:
-                if not isfile(os.path.basename(path.path)):
-                    logger.info(f"Downloading {version['url']}")
-                    response = requests.get(
-                        version["url"], stream=True, allow_redirects=True
+                if not dry_run:
+                    if not isfile(os.path.basename(path.path)):
+                        logger.info(f"Downloading {version['url']}")
+                        response = requests.get(
+                            version["url"], stream=True, allow_redirects=True
+                        )
+                        with open(os.path.basename(path.path), "wb") as fp:
+                            shutil.copyfileobj(response.raw, fp)
+                        del response
+
+                    if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
+                        logger.info(f"Decompressing {os.path.basename(path.path)}")
+                        patoolib.extract_archive(
+                            os.path.basename(path.path), outdir="."
+                        )
+                        os.remove(os.path.basename(path.path))
+
+                    logger.info(f"Uploading {filename} to bucket {dirname}")
+                    client.fput_object(
+                        minio_bucket, os.path.join(dirname, filename), filename
                     )
-                    with open(os.path.basename(path.path), "wb") as fp:
-                        shutil.copyfileobj(response.raw, fp)
-                    del response
 
-                if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                    logger.info(f"Decompressing {os.path.basename(path.path)}")
-                    patoolib.extract_archive(os.path.basename(path.path), outdir=".")
-                    os.remove(os.path.basename(path.path))
-
-                logger.info(f"Uploading {filename} to bucket {dirname}")
-                client.fput_object(
-                    minio_bucket, os.path.join(dirname, filename), filename
-                )
-
-                os.remove(filename)
-            else:
-                logger.info(
-                    f"Not uploading {filename} to bucket {dirname} (dry-run enabled)"
-                )
+                    os.remove(filename)
+                else:
+                    logger.info(
+                        f"Not uploading {filename} to bucket {dirname} (dry-run enabled)"
+                    )
 
 
 if __name__ == "__main__":
