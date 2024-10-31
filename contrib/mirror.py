@@ -84,7 +84,7 @@ def main(
             continue
 
         for version in image["versions"]:
-            if "url" not in version:
+            if "url" not in version or "mirror_url" not in version:
                 continue
 
             logger.debug(f"source: {version['url']}")
