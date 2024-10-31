@@ -111,6 +111,7 @@ def main(
             except S3Error:
                 logger.info(f"File {filename} not yet available in bucket {dirname}")
 
+            if not dry_run:
                 if not isfile(os.path.basename(path.path)):
                     logger.info(f"Downloading {version['url']}")
                     response = requests.get(
@@ -125,17 +126,16 @@ def main(
                     patoolib.extract_archive(os.path.basename(path.path), outdir=".")
                     os.remove(os.path.basename(path.path))
 
-                if not dry_run:
-                    logger.info(f"Uploading {filename} to bucket {dirname}")
-                    client.fput_object(
-                        minio_bucket, os.path.join(dirname, filename), filename
-                    )
-                else:
-                    logger.info(
-                        f"Not uploading {filename} to bucket {dirname} (dry-run enabled)"
-                    )
+                logger.info(f"Uploading {filename} to bucket {dirname}")
+                client.fput_object(
+                    minio_bucket, os.path.join(dirname, filename), filename
+                )
 
                 os.remove(filename)
+            else:
+                logger.info(
+                    f"Not uploading {filename} to bucket {dirname} (dry-run enabled)"
+                )
 
 
 if __name__ == "__main__":
