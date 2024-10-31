@@ -84,14 +84,12 @@ def main(
             continue
 
         for version in image["versions"]:
-            if "source" not in version:
+            if "url" not in version:
                 continue
-            else:
-                source = version["source"]
 
-            logger.debug(f"source: {source}")
+            logger.debug(f"source: {version['url']}")
 
-            path = urlparse(source)
+            path = urlparse(version["url"])
             url = urlparse(version["url"])
 
             dirname = f"{image['shortname']}/{version['version']}"
@@ -114,9 +112,9 @@ def main(
                 logger.info(f"File {filename} not yet available in bucket {dirname}")
 
                 if not isfile(os.path.basename(path.path)):
-                    logger.info(f"Downloading {version['source']}")
+                    logger.info(f"Downloading {version['url']}")
                     response = requests.get(
-                        version["source"], stream=True, allow_redirects=True
+                        version["url"], stream=True, allow_redirects=True
                     )
                     with open(os.path.basename(path.path), "wb") as fp:
                         shutil.copyfileobj(response.raw, fp)
