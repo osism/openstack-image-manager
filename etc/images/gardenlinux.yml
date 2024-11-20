@@ -48,3 +48,8 @@ images:
         mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.2/openstack-gardener_prod-amd64-1592.2-76203a30.qcow2
         checksum: "sha256:ef67e1a95aa77f9d6999ff3d376806df498d75646c6c5eff8f4d882f482ec913"
         build_date: 2024-10-23
+      - version: '1592.3'
+        url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.3/openstack-gardener_prod-amd64-1592.3-f64e280f.tar.xz
+        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.3/openstack-gardener_prod-amd64-1592.3-f64e280f.qcow2
+        checksum: "sha256:ad91873f81f8b7997a693848d038572e8895cbd636656d04f94e8fa932cdcd09"
+        build_date: 2024-11-20
