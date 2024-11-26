@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1f304488e6c146d309f775db5cf0317c2a9e02443cb8d636be4f09cc73298a52"
+            "sha256": "58ddd6c3445221303e602b3a187e2eb73c1fccdceaa68270bbf1561c998ce83b"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -371,11 +371,11 @@
         },
         "keystoneauth1": {
             "hashes": [
-                "sha256:3157c212e121164de64d63e5ef7e1daad2bd3649a68de1e971b76877019ef1c4",
-                "sha256:e69dff80c509ab64d4de4494658d914e81f26af720828dc584ceee74ecd666d9"
+                "sha256:b2f89baccbe036e4e959cb4d5da82c94d85bdc9935a85f7c872e16c9585b269f",
+                "sha256:c9c50ebfd012ead27bfa69b7ec093c740296dd0532e37d96a070c21cd049ece5"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==5.8.0"
+            "markers": "python_version >= '3.9'",
+            "version": "==5.9.0"
         },
         "loguru": {
             "hashes": [
@@ -404,12 +404,12 @@
         },
         "minio": {
             "hashes": [
-                "sha256:153582ed52ff3b5005ba558e1f25bfe1e9e834f7f0745e594777f28e3e81e1a0",
-                "sha256:4db95a21fe1e2022ec975292d8a1f83bd5b18f830d23d42a4518ac7a5281d7c5"
+                "sha256:2a3fcf4ab753824de8ae3ffeb14da33d6ad416f83a7e82363a27b34da8e91f27",
+                "sha256:4b63370ca83f82c23e6fb0a094a1e2b08b275884ae43f6a90c4388a45633e3f5"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==7.2.11"
+            "version": "==7.2.12"
         },
         "munch": {
             "hashes": [
@@ -685,11 +685,11 @@
         },
         "stevedore": {
             "hashes": [
-                "sha256:1efd34ca08f474dad08d9b19e934a22c68bb6fe416926479ba29e5013bcc8f78",
-                "sha256:9a64265f4060312828151c204efbe9b7a9852a0d9228756344dbc7e4023e375a"
+                "sha256:79e92235ecb828fe952b6b8b0c6c87863248631922c8e8e0fa5b17b232c4514d",
+                "sha256:b0be3c4748b3ea7b854b265dcb4caa891015e442416422be16f8b31756107857"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==5.3.0"
+            "markers": "python_version >= '3.9'",
+            "version": "==5.4.0"
         },
         "tabulate": {
             "hashes": [
