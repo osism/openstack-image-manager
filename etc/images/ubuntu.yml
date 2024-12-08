@@ -260,12 +260,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20241004'
-        url: https://cloud-images.ubuntu.com/jammy/20241004/jammy-server-cloudimg-amd64.img
+      - version: '20241206'
+        url: https://cloud-images.ubuntu.com/jammy/20241206/jammy-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20241004-ubuntu-22.04.qcow2
-        checksum: sha256:0ba0fd632a90d981625d842abf18453d5bf3fd7bb64e6dd61809794c6749e18b
-        build_date: 2024-10-04
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20241206-ubuntu-22.04.qcow2
+        checksum: sha256:c0618a6deffde52a669c0bd133e9173faf3e6d47e3ebd75902d8d5e0bdbd1043
+        build_date: 2024-12-06
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -326,9 +326,9 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/noble/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
     versions:
-      - version: '20241128'
-        url: https://cloud-images.ubuntu.com/noble/20241128/noble-server-cloudimg-amd64.img
+      - version: '20241206'
+        url: https://cloud-images.ubuntu.com/noble/20241206/noble-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20241128-ubuntu-24.04.qcow2
-        checksum: sha256:eabaffbf4fc24e882c3a96a5b159fdd5188da5a3fe87313ee3b9d6088d6d8d1c
-        build_date: 2024-11-28
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20241206-ubuntu-24.04.qcow2
+        checksum: sha256:7be7793856d65784a593a624e841dbcf94aa36d3a9511f4085a808c4564f9d1e
+        build_date: 2024-12-06

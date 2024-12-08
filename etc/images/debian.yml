@@ -62,14 +62,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20241111'
+      - version: '20241202'
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bullseye/20241111-1928/debian-11-genericcloud-amd64-20241111-1928.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bullseye/20241202-1949/debian-11-genericcloud-amd64-20241202-1949.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20241111-debian-11.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20241202-debian-11.qcow2
         checksum: 
-          sha512:45f2a18c8a2b2e8f007024884aa9c9cb035ef6944e2fa4819a1944534af604a455deae4996ad1ff278bc3c311bc2afdb268ac322fa3498b8c2f479d612f34d9f
-        build_date: 2024-11-11
+          sha512:f557332495fc7a52c883d91b3fab923e7f099ca69b1de14abaa9a6d483990ab2e932e0ab4f76eff043264f8f92bee677c004650d687794aa0a9c173a839c65e8
+        build_date: 2024-12-02
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -97,11 +97,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2024-11-30
+      - build_date: 2024-12-07
         checksum: 
-          sha512:738866677581f94a934a6c5d7c937d70f0d6cb83f6558fc265b475f6ebf4cf9d9a4325730647e2bedb849291983f68b852d9ed34dfa18ca37fe0e3448fbd604e
+          sha512:c1390855bb7e4e439e3847168980e96efd099226c9ef0a151588d8e0c901d0b5759a588b6f077aec552ebe70652fc877a285a9224a8a8ec61bba47a86f8f799c
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20241130-1947/debian-12-genericcloud-amd64-daily-20241130-1947.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20241207-1954/debian-12-genericcloud-amd64-daily-20241207-1954.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20241130-debian-12.qcow2
-        version: '20241130'
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20241207-debian-12.qcow2
+        version: '20241207'
