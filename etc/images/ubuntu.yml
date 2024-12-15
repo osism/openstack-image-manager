@@ -326,9 +326,9 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/noble/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
     versions:
-      - version: '20241206'
-        url: https://cloud-images.ubuntu.com/noble/20241206/noble-server-cloudimg-amd64.img
+      - version: '20241210'
+        url: https://cloud-images.ubuntu.com/noble/20241210/noble-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20241206-ubuntu-24.04.qcow2
-        checksum: sha256:7be7793856d65784a593a624e841dbcf94aa36d3a9511f4085a808c4564f9d1e
-        build_date: 2024-12-06
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20241210-ubuntu-24.04.qcow2
+        checksum: sha256:e61484705035cd64d8e79c35d6f674acccf03ef9c6939ca50dea8a4fdc7eabeb
+        build_date: 2024-12-10
