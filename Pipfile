@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 loguru = "==0.7.3"
-minio = "==7.2.14"
+minio = "==7.2.15"
 munch = "==4.0.0"
 natsort = "==8.4.0"
 openstacksdk = "==4.2.0"

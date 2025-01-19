@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "451cbbd3add9e6c71f805ebc8f1d72cc0f13b25cf9204cd2ecd7ce5bc3ec4b89"
+            "sha256": "10b21dd81c2883f6b2b170cd04724463844ae855e90f28e28d2a4a2087131433"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -391,12 +391,12 @@
         },
         "minio": {
             "hashes": [
-                "sha256:868dfe907e1702ce4bec86df1f3ced577a73ca85f344ef898d94fe2b5237f8c1",
-                "sha256:f5c24bf236fefd2edc567cd4455dc49a11ad8ff7ac984bb031b849d82f01222a"
+                "sha256:5247df5d4dca7bfa4c9b20093acd5ad43e82d8710ceb059d79c6eea970f49f79",
+                "sha256:c06ef7a43e5d67107067f77b6c07ebdd68733e5aa7eed03076472410ca19d876"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==7.2.14"
+            "version": "==7.2.15"
         },
         "munch": {
             "hashes": [
