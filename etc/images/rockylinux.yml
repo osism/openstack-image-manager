@@ -63,10 +63,10 @@ images:
     latest_url: 
       https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20240612'
+      - version: '20241119'
         url: 
           https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20240612-rocky-9.qcow2
-        checksum: sha256:7a4ae4fbbdafaff3f0ba6166ef5b64da23e55ac71eff7489b937db11c9ba5dd7
-        build_date: 2024-06-12
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20241119-rocky-9.qcow2
+        checksum: sha256:069493fdc807300a22176540e9171fcff2227a92b40a7985a0c1c9e21aeebf57
+        build_date: 2024-11-19
