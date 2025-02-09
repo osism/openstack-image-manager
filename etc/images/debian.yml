@@ -97,11 +97,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-02-01
+      - build_date: 2025-02-08
         checksum: 
-          sha512:e3fcbb2040a44073c5775bd48e67e2b4f67bd9876fb858b8538360dde0966a007f69430a4b13e45311151a1556d417865152002819bea9a24b6c7ae37f2eb6d3
+          sha512:cb72d5c662984cec9d4acdf46115c75a223f53fb4e959945ddfc129a22b9fda7884afcf0861278529304cc57dd110318ca963a77b7fe8ddd886860115096c4d0
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20250201-2010/debian-12-genericcloud-amd64-daily-20250201-2010.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20250208-2017/debian-12-genericcloud-amd64-daily-20250208-2017.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250201-debian-12.qcow2
-        version: '20250201'
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250208-debian-12.qcow2
+        version: '20250208'
