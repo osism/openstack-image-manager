@@ -4,7 +4,7 @@ munch==4.0.0
 natsort==8.4.0
 openstacksdk==4.3.0
 paramiko==3.5.1
-patool==3.1.0
+patool==3.1.2
 requests==2.32.3
 ruamel.yaml==0.18.10
 setuptools==75.8.0
