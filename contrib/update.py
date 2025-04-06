@@ -278,6 +278,9 @@ def update_image(
 
 @app.command()
 def main(
+    name: str = typer.Option(
+        None, "--name", help="Only update the image with this name"
+    ),
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Do not perform any changes"),
     minio_access_key: str = typer.Option(
@@ -311,6 +314,10 @@ def main(
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
     for image, getter in IMAGES.items():
+        if name and image != name:
+            logger.info(f"Skipping {image}")
+            continue
+
         p = f"etc/images/{image}.yml"
         logger.info(f"Processing file {p}")
 
