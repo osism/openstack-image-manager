@@ -9,6 +9,12 @@ name: Update images
 jobs:
   update-images:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - ubuntu
+          - debian
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -25,14 +31,14 @@ jobs:
         uses: technote-space/create-pr-action@v2
         with:
           EXECUTE_COMMANDS: |
-            tox -e update -- --dry-run
+            tox -e update -- --dry-run --name ${{ matrix.image }}
           COMMIT_EMAIL: 'bot@osism.tech'
           COMMIT_MESSAGE: |
-            chore: update images
+            chore: update ${{ matrix.image }} images
 
             Signed-off-by: OSISM Bot <bot@osism.tech>
           COMMIT_NAME: "OSISM Bot"
           ONLY_DEFAULT_BRANCH: true
-          PR_BRANCH_NAME: "update-images"
+          PR_BRANCH_NAME: "update-${{ matrix.image }}-images"
           PR_BRANCH_PREFIX: "chore/"
-          PR_TITLE: "chore: update images"
+          PR_TITLE: "chore: update ${{ matrix.image }} images"
