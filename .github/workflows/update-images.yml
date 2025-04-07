@@ -13,6 +13,7 @@ jobs:
       matrix:
         image:
           - almalinux
+          - centos
           - debian
           - rockylinux
           - ubuntu
