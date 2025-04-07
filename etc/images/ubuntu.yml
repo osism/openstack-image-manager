@@ -24,13 +24,13 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS
-    latest_url: 
+    latest_url:
       https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
     versions:
       - version: '20191107'
-        url: 
+        url:
           https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-14.04/20191107-ubuntu-14.04.qcow2
         checksum: sha256:3c4ad0defbe729dd3c16d2851d775575d1c5351c85734418d3b89bfdfd28ebd1
         build_date: 2019-11-07
@@ -58,13 +58,13 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/xenial/current/SHA256SUMS
-    latest_url: 
+    latest_url:
       https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
     versions:
       - version: '20211001'
-        url: 
+        url:
           https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-16.04/20211001-ubuntu-16.04.qcow2
         checksum: sha256:fff2494a70bcaffb59f26f71ec49e137dd87d319341c35832dbe0ea65ff15140
         build_date: 2021-10-01
@@ -92,13 +92,13 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/xenial/release/SHA256SUMS
-    latest_url: 
+    latest_url:
       https://cloud-images.ubuntu.com/minimal/releases/xenial/release/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
     versions:
       - version: '20210929'
-        url: 
+        url:
           https://cloud-images.ubuntu.com/minimal/releases/xenial/release/ubuntu-16.04-minimal-cloudimg-amd64-disk1.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-16.04-minimal/20210929-ubuntu-16.04-minimal.qcow2
         checksum: sha256:7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9
         build_date: 2021-09-20
@@ -130,7 +130,7 @@ images:
     versions:
       - version: '20230607'
         url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-18.04/20230607-ubuntu-18.04.qcow2
         checksum: sha256:8dd2e6b5e5aad20c3f836123b300cba9861249408cbb07c359145a65d6bab6b6
         build_date: 2023-06-07
@@ -158,13 +158,13 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/bionic/release/SHA256SUMS
-    latest_url: 
+    latest_url:
       https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img
     versions:
       - version: '20230602'
-        url: 
+        url:
           https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-18.04-minimal/20230602-ubuntu-18.04-minimal.qcow2
         checksum: sha256:2d9755669c499e88d51da0638cd20e0983a248828e2153906c013bea0ee2f45a
         build_date: 2023-06-02
@@ -196,7 +196,7 @@ images:
     versions:
       - version: '20250403'
         url: https://cloud-images.ubuntu.com/focal/20250403/focal-server-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04/20250403-ubuntu-20.04.qcow2
         checksum: sha256:dbc3565f827265db24b9bee2d5ab74ccbc7b1fdc57d5bb266f032e7ce531a70c
         build_date: 2025-04-03
@@ -224,13 +224,13 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/SHA256SUMS
-    latest_url: 
+    latest_url:
       https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
     versions:
       - version: '20250401'
-        url: 
+        url:
           https://cloud-images.ubuntu.com/minimal/releases/focal/release-20250401/ubuntu-20.04-minimal-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-20.04-minimal/20250401-ubuntu-20.04-minimal.qcow2
         checksum: sha256:9948ad4c7dbe8731fb245c0ce8b3700ea3e700e09f1ccc0f66605c5e4c35b568
         build_date: 2025-04-01
@@ -262,7 +262,7 @@ images:
     versions:
       - version: '20250327'
         url: https://cloud-images.ubuntu.com/jammy/20250327/jammy-server-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20250327-ubuntu-22.04.qcow2
         checksum: sha256:989151e612cde6876b0ef9fbc8051c0e22c32c59dd51cbac2b8691fbb79c399a
         build_date: 2025-03-27
@@ -290,13 +290,13 @@ images:
       provided_until: none
     tags: []
     latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release/SHA256SUMS
-    latest_url: 
+    latest_url:
       https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
       - version: '20250401'
-        url: 
+        url:
           https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20250401/ubuntu-22.04-minimal-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04-minimal/20250401-ubuntu-22.04-minimal.qcow2
         checksum: sha256:21f48a5213d6fa6ca61dbd80035eb94842e3ccb17d9f509626807d5bd6ac329a
         build_date: 2025-04-01
@@ -328,7 +328,41 @@ images:
     versions:
       - version: '20250403'
         url: https://cloud-images.ubuntu.com/noble/20250403/noble-server-cloudimg-amd64.img
-        mirror_url: 
+        mirror_url:
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20250403-ubuntu-24.04.qcow2
         checksum: sha256:071fceadf1ea57a388ff7a1ccb4127155d691a511f6a207b4c11b120563855e2
+        build_date: 2025-04-03
+  - name: Ubuntu 24.04 Minimal
+    enable: true
+    shortname: ubuntu-24.04-minimal
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: ubuntu
+      os_version: '24.04'
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url: https://cloud-images.ubuntu.com/minimal/releases/noble/release/SHA256SUMS
+    latest_url:
+      https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
+    versions:
+      - version: '20250403'
+        url:
+          https://cloud-images.ubuntu.com/minimal/releases/noble/release-20250403/ubuntu-24.04-minimal-cloudimg-amd64.img
+        mirror_url:
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04-minimal/20250403-ubuntu-24.04-minimal.qcow2
+        checksum: sha256:4ec571613c93fae8186c77bfe93abbd392c4201f1cf3d2770fc90266fd868e43
         build_date: 2025-04-03
