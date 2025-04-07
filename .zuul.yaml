@@ -19,7 +19,6 @@
     check:
       jobs:
         - flake8
-        - hadolint
         - mypy
         - openstack-image-manager-integration-test
         - python-black
@@ -31,7 +30,6 @@
     gate:
       jobs:
         - flake8
-        - hadolint
         - mypy
         - openstack-image-manager-integration-test
         - python-black
@@ -43,7 +41,6 @@
     periodic-daily:
       jobs:
         - flake8
-        - hadolint
         - mypy
         - openstack-image-manager-integration-test
         - python-black
