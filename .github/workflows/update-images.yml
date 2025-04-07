@@ -14,6 +14,7 @@ jobs:
         image:
           - almalinux
           - debian
+          - rockylinux
           - ubuntu
 
     steps:
