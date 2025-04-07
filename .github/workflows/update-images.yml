@@ -12,8 +12,9 @@ jobs:
     strategy:
       matrix:
         image:
-          - ubuntu
+          - almalinux
           - debian
+          - ubuntu
 
     steps:
       - name: Checkout repo

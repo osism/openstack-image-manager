@@ -8,6 +8,10 @@
     roles:
       - zuul: osism/zuul-jobs
         name: devstack
+    irrelevant-files:
+      - .github/renovate.json
+      - .github/workflows/*
+      - etc/images/*
 
 - project:
     merge-mode: squash-merge
