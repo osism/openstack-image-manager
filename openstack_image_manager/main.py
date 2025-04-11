@@ -1125,9 +1125,18 @@ class ImageManager:
 
         try:
             validation_error_log = []
-            for file in os.listdir(self.CONF.images):
+
+            if os.path.isdir(self.CONF.images):
+                files = [
+                    os.path.join(self.CONF.images, file)
+                    for file in os.listdir(self.CONF.images)
+                ]
+            else:
+                files = [self.CONF.images]
+
+            for file in files:
                 try:
-                    data = yamale.make_data(os.path.join(self.CONF.images, file))
+                    data = yamale.make_data(file)
                     yamale.validate(schema, data)
                 except YamaleError as e:
                     for result in e.results:
