@@ -25,12 +25,13 @@ image:
 ---
 meta:
   architecture: enum('x86_64', 'aarch64', 'risc-v')
-  hypervisor_type: enum('hyperv', 'ironic', 'lxc', 'qemu', 'uml', 'vmware', 'xen')
   hotfix_hours: int(min=0, required=False)
   hw_disk_bus: enum('virtio', 'scsi', None)
   hw_rng_model: enum('virtio', None, required=False)
   hw_scsi_model: enum('virtio-scsi', required=False)
+  hw_vif_multiqueue_enabled: bool(required=False)
   hw_watchdog_action: enum('disabled', 'reset', 'poweroff', 'pause', 'none', required=False)
+  hypervisor_type: enum('hyperv', 'ironic', 'lxc', 'qemu', 'uml', 'vmware', 'xen')
   image_description: str(required=False)
   os_distro: enum('arch', 'centos', 'cirros', 'clearlinux', 'debian', 'fedora', 'freebsd', 'opensuse', 'rhel', 'talos', 'ubuntu', 'windows')
   os_version: str(required=False)
