@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "17a8c566befebc1ccbd1b0966ce72bfd4e113d622ab01d0dcce68c4a5efd54e1"
+            "sha256": "f416fcd4b3844fb3145ac1b58812396f93d59c3b7d1ee8bb4576094aef28b7af"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -108,11 +108,11 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:3d5da6925056f6f18f119200434a4780a94263f10d1c21d032a6f6b2baa20651",
-                "sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe"
+                "sha256:0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6",
+                "sha256:30350364dfe371162649852c63336a15c70c6510c2ad5015b21c2345311805f3"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2025.1.31"
+            "version": "==2025.4.26"
         },
         "cffi": {
             "hashes": [
@@ -344,11 +344,11 @@
         },
         "dogpile.cache": {
             "hashes": [
-                "sha256:4f0295575f5fdd3f7e13c84ba8e36656971d1869a2081b4737ec99ede378a8c0",
-                "sha256:a393412f93d24a8942fdf9248dc80678127d54c5e60a7be404027aa193cafe12"
+                "sha256:b00a9e2f409cf9bf48c2e7a3e3e68dac5fa75913acbf1a62f827c812d35f3d09",
+                "sha256:f1581953afefd5f55743178694bf3b3ffb2782bba3d9537566a09db6daa48a63"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==1.3.4"
+            "markers": "python_version >= '3.9'",
+            "version": "==1.4.0"
         },
         "idna": {
             "hashes": [
@@ -676,12 +676,12 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:128ce7b8f33c3079fd1b067ecbb4051a66e8526e7b65f6cec075dfc650ddfa88",
-                "sha256:e147c0549f27767ba362f9da434eab9c5dc0045d5304feb602a0af001089fc51"
+                "sha256:a38f898dcd6e5380f4da4381a87ec90bd0a7eec23d204a5552e80ee3cab6bd27",
+                "sha256:c40a5b3729d58dd749c0f08f1a07d134fb8a0a3d7f87dc33e7c5e1f762138650"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==79.0.1"
+            "version": "==80.0.0"
         },
         "shellingham": {
             "hashes": [
