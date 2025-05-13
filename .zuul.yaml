@@ -27,17 +27,6 @@
               tox_envlist: test
               tox_extra_args: -- test/unit
         - yamllint
-    gate:
-      jobs:
-        - flake8
-        - mypy
-        - openstack-image-manager-integration-test
-        - python-black
-        - tox:
-            vars:
-              tox_envlist: test
-              tox_extra_args: -- test/unit
-        - yamllint
     periodic-daily:
       jobs:
         - flake8
