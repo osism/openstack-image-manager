@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0f8c9e78d8caedf6df285b5667f97a5a1c58195009e09213c6d20a8a2e3059eb"
+            "sha256": "53dc213855fe46116853ccc21dc9c3e5b248e26712bfa3bf389fdefbc2d2b7b8"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -16,11 +16,11 @@
     "default": {
         "argon2-cffi": {
             "hashes": [
-                "sha256:879c3e79a2729ce768ebb7d36d4609e3a78a4ca2ec3a9f12286ca057e3d0db08",
-                "sha256:c670642b78ba29641818ab2e68bd4e6a78ba53b7eff7b4c3815ae16abf91c7ea"
+                "sha256:694ae5cc8a42f4c4e2bf2ca0e64e51e23a040c6a517a85074683d3959e1346c1",
+                "sha256:fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741"
             ],
-            "markers": "python_version >= '3.7'",
-            "version": "==23.1.0"
+            "markers": "python_version >= '3.8'",
+            "version": "==25.1.0"
         },
         "argon2-cffi-bindings": {
             "hashes": [
@@ -454,12 +454,12 @@
         },
         "openstacksdk": {
             "hashes": [
-                "sha256:8ee80c594a2b710a3f4dc6a75334455bb8deb40f0bd42a706520210e82efc171",
-                "sha256:ab7a1240207a6969ba09ceee8f16653805730677b4497a806cd956733651fe68"
+                "sha256:0ea54ce3005d48c5134f77dce8df7dd6b4c52d2a103472abc99db19cd4382638",
+                "sha256:e47e166c4732e9aea65228e618d490e4be5df06526a1b95e2d5995d7d0977d3d"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.9'",
-            "version": "==4.5.0"
+            "markers": "python_version >= '3.10'",
+            "version": "==4.6.0"
         },
         "os-service-types": {
             "hashes": [
@@ -787,11 +787,11 @@
         },
         "typing-extensions": {
             "hashes": [
-                "sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c",
-                "sha256:e6c81219bd689f51865d9e372991c540bda33a0379d5573cddb9a3a23f7caaef"
+                "sha256:8676b788e32f02ab42d9e7c61324048ae4c6d844a399eebace3d4979d75ceef4",
+                "sha256:a1514509136dd0b477638fc68d6a91497af5076466ad0fa6c338e44e359944af"
             ],
-            "markers": "python_version >= '3.8'",
-            "version": "==4.13.2"
+            "markers": "python_version >= '3.9'",
+            "version": "==4.14.0"
         },
         "urllib3": {
             "hashes": [
