@@ -326,12 +326,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/noble/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
     versions:
-      - version: '20250725'
-        url: https://cloud-images.ubuntu.com/noble/20250725/noble-server-cloudimg-amd64.img
+      - version: '20250805'
+        url: https://cloud-images.ubuntu.com/noble/20250805/noble-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20250725-ubuntu-24.04.qcow2
-        checksum: sha256:9611c5a9d6c43e60090305c58a1aeb5d9f1f0c0bec409004185e6284755322d1
-        build_date: 2025-07-25
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20250805-ubuntu-24.04.qcow2
+        checksum: sha256:834af9cd766d1fd86eca156db7dff34c3713fbbc7f5507a3269be2a72d2d1820
+        build_date: 2025-08-05
   - name: Ubuntu 24.04 Minimal
     enable: true
     shortname: ubuntu-24.04-minimal
