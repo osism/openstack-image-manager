@@ -33,7 +33,8 @@ images:
           https://download.rockylinux.org/pub/rocky/8/images/x86_64/Rocky-8-GenericCloud.latest.x86_64.qcow2
         mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-8/20240529-rocky-8.qcow2
-        checksum: sha256:e56066c58606191e96184de9a9183a3af33c59bcbd8740d8b10ca054a7a89c14
+        checksum: 
+          sha256:e56066c58606191e96184de9a9183a3af33c59bcbd8740d8b10ca054a7a89c14
         build_date: 2024-05-29
   - name: Rocky 9
     enable: true
@@ -63,10 +64,11 @@ images:
     latest_url: 
       https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20241119'
+      - version: '20250531'
         url: 
           https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20241119-rocky-9.qcow2
-        checksum: sha256:069493fdc807300a22176540e9171fcff2227a92b40a7985a0c1c9e21aeebf57
-        build_date: 2024-11-19
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/rocky-9/20250531-rocky-9.qcow2
+        checksum: 
+          sha256:2c72815bb83cadccbede4704780e9b52033722db8a45c3fb02130aa380690a3d
+        build_date: 2025-05-31
