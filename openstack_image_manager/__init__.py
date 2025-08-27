@@ -2,9 +2,12 @@
 
 __all__ = ["__version__"]
 
-from pkg_resources import get_distribution, DistributionNotFound
+try:
+    from importlib.metadata import version, PackageNotFoundError  # type: ignore[attr-defined]
+except ImportError:
+    from importlib_metadata import version, PackageNotFoundError  # type: ignore[import,no-redef]
 
 try:
-    __version__ = get_distribution(__name__).version
-except DistributionNotFound:
+    __version__ = version(__name__)
+except PackageNotFoundError:
     __version__ = ""
