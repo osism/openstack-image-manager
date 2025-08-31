@@ -23,7 +23,8 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
+    latest_checksum_url: 
+      https://cdimage.debian.org/cdimage/cloud/buster/latest/SHA512SUMS
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
@@ -58,18 +59,19 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bullseye/latest/SHA512SUMS
+    latest_checksum_url: 
+      https://cdimage.debian.org/cdimage/cloud/bullseye/latest/SHA512SUMS
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20250402'
+      - version: '20250801'
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bullseye/20250402-2070/debian-11-genericcloud-amd64-20250402-2070.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bullseye/20250801-2191/debian-11-genericcloud-amd64-20250801-2191.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20250402-debian-11.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20250801-debian-11.qcow2
         checksum: 
-          sha512:812295274b3b0d0ff85e339ffa59569b8ccac7949c94c7342dee354261a19a896a9318b3e80b2bffed4ec0da615fbf4687d8bb73acfc1c49feaf524f6d1ed3a6
-        build_date: 2025-04-02
+          sha512:e2813485b079f437bec5ec61adaa896cd6f11e5b525042442f8ccb50bf04ae4288e8ebb583922de0e17577a7689835b3618d1876278b3351b32fdfdf723766c6
+        build_date: 2025-08-01
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -93,15 +95,16 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/SHA512SUMS
+    latest_checksum_url: 
+      https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/SHA512SUMS
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-03-31
+      - build_date: 2025-08-23
         checksum: 
-          sha512:3888a9db017ac55e43cb5b18d6bc0eff5519e2103e9b82299941d7a5ec56ff2566cad74c6689e357a2a1ac3429f04214bd12c08a8fc917db1e587dfa8dea2509
+          sha512:159a71dddee7029382a855bf9e305d647e94f3727eac8e2baac9664279d8b6307c2d47e90e179afbf0f6853265d338cfbf1957f3c50a101a9eaebd66d0b88ed5
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20250331-2068/debian-12-genericcloud-amd64-daily-20250331-2068.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20250823-2213/debian-12-genericcloud-amd64-daily-20250823-2213.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250331-debian-12.qcow2
-        version: '20250331'
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250823-debian-12.qcow2
+        version: '20250823'
