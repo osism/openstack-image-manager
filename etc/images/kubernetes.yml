@@ -18,6 +18,7 @@ images:
       hw_watchdog_action: reset
       hypervisor_type: qemu
       os_distro: ubuntu
+      os_purpose: capinode
       replace_frequency: never
       uuid_validity: none
       provided_until: none
