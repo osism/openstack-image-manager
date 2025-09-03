@@ -111,3 +111,39 @@ images:
         mirror_url: 
           https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20251019-debian-12.qcow2
         version: '20251019'
+  - name: Debian 13
+    enable: true
+    shortname: debian-13
+    format: qcow2
+    login: debian
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: debian
+      os_version: '13'
+      os_purpose: generic
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/SHA512SUMS
+    latest_url: 
+      https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
+    versions:
+      - build_date: 2025-10-19
+        checksum:
+          sha512:3d0a37c9dda8c6d5f5406744c378f387be92898fe7aca0d96d164c02f8af05f583ffba2998cb128c037c7a9d5a62601a3e4f20632149eead2902a50eed0f5c4b
+        url:
+          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20251019-2270/debian-13-genericcloud-amd64-daily-20251019-2270.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20251019-debian-13.qcow2
+        version: '20251019'
