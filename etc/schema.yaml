@@ -35,7 +35,7 @@ meta:
   image_description: str(required=False)
   os_distro: enum('arch', 'centos', 'cirros', 'clearlinux', 'debian', 'fedora', 'freebsd', 'opensuse', 'rhel', 'talos', 'ubuntu', 'windows')
   os_version: str(required=False)
-  os_purpose: enum('generic', 'minimal', 'capinode', 'gpu', 'custom')
+  os_purpose: enum('generic', 'minimal', 'k8snode', 'gpu', 'network', 'custom')
   patchlevel: str(required=False)
   provided_until: any(enum('none'), day())
   replace_frequency: enum('yearly', 'quarterly', 'monthly', 'weekly', 'daily', 'critical_bug', 'never')

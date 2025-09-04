@@ -18,7 +18,7 @@ images:
       hw_watchdog_action: reset
       hypervisor_type: qemu
       os_distro: debian
-      os_purpose: capinode
+      os_purpose: k8snode
       replace_frequency: never
       uuid_validity: none
       provided_until: none
