@@ -19,6 +19,7 @@ images:
       hypervisor_type: qemu
       os_distro: debian
       os_version: '10'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -54,6 +55,7 @@ images:
       hypervisor_type: qemu
       os_distro: debian
       os_version: '11'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -89,6 +91,7 @@ images:
       hypervisor_type: qemu
       os_distro: debian
       os_version: '12'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none

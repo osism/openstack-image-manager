@@ -19,6 +19,7 @@ images:
       hypervisor_type: qemu
       os_distro: centos
       os_version: '8'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -53,6 +54,7 @@ images:
       hypervisor_type: qemu
       os_distro: centos
       os_version: '9'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
