@@ -19,6 +19,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '14.04'
+      os_purpose: generic
       replace_frequency: never
       uuid_validity: none
       provided_until: none
@@ -53,6 +54,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '16.04'
+      os_purpose: generic
       replace_frequency: never
       uuid_validity: none
       provided_until: none
@@ -87,6 +89,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '16.04'
+      os_purpose: minimal
       replace_frequency: never
       uuid_validity: none
       provided_until: none
@@ -121,6 +124,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '18.04'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -153,6 +157,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '18.04'
+      os_purpose: minimal
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -187,6 +192,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '20.04'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -219,6 +225,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '20.04'
+      os_purpose: minimal
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -253,6 +260,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '22.04'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -285,6 +293,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '22.04'
+      os_purpose: minimal
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -319,6 +328,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '24.04'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
@@ -351,6 +361,7 @@ images:
       hypervisor_type: qemu
       os_distro: ubuntu
       os_version: '24.04'
+      os_purpose: minimal
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none

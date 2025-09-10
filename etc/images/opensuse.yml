@@ -19,6 +19,7 @@ images:
       hypervisor_type: qemu
       os_distro: opensuse
       os_version: '15.6'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
