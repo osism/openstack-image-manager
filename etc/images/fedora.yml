@@ -20,6 +20,7 @@ images:
       hypervisor_type: qemu
       os_distro: fedora
       os_version: '37'
+      os_purpose: generic
       replace_frequency: quarterly
       uuid_validity: last-3
       provided_until: none
