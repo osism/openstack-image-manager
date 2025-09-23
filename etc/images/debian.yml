@@ -136,11 +136,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-09-07
+      - build_date: 2025-09-22
         checksum: 
-          sha512:19603d385c3e9234865acc78a8bd5ccc60be81b9434473c396345123a34d811417cd5613683ac5de8a479972a61f464f745eca34bdd3b77a53a5db9ba7be56c1
+          sha512:76855c6d6a30b4abc6e54613b759fd8520351db335032ed4c55eb3e6ae8b4b3a0dfa92e021ee151155106769447b0fadc4f7e9264ee85db4024f81ab189e9db2
         url: 
-          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20250907-2228/debian-13-genericcloud-arm64-daily-20250907-2228.qcow2
+          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20250922-2243/debian-13-genericcloud-amd64-daily-20250922-2243.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-13/20250907-debian-13.qcow2
-        version: '20250907'
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-13/20250922-debian-13.qcow2
+        version: '20250922'
