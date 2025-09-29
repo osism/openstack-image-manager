@@ -108,3 +108,39 @@ images:
         mirror_url: 
           https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250331-debian-12.qcow2
         version: '20250331'
+  - name: Debian 13
+    enable: true
+    shortname: debian-13
+    format: qcow2
+    login: debian
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: debian
+      os_version: '13'
+      os_purpose: generic
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/SHA512SUMS
+    latest_url: 
+      https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
+    versions:
+      - build_date: 2025-09-22
+        checksum: 
+          sha512:76855c6d6a30b4abc6e54613b759fd8520351db335032ed4c55eb3e6ae8b4b3a0dfa92e021ee151155106769447b0fadc4f7e9264ee85db4024f81ab189e9db2
+        url: 
+          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20250922-2243/debian-13-genericcloud-amd64-daily-20250922-2243.qcow2
+        mirror_url: 
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-13/20250922-debian-13.qcow2
+        version: '20250922'
