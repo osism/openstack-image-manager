@@ -64,14 +64,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20250402'
+      - version: '20251006'
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bullseye/20250402-2070/debian-11-genericcloud-amd64-20250402-2070.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bullseye/20251006-2257/debian-11-genericcloud-amd64-20251006-2257.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20250402-debian-11.qcow2
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20251006-debian-11.qcow2
         checksum: 
-          sha512:812295274b3b0d0ff85e339ffa59569b8ccac7949c94c7342dee354261a19a896a9318b3e80b2bffed4ec0da615fbf4687d8bb73acfc1c49feaf524f6d1ed3a6
-        build_date: 2025-04-02
+          sha512:c96f2f4c03479e8d7ee690de3c5ec2257ee30a06e715a9035c93389b405c5c95db4b51dad8313f15b2680379e2d7f9a2d4c13281231cece52a6ed392206df029
+        build_date: 2025-10-06
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -100,11 +100,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-03-31
+      - build_date: 2025-10-11
         checksum: 
-          sha512:3888a9db017ac55e43cb5b18d6bc0eff5519e2103e9b82299941d7a5ec56ff2566cad74c6689e357a2a1ac3429f04214bd12c08a8fc917db1e587dfa8dea2509
+          sha512:7d0688c7b813a99f608c0982bf43847c075175ea75cc6876256f5fd89455689d8f66894a9eefe7135f80a22de798b5cf9e956e907eec281e25416d3b79fab45f
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20250331-2068/debian-12-genericcloud-amd64-daily-20250331-2068.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20251011-2262/debian-12-genericcloud-amd64-daily-20251011-2262.qcow2
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250331-debian-12.qcow2
-        version: '20250331'
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20251011-debian-12.qcow2
+        version: '20251011'
