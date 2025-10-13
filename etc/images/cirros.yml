@@ -7,7 +7,7 @@ images:
     login: cirros
     password: gocubsgo
     min_disk: 1
-    min_ram: 32
+    min_ram: 64
     status: active
     visibility: public
     multi: false
