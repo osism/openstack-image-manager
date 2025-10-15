@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7bd63f7f6671142dfe9f65af52e58865041485bef4c1e6a941c6bae042ab41b2"
+            "sha256": "5b2355948118051ddddd73bd45956d1cefa2cdb642ad5cf5210844ee7d1eb276"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -432,6 +432,14 @@
             "markers": "python_version >= '3.8'",
             "version": "==3.11"
         },
+        "invoke": {
+            "hashes": [
+                "sha256:2413bc441b376e5cd3f55bb5d364f973ad8bdd7bf87e53c79de3c11bf3feecc8",
+                "sha256:515bf49b4a48932b79b024590348da22f39c4942dff991ad1fb8b8baea1be707"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==2.2.1"
+        },
         "iso8601": {
             "hashes": [
                 "sha256:6b1d3829ee8921c4301998c909f7829fa9ed3cbdac0d3b16af2d743aed1ba8df",
@@ -543,12 +551,12 @@
         },
         "paramiko": {
             "hashes": [
-                "sha256:43b9a0501fc2b5e70680388d9346cf252cfb7d00b0667c39e80eb43a408b8f61",
-                "sha256:b2c665bc45b2b215bd7d7f039901b14b067da00f3a11e6640995fd58f2664822"
+                "sha256:0e20e00ac666503bf0b4eda3b6d833465a2b7aff2e2b3d79a8bba5ef144ee3b9",
+                "sha256:6a25f07b380cc9c9a88d2b920ad37167ac4667f8d9886ccebd8f90f654b5d69f"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.6'",
-            "version": "==3.5.1"
+            "markers": "python_version >= '3.9'",
+            "version": "==4.0.0"
         },
         "patool": {
             "hashes": [
