@@ -179,7 +179,6 @@ def update_image(
     minio_access_key,
     minio_secret_key,
     dry_run=False,
-    swift_prefix="",
 ):
     name = image["name"]
     logger.info(f"Checking image {name}")
@@ -245,7 +244,7 @@ def update_image(
 
     minio_server = str(minio_server)
     minio_bucket = str(minio_bucket)
-    mirror_url = f"https://{minio_server}/{swift_prefix}{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"  # noqa E501
+    mirror_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"  # noqa E501
     logger.info(f"New URL is {mirror_url}")
 
     # If `mirror_url` is given, the manage.py script will
@@ -290,15 +289,10 @@ def main(
         None, help="Minio secret key", envvar="MINIO_SECRET_KEY"
     ),
     minio_server: str = typer.Option(
-        "swift.services.a.regiocloud.tech", help="Minio server", envvar="MINIO_SERVER"
+        "nbg1.your-objectstorage.com", help="Minio server", envvar="MINIO_SERVER"
     ),
     minio_bucket: str = typer.Option(
-        "openstack-images", help="Minio bucket", envvar="MINIO_BUCKET"
-    ),
-    swift_prefix: str = typer.Option(
-        "swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/",
-        help="Swift prefix",
-        envvar="SWIFT_PREFIX",
+        "osism/openstack-images", help="Minio bucket", envvar="MINIO_BUCKET"
     ),
 ):
     if debug:
@@ -338,7 +332,6 @@ def main(
                 minio_access_key,
                 minio_secret_key,
                 dry_run,
-                swift_prefix,
             )
 
         if not updates:
