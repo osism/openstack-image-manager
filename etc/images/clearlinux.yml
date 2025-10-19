@@ -27,6 +27,6 @@ images:
     versions:
       - version: '38700'
         url: https://cdn.download.clearlinux.org/releases/38700/clear/clear-38700-cloudguest.img.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/clearlinux/38700/clear-38700-cloudguest.img
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/clearlinux/38700/clear-38700-cloudguest.img
         checksum: "sha256:554f2e9f1c5cd3caa7ca9043e9379ab7bac36f8004ae6023f2fb642b80ace173"
         build_date: 2023-03-31
