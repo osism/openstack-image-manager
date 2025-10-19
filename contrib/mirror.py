@@ -87,7 +87,7 @@ def main(
             continue
 
         if not image["shortname"].startswith(
-            ("almalinux", "centos", "debian", "rockylinux", "ubuntu")
+            ("almalinux", "centos", "debian", "rocky", "ubuntu")
         ):
             continue
 
