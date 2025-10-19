@@ -35,7 +35,7 @@ def main(
     minio_server: str = typer.Option(
         "nbg1.your-objectstorage.com", help="Minio server"
     ),
-    minio_bucket: str = typer.Option("osism/openstack-images", help="Minio bucket"),
+    minio_bucket: str = typer.Option("osism", help="Minio bucket"),
 ):
     if debug:
         level = "DEBUG"
@@ -97,10 +97,10 @@ def main(
 
             logger.debug(f"source: {version['url']}")
 
-            path = urlparse(version["url"])
-            url = urlparse(version["url"])
+            path = urlparse(version["mirror_url"])
+            url = urlparse(version["mirror_url"])
 
-            dirname = f"{image['shortname']}"
+            dirname = f"openstack-images/{image['shortname']}"
             filename, fileextension = os.path.splitext(os.path.basename(path.path))
             _, fileextension2 = os.path.splitext(filename)
 
