@@ -260,12 +260,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20251002'
-        url: https://cloud-images.ubuntu.com/jammy/20251002/jammy-server-cloudimg-amd64.img
+      - version: '20251017'
+        url: https://cloud-images.ubuntu.com/jammy/20251017/jammy-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20251002-ubuntu-22.04.qcow2
-        checksum: sha256:aa9285ca45b1c1beda4cb4b952231c88cb6fcc71d1172aae2fd52ac3df0dd618
-        build_date: 2025-10-02
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-22.04/20251017-ubuntu-22.04.qcow2
+        checksum: sha256:e74846eea13985b18283ba1e22348a528851197c59474a0eefe73502d3eea444
+        build_date: 2025-10-17
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -326,12 +326,12 @@ images:
     latest_checksum_url: https://cloud-images.ubuntu.com/noble/current/SHA256SUMS
     latest_url: https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
     versions:
-      - version: '20251001'
-        url: https://cloud-images.ubuntu.com/noble/20251001/noble-server-cloudimg-amd64.img
+      - version: '20251014'
+        url: https://cloud-images.ubuntu.com/noble/20251014/noble-server-cloudimg-amd64.img
         mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20251001-ubuntu-24.04.qcow2
-        checksum: sha256:02dc186dc491514254df58df29a5877c93ca90ac790cc91a164ea90ed3a0bb05
-        build_date: 2025-10-01
+          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/ubuntu-24.04/20251014-ubuntu-24.04.qcow2
+        checksum: sha256:29240d89dbd4e4e6d94be2b3531ad5245b0227f16d56d1bb7ac5674f4fcd4caa
+        build_date: 2025-10-14
   - name: Ubuntu 24.04 Minimal
     enable: true
     shortname: ubuntu-24.04-minimal
