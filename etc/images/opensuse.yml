@@ -28,6 +28,6 @@ images:
       - version: '20240603'
         url: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
         mirror_url:
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/opensuse-leap-15.6/20240603-openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-15.6/20240603-openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
         checksum: "sha256:0f7f09a9a083088b51aa365fe0e4310e6b156c2153d6aa03a77b81eee884e52a"
         build_date: 2024-06-03

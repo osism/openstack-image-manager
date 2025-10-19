@@ -29,10 +29,10 @@ images:
       https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS
     versions:
       - version: '20221112'
-        url: 
+        url:
           https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS
-        mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-7/20221112-centos-7.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-7/20221112-centos-7.qcow2
         checksum: sha256:284aab2b23d91318f169ff464bce4d53404a15a0618ceb34562838c59af4adea
         build_date: 2022-11-12
   - name: CentOS Stream 8
@@ -64,10 +64,10 @@ images:
       https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
       - version: '20240604'
-        url: 
+        url:
           https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20240603.0.x86_64.qcow2
-        mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-8/20240604-centos-stream-8.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-8/20240604-centos-stream-8.qcow2
         checksum: sha256:44e9c9adf2e70906ae4731f7f62355ef79bcc582c93edadce522edffb4b4df85
         build_date: 2024-06-04
   - name: CentOS Stream 9
@@ -99,9 +99,9 @@ images:
       https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
       - version: '20250401'
-        url: 
+        url:
           https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20250331.0.x86_64.qcow2
-        mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/centos-stream-9/20250401-centos-stream-9.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-9/20250401-centos-stream-9.qcow2
         checksum: sha256:b84be3027c6bafee20b59efa061a9b26ac554288b3ab129dec6d2574ae2ab44d
         build_date: 2025-04-01

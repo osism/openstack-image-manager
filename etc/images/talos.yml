@@ -27,16 +27,16 @@ images:
     versions:
       - version: '1.3.6'
         url: https://github.com/siderolabs/talos/releases/download/v1.3.6/openstack-amd64.tar.gz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/talos/1.3.6/disk.raw
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/talos/1.3.6/disk.raw
         checksum: "sha256:1db0cfd9bd9c3d3165911ab89ef05dad1d590cc442fb0702564cfe737b3f3dbd"
         build_date: 2023-03-14
       - version: '1.4.5'
         url: https://github.com/siderolabs/talos/releases/download/v1.4.5/openstack-amd64.tar.gz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/talos/1.4.5/disk.raw
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/talos/1.4.5/disk.raw
         checksum: "sha256:fc7dc71a6acece93196c8bace15139469b7bfbe4fa7d001336da0fdda9b437c9"
         build_date: 2023-05-30
       - version: '1.6.0'
         url: https://github.com/siderolabs/talos/releases/download/v1.6.0/openstack-amd64.raw.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/talos/1.6.0/openstack-amd64.raw
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/talos/1.6.0/openstack-amd64.raw
         checksum: "sha256:e3754c2338b4ce831db5442cf62deab260d56b64227a07cfc26e4b73eef5abaf"
         build_date: 2023-12-15

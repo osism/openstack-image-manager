@@ -29,10 +29,10 @@ images:
       https://cdimage.debian.org/cdimage/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     versions:
       - version: '20240703'
-        url: 
+        url:
           https://cdimage.debian.org/cdimage/cloud/buster/20240703-1797/debian-10-genericcloud-amd64-20240703-1797.qcow2
-        mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-10/20240703-debian-10.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-10/20240703-debian-10.qcow2
         checksum: 
           sha512:416bca009f83884ceab49bf8ad944c9fe0091ac90cf80856fcb5d2a8300a949b3f19573b27c34d3e6d44224e716c122c4b884071d1f1634c5ce52c4dc109c5d1
         build_date: 2024-07-03
@@ -65,10 +65,10 @@ images:
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
       - version: '20250402'
-        url: 
+        url:
           https://cdimage.debian.org/cdimage/cloud/bullseye/20250402-2070/debian-11-genericcloud-amd64-20250402-2070.qcow2
-        mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-11/20250402-debian-11.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-11/20250402-debian-11.qcow2
         checksum: 
           sha512:812295274b3b0d0ff85e339ffa59569b8ccac7949c94c7342dee354261a19a896a9318b3e80b2bffed4ec0da615fbf4687d8bb73acfc1c49feaf524f6d1ed3a6
         build_date: 2025-04-02
@@ -101,10 +101,10 @@ images:
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
       - build_date: 2025-03-31
-        checksum: 
+        checksum:
           sha512:3888a9db017ac55e43cb5b18d6bc0eff5519e2103e9b82299941d7a5ec56ff2566cad74c6689e357a2a1ac3429f04214bd12c08a8fc917db1e587dfa8dea2509
-        url: 
+        url:
           https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20250331-2068/debian-12-genericcloud-amd64-daily-20250331-2068.qcow2
-        mirror_url: 
-          https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/debian-12/20250331-debian-12.qcow2
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20250331-debian-12.qcow2
         version: '20250331'

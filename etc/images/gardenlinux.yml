@@ -26,36 +26,36 @@ images:
     versions:
       - version: '1592.0'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.0/openstack-gardener_prod-amd64-1592.0-0cc2b85d.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.0/openstack-gardener_prod-amd64-1592.0-0cc2b85d.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.0/openstack-gardener_prod-amd64-1592.0-0cc2b85d.qcow2
         checksum: "sha256:43fbd3af61b6c531bb32fb4b74a09371c538839e3afab6ca7fe023e854c40e67"
         build_date: 2024-08-12
       - version: '1592.1'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.1/openstack-gardener_prod-amd64-1592.1-ec945aa9.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.1/openstack-gardener_prod-amd64-1592.1-ec945aa9.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.1/openstack-gardener_prod-amd64-1592.1-ec945aa9.qcow2
         checksum: "sha256:990f4843f4bb08dd5972710fb8909d4b3d34d53d1adecbec477f8c2e6bbc0db4"
         build_date: 2024-08-22
       - version: '1592.2'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.2/openstack-gardener_prod-amd64-1592.2-76203a30.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.2/openstack-gardener_prod-amd64-1592.2-76203a30.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.2/openstack-gardener_prod-amd64-1592.2-76203a30.qcow2
         checksum: "sha256:ef67e1a95aa77f9d6999ff3d376806df498d75646c6c5eff8f4d882f482ec913"
         build_date: 2024-10-23
       - version: '1592.3'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.3/openstack-gardener_prod-amd64-1592.3-f64e280f.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.3/openstack-gardener_prod-amd64-1592.3-f64e280f.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.3/openstack-gardener_prod-amd64-1592.3-f64e280f.qcow2
         checksum: "sha256:ad91873f81f8b7997a693848d038572e8895cbd636656d04f94e8fa932cdcd09"
         build_date: 2024-11-20
       - version: '1592.6'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.6/openstack-gardener_prod-amd64-1592.6-cb05e11f.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.6/openstack-gardener_prod-amd64-1592.6-cb05e11f.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.6/openstack-gardener_prod-amd64-1592.6-cb05e11f.qcow2
         checksum: "sha256:b3e500573dcd34469d6452dca2e21fd360e91d8e271f183cbbfa7c2240176edc"
         build_date: 2025-02-19
       - version: '1592.7'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.7/openstack-gardener_prod-amd64-1592.7-a9cc35cc.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.7/openstack-gardener_prod-amd64-1592.7-a9cc35cc.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.7/openstack-gardener_prod-amd64-1592.7-a9cc35cc.qcow2
         checksum: "sha256:30a2ccd76fe81e29409f76c25ca61e6f31ea1e74be45b931080504e9a304562c"
         build_date: 2025-03-27
       - version: '1592.8'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.8/openstack-gardener_prod-amd64-1592.8-65332b6b.tar.xz
-        mirror_url: https://swift.services.a.regiocloud.tech/swift/v1/AUTH_b182637428444b9aa302bb8d5a5a418c/openstack-images/gardenlinux/1592.8/openstack-gardener_prod-amd64-1592.8-65332b6b.qcow2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.8/openstack-gardener_prod-amd64-1592.8-65332b6b.qcow2
         checksum: "sha256:6ba9ff730eef744d92f66185b7262fefe0af26074d02aa8f5cdbba9d3166ca78"
         build_date: 2025-04-01
