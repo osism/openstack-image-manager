@@ -3,7 +3,7 @@ minio==7.2.18
 munch==4.0.0
 natsort==8.4.0
 openstacksdk==4.7.1
-paramiko==3.5.1
+paramiko==4.0.0
 patool==4.0.2
 requests==2.32.5
 ruamel.yaml==0.18.15
