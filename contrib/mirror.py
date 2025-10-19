@@ -33,9 +33,9 @@ def main(
         None, help="Minio secret key", envvar="MINIO_SECRET_KEY"
     ),
     minio_server: str = typer.Option(
-        "swift.services.a.regiocloud.tech", help="Minio server"
+        "nbg1.your-objectstorage.com", help="Minio server"
     ),
-    minio_bucket: str = typer.Option("openstack-images", help="Minio bucket"),
+    minio_bucket: str = typer.Option("osism/openstack-images", help="Minio bucket"),
 ):
     if debug:
         level = "DEBUG"
