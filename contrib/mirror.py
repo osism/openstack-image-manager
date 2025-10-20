@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
+import hashlib
 import os
 import patoolib
 import requests
@@ -24,6 +25,9 @@ app = typer.Typer(add_completion=False)
 def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
     upload: bool = typer.Option(True, "--upload/--no-upload", help="Upload images"),
+    checksum: bool = typer.Option(
+        True, "--checksum/--no-checksum", help="Calculate and compare the checksum"
+    ),
     download: bool = typer.Option(
         True, "--download/--no-download", help="Download images"
     ),
@@ -97,11 +101,12 @@ def main(
                 "almalinux",
                 "centos",
                 "debian",
-                "rocky",
-                "ubuntu",
-                "gardenlinux",
-                "talos",
                 "flatcar",
+                "gardenlinux",
+                "opnsense",
+                "rocky",
+                "talos",
+                "ubuntu",
             )
         ):
             continue
@@ -121,7 +126,9 @@ def main(
             )
             _, mirror_fileextension2 = os.path.splitext(mirror_filename)
 
-            if not image["shortname"].startswith(("gardenlinux", "talos", "flatcar")):
+            if not image["shortname"].startswith(
+                ("gardenlinux", "talos", "flatcar", "opnsense")
+            ):
                 mirror_filename = f"{version['version']}-{image['shortname']}"
 
             if mirror_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
@@ -187,6 +194,15 @@ def main(
                         )
                     else:
                         os.rename(source_filename, mirror_filename)
+
+                    if checksum:
+                        h = hashlib.new("sha512")
+                        with open(mirror_filename, "rb") as fp:
+                            while c := fp.read(8192):
+                                h.update(c)
+
+                        logger.info(f"SHA512 of {mirror_filename}: {h.hexdigest()}")
+
                 else:
                     logger.info(
                         f"Not downloading {source_filename} to local filesystem (download disabled)"

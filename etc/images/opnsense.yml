@@ -26,13 +26,8 @@ images:
       provided_until: none
     tags: []
     versions:
-      - version: '24.1'
-        url: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/24.1/OPNsense-24.1-nano-amd64.img.bz2
-        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/opnsense/24.1/OPNsense-24.1-nano-amd64.img
-        checksum: "sha256:149641d45243bdbd7da3527408f31c3c4b02b5c6ca29b261b10c9af4236d11e7"
-        build_date: 2024-01-29
-      - version: '25.1'
-        url: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/25.1/OPNsense-25.1-nano-amd64.img.bz2
-        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/opnsense/25.1/OPNsense-25.1-nano-amd64.img
-        checksum: "sha256:794a4d09846a974d0d041a0235ef29f54954e47843164912d46899016e0865a1"
-        build_date: 2025-01-28
+      - version: '25.7'
+        url: https://mirror.ams1.nl.leaseweb.net/opnsense/releases/25.7/OPNsense-25.7-nano-amd64.img.bz2
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/opnsense/25.7/OPNsense-25.7-nano-amd64
+        checksum: "sha512:a337868f985c417740a414b298b597f964ab646610ad20eb856edd603e158f831d0c7f79229f6766614efddedd32c4bd373ee8968480ec8687431ddcfbbceff7"
+        build_date: 2025-07-22
