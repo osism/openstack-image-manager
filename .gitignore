@@ -1,4 +1,5 @@
 .tox
+__pycache__
 clouds.yml
 secure.yml
-__pycache__
+tmp

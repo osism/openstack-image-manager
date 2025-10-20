@@ -13,6 +13,7 @@ from minio import Minio
 from minio.error import S3Error
 from os import listdir
 from os.path import isfile, join
+from pathlib import Path
 from urllib.parse import urlparse
 
 
@@ -22,7 +23,13 @@ app = typer.Typer(add_completion=False)
 @app.command()
 def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Do not perform any changes"),
+    upload: bool = typer.Option(True, "--upload/--no-upload", help="Upload images"),
+    download: bool = typer.Option(
+        True, "--download/--no-download", help="Download images"
+    ),
+    delete: bool = typer.Option(
+        True, "--delete/--no-delete", help="Delete images after upload"
+    ),
     images: str = typer.Option(
         "etc/images/", help="Path to the directory containing all image files"
     ),
@@ -59,8 +66,7 @@ def main(
     result = client.bucket_exists(minio_bucket)
     if not result:
         logger.error(f"Create bucket '{minio_bucket}' first")
-        if not dry_run:
-            sys.exit(1)
+        sys.exit(1)
 
     onlyfiles = []
     for f in listdir(images):
@@ -87,7 +93,7 @@ def main(
             continue
 
         if not image["shortname"].startswith(
-            ("almalinux", "centos", "debian", "rocky", "ubuntu")
+            ("almalinux", "centos", "debian", "rocky", "ubuntu", "gardenlinux")
         ):
             continue
 
@@ -97,56 +103,99 @@ def main(
 
             logger.debug(f"source: {version['url']}")
 
-            path = urlparse(version["mirror_url"])
-            url = urlparse(version["mirror_url"])
+            source_path = urlparse(version["url"])
+            mirror_path = urlparse(version["mirror_url"])
 
-            dirname = f"openstack-images/{image['shortname']}"
-            filename, fileextension = os.path.splitext(os.path.basename(path.path))
-            _, fileextension2 = os.path.splitext(filename)
+            mirror_dirname = f"openstack-images/{image['shortname']}"
+            mirror_filename, mirror_fileextension = os.path.splitext(
+                os.path.basename(mirror_path.path)
+            )
+            _, mirror_fileextension2 = os.path.splitext(mirror_filename)
 
-            filename = f"{version['version']}-{image['shortname']}"
+            if not image["shortname"].startswith("gardenlinux"):
+                mirror_filename = f"{version['version']}-{image['shortname']}"
 
-            if fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
-                filename += fileextension
+            if mirror_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
+                mirror_filename += mirror_fileextension
 
-            if fileextension2 == ".tar":
-                filename = os.path.basename(url.path)
+            if mirror_fileextension2 == ".tar":
+                mirror_filename = os.path.basename(mirror_path.path)
 
-            logger.debug(f"dirname: {dirname}")
-            logger.debug(f"filename: {filename}")
+            logger.debug(f"mirror dirname: {mirror_dirname}")
+            logger.debug(f"mirror filename: {mirror_filename}")
+
+            source_filename, source_fileextension = os.path.splitext(
+                os.path.basename(source_path.path)
+            )
+            _, source_fileextension2 = os.path.splitext(source_filename)
+
+            if source_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
+                source_filename += source_fileextension
+            else:
+                mirror_dirname = os.path.join(mirror_dirname, version["version"])
+
+            if source_fileextension2 == ".tar":
+                source_filename = os.path.basename(source_path.path)
+
+            logger.debug(f"source filename: {source_filename}")
 
             try:
-                client.stat_object(minio_bucket, os.path.join(dirname, filename))
-                logger.info(f"File {filename} available in bucket {dirname}")
+                client.stat_object(
+                    minio_bucket, os.path.join(mirror_dirname, mirror_filename)
+                )
+                logger.info(
+                    f"File {mirror_filename} available in bucket {mirror_dirname}"
+                )
             except S3Error:
-                logger.info(f"File {filename} not yet available in bucket {dirname}")
+                logger.info(
+                    f"File {mirror_filename} not yet available in bucket {mirror_dirname}"
+                )
 
-                if not dry_run:
-                    if not isfile(os.path.basename(path.path)):
+                if download:
+                    if not isfile(os.path.basename(source_filename)):
+                        logger.info(
+                            f"File {source_filename} not available on local filesystem"
+                        )
                         logger.info(f"Downloading {version['url']}")
                         response = requests.get(
                             version["url"], stream=True, allow_redirects=True
                         )
-                        with open(os.path.basename(path.path), "wb") as fp:
+                        with open(source_filename, "wb") as fp:
                             shutil.copyfileobj(response.raw, fp)
                         del response
 
-                    if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                        logger.info(f"Decompressing {os.path.basename(path.path)}")
+                    if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
+                        logger.info(f"Decompressing {source_filename}")
+                        Path("tmp").mkdir(exist_ok=True)
                         patoolib.extract_archive(
-                            os.path.basename(path.path), outdir="."
+                            os.path.basename(source_filename), outdir="tmp"
                         )
-                        os.remove(os.path.basename(path.path))
-
-                    logger.info(f"Uploading {filename} to bucket {dirname}")
-                    client.fput_object(
-                        minio_bucket, os.path.join(dirname, filename), filename
-                    )
-
-                    os.remove(filename)
+                        os.remove(source_filename)
+                        shutil.copy(
+                            os.path.join("tmp", mirror_filename), mirror_filename
+                        )
+                    else:
+                        os.rename(source_filename, mirror_filename)
                 else:
                     logger.info(
-                        f"Not uploading {filename} to bucket {dirname} (dry-run enabled)"
+                        f"Not downloading {source_filename} to local filesystem (download disabled)"
+                    )
+
+                if upload:
+                    logger.info(
+                        f"Uploading {mirror_filename} to bucket {mirror_dirname}"
+                    )
+
+                    client.fput_object(
+                        minio_bucket,
+                        os.path.join(mirror_dirname, mirror_filename),
+                        mirror_filename,
+                    )
+
+                    os.remove(mirror_filename)
+                else:
+                    logger.info(
+                        f"Not uploading {mirror_filename} to bucket {mirror_dirname} (upload disabled)"
                     )
 
 
