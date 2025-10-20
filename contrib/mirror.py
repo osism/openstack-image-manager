@@ -93,7 +93,7 @@ def main(
             continue
 
         if not image["shortname"].startswith(
-            ("almalinux", "centos", "debian", "rocky", "ubuntu", "gardenlinux")
+            ("almalinux", "centos", "debian", "rocky", "ubuntu", "gardenlinux", "talos")
         ):
             continue
 
@@ -112,7 +112,7 @@ def main(
             )
             _, mirror_fileextension2 = os.path.splitext(mirror_filename)
 
-            if not image["shortname"].startswith("gardenlinux"):
+            if not image["shortname"].startswith(("gardenlinux", "talos")):
                 mirror_filename = f"{version['version']}-{image['shortname']}"
 
             if mirror_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
