@@ -42,7 +42,7 @@ jobs:
 
             Signed-off-by: OSISM Bot <bot@osism.tech>
           committer: OSISM Bot <bot@osism.tech>
-          branch: updates-images-${{ github.run_number }}
+          branch: updates-images-${{ github.run_number }}-${{ matrix.image }}
           delete-branch: true
           title: "chore: update ${{ matrix.image }} images"
           body: |
