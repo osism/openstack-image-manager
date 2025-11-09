@@ -3,6 +3,7 @@
 import hashlib
 import os
 import patoolib
+import re
 import requests
 import shutil
 import sys
@@ -218,6 +219,66 @@ def main(
                         os.path.join(mirror_dirname, mirror_filename),
                         mirror_filename,
                     )
+
+                    # Gardenlinux-specific: Upload additional files with simplified filename and SHA256 checksum
+                    if image["shortname"] == "gardenlinux":
+                        # Check if filename matches pattern with hash suffix: *-[8-char-hex].qcow2
+                        hash_pattern = re.compile(r"-([a-f0-9]{8})\.qcow2$")
+                        match = hash_pattern.search(mirror_filename)
+
+                        if match:
+                            # Create simplified filename by removing hash suffix
+                            simplified_filename = hash_pattern.sub(
+                                ".qcow2", mirror_filename
+                            )
+                            logger.info(
+                                f"Creating simplified filename: {simplified_filename}"
+                            )
+
+                            # Create symlink to simplified filename
+                            if os.path.exists(simplified_filename):
+                                os.remove(simplified_filename)
+                            os.symlink(mirror_filename, simplified_filename)
+
+                            # Upload simplified filename
+                            logger.info(
+                                f"Uploading {simplified_filename} to bucket {mirror_dirname}"
+                            )
+                            client.fput_object(
+                                minio_bucket,
+                                os.path.join(mirror_dirname, simplified_filename),
+                                simplified_filename,
+                            )
+
+                            # Calculate SHA256 checksum
+                            h_sha256 = hashlib.sha256()
+                            with open(mirror_filename, "rb") as fp:
+                                while chunk := fp.read(8192):
+                                    h_sha256.update(chunk)
+
+                            sha256_hash = h_sha256.hexdigest()
+                            logger.info(
+                                f"SHA256 of {simplified_filename}: {sha256_hash}"
+                            )
+
+                            # Create SHA256 checksum file
+                            sha256_filename = f"{simplified_filename}.sha256"
+                            with open(sha256_filename, "w") as fp:
+                                fp.write(f"{sha256_hash}  {simplified_filename}\n")
+
+                            # Upload SHA256 checksum file
+                            logger.info(
+                                f"Uploading {sha256_filename} to bucket {mirror_dirname}"
+                            )
+                            client.fput_object(
+                                minio_bucket,
+                                os.path.join(mirror_dirname, sha256_filename),
+                                sha256_filename,
+                            )
+
+                            # Clean up temporary files
+                            os.remove(simplified_filename)
+                            os.remove(sha256_filename)
 
                     os.remove(mirror_filename)
                 else:
