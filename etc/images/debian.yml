@@ -103,14 +103,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-10-19
+      - build_date: 2025-11-09
         checksum: 
-          sha512:550e6f0c48fd6695f6b9ddee5feac676c54015e6d7b23cfc6bd104541f88dde507a3bd01c6359bee8c5039aefc1f0f8cc63c32f4f3e801be29af0b2f0a582115
+          sha512:17a8f146109aed9a0c45b3d1dca7ef13fb569e41fb34c1427f73c592173a6719b412d6ac8302838e30a6da3cbdf545b1c96d8910a8ff6e3198b6b686f981027c
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20251019-2270/debian-12-genericcloud-amd64-daily-20251019-2270.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20251109-2291/debian-12-genericcloud-amd64-daily-20251109-2291.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20251019-debian-12.qcow2
-        version: '20251019'
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20251109-debian-12.qcow2
+        version: '20251109'
   - name: Debian 13
     enable: true
     shortname: debian-13
@@ -135,15 +135,16 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url: https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/SHA512SUMS
+    latest_checksum_url: 
+      https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/SHA512SUMS
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-10-19
-        checksum:
-          sha512:3d0a37c9dda8c6d5f5406744c378f387be92898fe7aca0d96d164c02f8af05f583ffba2998cb128c037c7a9d5a62601a3e4f20632149eead2902a50eed0f5c4b
-        url:
-          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20251019-2270/debian-13-genericcloud-amd64-daily-20251019-2270.qcow2
-        mirror_url:
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20251019-debian-13.qcow2
-        version: '20251019'
+      - build_date: 2025-11-09
+        checksum: 
+          sha512:21ba0aa9c682770e20a303d5a45ac85e23aaadcff569fa4307f7ebd3d67945f4f575993a721235556aa6d67e55f04e2b16d7ac6331cf77aafd078474fbb827e7
+        url: 
+          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20251109-2291/debian-13-genericcloud-amd64-daily-20251109-2291.qcow2
+        mirror_url: 
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20251109-debian-13.qcow2
+        version: '20251109'
