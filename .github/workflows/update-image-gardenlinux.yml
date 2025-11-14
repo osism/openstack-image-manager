@@ -1,0 +1,43 @@
+---
+name: Update image gardenlinux
+
+"on":
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  update-image-gardenlinux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Set up python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install pip3
+        run: pip3 install tox
+
+      - name: Update image gardenlinux
+        run: tox -e update-gardenlinux
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore: update gardenlinux image
+
+            Signed-off-by: OSISM Bot <bot@osism.tech>
+          committer: OSISM Bot <bot@osism.tech>
+          branch: updates-image-gardenlinux-${{ github.run_number }}
+          delete-branch: true
+          title: "chore: update gardenlinux mage"
+          body: |
+            chore: update gardenlinux image
+
+            Signed-off-by: OSISM Bot <bot@osism.tech>
