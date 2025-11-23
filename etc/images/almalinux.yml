@@ -66,11 +66,11 @@ images:
     latest_url: 
       https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
     versions:
-      - version: '20250522'
+      - version: '20251118'
         url: 
           https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/almalinux-9/20250522-almalinux-9.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/almalinux-9/20251118-almalinux-9.qcow2
         checksum: 
-          sha256:b08cd5db79bf32860412f5837e8c7b8df9447e032376e3c622840b31aaf26bc6
-        build_date: 2025-05-22
+          sha256:5ff9c048859046f41db4a33b1f1a96675711288078aac66b47d0be023af270d1
+        build_date: 2025-11-18
