@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2ecfd008e5bf4e198b5757c9b29d096a4a90056803d7758834af4962e19e9031"
+            "sha256": "56e9759628e0f7bda4af68232072e00acb89566c556ef30c84d48cd30f396d68"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -507,12 +507,12 @@
         },
         "minio": {
             "hashes": [
-                "sha256:173402a5716099159c5659f9de75be204ebe248557b9f1cc9cf45aa70e9d3024",
-                "sha256:f23a6edbff8d0bc4b5c1a61b2628a01c5a3342aefc613ff9c276012e6321108f"
+                "sha256:95898b7a023fbbfde375985aa77e2cd6a0762268db79cf886f002a9ea8e68598",
+                "sha256:eb33dd2fb80e04c3726a76b13241c6be3c4c46f8d81e1d58e757786f6501897e"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==7.2.18"
+            "version": "==7.2.20"
         },
         "munch": {
             "hashes": [
@@ -543,11 +543,11 @@
         },
         "os-service-types": {
             "hashes": [
-                "sha256:348e029248fccf063a117d30ac603d1afa396fda436bdbfa71f90ae920f13511",
-                "sha256:c3d60134ee509cf55452c73ff8bd41891bcb6cf42421a159c0138824e126402b"
+                "sha256:ab7648d7232849943196e1bb00a30e2e25e600fa3b57bb241d15b7f521b5b575",
+                "sha256:f78890d71814deffabf0ed4358288ec2ced579bc4d0bb87a79ae806cbb4deb6e"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==1.8.1"
+            "version": "==1.8.2"
         },
         "paramiko": {
             "hashes": [
