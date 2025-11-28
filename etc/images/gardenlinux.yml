@@ -1,7 +1,7 @@
 ---
 images:
   - name: Garden Linux
-    enable: true
+    enable: false
     shortname: gardenlinux
     format: qcow2
     login: admin
