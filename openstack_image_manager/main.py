@@ -102,6 +102,11 @@ class ImageManager:
             "--check-only",
             help="Quit after checking the image definitions against the SCS Image Metadata Standard",
         ),
+        stuck_retry: int = typer.Option(
+            0,
+            "--stuck-retry",
+            help="Number of retries if an image gets stuck in queued state (0 = no retry)",
+        ),
     ):
         self.CONF = Munch.fromDict(locals())
         self.CONF.pop("self")  # remove the self object from CONF
@@ -407,9 +412,9 @@ class ImageManager:
         if "id" in versions[version]:
             properties["id"] = versions[version]["id"]
 
-        new_image = self.conn.image.create_image(**properties)
         parsed_url = urllib.parse.urlparse(url)
         if parsed_url.scheme == "file":
+            new_image = self.conn.image.create_image(**properties)
             local_file = open(parsed_url.path, "rb")
             with local_file:
                 try:
@@ -423,10 +428,34 @@ class ImageManager:
                     logger.error(f"Failed to upload local file for image {name}\n{e}")
                     self.exit_with_error = True
                     return None
-        else:
+            return self.wait_for_image(new_image)
+
+        # Web-download import with retry logic for stuck images
+        max_attempts = self.CONF.stuck_retry + 1
+        for attempt in range(max_attempts):
+            if attempt > 0:
+                logger.info(
+                    f"Retry attempt {attempt}/{self.CONF.stuck_retry} for image {name}"
+                )
+
+            new_image = self.conn.image.create_image(**properties)
             self.conn.image.import_image(new_image, method="web-download", uri=url)
 
-        return self.wait_for_image(new_image)
+            result = self.wait_for_image(new_image)
+            if result is not None:
+                return result
+
+            # Image is stuck in queued state, delete and retry if attempts remain
+            if attempt < max_attempts - 1:
+                logger.warning(f"Deleting stuck image {name} and retrying import")
+                try:
+                    self.conn.image.delete_image(new_image)
+                except Exception as e:
+                    logger.error(f"Failed to delete stuck image {name}\n{e}")
+
+        # All retry attempts exhausted
+        self.exit_with_error = True
+        return None
 
     def get_images(self) -> dict:
         """
@@ -485,7 +514,7 @@ class ImageManager:
                 if imported_image.status == "queued":
                     if retry_attempts_for_queued_state < 0:
                         logger.error(f"Image {image.name} seems stuck in queued state")
-                        self.exit_with_error = True
+                        # Don't set exit_with_error here, let import_image handle retries
                         return None
                     else:
                         retry_attempts_for_queued_state -= 1

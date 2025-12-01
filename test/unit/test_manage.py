@@ -147,6 +147,7 @@ class TestManage(TestCase):
             check=False,
             check_only=False,
             hypervisor=None,
+            stuck_retry=0,
         )
 
         # we can also mimick an openstack connection object with a Munch
