@@ -32,7 +32,12 @@ def get_latest_default(
 
     latest_filename = os.path.basename(urlparse(latest_url).path)
     filename_pattern = None
-    if shortname in ["centos-stream-8", "centos-stream-9", "centos-stream-10", "centos-7"]:
+    if shortname in [
+        "centos-stream-8",
+        "centos-stream-9",
+        "centos-stream-10",
+        "centos-7",
+    ]:
         filename_pattern = latest_filename.replace("HEREBE", "")
         filename_pattern = filename_pattern.replace("DRAGONS", "")
 
