@@ -32,20 +32,20 @@ def get_latest_default(
 
     latest_filename = os.path.basename(urlparse(latest_url).path)
     filename_pattern = None
-    if shortname in ["centos-stream-8", "centos-stream-9", "centos-7"]:
+    if shortname in ["centos-stream-8", "centos-stream-9","centos-stream-10", "centos-7"]:
         filename_pattern = latest_filename.replace("HEREBE", "")
         filename_pattern = filename_pattern.replace("DRAGONS", "")
 
     checksums = {}
     for line in result.text.split("\n"):
         cs = re.split(r"\s+", line)
-        if shortname in ["rocky-8", "rocky-9"]:
+        if shortname in ["rocky-8", "rocky-9", "rocky-10"]:
             if len(cs) == 4 and cs[0] == "SHA256":
                 checksums[latest_filename] = cs[3]
         elif shortname in ["centos-7"]:
             if len(cs) == 2 and re.search(filename_pattern, cs[1]):
                 checksums[cs[1]] = cs[0]
-        elif shortname in ["centos-stream-8", "centos-stream-9"]:
+        elif shortname in ["centos-stream-8", "centos-stream-9", "centos-stream-10"]:
             if (
                 len(cs) == 4
                 and cs[0] == "SHA256"
