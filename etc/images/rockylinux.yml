@@ -66,11 +66,11 @@ images:
     latest_url: 
       https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20250531'
+      - version: '20251123'
         url: 
           https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/rocky-9/20250531-rocky-9.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/rocky-9/20251123-rocky-9.qcow2
         checksum: 
-          sha256:2c72815bb83cadccbede4704780e9b52033722db8a45c3fb02130aa380690a3d
-        build_date: 2025-05-31
+          sha256:15d81d3434b298142b2fdd8fb54aef2662684db5c082cc191c3c79762ed6360c
+        build_date: 2025-11-23
