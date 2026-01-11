@@ -66,14 +66,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     versions:
-      - version: '20251015'
+      - version: '20260108'
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bullseye/20251015-2266/debian-11-genericcloud-amd64-20251015-2266.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bullseye/20260108-2351/debian-11-genericcloud-amd64-20260108-2351.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-11/20251015-debian-11.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-11/20260108-debian-11.qcow2
         checksum: 
-          sha512:ea6db13cf1946f5156ae6384cadde557062b21cd8ff7950eb9e3ff7fc300554533a929661b955957d9df9f8ac7f48153a5714ed4d141e374f1a2ca5d197b9770
-        build_date: 2025-10-15
+          sha512:d7d108ab861d2242471634756ccd6d481bd7ed2a423de03413e9ea6ed80738eb4ef7b9497bc5273dc94a9a6d75ce780a4cc23f082ff9d028322d536459756023
+        build_date: 2026-01-08
   - name: Debian 12
     enable: true
     shortname: debian-12
@@ -103,14 +103,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-11-27
+      - build_date: 2026-01-10
         checksum: 
-          sha512:8146715ac99f0071265c98ffe8305055db2b474ab040d77d9e57a3d8d22bc8756d33c93c6796a9dc9a373473f7a8cf3fb4f971ca2ca9ec9b3c2a8cb1bb8a6d9b
+          sha512:f9303366a8214a3f9596edc11d7ec51f70fb122b5aaaf0cadc05575888d16c891a6d6f9911cd437598f3acd82a7326c39cf632d288a57dbff2b12cb249281610
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20251127-2309/debian-12-genericcloud-amd64-daily-20251127-2309.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20260110-2353/debian-12-genericcloud-amd64-daily-20260110-2353.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20251127-debian-12.qcow2
-        version: '20251127'
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20260110-debian-12.qcow2
+        version: '20260110'
   - name: Debian 13
     enable: true
     shortname: debian-13
@@ -140,11 +140,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2025-11-27
+      - build_date: 2026-01-10
         checksum: 
-          sha512:26de3635b19c7a55fc67e75d03a6876f7b699a0ceeb9fecf4469544049e506825525169cf0cea6994f708687340ca49fee9d44a4d263a6d9ed2c393a50824833
+          sha512:a46f531ff57b2b9e1389cb82f72cda82587a0036edc0d7a06a8c014c46726b6f8ad268f3845cbc277d18517f6e7d6321fd0078d5a90bbf3c4f1ea4f86cafbfcb
         url: 
-          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20251127-2309/debian-13-genericcloud-amd64-daily-20251127-2309.qcow2
+          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20260110-2353/debian-13-genericcloud-amd64-daily-20260110-2353.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20251127-debian-13.qcow2
-        version: '20251127'
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20260110-debian-13.qcow2
+        version: '20260110'
