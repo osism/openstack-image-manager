@@ -6,7 +6,7 @@ openstacksdk==4.9.0
 paramiko==4.0.0
 patool==4.0.3
 requests==2.32.5
-ruamel.yaml==0.18.17
+ruamel.yaml==0.19.1
 setuptools==80.9.0
 tabulate==0.9.0
 typer[all]==0.21.1
