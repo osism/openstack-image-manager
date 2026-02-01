@@ -325,14 +325,14 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20260121'
+      - version: '20260129'
         url: 
-          https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20260121/ubuntu-22.04-minimal-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20260129/ubuntu-22.04-minimal-cloudimg-amd64.img
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-22.04-minimal/20260121-ubuntu-22.04-minimal.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-22.04-minimal/20260129-ubuntu-22.04-minimal.qcow2
         checksum: 
-          sha256:2393905d979ca0129caf03af3f2627c6bff200b4f4cd9ca7b8e517554eea9edc
-        build_date: 2026-01-21
+          sha256:6acd75f2a415c46960c2b936c12072625989fab52cb83c8db45d58709f15a396
+        build_date: 2026-01-29
   - name: Ubuntu 24.04
     enable: true
     shortname: ubuntu-24.04
@@ -399,11 +399,11 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20260105'
+      - version: '20260128'
         url: 
-          https://cloud-images.ubuntu.com/minimal/releases/noble/release-20260105/ubuntu-24.04-minimal-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/minimal/releases/noble/release-20260128/ubuntu-24.04-minimal-cloudimg-amd64.img
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-24.04-minimal/20260105-ubuntu-24.04-minimal.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-24.04-minimal/20260128-ubuntu-24.04-minimal.qcow2
         checksum: 
-          sha256:a8f88520387bd1a4deedfdb958779c1cc1d088a310f9fa01cd380f0e3164fbc2
-        build_date: 2026-01-05
+          sha256:d1bb536f236d1d0363336bd265e14b1d9caa7a268ab6943f5642732eb5167365
+        build_date: 2026-01-28
