@@ -288,14 +288,14 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
     versions:
-      - version: '20260119'
+      - version: '20260219'
         url: 
-          https://cloud-images.ubuntu.com/jammy/20260119/jammy-server-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/jammy/20260219/jammy-server-cloudimg-amd64.img
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-22.04/20260119-ubuntu-22.04.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-22.04/20260219-ubuntu-22.04.qcow2
         checksum: 
-          sha256:f5d311aad28742200fabb183a8af42292ad4f22c941a4371b736c82089bf67ee
-        build_date: 2026-01-19
+          sha256:65d1436cefcd3ee858c59e3745b76b9d04af87e01b7a2b843933405f6911194c
+        build_date: 2026-02-19
   - name: Ubuntu 22.04 Minimal
     enable: true
     shortname: ubuntu-22.04-minimal
@@ -325,14 +325,14 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20260121'
+      - version: '20260217'
         url: 
-          https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20260121/ubuntu-22.04-minimal-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20260217/ubuntu-22.04-minimal-cloudimg-amd64.img
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-22.04-minimal/20260121-ubuntu-22.04-minimal.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-22.04-minimal/20260217-ubuntu-22.04-minimal.qcow2
         checksum: 
-          sha256:2393905d979ca0129caf03af3f2627c6bff200b4f4cd9ca7b8e517554eea9edc
-        build_date: 2026-01-21
+          sha256:a288f24f7c7bd4f290614df9de6632b2c581f45d31c1fba6be6229e652ae37c2
+        build_date: 2026-02-17
   - name: Ubuntu 24.04
     enable: true
     shortname: ubuntu-24.04
@@ -362,14 +362,14 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
     versions:
-      - version: '20260108'
+      - version: '20260217'
         url: 
-          https://cloud-images.ubuntu.com/noble/20260108/noble-server-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/noble/20260217/noble-server-cloudimg-amd64.img
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-24.04/20260108-ubuntu-24.04.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-24.04/20260217-ubuntu-24.04.qcow2
         checksum: 
-          sha256:00786c0936a7dd91a6b07941ca60bb56652975e0e72f9dacf73c887ada420966
-        build_date: 2026-01-08
+          sha256:e8d6f52ed2f4da39e9194b6cd6b050ecb4fe50648819045d0aa8ae1f109a8d91
+        build_date: 2026-02-17
   - name: Ubuntu 24.04 Minimal
     enable: true
     shortname: ubuntu-24.04-minimal
@@ -399,11 +399,11 @@ images:
     latest_url: 
       https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
     versions:
-      - version: '20260105'
+      - version: '20260218'
         url: 
-          https://cloud-images.ubuntu.com/minimal/releases/noble/release-20260105/ubuntu-24.04-minimal-cloudimg-amd64.img
+          https://cloud-images.ubuntu.com/minimal/releases/noble/release-20260218/ubuntu-24.04-minimal-cloudimg-amd64.img
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-24.04-minimal/20260105-ubuntu-24.04-minimal.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-24.04-minimal/20260218-ubuntu-24.04-minimal.qcow2
         checksum: 
-          sha256:a8f88520387bd1a4deedfdb958779c1cc1d088a310f9fa01cd380f0e3164fbc2
-        build_date: 2026-01-05
+          sha256:5f9f13d9587d0357bd8401549c0019282d5e20ac7c3a41c87584594a579e7515
+        build_date: 2026-02-18
