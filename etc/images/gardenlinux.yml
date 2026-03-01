@@ -59,3 +59,8 @@ images:
         mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1877.10/openstack-gardener_prod-amd64-1877.10-3d56ba62.qcow2
         build_date: 2026-01-29
         checksum: sha256:860a2753fd9b8cd2d24a1b88d3787f6ebca6188b2841d0dfd345c35c2b3e8fce
+      - version: 2150.0.0
+        url: https://github.com/gardenlinux/gardenlinux/releases/download/2150.0.0/openstack-gardener_prod-amd64-2150.0.0-eb8696b9.tar.xz
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/2150.0.0/openstack-gardener_prod-amd64-2150.0.0-eb8696b9.qcow2
+        build_date: 2026-02-23
+        checksum: sha256:6c94090193f8048f06469b1d8783d2408c5aa800a04c6ecac0478c5c71da696e
