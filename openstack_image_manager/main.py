@@ -174,7 +174,15 @@ class ImageManager:
                     logger.error(exc)
         return all_images
 
-    def get_checksum(self, url: str, checksums_url: str) -> str:
+    def is_checksum(self, string: str) -> bool:
+        return (
+            len(string) == 128
+            or len(string) == 64
+            or len(string) == 40
+            or len(string) == 32
+        ) and "." not in string
+
+    def get_checksum_from_checksums_url(self, url: str, checksums_url: str) -> str:
         """
         Get the checksum of an upstream image by parsing its corresponding checksums file
 
@@ -191,13 +199,25 @@ class ImageManager:
             if filename in line:
                 split = line.split(" ")
                 for elem in split:
-                    if (
-                        len(elem) == 128
-                        or len(elem) == 64
-                        or len(elem) == 40
-                        or len(elem) == 32
-                    ) and "." not in elem:
+                    if self.is_checksum(elem):
                         return elem
+        return ""
+
+    def get_checksum_from_checksum_url(self, checksum_url: str) -> str:
+        """
+        Get the checksum from a checksum_url
+
+        Params:
+            checksum_url: the URL of the checksum file
+
+        Returns:
+            the checksum, if it is available or else an empty string
+        """
+        checksum_file_content = requests.get(checksum_url).text.strip()
+
+        if self.is_checksum(checksum_file_content):
+            return checksum_file_content
+
         return ""
 
     def create_connection(self) -> None:
@@ -323,13 +343,21 @@ class ImageManager:
                         versions[version["version"]]["hidden"] = version["hidden"]
 
                     if version["version"] == "latest":  #
+                        if "checksums_url" in version and "checksum_url" in version:
+                            raise ValueError(
+                                'You may only specify either "checksums_url" or "checksum_url", not both'
+                            )
                         if "checksums_url" in version:
                             versions[version["version"]]["checksums_url"] = version[
                                 "checksums_url"
                             ]
+                        elif "checksum_url" in version:
+                            versions[version["version"]]["checksum_url"] = version[
+                                "checksum_url"
+                            ]
                         else:
                             raise ValueError(
-                                'Key "checksums_url" is required when using version "latest"'
+                                'Key "checksums_url" or "checksum_url" is required when using version "latest"'
                             )
 
                     if "meta" in version:
@@ -609,13 +637,21 @@ class ImageManager:
                 existence = image["name"] in cloud_images
 
             if version == "latest":
-                checksums_url = versions[version]["checksums_url"]
-                upstream_checksum = self.get_checksum(
-                    versions[version]["url"], checksums_url
-                )
+                checksums_url = versions[version].get("checksums_url")
+                checksum_url = versions[version].get("checksum_url")
+
+                if checksums_url:
+                    upstream_checksum = self.get_checksum_from_checksums_url(
+                        versions[version]["url"], checksums_url
+                    )
+                else:
+                    upstream_checksum = self.get_checksum_from_checksum_url(
+                        checksum_url
+                    )
+
                 if not upstream_checksum:
                     logger.error(
-                        f"Could not find checksum for image '{image['name']}', check the checksums_url"
+                        f"Could not find checksum for image '{image['name']}', check the checksums_url or checksum_url"
                     )
                     return existing_images, imported_image, previous_image
 
