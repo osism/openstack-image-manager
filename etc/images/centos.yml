@@ -102,11 +102,11 @@ images:
     latest_url: 
       https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20260120'
+      - version: '20260224'
         url: 
-          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20260119.0.x86_64.qcow2
+          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20260223.0.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-9/20260120-centos-stream-9.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-9/20260224-centos-stream-9.qcow2
         checksum: 
-          sha256:4754fa55d85b3a487651f18940b389cef055d1436432dd01b1d059d0b879f141
-        build_date: 2026-01-20
+          sha256:54f5b6c013c678441ba0db4e471c516d5e63470687fc465661471afa1593ef46
+        build_date: 2026-02-24
