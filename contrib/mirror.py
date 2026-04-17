@@ -18,7 +18,6 @@ from os.path import isfile, join
 from pathlib import Path
 from urllib.parse import urlparse
 
-
 app = typer.Typer(add_completion=False)
 
 
