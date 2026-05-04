@@ -27,6 +27,10 @@ class ImageManager:
     def __init__(self) -> None:
         self.exit_with_error = False
 
+    @property
+    def _image(self) -> "openstack.image.v2._proxy.Proxy":
+        return typing.cast("openstack.image.v2._proxy.Proxy", self.conn.image)
+
     def create_cli_args(
         self,
         debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
@@ -439,7 +443,7 @@ class ImageManager:
                 )
 
             new_image = self.conn.image.create_image(**properties)
-            self.conn.image.import_image(new_image, method="web-download", uri=url)
+            self._image.import_image(new_image, method="web-download", uri=url)
 
             result = self.wait_for_image(new_image)
             if result is not None:
@@ -806,12 +810,12 @@ class ImageManager:
             for tag in image["tags"]:
                 if tag not in cloud_image.tags:
                     logger.info(f"Adding tag {tag}")
-                    self.conn.image.add_tag(cloud_image.id, tag)
+                    self._image.add_tag(cloud_image.id, tag)
 
             for tag in cloud_image.tags:
                 if tag not in image["tags"]:
                     logger.info(f"Deleting tag {tag}")
-                    self.conn.image.remove_tag(cloud_image.id, tag)
+                    self._image.remove_tag(cloud_image.id, tag)
 
             if "meta" in versions[version]:
                 for key in versions[version]["meta"].keys():
@@ -851,11 +855,11 @@ class ImageManager:
                 and image["status"] == "deactivated"
             ):
                 logger.info(f"Deactivating image '{name}'")
-                self.conn.image.deactivate_image(cloud_image.id)
+                self._image.deactivate_image(cloud_image.id)
 
             elif cloud_image.status != image["status"] and image["status"] == "active":
                 logger.info(f"Reactivating image '{name}'")
-                self.conn.image.reactivate_image(cloud_image.id)
+                self._image.reactivate_image(cloud_image.id)
 
             logger.info(f"Checking visibility of '{name}'")
             if "visibility" in versions[version]:
@@ -1079,7 +1083,7 @@ class ImageManager:
                 ):
                     try:
                         logger.info(f"Deactivating image '{image}'")
-                        self.conn.image.deactivate_image(cloud_image.id)
+                        self._image.deactivate_image(cloud_image.id)
 
                         logger.info(f"Setting visibility of '{image}' to 'community'")
                         self.conn.image.update_image(
@@ -1108,7 +1112,7 @@ class ImageManager:
                     try:
                         if self.CONF.deactivate and not self.CONF.dry_run:
                             logger.info(f"Deactivating image '{image}'")
-                            self.conn.image.deactivate_image(cloud_image.id)
+                            self._image.deactivate_image(cloud_image.id)
 
                         if (
                             self.CONF.hide
