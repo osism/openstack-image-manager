@@ -5,7 +5,7 @@ natsort==8.4.0
 openstacksdk==4.10.0
 paramiko==4.0.0
 patool==4.0.4
-requests==2.32.5
+requests==2.33.1
 ruamel.yaml==0.19.1
 setuptools==82.0.1
 tabulate==0.10.0
