@@ -9,5 +9,5 @@ requests==2.34.2
 ruamel.yaml==0.19.1
 setuptools==82.0.1
 tabulate==0.10.0
-typer[all]==0.26.1
+typer[all]==0.26.2
 yamale==6.1.0
