@@ -308,7 +308,14 @@ class ImageManager:
             if self.CONF.check_age:
                 self.check_image_age()
 
-            self.manage_outdated_images(managed_images)
+            if self.exit_with_error:
+                # an image that failed to process is missing from
+                # managed_images and would be treated as a removal candidate
+                logger.error(
+                    "Skipping cleanup of outdated images because of previous errors"
+                )
+            else:
+                self.manage_outdated_images(managed_images)
 
         if self.exit_with_error:
             sys.exit(
@@ -674,6 +681,7 @@ class ImageManager:
                     logger.error(
                         f"Could not find checksum for image '{image['name']}', check the checksums_url or checksum_url"
                     )
+                    self.exit_with_error = True
                     return existing_images, imported_image, previous_image
 
                 try:
