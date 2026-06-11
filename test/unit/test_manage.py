@@ -2,6 +2,8 @@
 
 import copy
 import requests
+import yamale
+import yaml
 from loguru import logger
 from munch import Munch
 from unittest import TestCase, mock
@@ -10,6 +12,7 @@ from openstack.image.v2._proxy import Proxy
 from typing import Any, Dict
 from datetime import date
 from openstack_image_manager import main
+from yamale import YamaleError
 
 logger.remove()  # disable all logging from main.py
 
@@ -21,6 +24,38 @@ SHA512 = (
     "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb64"
     "2e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6"
 )
+
+# minimal image definition that passes the schema, used to probe
+# individual schema fields
+SCHEMA_TEST_IMAGE_DICT: Dict[str, Any] = {
+    "name": "Test",
+    "enable": True,
+    "format": "qcow2",
+    "login": "test",
+    "min_disk": 8,
+    "min_ram": 512,
+    "status": "active",
+    "visibility": "public",
+    "multi": True,
+    "meta": {
+        "architecture": "x86_64",
+        "hw_disk_bus": "virtio",
+        "hypervisor_type": "qemu",
+        "os_distro": "ubuntu",
+        "os_purpose": "generic",
+        "provided_until": "none",
+        "replace_frequency": "never",
+        "uuid_validity": "none",
+    },
+    "tags": [],
+    "versions": [
+        {
+            "version": "latest",
+            "build_date": date(2026, 1, 1),
+            "url": "https://url.com/image.qcow2",
+        }
+    ],
+}
 
 # sample config from images.yml
 FAKE_YML = """
@@ -886,3 +921,30 @@ class TestManage(TestCase):
         )
 
         self.assertEqual(result, "")
+
+    def test_schema_url_fields_reject_ftp(self):
+        """the checksum URL fields must only accept URLs that
+        requests.get() can actually fetch (no FTP adapter)"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for field in ("checksum_url", "checksums_url", "latest_checksum_url"):
+            for scheme, valid in (
+                ("https", True),
+                ("http", True),
+                ("ftp", False),
+                ("ftps", False),
+            ):
+                with self.subTest(field=field, scheme=scheme):
+                    image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                    url = f"{scheme}://url.com/image.qcow2.sha512"
+                    if field == "latest_checksum_url":
+                        image[field] = url
+                    else:
+                        image["versions"][0][field] = url
+                    content = yaml.safe_dump({"images": [image]})
+                    data = yamale.make_data(content=content)
+                    if valid:
+                        yamale.validate(schema, data)
+                    else:
+                        with self.assertRaises(YamaleError):
+                            yamale.validate(schema, data)
