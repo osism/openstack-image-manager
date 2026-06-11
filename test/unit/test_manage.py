@@ -922,6 +922,62 @@ class TestManage(TestCase):
 
         self.assertEqual(result, "")
 
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch(
+        "openstack_image_manager.main.ImageManager.get_checksum_from_checksum_url"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_checksum_lookup_failure(
+        self, mock_get_images, mock_get_checksum, mock_import_image
+    ):
+        """test main.ImageManager.process_image() when the upstream checksum
+        of a latest image cannot be determined"""
+        mock_get_images.return_value = {}
+        mock_get_checksum.return_value = ""
+        versions = {
+            "latest": {
+                "url": "https://url.com/image.qcow2",
+                "checksum_url": self.fake_checksum_url,
+                "meta": {},
+            }
+        }
+        meta = self.fake_image_dict["meta"]
+
+        result = self.sot.process_image(
+            self.fake_image_dict, versions, ["latest"], meta
+        )
+
+        self.assertEqual(result, (set(), None, None))
+        self.assertTrue(self.sot.exit_with_error)
+        mock_import_image.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager.manage_outdated_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.process_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch("openstack_image_manager.main.openstack.connect")
+    def test_main_skips_cleanup_on_error(
+        self,
+        mock_connect,
+        mock_read_image_files,
+        mock_process_images,
+        mock_manage_outdated,
+    ):
+        """test that main.ImageManager.main() does not clean up outdated
+        images when errors occurred during image processing"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+
+        def fail_processing(images):
+            self.sot.exit_with_error = True
+            return set()
+
+        mock_process_images.side_effect = fail_processing
+
+        with self.assertRaises(SystemExit):
+            self.sot.main()
+
+        mock_process_images.assert_called_once_with([self.fake_image_dict])
+        mock_manage_outdated.assert_not_called()
+
     def test_schema_url_fields_reject_ftp(self):
         """the checksum URL fields must only accept URLs that
         requests.get() can actually fetch (no FTP adapter)"""
