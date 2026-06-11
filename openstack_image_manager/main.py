@@ -22,6 +22,9 @@ from natsort import natsorted
 from yamale import YamaleError
 from openstack.image.v2.image import Image
 
+# timeout in seconds for HTTP requests fetching checksum files
+REQUESTS_TIMEOUT = 30
+
 
 class ImageManager:
     def __init__(self) -> None:
@@ -194,7 +197,13 @@ class ImageManager:
             the matching checksum, if it is available or else an empty string
         """
         filename = url.split("/")[-1]
-        checksums_file = requests.get(checksums_url).text
+        try:
+            response = requests.get(checksums_url, timeout=REQUESTS_TIMEOUT)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch checksums file from {checksums_url}: {e}")
+            return ""
+        checksums_file = response.text
         for line in checksums_file.splitlines():
             if filename in line:
                 split = line.split(" ")
@@ -213,7 +222,13 @@ class ImageManager:
         Returns:
             the checksum, if it is available or else an empty string
         """
-        checksum_file_content = requests.get(checksum_url).text.strip()
+        try:
+            response = requests.get(checksum_url, timeout=REQUESTS_TIMEOUT)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch checksum file from {checksum_url}: {e}")
+            return ""
+        checksum_file_content = response.text.strip()
 
         if self.is_checksum(checksum_file_content):
             return checksum_file_content
