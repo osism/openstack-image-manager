@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+import requests
 from loguru import logger
 from munch import Munch
 from unittest import TestCase, mock
@@ -11,6 +12,15 @@ from datetime import date
 from openstack_image_manager import main
 
 logger.remove()  # disable all logging from main.py
+
+# sample digests of all four supported lengths
+MD5 = "9e107d9d372bb6826bd81d3542a419d6"
+SHA1 = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
+SHA256 = "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592"
+SHA512 = (
+    "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb64"
+    "2e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6"
+)
 
 # sample config from images.yml
 FAKE_YML = """
@@ -100,6 +110,8 @@ class TestManage(TestCase):
         self.fake_image = Image(**FAKE_IMAGE_DATA)
         self.fake_name = f"{self.fake_image_dict['name']} (1)"
         self.fake_url = "http://url.com"
+        self.fake_checksum_url = "https://url.com/image.qcow2.sha512"
+        self.fake_checksums_url = "https://url.com/SHA512SUMS"
         self.versions = {
             "1": {
                 "url": self.fake_url,
@@ -773,3 +785,89 @@ class TestManage(TestCase):
         self.assertEqual(
             self.fake_image_dict["meta"]["image_name"], self.fake_image_dict["name"]
         )
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksum_url(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksum_url()"""
+        mock_get.return_value = mock.Mock(text=f"{SHA512}\n")
+
+        result = self.sot.get_checksum_from_checksum_url(self.fake_checksum_url)
+
+        self.assertEqual(result, SHA512)
+        mock_get.assert_called_once_with(self.fake_checksum_url, timeout=mock.ANY)
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksum_url_invalid_content(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksum_url() with junk"""
+        mock_get.return_value = mock.Mock(text="<html>not a checksum</html>")
+
+        result = self.sot.get_checksum_from_checksum_url(self.fake_checksum_url)
+
+        self.assertEqual(result, "")
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksum_url_http_error(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksum_url() with an
+        HTTP error status whose body looks like a valid checksum"""
+        mock_get.return_value = mock.Mock(
+            text=SHA512,
+            raise_for_status=mock.Mock(
+                side_effect=requests.exceptions.HTTPError("404")
+            ),
+        )
+
+        result = self.sot.get_checksum_from_checksum_url(self.fake_checksum_url)
+
+        self.assertEqual(result, "")
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksum_url_request_exception(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksum_url() with a
+        connection failure"""
+        mock_get.side_effect = requests.exceptions.ConnectionError("unreachable")
+
+        result = self.sot.get_checksum_from_checksum_url(self.fake_checksum_url)
+
+        self.assertEqual(result, "")
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksums_url(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksums_url()"""
+        checksums_file = f"{SHA256} *other.qcow2\n{SHA512} *image.qcow2\n"
+        mock_get.return_value = mock.Mock(text=checksums_file)
+
+        result = self.sot.get_checksum_from_checksums_url(
+            "https://url.com/image.qcow2", self.fake_checksums_url
+        )
+
+        self.assertEqual(result, SHA512)
+        mock_get.assert_called_once_with(self.fake_checksums_url, timeout=mock.ANY)
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksums_url_http_error(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksums_url() with an
+        HTTP error status whose body looks like a valid checksums file"""
+        mock_get.return_value = mock.Mock(
+            text=f"{SHA512} *image.qcow2\n",
+            raise_for_status=mock.Mock(
+                side_effect=requests.exceptions.HTTPError("404")
+            ),
+        )
+
+        result = self.sot.get_checksum_from_checksums_url(
+            "https://url.com/image.qcow2", self.fake_checksums_url
+        )
+
+        self.assertEqual(result, "")
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksums_url_request_exception(self, mock_get):
+        """test main.ImageManager.get_checksum_from_checksums_url() with a
+        connection failure"""
+        mock_get.side_effect = requests.exceptions.ConnectionError("unreachable")
+
+        result = self.sot.get_checksum_from_checksums_url(
+            "https://url.com/image.qcow2", self.fake_checksums_url
+        )
+
+        self.assertEqual(result, "")
