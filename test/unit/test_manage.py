@@ -786,6 +786,21 @@ class TestManage(TestCase):
             self.fake_image_dict["meta"]["image_name"], self.fake_image_dict["name"]
         )
 
+    def test_is_checksum(self):
+        """test main.ImageManager.is_checksum()"""
+        for checksum in (MD5, SHA1, SHA256, SHA512):
+            self.assertTrue(self.sot.is_checksum(checksum))
+            self.assertTrue(self.sot.is_checksum(checksum.upper()))
+
+        # correct length, but not hexadecimal
+        self.assertFalse(self.sot.is_checksum("x" * 64))
+        # hexadecimal, but not a digest length
+        self.assertFalse(self.sot.is_checksum("abc123"))
+        self.assertFalse(self.sot.is_checksum(SHA256[:-1]))
+        # sha256sum sidecar line instead of a bare digest
+        self.assertFalse(self.sot.is_checksum(f"{SHA256}  image.qcow2"))
+        self.assertFalse(self.sot.is_checksum(""))
+
     @mock.patch("openstack_image_manager.main.requests.get")
     def test_get_checksum_from_checksum_url(self, mock_get):
         """test main.ImageManager.get_checksum_from_checksum_url()"""

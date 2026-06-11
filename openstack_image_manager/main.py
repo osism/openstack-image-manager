@@ -178,12 +178,12 @@ class ImageManager:
         return all_images
 
     def is_checksum(self, string: str) -> bool:
-        return (
-            len(string) == 128
-            or len(string) == 64
-            or len(string) == 40
-            or len(string) == 32
-        ) and "." not in string
+        return bool(
+            re.fullmatch(
+                r"[0-9a-fA-F]{32}|[0-9a-fA-F]{40}|[0-9a-fA-F]{64}|[0-9a-fA-F]{128}",
+                string,
+            )
+        )
 
     def get_checksum_from_checksums_url(self, url: str, checksums_url: str) -> str:
         """
