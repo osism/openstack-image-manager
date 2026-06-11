@@ -189,6 +189,9 @@ class ImageManager:
         """
         Get the checksum of an upstream image by parsing its corresponding checksums file
 
+        The checksums file contains one or more lines of the form
+        "<digest> <filename>"; the line containing the image filename is used.
+
         Params:
             url: the download URL of the image
             checksums_url: the URL of the corresponding checksums file
@@ -215,6 +218,9 @@ class ImageManager:
     def get_checksum_from_checksum_url(self, checksum_url: str) -> str:
         """
         Get the checksum from a checksum_url
+
+        The checksum file is expected to contain a single bare digest and
+        nothing else (no filename), as published e.g. by Alpine.
 
         Params:
             checksum_url: the URL of the checksum file
