@@ -34,9 +34,9 @@ jobs:
 
             Signed-off-by: OSISM Bot <bot@osism.tech>
           committer: OSISM Bot <bot@osism.tech>
-          branch: updates-image-gardenlinux-${{ github.run_number }}
+          branch: updates-image-gardenlinux
           delete-branch: true
-          title: "chore: update gardenlinux mage"
+          title: "chore: update gardenlinux image"
           body: |
             chore: update gardenlinux image
 
