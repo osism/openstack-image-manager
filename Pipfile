@@ -16,4 +16,3 @@ requests = "==2.34.2"
 tabulate = "==0.10.0"
 typer = {extras = ["all"], version = "==0.26.7"}
 yamale = "==6.1.0"
-setuptools = "==82.0.1"
