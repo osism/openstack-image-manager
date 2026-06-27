@@ -35,7 +35,10 @@ meta:
   hw_watchdog_action: enum('disabled', 'reset', 'poweroff', 'pause', 'none', required=False)
   hypervisor_type: enum('hyperv', 'ironic', 'lxc', 'qemu', 'uml', 'vmware', 'xen')
   image_description: str(required=False)
-  os_distro: enum('arch', 'centos', 'cirros', 'clearlinux', 'debian', 'fedora', 'freebsd', 'opensuse', 'rhel', 'talos', 'ubuntu', 'windows')
+  # Permissible values as documented for the os_distro property
+  # (https://docs.openstack.org/glance/latest/admin/useful-image-properties),
+  # extended with 'cirros' and 'talos' for which no official value exists.
+  os_distro: enum('arch', 'centos', 'cirros', 'debian', 'fedora', 'freebsd', 'gentoo', 'mandrake', 'mandriva', 'mes', 'msdos', 'netbsd', 'netware', 'openbsd', 'opensolaris', 'opensuse', 'rhel', 'rocky', 'sled', 'talos', 'ubuntu', 'windows')
   os_version: str(required=False)
   os_purpose: enum('generic', 'minimal', 'k8snode', 'gpu', 'network', 'custom')
   patchlevel: str(required=False)
