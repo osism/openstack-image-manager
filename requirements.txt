@@ -8,5 +8,5 @@ patool==4.0.5
 requests==2.34.2
 ruamel.yaml==0.19.1
 tabulate==0.10.0
-typer[all]==0.26.7
+typer[all]==0.26.8
 yamale==6.1.0
