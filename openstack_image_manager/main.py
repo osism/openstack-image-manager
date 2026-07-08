@@ -412,10 +412,11 @@ class ImageManager:
     def format_size(num_bytes: int) -> str:
         """Render a byte count as a human readable string using binary units."""
         size = float(num_bytes)
-        for unit in ["B", "KiB", "MiB", "GiB", "TiB"]:
-            if size < 1024 or unit == "TiB":
+        for unit in ["B", "KiB", "MiB", "GiB"]:
+            if size < 1024:
                 return f"{size:.1f} {unit}"
             size /= 1024
+        return f"{size:.1f} TiB"
 
     def build_upload_command(self) -> str:
         """Build the equivalent command to actually perform the upload."""
