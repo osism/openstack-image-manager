@@ -6,6 +6,7 @@ import requests
 import yaml
 import os
 import re
+import shlex
 import sys
 import typer
 import typing
@@ -25,6 +26,17 @@ from openstack.image.v2.image import Image
 # timeout in seconds for HTTP requests fetching checksum files
 REQUESTS_TIMEOUT = 30
 
+# Assumed Glance web-download throughput range (bytes/s) used *only* to derive
+# the vague upload-time estimate shown in the default preview. These are
+# deliberately rough: actual time depends on the network and Glance backend.
+ESTIMATE_THROUGHPUT_FAST = 30 * 1024 * 1024  # ~30 MB/s -> lower time bound
+ESTIMATE_THROUGHPUT_SLOW = 10 * 1024 * 1024  # ~10 MB/s -> upper time bound
+
+# Link shown in the preview for further documentation and options
+DOCS_URL = (
+    "https://osism.tech/docs/guides/operations-guide/openstack/tools/image-manager/"
+)
+
 
 class ImageManager:
     def __init__(self) -> None:
@@ -33,6 +45,12 @@ class ImageManager:
     def create_cli_args(
         self,
         debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
+        upload: bool = typer.Option(
+            False,
+            "--upload",
+            help="Actually import the images. Without this flag only a preview "
+            "of the images that would be uploaded is shown.",
+        ),
         dry_run: bool = typer.Option(
             False, "--dry-run", help="Do not perform any changes"
         ),
@@ -294,6 +312,12 @@ class ImageManager:
 
         # manage images
         else:
+            # Without --upload we only show a preview of what would be uploaded
+            # and make no connection and no changes to the cloud.
+            if not self.CONF.upload:
+                self.show_upload_preview()
+                return
+
             self.create_connection()
             images = self.read_image_files()
             managed_images = self.process_images(images)
@@ -322,6 +346,146 @@ class ImageManager:
                 "\nERROR: One or more errors occurred during the execution of the program, "
                 "please check the output."
             )
+
+    def collect_planned_uploads(self) -> list:
+        """
+        Collect the images that would be uploaded, based purely on the local
+        image definitions (no connection to OpenStack is made).
+
+        Honours the same enable/force/filter rules as a real run, as well as
+        --latest for images of type multi.
+
+        Returns:
+            A list of (name, url) tuples, one per image version that would be
+            imported. ``url`` is the download URL (``mirror_url`` if given,
+            else ``url``) and may be ``None`` if no URL is defined.
+        """
+        planned = []
+        for image in self.read_image_files():
+            separator = image.get("separator", " ")
+            version_map = {str(v["version"]): v for v in image.get("versions", [])}
+            sorted_versions = natsorted(version_map.keys())
+
+            if image.get("multi") and self.CONF.latest and sorted_versions:
+                selected_versions = [sorted_versions[-1]]
+            else:
+                selected_versions = sorted_versions
+
+            for version in selected_versions:
+                if image.get("multi"):
+                    name = f"{image['name']}{separator}({version})"
+                else:
+                    name = f"{image['name']}{separator}{version}"
+                entry = version_map[version]
+                url = entry.get("mirror_url", entry.get("url"))
+                planned.append((name, url))
+
+        return planned
+
+    def get_remote_size(self, url: str) -> typing.Union[int, None]:
+        """
+        Determine the size of a download in bytes without fetching it.
+
+        Uses the local filesystem for ``file:`` URLs and an HTTP HEAD request
+        otherwise. Returns ``None`` if the size cannot be determined.
+        """
+        if not url:
+            return None
+
+        parsed_url = urllib.parse.urlparse(url)
+        if parsed_url.scheme == "file":
+            try:
+                return os.path.getsize(parsed_url.path)
+            except OSError:
+                return None
+
+        try:
+            response = requests.head(
+                url, allow_redirects=True, timeout=REQUESTS_TIMEOUT
+            )
+            content_length = response.headers.get("Content-Length")
+            return int(content_length) if content_length is not None else None
+        except (requests.RequestException, ValueError):
+            return None
+
+    @staticmethod
+    def format_size(num_bytes: int) -> str:
+        """Render a byte count as a human readable string using binary units."""
+        size = float(num_bytes)
+        for unit in ["B", "KiB", "MiB", "GiB", "TiB"]:
+            if size < 1024 or unit == "TiB":
+                return f"{size:.1f} {unit}"
+            size /= 1024
+
+    def build_upload_command(self) -> str:
+        """Build the equivalent command to actually perform the upload."""
+        parts = ["openstack-image-manager", "--upload"]
+        if self.CONF.cloud != "openstack":
+            parts += ["--cloud", self.CONF.cloud]
+        if self.CONF.images != "etc/images/":
+            parts += ["--images", self.CONF.images]
+        if self.CONF.filter:
+            parts += ["--filter", self.CONF.filter]
+        if self.CONF.latest:
+            parts.append("--latest")
+        return shlex.join(parts)
+
+    def show_upload_preview(self) -> None:
+        """
+        Show a preview of the images that would be uploaded, a rough estimate of
+        how long the upload would take, the command to actually perform it and a
+        link to the documentation.
+
+        This is the default behaviour when running without ``--upload``. It does
+        not connect to OpenStack and makes no changes.
+        """
+        planned = self.collect_planned_uploads()
+
+        if not planned:
+            typer.echo("No enabled images found that would be uploaded.")
+            typer.echo(f"\nFor more information and options, see:\n  {DOCS_URL}")
+            return
+
+        typer.echo(f"The following {len(planned)} image(s) would be uploaded:\n")
+        for name, _ in planned:
+            typer.echo(f"  {name}")
+
+        total_bytes = 0
+        unknown = 0
+        for _, url in planned:
+            size = self.get_remote_size(url)
+            if size is None:
+                unknown += 1
+            else:
+                total_bytes += size
+
+        typer.echo("")
+        if total_bytes > 0:
+            suffix = ""
+            if unknown:
+                suffix = f" (size of {unknown} image(s) could not be determined)"
+            typer.echo(f"Total download size: ~{self.format_size(total_bytes)}{suffix}")
+
+            fast_minutes = round(total_bytes / ESTIMATE_THROUGHPUT_FAST / 60)
+            slow_minutes = round(total_bytes / ESTIMATE_THROUGHPUT_SLOW / 60)
+            if slow_minutes < 1:
+                estimate = "less than a minute"
+            elif fast_minutes == slow_minutes:
+                estimate = f"~{slow_minutes} min"
+            else:
+                estimate = f"~{max(1, fast_minutes)}-{slow_minutes} min"
+            typer.echo(
+                f"Estimated upload time: {estimate} "
+                "(rough estimate, actual time depends on network and Glance backend)"
+            )
+        else:
+            typer.echo("Total download size could not be determined.")
+
+        typer.echo(
+            "\nNo changes have been made. To actually upload these images, run:\n"
+        )
+        typer.echo(f"  {self.build_upload_command()}")
+        typer.echo(f"\nFor more information and options, see:\n  {DOCS_URL}")
 
     def process_images(self, images) -> set:
         """Process each image from images.yaml"""

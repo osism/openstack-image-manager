@@ -175,6 +175,7 @@ class TestManage(TestCase):
             latest=True,
             check_age=False,
             max_age=90,
+            upload=False,
             dry_run=False,
             use_os_hidden=False,
             delete=False,
@@ -687,6 +688,7 @@ class TestManage(TestCase):
         mock_unshare_image,
     ):
         """test main.ImageManager.main()"""
+        self.sot.CONF.upload = True
         mock_read_image_files.return_value = [self.fake_image_dict]
         mock_process_images.return_value = set()
 
@@ -964,6 +966,7 @@ class TestManage(TestCase):
     ):
         """test that main.ImageManager.main() does not clean up outdated
         images when errors occurred during image processing"""
+        self.sot.CONF.upload = True
         mock_read_image_files.return_value = [self.fake_image_dict]
 
         def fail_processing(images):
@@ -1004,3 +1007,140 @@ class TestManage(TestCase):
                     else:
                         with self.assertRaises(YamaleError):
                             yamale.validate(schema, data)
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    def test_collect_planned_uploads(self, mock_read_image_files):
+        multi_image = {
+            "name": "Ubuntu 20.04",
+            "multi": True,
+            "versions": [
+                {"version": "1", "url": "https://url.com/v1.qcow2"},
+                {"version": "2", "url": "https://url.com/v2.qcow2"},
+            ],
+        }
+        single_image = {
+            "name": "Cirros",
+            "multi": False,
+            "versions": [{"version": "0.6.2", "url": "https://url.com/cirros.img"}],
+        }
+        mock_read_image_files.return_value = [multi_image, single_image]
+
+        # without --latest all versions of a multi image are planned
+        self.sot.CONF.latest = False
+        planned = self.sot.collect_planned_uploads()
+        self.assertEqual(
+            planned,
+            [
+                ("Ubuntu 20.04 (1)", "https://url.com/v1.qcow2"),
+                ("Ubuntu 20.04 (2)", "https://url.com/v2.qcow2"),
+                ("Cirros 0.6.2", "https://url.com/cirros.img"),
+            ],
+        )
+
+        # with --latest only the latest version of a multi image is planned
+        self.sot.CONF.latest = True
+        planned = self.sot.collect_planned_uploads()
+        self.assertEqual(
+            planned,
+            [
+                ("Ubuntu 20.04 (2)", "https://url.com/v2.qcow2"),
+                ("Cirros 0.6.2", "https://url.com/cirros.img"),
+            ],
+        )
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    def test_collect_planned_uploads_prefers_mirror_url(self, mock_read_image_files):
+        mock_read_image_files.return_value = [
+            {
+                "name": "Cirros",
+                "multi": False,
+                "versions": [
+                    {
+                        "version": "1",
+                        "url": "https://url.com/original.img",
+                        "mirror_url": "https://mirror.com/mirror.img",
+                    }
+                ],
+            }
+        ]
+        planned = self.sot.collect_planned_uploads()
+        self.assertEqual(planned, [("Cirros 1", "https://mirror.com/mirror.img")])
+
+    @mock.patch("openstack_image_manager.main.requests.head")
+    def test_get_remote_size(self, mock_head):
+        mock_head.return_value.headers = {"Content-Length": "2048"}
+        self.assertEqual(self.sot.get_remote_size("https://url.com/image.img"), 2048)
+
+        # missing Content-Length header -> None
+        mock_head.return_value.headers = {}
+        self.assertIsNone(self.sot.get_remote_size("https://url.com/image.img"))
+
+        # request failure -> None
+        mock_head.side_effect = requests.RequestException()
+        self.assertIsNone(self.sot.get_remote_size("https://url.com/image.img"))
+
+        # no url at all -> None
+        self.assertIsNone(self.sot.get_remote_size(None))
+
+    def test_format_size(self):
+        self.assertEqual(self.sot.format_size(512), "512.0 B")
+        self.assertEqual(self.sot.format_size(1024), "1.0 KiB")
+        self.assertEqual(self.sot.format_size(5 * 1024**3), "5.0 GiB")
+
+    def test_build_upload_command(self):
+        self.sot.CONF.cloud = "openstack"
+        self.sot.CONF.images = "etc/images/"
+        self.sot.CONF.filter = ""
+        self.sot.CONF.latest = False
+        self.assertEqual(
+            self.sot.build_upload_command(), "openstack-image-manager --upload"
+        )
+
+        self.sot.CONF.cloud = "mycloud"
+        self.sot.CONF.filter = "Ubuntu 20.04"
+        self.sot.CONF.latest = True
+        self.assertEqual(
+            self.sot.build_upload_command(),
+            "openstack-image-manager --upload --cloud mycloud "
+            "--filter 'Ubuntu 20.04' --latest",
+        )
+
+    @mock.patch("openstack_image_manager.main.ImageManager.create_connection")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_remote_size")
+    @mock.patch("openstack_image_manager.main.ImageManager.collect_planned_uploads")
+    @mock.patch("openstack_image_manager.main.typer.echo")
+    def test_show_upload_preview(
+        self, mock_echo, mock_collect, mock_size, mock_connection
+    ):
+        mock_collect.return_value = [("Cirros 0.6.2", "https://url.com/cirros.img")]
+        mock_size.return_value = 5 * 1024**3
+
+        self.sot.CONF.cloud = "openstack"
+        self.sot.CONF.images = "etc/images/"
+        self.sot.CONF.filter = ""
+        self.sot.CONF.latest = False
+
+        self.sot.show_upload_preview()
+
+        # the preview must never connect to OpenStack
+        mock_connection.assert_not_called()
+
+        output = "\n".join(str(call.args[0]) for call in mock_echo.call_args_list)
+        self.assertIn("Cirros 0.6.2", output)
+        self.assertIn("Total download size", output)
+        self.assertIn("Estimated upload time", output)
+        self.assertIn("openstack-image-manager --upload", output)
+        self.assertIn(main.DOCS_URL, output)
+
+    @mock.patch("openstack_image_manager.main.ImageManager.create_connection")
+    @mock.patch("openstack_image_manager.main.ImageManager.collect_planned_uploads")
+    @mock.patch("openstack_image_manager.main.typer.echo")
+    def test_show_upload_preview_no_images(
+        self, mock_echo, mock_collect, mock_connection
+    ):
+        mock_collect.return_value = []
+        self.sot.show_upload_preview()
+        mock_connection.assert_not_called()
+        output = "\n".join(str(call.args[0]) for call in mock_echo.call_args_list)
+        self.assertIn("No enabled images found", output)
+        self.assertIn(main.DOCS_URL, output)

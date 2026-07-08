@@ -6,6 +6,26 @@
 
 Easily manage and keep up to date a large number of images on an OpenStack environment
 
+## Usage
+
+By default `openstack-image-manager` (and `osism manage images`, which uses it
+in the backend) only shows a **preview** of the images that would be uploaded,
+a rough estimate of how long that would take and the command to actually
+perform the upload. It does not connect to OpenStack and makes no changes:
+
+```
+openstack-image-manager
+```
+
+To actually import the images, add `--upload`:
+
+```
+openstack-image-manager --upload
+```
+
+See the [documentation](https://osism.tech/docs/guides/operations-guide/openstack/tools/image-manager/)
+for all available options.
+
 ## Upstream checksum fields
 
 Image versions using the `latest` pointer must specify where to find the

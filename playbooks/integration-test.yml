@@ -8,4 +8,4 @@
   roles:
     - role: tox
       vars:
-        tox_extra_args: -- --filter 'Cirros'
+        tox_extra_args: -- --upload --filter 'Cirros'
