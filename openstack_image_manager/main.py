@@ -548,42 +548,66 @@ class ImageManager:
                     )
         return result
 
-    def wait_for_image(self, image: Image) -> typing.Union[Image, None]:
+    def wait_for_image(
+        self, image: Image, deadline: typing.Optional[float] = None
+    ) -> typing.Union[Image, None]:
         """
-        Wait for an imported image to reach "active" state
+        Wait for an imported image to reach "active" state.
 
-        Returns:
-            the openstack.image.v2.image.Image object representing the imported image
-            if the image has reached "active" state or None if the image seems stuck
-            in "queued" state
+        Returns the active Image, or None for any non-active outcome (stuck in
+        queued, a terminal failure status, the deadline elapsing, or repeated
+        SDK errors). Does NOT set self.exit_with_error; the caller decides.
+
+        deadline: a time.monotonic() timestamp bounding the overall wait. When
+        None, it is computed from self.CONF.import_timeout so single callers
+        stay bounded. import_image() passes one shared deadline across attempts.
         """
+        if deadline is None:
+            deadline = time.monotonic() + getattr(self.CONF, "import_timeout", 1800)
+
         retry_attempts_for_queued_state = 4
+        consecutive_errors = 0
         while True:
+            if time.monotonic() > deadline:
+                logger.error(f"Image {image.name} import timed out")
+                return None
             try:
                 imported_image = self.conn.image.get_image(image)
+                consecutive_errors = 0
                 # An image's state in Glance transitions as follows:
                 #   queued > importing/saving > active
                 # If an import fails (e.g. web-download task API disabled),
                 # it silently falls back to "queued" state asynchronously in
                 # the background. We need to catch such cases where an image is
                 # indefinitely stuck in "queued" state.
-                if imported_image.status == "queued":
+                status = imported_image.status
+                if status == "active":
+                    return imported_image
+                if status == "queued":
                     if retry_attempts_for_queued_state < 0:
                         logger.error(f"Image {image.name} seems stuck in queued state")
-                        # Don't set exit_with_error here, let import_image handle retries
+                        # Don't set exit_with_error here, let the caller decide.
                         return None
-                    else:
-                        retry_attempts_for_queued_state -= 1
-                        logger.info("Waiting for image to leave queued state...")
-                        time.sleep(2.0)
-                elif imported_image.status != "active":
+                    retry_attempts_for_queued_state -= 1
+                    logger.info("Waiting for image to leave queued state...")
+                    time.sleep(2.0)
+                elif status in ("killed", "deleted", "pending_delete"):
+                    logger.error(
+                        f"Image {image.name} entered terminal state '{status}'"
+                    )
+                    return None
+                else:
                     logger.info("Waiting for import to complete...")
                     time.sleep(10.0)
-                else:
-                    return imported_image
             except Exception as e:
+                consecutive_errors += 1
                 logger.error(f"Exception while importing image {image.name}\n{e}")
-                self.exit_with_error = True
+                if consecutive_errors >= 5:
+                    logger.error(
+                        f"Giving up on image {image.name} after repeated errors"
+                    )
+                    return None
+                time.sleep(2.0)
 
     def process_image(
         self, image: dict, versions: dict, sorted_versions: list, meta: dict
@@ -622,7 +646,8 @@ class ImageManager:
             existence = name in cloud_images
 
             if existence and cloud_images[name].status != "active":
-                self.wait_for_image(cloud_images[name])
+                if self.wait_for_image(cloud_images[name]) is None:
+                    self.exit_with_error = True
 
             if (
                 image["multi"]
