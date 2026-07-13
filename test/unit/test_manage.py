@@ -225,6 +225,9 @@ class TestManage(TestCase):
         self.assertEqual(result, expected_result)
 
     @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.stage_image"
+    )
+    @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
     )
     @mock.patch(
@@ -233,8 +236,7 @@ class TestManage(TestCase):
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
     )
-    @mock.patch("builtins.open")
-    def test_import_image(self, mock_open, mock_create, mock_import, mock_get_image):
+    def test_import_image(self, mock_create, mock_import, mock_get_image, mock_stage):
         """test main.ImageManager.import_image()"""
 
         mock_create.return_value = self.fake_image
@@ -264,24 +266,20 @@ class TestManage(TestCase):
         mock_get_image.reset_mock()
 
         # test the same function for image with 'file://' url
+        # file:// now imports via glance-direct so the raw conversion runs
 
-        # use a dedicated MagicMock for the image object because the
-        # implementation will call the upload() function on it
         mock_image_obj = mock.MagicMock()
         mock_image_obj.status = "active"
         mock_create.return_value = mock_image_obj
         mock_get_image.return_value = mock_image_obj
-        fake_file_buffer = mock.MagicMock()
-        mock_open.return_value = fake_file_buffer
 
         self.sot.import_image(
             self.file_image_dict, self.fake_name, self.file_url, self.file_versions, "1"
         )
 
         mock_create.assert_called_once_with(**properties)
-        self.assertEqual(mock_image_obj.data, fake_file_buffer)
-        mock_import.assert_not_called()
-        mock_image_obj.upload.assert_called_with(self.sot.conn.image)
+        mock_stage.assert_called_once_with(mock_image_obj, filename="/path/to/file.img")
+        mock_import.assert_called_once_with(mock_image_obj, method="glance-direct")
         mock_get_image.assert_called_once_with(mock_image_obj)
 
     @mock.patch("openstack_image_manager.main.time.sleep")
