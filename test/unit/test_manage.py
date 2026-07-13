@@ -195,6 +195,8 @@ class TestManage(TestCase):
             check_only=False,
             hypervisor=None,
             stuck_retry=0,
+            import_timeout=1800,
+            prefetch="never",
         )
 
         # we can also mimick an openstack connection object with a Munch
@@ -279,6 +281,45 @@ class TestManage(TestCase):
         mock_import.assert_not_called()
         mock_image_obj.upload.assert_called_with(self.sot.conn.image)
         mock_get_image.assert_called_once_with(mock_image_obj)
+
+    @mock.patch("openstack_image_manager.main.time.sleep")
+    @mock.patch("openstack_image_manager.main.time.monotonic")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
+    )
+    def test_wait_for_image_terminal_status(self, mock_get, mock_mono, mock_sleep):
+        """a killed image returns None instead of looping forever"""
+        mock_mono.return_value = 0.0
+        img = mock.MagicMock()
+        img.status = "killed"
+        mock_get.return_value = img
+        self.assertIsNone(self.sot.wait_for_image(img))
+        self.assertFalse(self.sot.exit_with_error)
+
+    @mock.patch("openstack_image_manager.main.time.sleep")
+    @mock.patch("openstack_image_manager.main.time.monotonic")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
+    )
+    def test_wait_for_image_deadline(self, mock_get, mock_mono, mock_sleep):
+        """an importing image past the deadline returns None"""
+        # first monotonic() sets default deadline (0 + 1800); later calls are past it
+        mock_mono.side_effect = [0.0, 5000.0, 5000.0]
+        img = mock.MagicMock()
+        img.status = "importing"
+        mock_get.return_value = img
+        self.assertIsNone(self.sot.wait_for_image(img))
+
+    @mock.patch("openstack_image_manager.main.time.sleep")
+    @mock.patch("openstack_image_manager.main.time.monotonic")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
+    )
+    def test_wait_for_image_repeated_errors(self, mock_get, mock_mono, mock_sleep):
+        """repeated SDK errors return None after a bounded number of tries"""
+        mock_mono.return_value = 0.0
+        mock_get.side_effect = Exception("boom")
+        self.assertIsNone(self.sot.wait_for_image(image=mock.MagicMock()))
 
     @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
