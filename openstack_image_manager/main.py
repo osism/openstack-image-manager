@@ -3,6 +3,9 @@
 import time
 import openstack
 import requests
+import shutil
+import subprocess
+import tempfile
 import yaml
 import os
 import re
@@ -27,6 +30,16 @@ REQUESTS_TIMEOUT = 30
 
 # maps digest algorithm names to the dashed form aria2c's --checksum expects
 _ARIA2_ALGO = {"md5": "md5", "sha1": "sha-1", "sha256": "sha-256", "sha512": "sha-512"}
+
+
+PREFETCH_CHOICES = ("never", "on-stuck", "always")
+
+
+def _validate_prefetch(value: str) -> str:
+    """Reject --prefetch values outside the allowed set."""
+    if value not in PREFETCH_CHOICES:
+        raise typer.BadParameter(f"must be one of {', '.join(PREFETCH_CHOICES)}")
+    return value
 
 
 def checksum_to_aria2(checksum: typing.Optional[str]) -> typing.Optional[str]:
@@ -127,6 +140,17 @@ class ImageManager:
             0,
             "--stuck-retry",
             help="Number of retries if an image gets stuck in queued state (0 = no retry)",
+        ),
+        prefetch: str = typer.Option(
+            "on-stuck",
+            "--prefetch",
+            callback=_validate_prefetch,
+            help="Download via aria2 + glance-direct: never | on-stuck | always",
+        ),
+        import_timeout: int = typer.Option(
+            1800,
+            "--import-timeout",
+            help="Overall per-image import wait budget in seconds",
         ),
     ):
         self.CONF = Munch.fromDict(locals())
@@ -514,32 +538,208 @@ class ImageManager:
                     return None
             return self.wait_for_image(new_image)
 
+        deadline = time.monotonic() + self.CONF.import_timeout
+        fallback_reserve = 900.0  # seconds kept for aria2 + staging + glance-direct
+
+        # prefetch=always: skip web-download entirely
+        if self.CONF.prefetch == "always":
+            return self._prefetch_import(properties, name, url, checksum, deadline)
+
         # Web-download import with retry logic for stuck images
         max_attempts = self.CONF.stuck_retry + 1
+        wd_deadline = (
+            deadline - fallback_reserve
+            if self.CONF.prefetch == "on-stuck"
+            else deadline
+        )
+        new_image = None
         for attempt in range(max_attempts):
             if attempt > 0:
                 logger.info(
                     f"Retry attempt {attempt}/{self.CONF.stuck_retry} for image {name}"
                 )
 
-            new_image = self.conn.image.create_image(**properties)
-            self.conn.image.import_image(new_image, method="web-download", uri=url)
+            # A synchronous create/import error is treated like a failed attempt
+            # so the on-stuck fallback is still reached instead of aborting.
+            new_image = None
+            try:
+                new_image = self.conn.image.create_image(**properties)
+                self.conn.image.import_image(new_image, method="web-download", uri=url)
+                result = self.wait_for_image(new_image, wd_deadline)
+            except Exception as e:
+                logger.error(f"Web-download import for image {name} failed\n{e}")
+                result = None
 
-            result = self.wait_for_image(new_image)
             if result is not None:
                 return result
 
-            # Image is stuck in queued state, delete and retry if attempts remain
+            # Import failed for this attempt; delete and retry if attempts remain
             if attempt < max_attempts - 1:
                 logger.warning(f"Deleting stuck image {name} and retrying import")
+                if new_image is not None:
+                    try:
+                        self.conn.image.delete_image(new_image)
+                    except Exception as e:
+                        logger.error(f"Failed to delete stuck image {name}\n{e}")
+                new_image = None
+
+        # Web-download exhausted. Fall back to aria2 + glance-direct if enabled.
+        if self.CONF.prefetch == "on-stuck":
+            logger.error(
+                f"PREFETCH: fallback triggered for '{name}' (web-download failed)"
+            )
+            if new_image is not None:  # best-effort delete the ambiguous leftover
                 try:
                     self.conn.image.delete_image(new_image)
                 except Exception as e:
-                    logger.error(f"Failed to delete stuck image {name}\n{e}")
+                    logger.error(f"Failed to delete leftover image {name}\n{e}")
+            return self._prefetch_import(properties, name, url, checksum, deadline)
 
         # All retry attempts exhausted
         self.exit_with_error = True
         return None
+
+    def _prefetch_import(
+        self,
+        properties: dict,
+        name: str,
+        url: str,
+        checksum: typing.Optional[str],
+        deadline: float,
+    ) -> typing.Union[Image, None]:
+        """Download url with aria2 and import the local file via glance-direct."""
+        with tempfile.TemporaryDirectory() as tmp:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                logger.error(f"PREFETCH: no time budget left for '{name}'")
+                self.exit_with_error = True
+                return None
+            dest = os.path.join(tmp, "image.dat")
+            if not self._has_space_for_download(url, tmp):
+                self.exit_with_error = True
+                return None
+            ok = self._download(url, dest, checksum, timeout=remaining)
+            logger.info(
+                f"PREFETCH: aria2 download {'ok' if ok else 'failed'} for '{name}'"
+            )
+            if not ok:
+                self.exit_with_error = True
+                return None
+            if time.monotonic() > deadline:
+                logger.error(f"PREFETCH: deadline passed before staging '{name}'")
+                self.exit_with_error = True
+                return None
+            # create_image is inside the try so a failure (e.g. a fixed image id
+            # not yet freed by the earlier delete) fails cleanly instead of
+            # raising. The staging upload itself is a synchronous SDK call and
+            # is not bounded by the deadline; the import wait that follows is.
+            new_image = None
+            try:
+                new_image = self.conn.image.create_image(**properties)
+                result = self._glance_direct_import(new_image, dest, deadline)
+            except Exception as e:
+                logger.error(f"glance-direct import failed for {name}\n{e}")
+                result = None
+            if result is None:
+                logger.error(f"PREFETCH: glance-direct import failed for '{name}'")
+                if new_image is not None:
+                    try:
+                        self.conn.image.delete_image(new_image)
+                    except Exception as e:
+                        logger.error(f"Failed to delete image {name}\n{e}")
+                self.exit_with_error = True
+                return None
+            logger.info(f"PREFETCH: glance-direct import succeeded for '{name}'")
+            return result
+
+    def _has_space_for_download(self, url: str, directory: str) -> bool:
+        """Best-effort preflight so a prefetch does not fill the manager disk.
+
+        Returns True when the target filesystem has room for the image (size
+        from a HEAD Content-Length, plus a 10% margin) or when the size or free
+        space cannot be determined (in which case the download proceeds and a
+        real out-of-space error is still caught by _download()).
+        """
+        try:
+            resp = requests.head(url, timeout=REQUESTS_TIMEOUT, allow_redirects=True)
+            size = int(resp.headers.get("Content-Length", 0))
+        except Exception as e:
+            logger.warning(f"Could not determine size of {url}: {e}")
+            return True
+        if size <= 0:
+            logger.warning(f"No Content-Length for {url}; skipping disk check")
+            return True
+        try:
+            free = shutil.disk_usage(directory).free
+        except Exception as e:
+            logger.warning(f"Could not check free space at {directory}: {e}")
+            return True
+        required = int(size * 1.1)  # 10% margin for filesystem overhead
+        if free < required:
+            logger.error(
+                f"Not enough disk to prefetch {url}: need ~{required} bytes, "
+                f"{free} available at {directory}"
+            )
+            return False
+        return True
+
+    def _download(
+        self,
+        url: str,
+        dest: str,
+        checksum: typing.Optional[str] = None,
+        timeout: typing.Optional[float] = None,
+    ) -> bool:
+        """Download url to dest with aria2c (robust retry/resume).
+
+        aria2c is a required runtime dependency of the OSISM manager image; if
+        absent, log an error and return False (a clean failure, not a silent
+        skip). timeout bounds the overall aria2c run in seconds.
+        """
+        if shutil.which("aria2c") is None:
+            logger.error("aria2c is not installed; cannot prefetch image")
+            return False
+        directory, filename = os.path.split(dest)
+        cmd = [
+            "aria2c",
+            "--max-tries=5",
+            "--retry-wait=10",
+            "--timeout=60",
+            "--connect-timeout=30",
+            "--max-connection-per-server=4",
+            "--split=4",
+            "--min-split-size=20M",
+            "--continue=true",
+            "--allow-overwrite=true",
+            "--auto-file-renaming=false",
+            f"--dir={directory}",
+            f"--out={filename}",
+        ]
+        aria2_checksum = checksum_to_aria2(checksum)
+        if aria2_checksum:
+            cmd.append(f"--checksum={aria2_checksum}")
+        cmd.append(url)
+        try:
+            result = subprocess.run(cmd, check=False, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            logger.error(f"aria2c timed out downloading {url}")
+            return False
+        except Exception as e:
+            logger.error(f"aria2c failed to run: {e}")
+            return False
+        if result.returncode != 0:
+            logger.error(f"aria2c exited with rc={result.returncode} for {url}")
+            return False
+        return True
+
+    def _glance_direct_import(
+        self, new_image: Image, local_path: str, deadline: float
+    ) -> typing.Union[Image, None]:
+        """Stage a local file and import it via the glance-direct method, which
+        runs the same decompress/convert/store taskflow as web-download."""
+        self.conn.image.stage_image(new_image, filename=local_path)
+        self.conn.image.import_image(new_image, method="glance-direct")
+        return self.wait_for_image(new_image, deadline)
 
     def get_images(self) -> dict:
         """

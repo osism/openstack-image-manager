@@ -2,6 +2,7 @@
 
 import copy
 import requests
+import typer
 import yamale
 import yaml
 from loguru import logger
@@ -321,6 +322,239 @@ class TestManage(TestCase):
         mock_mono.return_value = 0.0
         mock_get.side_effect = Exception("boom")
         self.assertIsNone(self.sot.wait_for_image(image=mock.MagicMock()))
+
+    @mock.patch("openstack_image_manager.main.shutil.which", return_value=None)
+    def test_download_missing_aria2c(self, mock_which):
+        """missing aria2c is a clean False, not a traceback"""
+        self.assertFalse(self.sot._download("http://x/y.qcow2", "/tmp/y", None))
+
+    @mock.patch("openstack_image_manager.main.subprocess.run")
+    @mock.patch(
+        "openstack_image_manager.main.shutil.which", return_value="/usr/bin/aria2c"
+    )
+    def test_download_passes_checksum(self, mock_which, mock_run):
+        mock_run.return_value = mock.MagicMock(returncode=0)
+        ok = self.sot._download(
+            "http://x/y.qcow2", "/tmp/dir/y.qcow2", "sha256:" + "a" * 64
+        )
+        self.assertTrue(ok)
+        args = mock_run.call_args[0][0]
+        self.assertIn("--checksum=sha-256=" + "a" * 64, args)
+
+    @mock.patch("openstack_image_manager.main.subprocess.run")
+    @mock.patch(
+        "openstack_image_manager.main.shutil.which", return_value="/usr/bin/aria2c"
+    )
+    def test_download_nonzero_is_false(self, mock_which, mock_run):
+        mock_run.return_value = mock.MagicMock(returncode=1)
+        self.assertFalse(self.sot._download("http://x/y", "/tmp/y", None))
+
+    @mock.patch("openstack_image_manager.main.ImageManager._glance_direct_import")
+    @mock.patch("openstack_image_manager.main.ImageManager._download")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.import_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch("openstack_image_manager.main.time.sleep")
+    def test_import_on_stuck_falls_back(
+        self, mock_sleep, mock_del, mock_create, mock_import, mock_get, mock_dl, mock_gd
+    ):
+        """web-download stuck -> aria2 + glance-direct on a fresh image"""
+        self.sot.CONF.prefetch = "on-stuck"
+        self.sot.CONF.stuck_retry = 0  # single web-download attempt
+        stuck = mock.MagicMock()
+        stuck.status = "queued"
+        fresh = mock.MagicMock()
+        fresh.status = "active"
+        mock_create.side_effect = [stuck, fresh]  # web-download img + fallback img
+        mock_get.return_value = stuck  # wait_for_image sees 'queued' -> None
+        mock_dl.return_value = True
+        mock_gd.return_value = fresh
+
+        result = self.sot.import_image(
+            self.fake_image_dict,
+            self.fake_name,
+            self.fake_url,
+            self.versions,
+            "1",
+            checksum="sha256:" + "a" * 64,
+        )
+        self.assertIs(result, fresh)
+        mock_dl.assert_called_once()  # aria2 ran
+        mock_gd.assert_called_once()  # glance-direct ran
+        mock_del.assert_called()  # leftover deleted before fresh create
+        self.assertFalse(self.sot.exit_with_error)
+
+    def test_validate_prefetch(self):
+        """invalid --prefetch values are rejected"""
+        self.assertEqual(main._validate_prefetch("on-stuck"), "on-stuck")
+        self.assertEqual(main._validate_prefetch("never"), "never")
+        self.assertEqual(main._validate_prefetch("always"), "always")
+        with self.assertRaises(typer.BadParameter):
+            main._validate_prefetch("typo")
+
+    @mock.patch(
+        "openstack_image_manager.main.subprocess.run",
+        side_effect=main.subprocess.TimeoutExpired(cmd="aria2c", timeout=1),
+    )
+    @mock.patch(
+        "openstack_image_manager.main.shutil.which", return_value="/usr/bin/aria2c"
+    )
+    def test_download_timeout(self, mock_which, mock_run):
+        """an aria2c timeout is a clean False"""
+        self.assertFalse(self.sot._download("http://x/y", "/tmp/y", None, timeout=1))
+
+    @mock.patch("openstack_image_manager.main.time.sleep")
+    @mock.patch("openstack_image_manager.main.ImageManager._download")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.get_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.import_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
+    )
+    def test_import_never_no_fallback(
+        self, mock_create, mock_import, mock_get, mock_dl, mock_sleep
+    ):
+        """prefetch=never never invokes the aria2 fallback"""
+        self.sot.CONF.prefetch = "never"
+        self.sot.CONF.stuck_retry = 0
+        stuck = mock.MagicMock()
+        stuck.status = "queued"
+        mock_create.return_value = stuck
+        mock_get.return_value = stuck
+        result = self.sot.import_image(
+            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+        )
+        self.assertIsNone(result)
+        self.assertTrue(self.sot.exit_with_error)
+        mock_dl.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager._glance_direct_import")
+    @mock.patch("openstack_image_manager.main.ImageManager._download")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.import_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
+    )
+    def test_import_always_uses_prefetch(
+        self, mock_create, mock_import, mock_dl, mock_gd
+    ):
+        """prefetch=always skips web-download entirely"""
+        self.sot.CONF.prefetch = "always"
+        fresh = mock.MagicMock()
+        fresh.status = "active"
+        mock_create.return_value = fresh
+        mock_dl.return_value = True
+        mock_gd.return_value = fresh
+        result = self.sot.import_image(
+            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+        )
+        self.assertIs(result, fresh)
+        mock_dl.assert_called_once()
+        mock_gd.assert_called_once()
+        mock_import.assert_not_called()  # web-download never used
+
+    @mock.patch("openstack_image_manager.main.ImageManager._glance_direct_import")
+    @mock.patch("openstack_image_manager.main.ImageManager._download")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
+    )
+    def test_prefetch_download_failure(self, mock_create, mock_dl, mock_gd):
+        """a failed download flags an error and never stages an image"""
+        self.sot.CONF.prefetch = "always"
+        mock_dl.return_value = False
+        result = self.sot.import_image(
+            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+        )
+        self.assertIsNone(result)
+        self.assertTrue(self.sot.exit_with_error)
+        mock_gd.assert_not_called()
+        mock_create.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager._prefetch_import")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image",
+        side_effect=Exception("glance api error"),
+    )
+    def test_web_download_exception_falls_back(self, mock_create, mock_pf):
+        """a synchronous web-download error still reaches the fallback"""
+        self.sot.CONF.prefetch = "on-stuck"
+        self.sot.CONF.stuck_retry = 0
+        fresh = mock.MagicMock()
+        mock_pf.return_value = fresh
+        result = self.sot.import_image(
+            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+        )
+        self.assertIs(result, fresh)
+        mock_pf.assert_called_once()
+
+    @mock.patch("openstack_image_manager.main.ImageManager._download")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image",
+        side_effect=Exception("409 conflict on fixed id"),
+    )
+    def test_prefetch_create_conflict(self, mock_create, mock_dl):
+        """a create conflict in the fallback fails cleanly, no traceback"""
+        self.sot.CONF.prefetch = "always"
+        mock_dl.return_value = True
+        result = self.sot.import_image(
+            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+        )
+        self.assertIsNone(result)
+        self.assertTrue(self.sot.exit_with_error)
+
+    @mock.patch("openstack_image_manager.main.shutil.disk_usage")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    def test_has_space_insufficient(self, mock_head, mock_du):
+        """a too-small filesystem is detected before downloading"""
+        mock_head.return_value = mock.MagicMock(
+            headers={"Content-Length": str(2 * 1024**3)}
+        )
+        mock_du.return_value = mock.MagicMock(free=1 * 1024**3)
+        self.assertFalse(self.sot._has_space_for_download("http://x/y", "/tmp"))
+
+    @mock.patch("openstack_image_manager.main.shutil.disk_usage")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    def test_has_space_enough(self, mock_head, mock_du):
+        """enough free space returns True"""
+        mock_head.return_value = mock.MagicMock(
+            headers={"Content-Length": str(1 * 1024**3)}
+        )
+        mock_du.return_value = mock.MagicMock(free=10 * 1024**3)
+        self.assertTrue(self.sot._has_space_for_download("http://x/y", "/tmp"))
+
+    @mock.patch("openstack_image_manager.main.requests.head")
+    def test_has_space_unknown_size(self, mock_head):
+        """an unknown image size does not block the download"""
+        mock_head.return_value = mock.MagicMock(headers={})
+        self.assertTrue(self.sot._has_space_for_download("http://x/y", "/tmp"))
+
+    @mock.patch("openstack_image_manager.main.ImageManager._download")
+    @mock.patch(
+        "openstack_image_manager.main.ImageManager._has_space_for_download",
+        return_value=False,
+    )
+    def test_prefetch_aborts_on_low_disk(self, mock_space, mock_dl):
+        """a failed space preflight aborts before any download"""
+        self.sot.CONF.prefetch = "always"
+        result = self.sot.import_image(
+            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+        )
+        self.assertIsNone(result)
+        self.assertTrue(self.sot.exit_with_error)
+        mock_dl.assert_not_called()
 
     def test_checksum_to_aria2(self):
         """digest strings are converted to aria2's '<algo>=<hex>' form"""
