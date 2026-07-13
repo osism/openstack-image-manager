@@ -150,6 +150,7 @@ class TestManage(TestCase):
         self.versions = {
             "1": {
                 "url": self.fake_url,
+                "checksum": "1234",
                 "meta": {
                     "image_source": self.fake_url,
                     "image_build_date": "2021-01-21",
@@ -321,6 +322,17 @@ class TestManage(TestCase):
         mock_get.side_effect = Exception("boom")
         self.assertIsNone(self.sot.wait_for_image(image=mock.MagicMock()))
 
+    def test_checksum_to_aria2(self):
+        """digest strings are converted to aria2's '<algo>=<hex>' form"""
+        self.assertEqual(
+            main.checksum_to_aria2("sha256:" + "a" * 64), "sha-256=" + "a" * 64
+        )
+        self.assertEqual(main.checksum_to_aria2("b" * 64), "sha-256=" + "b" * 64)
+        self.assertEqual(main.checksum_to_aria2("sha512:dead"), "sha-512=dead")
+        self.assertIsNone(main.checksum_to_aria2(""))
+        self.assertIsNone(main.checksum_to_aria2(None))
+        self.assertIsNone(main.checksum_to_aria2("bogus:dead"))
+
     @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
     def test_check_image_age(self, mock_read_image_files, mock_get_images):
@@ -368,7 +380,12 @@ class TestManage(TestCase):
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_called_once_with(self.fake_url)
         mock_import_image.assert_called_once_with(
-            self.fake_image_dict, self.fake_name, self.fake_url, self.versions, "1"
+            self.fake_image_dict,
+            self.fake_name,
+            self.fake_url,
+            self.versions,
+            "1",
+            checksum="1234",
         )
         mock_set_properties.assert_called_once_with(
             self.fake_image_dict, self.fake_name, self.versions, "1", "", meta
@@ -396,7 +413,12 @@ class TestManage(TestCase):
         self.assertEqual(mock_get_images.call_count, 2)
         mock_requests.assert_not_called()
         mock_import_image.assert_called_once_with(
-            self.file_image_dict, self.fake_name, self.file_url, self.file_versions, "1"
+            self.file_image_dict,
+            self.fake_name,
+            self.file_url,
+            self.file_versions,
+            "1",
+            checksum=None,
         )
 
         mock_get_images.reset_mock()
