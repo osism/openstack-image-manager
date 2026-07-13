@@ -523,20 +523,22 @@ class ImageManager:
         parsed_url = urllib.parse.urlparse(url)
         if parsed_url.scheme == "file":
             new_image = self.conn.image.create_image(**properties)
-            local_file = open(parsed_url.path, "rb")
-            with local_file:
-                try:
-                    logger.info(
-                        f"Uploading local file '{parsed_url.path}' as image {name}"
-                    )
-                    new_image.data = local_file
-                    new_image.upload(self.conn.image)
-                except Exception as e:
-                    self.conn.image.delete_image(new_image)
-                    logger.error(f"Failed to upload local file for image {name}\n{e}")
-                    self.exit_with_error = True
-                    return None
-            return self.wait_for_image(new_image)
+            try:
+                logger.info(f"Importing local file '{parsed_url.path}' as image {name}")
+                result = self._glance_direct_import(
+                    new_image,
+                    parsed_url.path,
+                    time.monotonic() + self.CONF.import_timeout,
+                )
+            except Exception as e:
+                self.conn.image.delete_image(new_image)
+                logger.error(f"Failed to import local file for image {name}\n{e}")
+                self.exit_with_error = True
+                return None
+            if result is None:
+                self.conn.image.delete_image(new_image)
+                self.exit_with_error = True
+            return result
 
         deadline = time.monotonic() + self.CONF.import_timeout
         fallback_reserve = 900.0  # seconds kept for aria2 + staging + glance-direct
