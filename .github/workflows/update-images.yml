@@ -31,7 +31,7 @@ jobs:
         run: pip3 install tox
 
       - name: Update images
-        run: tox -e update -- --dry-run --name ${{ matrix.image }}
+        run: tox -e update -- --name ${{ matrix.image }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
