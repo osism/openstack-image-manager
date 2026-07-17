@@ -2,6 +2,7 @@
 
 # source of latest URLs: https://gitlab.com/libosinfo/osinfo-db
 
+from dataclasses import dataclass
 from datetime import datetime
 import os
 import re
@@ -25,113 +26,124 @@ MIRROR_BASE_URL = os.environ.get(
 ).rstrip("/")
 
 
-def get_latest_default(
-    shortname, latest_checksum_url, latest_url, checksum_type="sha256"
-):
-    result = requests.get(latest_checksum_url)
-    result.raise_for_status()
-
-    latest_filename = os.path.basename(urlparse(latest_url).path)
-    filename_pattern = None
-    if shortname in ["centos-stream-8", "centos-stream-9", "centos-7"]:
-        filename_pattern = latest_filename.replace("HEREBE", "")
-        filename_pattern = filename_pattern.replace("DRAGONS", "")
-
-    checksums = {}
-    for line in result.text.split("\n"):
-        cs = re.split(r"\s+", line)
-        if shortname in ["rocky-8", "rocky-9"]:
-            if len(cs) == 4 and cs[0] == "SHA256":
-                checksums[latest_filename] = cs[3]
-        elif shortname in ["centos-7"]:
-            if len(cs) == 2 and re.search(filename_pattern, cs[1]):
-                checksums[cs[1]] = cs[0]
-        elif shortname in ["centos-stream-8", "centos-stream-9"]:
-            if (
-                len(cs) == 4
-                and cs[0] == "SHA256"
-                and re.search(filename_pattern, cs[1][1:-1])
-            ):
-                checksums[cs[1][1:-1]] = cs[3]
-        else:
-            if len(cs) == 2:
-                checksums[cs[1]] = cs[0]
-
-    if filename_pattern:
-        new_latest_filename = natsorted(checksums.keys())[-1]
-        new_latest_url = latest_url.replace(latest_filename, new_latest_filename)
-
-        logger.info(f"Latest URL is now {new_latest_url}")
-        logger.info(f"Latest filename is now {new_latest_filename}")
-
-        latest_filename = new_latest_filename
-        latest_url = new_latest_url
-
-    current_checksum = f"{checksum_type}:{checksums[latest_filename]}"
-    return current_checksum, latest_url, None
+@dataclass
+class MirrorDirConfig:
+    # "plain" -> `<hash> <filename>` ; "bsd" -> `SHA256 (<filename>) = <hash>`
+    checksum_style: str = "plain"
+    # resolve newest build from the manifest via the HEREBE/DRAGONS placeholder pattern
+    resolve_latest: bool = False
+    # for bsd: "filename" keys on the parenthesised name; "target" maps every
+    # SHA256 line onto the known latest filename (last line wins)
+    bsd_key: str = "filename"
 
 
-def resolve_debubu(base_url, rex=re.compile(DEBUBU_REGEX)):
-    result = requests.get(base_url)
-    result.raise_for_status()
-    latest_folder, latest_date, latest_build = sorted(rex.findall(result.text))[-1]
-    return latest_folder, latest_date, latest_build
-
-
-def get_latest_debubu(shortname, latest_checksum_url, latest_url, checksum_type=None):
-    base_url, _, filename = latest_url.rsplit("/", 2)
-    latest_folder, latest_date, latest_build = resolve_debubu(base_url)
-    current_base_url = f"{base_url}/{latest_folder}"
-    current_checksum_url = (
-        f"{current_base_url}/{latest_checksum_url.rsplit('/', 1)[-1]}"
-    )
-    result = requests.get(current_checksum_url)
-    result.raise_for_status()
-    current_checksum = None
-    current_filename = filename
-    if latest_build:  # Debian includes date-build in file name
-        fn_pre, fn_suf = filename.rsplit(".", 1)
-        current_filename = f"{fn_pre}-{latest_date}{latest_build}.{fn_suf}"
-    for line in result.text.splitlines():
-        cs = line.split()
-        if len(cs) != 2:
-            continue
-        if cs[1].startswith("*"):  # Ubuntu has the asterisk in front of the name
-            cs[1] = cs[1][1:]
-        if cs[1] != current_filename:
-            continue
-        if checksum_type is None:  # use heuristics to distinguish sha256/sha512
-            checksum_type = "sha256" if len(cs[0]) == 64 else "sha512"
-        current_checksum = f"{checksum_type}:{cs[0]}"
-        break
-    if current_checksum is None:
-        raise RuntimeError(
-            f"{current_checksum_url} does not contain {current_filename}"
-        )
-    current_url = f"{current_base_url}/{current_filename}"
-    return current_checksum, current_url, latest_date
-
-
-IMAGES = {
-    "almalinux": get_latest_default,
-    "centos": get_latest_default,
-    "debian": get_latest_debubu,
-    "rockylinux": get_latest_default,
-    "ubuntu": get_latest_debubu,
+DEFAULT_MIRROR_CONFIG = MirrorDirConfig()
+MIRROR_DIR_CONFIG = {
+    "centos-7": MirrorDirConfig(checksum_style="plain", resolve_latest=True),
+    "centos-stream-8": MirrorDirConfig(checksum_style="bsd", resolve_latest=True),
+    "centos-stream-9": MirrorDirConfig(checksum_style="bsd", resolve_latest=True),
+    "rocky-8": MirrorDirConfig(checksum_style="bsd", bsd_key="target"),
+    "rocky-9": MirrorDirConfig(checksum_style="bsd", bsd_key="target"),
 }
 
 
-def update_image(image, getter):
+class MirrorDirHandler:
+    def resolve(self, image: dict) -> tuple[str, str, str | None]:
+        shortname = image["shortname"]
+        latest_url = image["latest_url"]
+        cfg = MIRROR_DIR_CONFIG.get(shortname, DEFAULT_MIRROR_CONFIG)
+
+        result = requests.get(image["latest_checksum_url"], timeout=HTTP_TIMEOUT)
+        result.raise_for_status()
+
+        original_filename = os.path.basename(urlparse(latest_url).path)
+        pattern = None
+        if cfg.resolve_latest:
+            pattern = original_filename.replace("HEREBE", "").replace("DRAGONS", "")
+
+        checksums = {}
+        for line in result.text.split("\n"):
+            cs = re.split(r"\s+", line)
+            if cfg.checksum_style == "bsd":
+                if len(cs) == 4 and cs[0] == "SHA256":
+                    if cfg.bsd_key == "target":
+                        checksums[original_filename] = cs[3]
+                    else:
+                        name = cs[1][1:-1]
+                        if pattern is None or re.search(pattern, name):
+                            checksums[name] = cs[3]
+            else:
+                if len(cs) == 2:
+                    if pattern is None or re.search(pattern, cs[1]):
+                        checksums[cs[1]] = cs[0]
+
+        target_filename = original_filename
+        if pattern:
+            target_filename = natsorted(checksums.keys())[-1]
+            latest_url = latest_url.replace(original_filename, target_filename)
+
+        return f"sha256:{checksums[target_filename]}", latest_url, None
+
+
+class DirListingHandler:
+    def resolve(self, image: dict) -> tuple[str, str, str | None]:
+        latest_url = image["latest_url"]
+        latest_checksum_url = image["latest_checksum_url"]
+        base_url, _, filename = latest_url.rsplit("/", 2)
+
+        listing = requests.get(base_url, timeout=HTTP_TIMEOUT)
+        listing.raise_for_status()
+        latest_folder, latest_date, latest_build = sorted(
+            re.compile(DEBUBU_REGEX).findall(listing.text)
+        )[-1]
+
+        current_base_url = f"{base_url}/{latest_folder}"
+        current_checksum_url = (
+            f"{current_base_url}/{latest_checksum_url.rsplit('/', 1)[-1]}"
+        )
+        result = requests.get(current_checksum_url, timeout=HTTP_TIMEOUT)
+        result.raise_for_status()
+
+        current_filename = filename
+        if latest_build:
+            fn_pre, fn_suf = filename.rsplit(".", 1)
+            current_filename = f"{fn_pre}-{latest_date}{latest_build}.{fn_suf}"
+
+        for line in result.text.splitlines():
+            cs = line.split()
+            if len(cs) != 2:
+                continue
+            if cs[1].startswith("*"):
+                cs[1] = cs[1][1:]
+            if cs[1] != current_filename:
+                continue
+            checksum_type = "sha256" if len(cs[0]) == 64 else "sha512"
+            return (
+                f"{checksum_type}:{cs[0]}",
+                f"{current_base_url}/{current_filename}",
+                latest_date,
+            )
+
+        raise RuntimeError(
+            f"{current_checksum_url} does not contain {current_filename}"
+        )
+
+
+HANDLERS = {
+    "almalinux": MirrorDirHandler(),
+    "centos": MirrorDirHandler(),
+    "debian": DirListingHandler(),
+    "rockylinux": MirrorDirHandler(),
+    "ubuntu": DirListingHandler(),
+}
+
+
+def update_image(image, handler):
     name = image["name"]
+    shortname = image["shortname"]
     logger.info(f"Checking image {name}")
 
-    latest_url = image["latest_url"]
-    latest_checksum_url = image["latest_checksum_url"]
-    shortname = image["shortname"]
-
-    current_checksum, current_url, current_version = getter(
-        shortname, latest_checksum_url, latest_url
-    )
+    current_checksum, current_url, current_version = handler.resolve(image)
     logger.info(
         f"Checksum of current {current_url.rsplit('/', 1)[-1]} is {current_checksum}"
     )
@@ -202,7 +214,7 @@ def main(
     )
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-    for image_name, getter in IMAGES.items():
+    for image_name, handler in HANDLERS.items():
         if name and image_name != name:
             logger.info(f"Skipping {image_name}")
             continue
@@ -218,7 +230,7 @@ def main(
         for image in data["images"]:
             if "latest_url" not in image:
                 continue
-            updates += update_image(image, getter)
+            updates += update_image(image, handler)
 
         if not updates:
             continue
