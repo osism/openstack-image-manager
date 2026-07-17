@@ -27,13 +27,12 @@ images:
 """
 
 
-def _fake_getter_changed(shortname, latest_checksum_url, latest_url):
-    # New checksum + a concrete version so update_image does not call urlopen.
-    return ("sha256:" + "1" * 64, latest_url, "20260101")
+class _FakeHandler:
+    def __init__(self, result):
+        self._result = result
 
-
-def _fake_getter_same(shortname, latest_checksum_url, latest_url):
-    return ("sha256:" + "0" * 64, latest_url, "20200101")
+    def resolve(self, image):
+        return self._result
 
 
 class WriteContractTest(unittest.TestCase):
@@ -51,9 +50,10 @@ class WriteContractTest(unittest.TestCase):
             return fp.read()
 
     def _run(self, dry_run):
-        with mock.patch.dict(
-            update.IMAGES, {"example": _fake_getter_changed}, clear=True
-        ):
+        fake = _FakeHandler(
+            ("sha256:" + "1" * 64, "https://example.test/example.qcow2", "20260101")
+        )
+        with mock.patch.dict(update.HANDLERS, {"example": fake}, clear=True):
             update.main(
                 name="example", debug=False, dry_run=dry_run, images_dir=self.dir
             )
@@ -73,7 +73,10 @@ class WriteContractTest(unittest.TestCase):
 
     def test_noop_writes_nothing(self):
         before = self._read()
-        with mock.patch.dict(update.IMAGES, {"example": _fake_getter_same}, clear=True):
+        fake = _FakeHandler(
+            ("sha256:" + "0" * 64, "https://example.test/example.qcow2", "20200101")
+        )
+        with mock.patch.dict(update.HANDLERS, {"example": fake}, clear=True):
             update.main(name="example", debug=False, dry_run=False, images_dir=self.dir)
         after = self._read()
         self.assertEqual(before, after)
@@ -97,7 +100,7 @@ class _FakeResponse:
         pass
 
 
-# Map every URL the getters fetch to fixture content.
+# Map every URL the handlers fetch to fixture content.
 _URL_MAP = {
     "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM": (
         "almalinux9",
@@ -132,16 +135,21 @@ _URL_MAP = {
 
 
 def _fake_get(url, *args, **kwargs):
+    assert "timeout" in kwargs, f"requests.get({url}) called without timeout"
     return _FakeResponse(_fx(*_URL_MAP[url]))
 
 
 class GoldenTest(unittest.TestCase):
     @mock.patch("contrib.update.requests.get", side_effect=_fake_get)
     def test_almalinux9(self, _):
-        checksum, url, version = update.get_latest_default(
-            "almalinux-9",
-            "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM",
-            "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2",
+        alma9_base = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/"
+        checksum, url, version = update.MirrorDirHandler().resolve(
+            {
+                "shortname": "almalinux-9",
+                "latest_checksum_url": alma9_base + "CHECKSUM",
+                "latest_url": alma9_base
+                + "AlmaLinux-9-GenericCloud-latest.x86_64.qcow2",
+            }
         )
         self.assertEqual(
             checksum,
@@ -152,10 +160,16 @@ class GoldenTest(unittest.TestCase):
 
     @mock.patch("contrib.update.requests.get", side_effect=_fake_get)
     def test_centos7(self, _):
-        checksum, url, version = update.get_latest_default(
-            "centos-7",
-            "https://cloud.centos.org/centos/7/images/sha256sum.txt",
-            r"https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS",
+        centos7_url = (
+            r"https://cloud.centos.org/centos/7/images/"
+            r"CentOS-7-x86_64-GenericCloud-HEREBE\d+\.qcow2$DRAGONS"
+        )
+        checksum, url, version = update.MirrorDirHandler().resolve(
+            {
+                "shortname": "centos-7",
+                "latest_checksum_url": "https://cloud.centos.org/centos/7/images/sha256sum.txt",
+                "latest_url": centos7_url,
+            }
         )
         self.assertEqual(
             checksum,
@@ -173,10 +187,12 @@ class GoldenTest(unittest.TestCase):
             "https://cloud.centos.org/centos/9-stream/x86_64/images/"
             r"CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2"
         )
-        checksum, url, version = update.get_latest_default(
-            "centos-stream-9",
-            "https://cloud.centos.org/centos/9-stream/x86_64/images/CHECKSUM",
-            stream9_url,
+        checksum, url, version = update.MirrorDirHandler().resolve(
+            {
+                "shortname": "centos-stream-9",
+                "latest_checksum_url": "https://cloud.centos.org/centos/9-stream/x86_64/images/CHECKSUM",
+                "latest_url": stream9_url,
+            }
         )
         self.assertEqual(
             checksum,
@@ -192,10 +208,13 @@ class GoldenTest(unittest.TestCase):
     @mock.patch("contrib.update.requests.get", side_effect=_fake_get)
     def test_rocky9(self, _):
         rocky9_base = "https://download.rockylinux.org/pub/rocky/9/images/x86_64/"
-        checksum, url, version = update.get_latest_default(
-            "rocky-9",
-            rocky9_base + "Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM",
-            rocky9_base + "Rocky-9-GenericCloud.latest.x86_64.qcow2",
+        checksum, url, version = update.MirrorDirHandler().resolve(
+            {
+                "shortname": "rocky-9",
+                "latest_checksum_url": rocky9_base
+                + "Rocky-9-GenericCloud.latest.x86_64.qcow2.CHECKSUM",
+                "latest_url": rocky9_base + "Rocky-9-GenericCloud.latest.x86_64.qcow2",
+            }
         )
         self.assertEqual(
             checksum,
@@ -209,10 +228,12 @@ class GoldenTest(unittest.TestCase):
 
     @mock.patch("contrib.update.requests.get", side_effect=_fake_get)
     def test_ubuntu(self, _):
-        checksum, url, version = update.get_latest_debubu(
-            "ubuntu-24.04",
-            "https://cloud-images.ubuntu.com/noble/current/SHA256SUMS",
-            "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
+        checksum, url, version = update.DirListingHandler().resolve(
+            {
+                "shortname": "ubuntu-24.04",
+                "latest_checksum_url": "https://cloud-images.ubuntu.com/noble/current/SHA256SUMS",
+                "latest_url": "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
+            }
         )
         self.assertEqual(
             checksum,
@@ -226,10 +247,14 @@ class GoldenTest(unittest.TestCase):
 
     @mock.patch("contrib.update.requests.get", side_effect=_fake_get)
     def test_debian(self, _):
-        checksum, url, version = update.get_latest_debubu(
-            "debian-13",
-            "https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/SHA512SUMS",
-            "https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2",
+        debian13_base = "https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/"
+        checksum, url, version = update.DirListingHandler().resolve(
+            {
+                "shortname": "debian-13",
+                "latest_checksum_url": debian13_base + "SHA512SUMS",
+                "latest_url": debian13_base
+                + "debian-13-genericcloud-amd64-daily.qcow2",
+            }
         )
         self.assertEqual(
             checksum,
