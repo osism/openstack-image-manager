@@ -5,23 +5,24 @@
 from datetime import datetime
 import os
 import re
-import shutil
 import sys
 from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
 from loguru import logger
-from minio import Minio
-from minio.error import S3Error
 from natsort import natsorted
-import patoolib
 import requests
 import ruamel.yaml
 import typer
 
 app = typer.Typer()
 DEBUBU_REGEX = r'<a href="([^"]+)/">(?:release-)?([0-9]+)(\-[0-9]+)?/</a>'
+HTTP_TIMEOUT = 30
+MIRROR_BASE_URL = os.environ.get(
+    "MIRROR_BASE_URL",
+    "https://nbg1.your-objectstorage.com/osism/openstack-images",
+).rstrip("/")
 
 
 def get_latest_default(
@@ -120,80 +121,17 @@ IMAGES = {
 }
 
 
-def mirror_image(
-    image, latest_url, minio_server, minio_bucket, minio_access_key, minio_secret_key
-):
-    client = Minio(
-        minio_server,
-        access_key=minio_access_key,
-        secret_key=minio_secret_key,
-    )
-
-    result = client.bucket_exists(minio_bucket)
-    if not result:
-        logger.error(f"Create bucket '{minio_bucket}' first")
-        return
-
-    version = image["versions"][0]
-
-    path = urlparse(version["url"])
-    dirname = image["shortname"]
-    filename, fileextension = os.path.splitext(os.path.basename(path.path))
-
-    if fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
-        filename += fileextension
-
-    shortname = image["shortname"]
-    format = image["format"]
-    new_version = version["version"]
-    new_filename = f"{new_version}-{shortname}.{format}"
-
-    try:
-        client.stat_object(minio_bucket, os.path.join(dirname, new_filename))
-        logger.info(f"'{new_filename}' available in '{dirname}'")
-    except S3Error:
-        logger.info(f"'{new_filename}' not yet available in '{dirname}'")
-        logger.info(f"Downloading '{latest_url}'")
-
-        response = requests.get(latest_url, stream=True)
-        with open(os.path.basename(path.path), "wb") as fp:
-            shutil.copyfileobj(response.raw, fp)
-        del response
-
-        if fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-            logger.info(f"Decompressing '{os.path.basename(path.path)}'")
-            patoolib.extract_archive(os.path.basename(path.path), outdir=".")
-            os.remove(os.path.basename(path.path))
-
-        logger.info(f"Uploading '{filename}' to '{dirname}' as '{new_filename}'")
-
-        client.fput_object(minio_bucket, os.path.join(dirname, new_filename), filename)
-        os.remove(filename)
-
-
-def update_image(
-    image,
-    getter,
-    minio_server,
-    minio_bucket,
-    minio_access_key,
-    minio_secret_key,
-    dry_run=False,
-):
+def update_image(image, getter):
     name = image["name"]
     logger.info(f"Checking image {name}")
 
     latest_url = image["latest_url"]
-    logger.info(f"Latest download URL is {latest_url}")
-
     latest_checksum_url = image["latest_checksum_url"]
-    logger.info(f"Getting checksums from {latest_checksum_url}")
-
     shortname = image["shortname"]
+
     current_checksum, current_url, current_version = getter(
         shortname, latest_checksum_url, latest_url
     )
-
     logger.info(
         f"Checksum of current {current_url.rsplit('/', 1)[-1]} is {current_checksum}"
     )
@@ -201,77 +139,41 @@ def update_image(
     if not image["versions"]:
         logger.info("No image available so far")
         image["versions"].append(
-            {
-                "build_date": None,
-                "checksum": None,
-                "url": None,
-                "version": None,
-            }
+            {"build_date": None, "checksum": None, "url": None, "version": None}
         )
 
-    latest_checksum = image["versions"][0]["checksum"]
-    logger.info(f"Our checksum is {latest_checksum}")
-
-    if latest_checksum == current_checksum:
+    if image["versions"][0]["checksum"] == current_checksum:
         logger.info(f"Image {name} is up-to-date, nothing to do")
         return 0
 
     if current_version is None:
         logger.info(f"Checking {current_url}")
-
         try:
-            conn = urlopen(current_url, timeout=30)
+            conn = urlopen(current_url, timeout=HTTP_TIMEOUT)
         except HTTPError as e:
             logger.warning(f"Image {name} cannot be processed, skipping: {e}")
             return 0
-
         dt = datetime.strptime(
             conn.headers["last-modified"], "%a, %d %b %Y %H:%M:%S %Z"
         )
         current_version = dt.strftime("%Y%m%d")
 
-    new_values = {
-        "version": current_version,
-        "build_date": datetime.strptime(current_version, "%Y%m%d").date(),
-        "checksum": current_checksum,
-        "url": current_url,
-    }
-    logger.info(f"New values are {new_values}")
-    image["versions"][0].update(new_values)
-
-    shortname = image["shortname"]
-    format = image["format"]
-
-    minio_server = str(minio_server)
-    minio_bucket = str(minio_bucket)
-    mirror_url = f"https://{minio_server}/{minio_bucket}/{shortname}/{current_version}-{shortname}.{format}"  # noqa E501
+    image_format = image["format"]
+    mirror_url = (
+        f"{MIRROR_BASE_URL}/{shortname}/"
+        f"{current_version}-{shortname}.{image_format}"
+    )
     logger.info(f"New URL is {mirror_url}")
 
-    # If `mirror_url` is given, the manage.py script will
-    # use `mirror_url` for the download and will use `url`
-    # to set the `image_source` property. This way we keep
-    # track of the original source of the image.
-
-    image["versions"][0]["mirror_url"] = mirror_url
-
-    # We use `current_url` here and not `latest_url` to keep track
-    # of the original source of the image. Even if we know that `current_url`
-    # will not be available in the future. The `latest_url` will always
-    # be part of the image definition itself.
-
-    image["versions"][0]["url"] = current_url
-
-    if dry_run:
-        logger.info(f"Not mirroring {mirror_url}, dry-run enabled")
-    else:
-        mirror_image(
-            image,
-            current_url,
-            minio_server,
-            minio_bucket,
-            minio_access_key,
-            minio_secret_key,
-        )
+    image["versions"][0].update(
+        {
+            "version": current_version,
+            "build_date": datetime.strptime(current_version, "%Y%m%d").date(),
+            "checksum": current_checksum,
+            "url": current_url,
+            "mirror_url": mirror_url,
+        }
+    )
     return 1
 
 
@@ -281,18 +183,11 @@ def main(
         None, "--name", help="Only update the image with this name"
     ),
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Do not perform any changes"),
-    minio_access_key: str = typer.Option(
-        None, help="Minio access key", envvar="MINIO_ACCESS_KEY"
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Compute updates but do not write the YAML files"
     ),
-    minio_secret_key: str = typer.Option(
-        None, help="Minio secret key", envvar="MINIO_SECRET_KEY"
-    ),
-    minio_server: str = typer.Option(
-        "nbg1.your-objectstorage.com", help="Minio server", envvar="MINIO_SERVER"
-    ),
-    minio_bucket: str = typer.Option(
-        "osism/openstack-images", help="Minio bucket", envvar="MINIO_BUCKET"
+    images_dir: str = typer.Option(
+        "etc/images", "--images-dir", help="Directory with the image definition files"
     ),
 ):
     if debug:
@@ -300,19 +195,19 @@ def main(
     else:
         level = "INFO"
 
-    logger.remove()  # remove the default sink
+    logger.remove()
     log_fmt = (
         "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | "
         "<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
     )
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
 
-    for image, getter in IMAGES.items():
-        if name and image != name:
-            logger.info(f"Skipping {image}")
+    for image_name, getter in IMAGES.items():
+        if name and image_name != name:
+            logger.info(f"Skipping {image_name}")
             continue
 
-        p = f"etc/images/{image}.yml"
+        p = os.path.join(images_dir, f"{image_name}.yml")
         logger.info(f"Processing file {p}")
 
         ryaml = ruamel.yaml.YAML()
@@ -320,21 +215,16 @@ def main(
             data = ryaml.load(fp)
 
         updates = 0
-        for index, image in enumerate(data["images"]):
+        for image in data["images"]:
             if "latest_url" not in image:
                 continue
-
-            updates += update_image(
-                image,
-                getter,
-                minio_server,
-                minio_bucket,
-                minio_access_key,
-                minio_secret_key,
-                dry_run,
-            )
+            updates += update_image(image, getter)
 
         if not updates:
+            continue
+
+        if dry_run:
+            logger.info(f"Dry-run enabled, not writing {p}")
             continue
 
         with open(p, "w+") as fp:
