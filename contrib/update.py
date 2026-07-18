@@ -228,6 +228,9 @@ def main(
 
         updates = 0
         for image in data["images"]:
+            if not image.get("enable", True):
+                logger.info(f"Skipping disabled image {image['name']}")
+                continue
             if "latest_url" not in image:
                 continue
             updates += update_image(image, handler)
