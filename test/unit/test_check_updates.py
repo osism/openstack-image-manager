@@ -171,5 +171,69 @@ class ReadCatalogTest(unittest.TestCase):
             shutil.rmtree(d)
 
 
+from unittest import mock  # noqa: E402
+
+import typer  # noqa: E402
+
+
+class MainExitTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.out = os.path.join(self.dir, "report.md")
+        self.status = os.path.join(self.dir, "status.txt")
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    @staticmethod
+    def _read(path):
+        with open(path) as fp:
+            return fp.read()
+
+    def _run(self, catalog, **fetch_kw):
+        # Mock read_catalog (tested on its own in ReadCatalogTest) so this
+        # isolates the exit-code / sentinel plumbing. main() raises typer.Exit
+        # (a RuntimeError subclass with .exit_code, NOT a SystemExit) when called
+        # directly, bypassing the Typer runtime.
+        with mock.patch.object(
+            cu, "read_catalog", return_value=catalog
+        ), mock.patch.object(cu, "fetch_product", **fetch_kw):
+            try:
+                cu.main(
+                    images_dir=self.dir,
+                    today="2026-06-01",
+                    output=self.out,
+                    status_file=self.status,
+                    debug=False,
+                )
+                return 0
+            except typer.Exit as e:
+                return e.exit_code
+
+    def test_findings_exit_1_and_sentinel(self):
+        code = self._run({"ubuntu": entry(["22.04", "24.04"])}, return_value=UBUNTU)
+        self.assertEqual(code, 1)
+        self.assertEqual(self._read(self.status).strip(), "findings")
+        self.assertIn("26.04", self._read(self.out))
+
+    def test_clean_exit_0_and_sentinel(self):
+        product = [
+            {
+                "cycle": "24.04",
+                "releaseDate": "2024-04-25",
+                "eol": "2029-04-25",
+                "lts": True,
+            },
+        ]
+        code = self._run({"ubuntu": entry(["24.04"])}, return_value=product)
+        self.assertEqual(code, 0)
+        self.assertEqual(self._read(self.status).strip(), "clean")
+
+    def test_operational_failure_exit_2_no_sentinel(self):
+        code = self._run({"ubuntu": entry(["24.04"])}, side_effect=RuntimeError("boom"))
+        self.assertEqual(code, 2)
+        self.assertFalse(os.path.exists(self.status))
+
+
 if __name__ == "__main__":
     unittest.main()
