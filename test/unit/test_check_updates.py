@@ -21,8 +21,21 @@ OPENSUSE = [
     {"cycle": "15.6", "releaseDate": "2024-06-12", "eol": "2026-04-30", "lts": None},
 ]
 DEBIAN = [
-    {"cycle": "13", "releaseDate": "2025-08-09", "eol": "2028-08-09", "lts": True},
-    {"cycle": "12", "releaseDate": "2023-06-10", "eol": "2028-06-30", "lts": True},
+    # Debian is evaluated on 'extendedSupport' (free LTS end), not 'eol'.
+    {
+        "cycle": "13",
+        "releaseDate": "2025-08-09",
+        "eol": "2028-08-09",
+        "extendedSupport": "2030-06-30",
+        "lts": True,
+    },
+    {
+        "cycle": "12",
+        "releaseDate": "2023-06-10",
+        "eol": "2026-07-11",
+        "extendedSupport": "2028-06-30",
+        "lts": True,
+    },
 ]
 
 
@@ -56,6 +69,31 @@ class EvaluateTest(unittest.TestCase):
         report = cu.evaluate(catalog, {"opensuse": OPENSUSE}, TODAY)
         self.assertEqual(report.eol, [])
         self.assertEqual({f.cycle for f in report.new_majors}, {"16.0"})
+
+    def test_debian_free_lts_not_eol_flagged(self):
+        # For Debian, endoflife 'eol' = end of regular support; free community
+        # LTS runs later via 'extendedSupport'. A cycle past 'eol' but within
+        # extendedSupport must NOT be flagged EOL (it is still freely supported).
+        product = [
+            {
+                "cycle": "13",
+                "releaseDate": "2025-08-09",
+                "eol": "2028-08-09",
+                "extendedSupport": "2030-06-30",
+                "lts": True,
+            },
+            {
+                "cycle": "12",
+                "releaseDate": "2023-06-10",
+                "eol": "2025-01-01",  # regular support already ended
+                "extendedSupport": "2028-06-30",  # but LTS still active
+                "lts": True,
+            },
+        ]
+        report = cu.evaluate(
+            {"debian": entry(["12", "13"])}, {"debian": product}, TODAY
+        )
+        self.assertTrue(report.is_empty())
 
     def test_future_release_not_flagged(self):
         product = [
