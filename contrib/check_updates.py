@@ -27,12 +27,17 @@ class EvaluationError(Exception):
 class DistroConfig:
     product: str
     lts_only: bool = False
+    # Which endoflife field marks the end of *free* support. Default 'eol'. Debian's
+    # 'eol' is only the end of regular support; its free community LTS runs on until
+    # 'extendedSupport', which is when a Debian release is truly retired. (Ubuntu's
+    # 'extendedSupport' is *paid* ESM, so Ubuntu deliberately stays on 'eol'.)
+    eol_field: str = "eol"
 
 
 # Keyed by etc/images/<key>.yml basename (not meta.os_distro, which is unreliable).
 DISTROS = {
     "ubuntu": DistroConfig("ubuntu", lts_only=True),
-    "debian": DistroConfig("debian"),
+    "debian": DistroConfig("debian", eol_field="extendedSupport"),
     "almalinux": DistroConfig("almalinux"),
     "rockylinux": DistroConfig("rocky-linux"),
     "centos": DistroConfig("centos-stream"),
@@ -126,7 +131,7 @@ def evaluate(catalog, products_data, today):
         for c in cycles:
             if not _released(c, today):
                 continue
-            state, day = parse_eol(c.get("eol"))
+            state, day = parse_eol(c.get(cfg.eol_field))
             if state == "already_eol" or (state == "date" and day <= today):
                 continue
             if cfg.lts_only and not c.get("lts"):
@@ -138,7 +143,7 @@ def evaluate(catalog, products_data, today):
 
         for cyc in sorted(supported - entry.defined):
             c = by_cycle[cyc]
-            state, day = parse_eol(c.get("eol"))
+            state, day = parse_eol(c.get(cfg.eol_field))
             report.new_majors.append(
                 Finding(distro, cyc, c.get("releaseDate"), _eol_text(state, day))
             )
@@ -147,7 +152,7 @@ def evaluate(catalog, products_data, today):
             c = by_cycle.get(cyc)
             if c is None:
                 raise EvaluationError(f"enabled {distro} {cyc} not found upstream")
-            state, day = parse_eol(c.get("eol"))
+            state, day = parse_eol(c.get(cfg.eol_field))
             if state == "already_eol" or (state == "date" and day <= today):
                 report.eol.append(
                     Finding(distro, cyc, c.get("releaseDate"), _eol_text(state, day))
