@@ -5,9 +5,15 @@
 
 import datetime
 import os
+import sys
 from dataclasses import dataclass, field
 
+import requests
+import typer
 import yaml
+from loguru import logger
+
+app = typer.Typer()
 
 ENDOFLIFE_API = "https://endoflife.date/api/{product}.json"
 HTTP_TIMEOUT = 30
@@ -170,3 +176,57 @@ def render_markdown(report):
             )
         lines.append("")
     return ("\n".join(lines).strip() + "\n") if lines else ""
+
+
+def fetch_product(product):
+    resp = requests.get(ENDOFLIFE_API.format(product=product), timeout=HTTP_TIMEOUT)
+    resp.raise_for_status()
+    return resp.json()
+
+
+@app.command()
+def main(
+    images_dir: str = typer.Option(
+        "etc/images", help="Directory with image definitions"
+    ),
+    today: str = typer.Option(None, help="Reference date YYYY-MM-DD (default: today)"),
+    output: str = typer.Option(
+        None, help="Write the markdown report here (default: stdout)"
+    ),
+    status_file: str = typer.Option(
+        None, help="Write completion sentinel (clean|findings) here, last, on success"
+    ),
+    debug: bool = typer.Option(False, help="Enable debug logging"),
+):
+    logger.remove()
+    logger.add(sys.stderr, level="DEBUG" if debug else "INFO")
+
+    try:
+        ref = datetime.date.fromisoformat(today) if today else datetime.date.today()
+        catalog = read_catalog(images_dir)
+        products = {cfg.product for name, cfg in DISTROS.items() if name in catalog}
+        products_data = {p: fetch_product(p) for p in products}
+        report = evaluate(catalog, products_data, ref)
+        markdown = render_markdown(report)
+    except typer.Exit:
+        raise
+    except Exception as e:  # noqa: BLE001 - any failure is operational, exit 2
+        logger.error(f"operational failure: {e}")
+        raise typer.Exit(code=2)
+
+    if output:
+        with open(output, "w") as fp:
+            fp.write(markdown)
+    else:
+        sys.stdout.write(markdown)
+
+    status = "clean" if report.is_empty() else "findings"
+    if status_file:  # written LAST, only after everything above succeeded
+        with open(status_file, "w") as fp:
+            fp.write(status + "\n")
+
+    raise typer.Exit(code=0 if report.is_empty() else 1)
+
+
+if __name__ == "__main__":
+    app()
