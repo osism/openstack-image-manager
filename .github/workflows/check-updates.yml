@@ -1,0 +1,61 @@
+---
+name: Check image updates
+
+"on":
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      LABEL: pending-image-updates
+      TITLE: Pending image catalog updates
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - run: pip3 install tox
+
+      - name: Run check
+        run: tox -e check-updates -- --output report.md --status-file status.txt
+        continue-on-error: true
+
+      - name: Reconcile issue
+        run: |
+          set -euo pipefail
+          if [ ! -f status.txt ]; then
+            echo "::error::check_updates did not complete (no status file)"
+            exit 1
+          fi
+          STATUS=$(tr -d '[:space:]' < status.txt)
+
+          gh label create "$LABEL" \
+            --description "Pending image catalog updates" --color FBCA04 \
+            --force >/dev/null 2>&1 || true
+
+          NUM=$(gh issue list --state open --label "$LABEL" \
+            --json number --jq '.[0].number // empty')
+
+          if [ "$STATUS" = "findings" ]; then
+            if [ -n "$NUM" ]; then
+              gh issue edit "$NUM" --body-file report.md
+            else
+              gh issue create --title "$TITLE" --label "$LABEL" --body-file report.md
+            fi
+          elif [ "$STATUS" = "clean" ]; then
+            if [ -n "$NUM" ]; then
+              gh issue close "$NUM" \
+                --comment "No pending catalog updates — closing automatically."
+            fi
+          else
+            echo "::error::unexpected status: $STATUS"
+            exit 1
+          fi
