@@ -55,6 +55,10 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
+    latest_checksum_url:
+      https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2.sha256
+    latest_url:
+      https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2
     versions:
       - version: '20260618'
         url: https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2

@@ -135,6 +135,7 @@ HANDLERS = {
     "almalinux": MirrorDirHandler(),
     "centos": MirrorDirHandler(),
     "debian": DirListingHandler(),
+    "opensuse": MirrorDirHandler(),
     "rockylinux": MirrorDirHandler(),
     "ubuntu": DirListingHandler(),
 }
