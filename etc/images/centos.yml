@@ -110,3 +110,40 @@ images:
         checksum: 
           sha256:4754fa55d85b3a487651f18940b389cef055d1436432dd01b1d059d0b879f141
         build_date: 2026-01-20
+  - name: CentOS Stream 10
+    enable: true
+    shortname: centos-stream-10
+    format: qcow2
+    login: centos
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: centos
+      os_version: '10'
+      os_purpose: generic
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url: 
+      https://cloud.centos.org/centos/10-stream/x86_64/images/CHECKSUM
+    latest_url: 
+      https://cloud.centos.org/centos/10-stream/x86_64/images/CentOS-Stream-GenericCloud-10-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
+    versions:
+      - version: '20260902'
+        url: 
+          https://cloud.centos.org/centos/10-stream/x86_64/images/CentOS-Stream-GenericCloud-10-20260901.0.x86_64.qcow2
+        mirror_url: 
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-10/20260902-centos-stream-10.qcow2
+        checksum: 
+          sha256:d33095d9bb4b3f5a168794b92f174e5e71c031210e63ef75bfd91d9d13a7de01
+        build_date: 2026-09-02
