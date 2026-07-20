@@ -15,6 +15,7 @@ jobs:
           - almalinux
           - centos
           - debian
+          - opensuse
           - rockylinux
           - ubuntu
 
