@@ -42,6 +42,7 @@ MIRROR_DIR_CONFIG = {
     "centos-7": MirrorDirConfig(checksum_style="plain", resolve_latest=True),
     "centos-stream-8": MirrorDirConfig(checksum_style="bsd", resolve_latest=True),
     "centos-stream-9": MirrorDirConfig(checksum_style="bsd", resolve_latest=True),
+    "centos-stream-10": MirrorDirConfig(checksum_style="bsd", resolve_latest=True),
     "rocky-8": MirrorDirConfig(checksum_style="bsd", bsd_key="target"),
     "rocky-9": MirrorDirConfig(checksum_style="bsd", bsd_key="target"),
     "rocky-10": MirrorDirConfig(checksum_style="bsd", bsd_key="target"),
