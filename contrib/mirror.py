@@ -103,6 +103,7 @@ def main(
                 "debian",
                 "flatcar",
                 "gardenlinux",
+                "opensuse",
                 "opnsense",
                 "rocky",
                 "talos",
