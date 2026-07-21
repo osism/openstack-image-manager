@@ -23,6 +23,7 @@ from loguru import logger
 from munch import Munch
 from natsort import natsorted
 from yamale import YamaleError
+from openstack.image.v2._proxy import Proxy as ImageProxy
 from openstack.image.v2.image import Image
 
 # timeout in seconds for HTTP requests fetching checksum files
@@ -289,6 +290,15 @@ class ImageManager:
         else:
             self.conn = openstack.connect(cloud=self.CONF.cloud)
 
+    @property
+    def image_proxy(self) -> ImageProxy:
+        """The image service proxy, narrowed to the v2 API this tool requires.
+
+        conn.image is typed as a union of the v1 and v2 proxies, but only v2
+        offers the import, tag and (de)activation calls used here.
+        """
+        return typing.cast(ImageProxy, self.conn.image)
+
     def main(self) -> None:
         """
         Read all files in etc/images/ and process each image
@@ -520,9 +530,11 @@ class ImageManager:
         if "id" in versions[version]:
             properties["id"] = versions[version]["id"]
 
+        new_image: typing.Optional[Image] = None
+
         parsed_url = urllib.parse.urlparse(url)
         if parsed_url.scheme == "file":
-            new_image = self.conn.image.create_image(**properties)
+            new_image = self.image_proxy.create_image(**properties)
             try:
                 logger.info(f"Importing local file '{parsed_url.path}' as image {name}")
                 result = self._glance_direct_import(
@@ -531,12 +543,12 @@ class ImageManager:
                     time.monotonic() + self.CONF.import_timeout,
                 )
             except Exception as e:
-                self.conn.image.delete_image(new_image)
+                self.image_proxy.delete_image(new_image)
                 logger.error(f"Failed to import local file for image {name}\n{e}")
                 self.exit_with_error = True
                 return None
             if result is None:
-                self.conn.image.delete_image(new_image)
+                self.image_proxy.delete_image(new_image)
                 self.exit_with_error = True
             return result
 
@@ -565,8 +577,8 @@ class ImageManager:
             # so the on-stuck fallback is still reached instead of aborting.
             new_image = None
             try:
-                new_image = self.conn.image.create_image(**properties)
-                self.conn.image.import_image(new_image, method="web-download", uri=url)
+                new_image = self.image_proxy.create_image(**properties)
+                self.image_proxy.import_image(new_image, method="web-download", uri=url)
                 result = self.wait_for_image(new_image, wd_deadline)
             except Exception as e:
                 logger.error(f"Web-download import for image {name} failed\n{e}")
@@ -580,7 +592,7 @@ class ImageManager:
                 logger.warning(f"Deleting stuck image {name} and retrying import")
                 if new_image is not None:
                     try:
-                        self.conn.image.delete_image(new_image)
+                        self.image_proxy.delete_image(new_image)
                     except Exception as e:
                         logger.error(f"Failed to delete stuck image {name}\n{e}")
                 new_image = None
@@ -592,7 +604,7 @@ class ImageManager:
             )
             if new_image is not None:  # best-effort delete the ambiguous leftover
                 try:
-                    self.conn.image.delete_image(new_image)
+                    self.image_proxy.delete_image(new_image)
                 except Exception as e:
                     logger.error(f"Failed to delete leftover image {name}\n{e}")
             return self._prefetch_import(properties, name, url, checksum, deadline)
@@ -637,7 +649,7 @@ class ImageManager:
             # is not bounded by the deadline; the import wait that follows is.
             new_image = None
             try:
-                new_image = self.conn.image.create_image(**properties)
+                new_image = self.image_proxy.create_image(**properties)
                 result = self._glance_direct_import(new_image, dest, deadline)
             except Exception as e:
                 logger.error(f"glance-direct import failed for {name}\n{e}")
@@ -646,7 +658,7 @@ class ImageManager:
                 logger.error(f"PREFETCH: glance-direct import failed for '{name}'")
                 if new_image is not None:
                     try:
-                        self.conn.image.delete_image(new_image)
+                        self.image_proxy.delete_image(new_image)
                     except Exception as e:
                         logger.error(f"Failed to delete image {name}\n{e}")
                 self.exit_with_error = True
@@ -739,8 +751,8 @@ class ImageManager:
     ) -> typing.Union[Image, None]:
         """Stage a local file and import it via the glance-direct method, which
         runs the same decompress/convert/store taskflow as web-download."""
-        self.conn.image.stage_image(new_image, filename=local_path)
-        self.conn.image.import_image(new_image, method="glance-direct")
+        self.image_proxy.stage_image(new_image, filename=local_path)
+        self.image_proxy.import_image(new_image, method="glance-direct")
         return self.wait_for_image(new_image, deadline)
 
     def get_images(self) -> dict:
@@ -752,7 +764,7 @@ class ImageManager:
         """
         result = {}
 
-        for image in self.conn.image.images():
+        for image in self.image_proxy.images():
             if self.CONF.tag in image.tags and (
                 image.visibility == "public"
                 or image.owner == self.conn.current_project_id
@@ -763,7 +775,7 @@ class ImageManager:
                 logger.debug(f"Unmanaged image '{image.name}' (tags = {image.tags})")
 
         if self.CONF.use_os_hidden:
-            for image in self.conn.image.images(**{"os_hidden": True}):
+            for image in self.image_proxy.images(**{"os_hidden": True}):
                 if self.CONF.tag in image.tags and (
                     image.visibility == "public"
                     or image.owner == self.conn.current_project_id
@@ -802,7 +814,7 @@ class ImageManager:
                 logger.error(f"Image {image.name} import timed out")
                 return None
             try:
-                imported_image = self.conn.image.get_image(image)
+                imported_image = self.image_proxy.get_image(image)
                 consecutive_errors = 0
                 # An image's state in Glance transitions as follows:
                 #   queued > importing/saving > active
@@ -1061,7 +1073,7 @@ class ImageManager:
                 logger.info(
                     f"Setting min_disk: {image['min_disk']} != {cloud_image.min_disk}"
                 )
-                self.conn.image.update_image(
+                self.image_proxy.update_image(
                     cloud_image.id, **{"min_disk": int(image["min_disk"])}
                 )
 
@@ -1069,7 +1081,7 @@ class ImageManager:
                 "min_disk" in image and real_image_size > image["min_disk"]
             ) or "min_disk" not in image:
                 logger.info(f"Setting min_disk = {real_image_size}")
-                self.conn.image.update_image(
+                self.image_proxy.update_image(
                     cloud_image.id, **{"min_disk": real_image_size}
                 )
 
@@ -1077,20 +1089,20 @@ class ImageManager:
                 logger.info(
                     f"Setting min_ram: {image['min_ram']} != {cloud_image.min_ram}"
                 )
-                self.conn.image.update_image(
+                self.image_proxy.update_image(
                     cloud_image.id, **{"min_ram": int(image["min_ram"])}
                 )
 
             if self.CONF.use_os_hidden:
                 if "hidden" in versions[version]:
                     logger.info(f"Setting os_hidden = {versions[version]['hidden']}")
-                    self.conn.image.update_image(
+                    self.image_proxy.update_image(
                         cloud_image.id, **{"os_hidden": versions[version]["hidden"]}
                     )
 
                 elif version != natsorted(versions.keys())[-1:]:
                     logger.info("Setting os_hidden = True")
-                    self.conn.image.update_image(cloud_image.id, **{"os_hidden": True})
+                    self.image_proxy.update_image(cloud_image.id, **{"os_hidden": True})
 
             if version == "latest":
                 try:
@@ -1131,12 +1143,12 @@ class ImageManager:
             for tag in image["tags"]:
                 if tag not in cloud_image.tags:
                     logger.info(f"Adding tag {tag}")
-                    self.conn.image.add_tag(cloud_image.id, tag)
+                    self.image_proxy.add_tag(cloud_image.id, tag)
 
             for tag in cloud_image.tags:
                 if tag not in image["tags"]:
                     logger.info(f"Deleting tag {tag}")
-                    self.conn.image.remove_tag(cloud_image.id, tag)
+                    self.image_proxy.remove_tag(cloud_image.id, tag)
 
             if "meta" in versions[version]:
                 for key in versions[version]["meta"].keys():
@@ -1149,7 +1161,7 @@ class ImageManager:
                         logger.info(
                             f"Setting property {property}: {properties[property]} != {image['meta'][property]}"
                         )
-                        self.conn.image.update_image(
+                        self.image_proxy.update_image(
                             cloud_image.id, **{property: str(image["meta"][property])}
                         )
 
@@ -1166,7 +1178,7 @@ class ImageManager:
                     logger.info(
                         f"Setting property {property}: {image['meta'][property]}"
                     )
-                    self.conn.image.update_image(
+                    self.image_proxy.update_image(
                         cloud_image.id, **{property: str(image["meta"][property])}
                     )
 
@@ -1176,11 +1188,11 @@ class ImageManager:
                 and image["status"] == "deactivated"
             ):
                 logger.info(f"Deactivating image '{name}'")
-                self.conn.image.deactivate_image(cloud_image.id)
+                self.image_proxy.deactivate_image(cloud_image.id)
 
             elif cloud_image.status != image["status"] and image["status"] == "active":
                 logger.info(f"Reactivating image '{name}'")
-                self.conn.image.reactivate_image(cloud_image.id)
+                self.image_proxy.reactivate_image(cloud_image.id)
 
             logger.info(f"Checking visibility of '{name}'")
             if "visibility" in versions[version]:
@@ -1190,7 +1202,7 @@ class ImageManager:
 
             if cloud_image.visibility != visibility:
                 logger.info(f"Setting visibility of '{name}' to '{visibility}'")
-                self.conn.image.update_image(cloud_image.id, visibility=visibility)
+                self.image_proxy.update_image(cloud_image.id, visibility=visibility)
 
     def rename_images(
         self,
@@ -1218,13 +1230,13 @@ class ImageManager:
 
             if name in cloud_images and previous_latest not in cloud_images:
                 logger.info(f"Renaming {name} to {previous_latest}")
-                self.conn.image.update_image(
+                self.image_proxy.update_image(
                     cloud_images[name].id, name=previous_latest
                 )
 
             if latest in cloud_images:
                 logger.info(f"Renaming {latest} to {name}")
-                self.conn.image.update_image(cloud_images[latest].id, name=name)
+                self.image_proxy.update_image(cloud_images[latest].id, name=name)
 
         elif len(sorted_versions) == 1 and name in cloud_images:
             if previous_image["properties"]["internal_version"] == "latest":
@@ -1241,24 +1253,24 @@ class ImageManager:
                 logger.info(
                     f"Setting internal_version: {create_date} for {previous_latest}"
                 )
-                self.conn.image.update_image(
+                self.image_proxy.update_image(
                     previous_image.id, **{"internal_version": create_date}
                 )
             else:
                 previous_latest = f"{name}{separator}({previous_image['properties']['internal_version']})"
 
             logger.info(f"Renaming old latest '{name}' to '{previous_latest}'")
-            self.conn.image.update_image(previous_image.id, name=previous_latest)
+            self.image_proxy.update_image(previous_image.id, name=previous_latest)
 
             logger.info(f"Renaming imported image '{imported_image.name}' to '{name}'")
-            self.conn.image.update_image(imported_image.id, name=name)
+            self.image_proxy.update_image(imported_image.id, name=name)
 
         elif len(sorted_versions) == 1:
             latest = f"{name}{separator}({sorted_versions[-1]})"
 
             if latest in cloud_images:
                 logger.info(f"Renaming {latest} to {name}")
-                self.conn.image.update_image(cloud_images[latest].id, name=name)
+                self.image_proxy.update_image(cloud_images[latest].id, name=name)
 
     def check_image_age(self) -> set:
         """
@@ -1404,10 +1416,10 @@ class ImageManager:
                 ):
                     try:
                         logger.info(f"Deactivating image '{image}'")
-                        self.conn.image.deactivate_image(cloud_image.id)
+                        self.image_proxy.deactivate_image(cloud_image.id)
 
                         logger.info(f"Setting visibility of '{image}' to 'community'")
-                        self.conn.image.update_image(
+                        self.image_proxy.update_image(
                             cloud_image.id, visibility="community"
                         )
 
@@ -1416,7 +1428,7 @@ class ImageManager:
                             or not image_definition["keep"]
                         ):
                             logger.info(f"Deleting {image}")
-                            self.conn.image.delete_image(cloud_image.id)
+                            self.image_proxy.delete_image(cloud_image.id)
                         else:
                             logger.info(
                                 f"Image '{image}' will not be deleted, because 'keep' flag is True"
@@ -1433,7 +1445,7 @@ class ImageManager:
                     try:
                         if self.CONF.deactivate and not self.CONF.dry_run:
                             logger.info(f"Deactivating image '{image}'")
-                            self.conn.image.deactivate_image(cloud_image.id)
+                            self.image_proxy.deactivate_image(cloud_image.id)
 
                         if (
                             self.CONF.hide
@@ -1443,7 +1455,7 @@ class ImageManager:
                             logger.info(
                                 f"Setting visibility of '{image}' to 'community'"
                             )
-                            self.conn.image.update_image(
+                            self.image_proxy.update_image(
                                 cloud_image.id, visibility="community"
                             )
                     except Exception as e:
@@ -1459,12 +1471,14 @@ class ImageManager:
                     and cloud_image.visibility != "community"
                 ):
                     logger.info(f"Setting visibility of '{image}' to 'community'")
-                    self.conn.image.update_image(cloud_image.id, visibility="community")
+                    self.image_proxy.update_image(
+                        cloud_image.id, visibility="community"
+                    )
             elif (
                 counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run
             ):
                 logger.info(f"Setting visibility of '{image}' to 'community'")
-                self.conn.image.update_image(cloud_image.id, visibility="community")
+                self.image_proxy.update_image(cloud_image.id, visibility="community")
         return unmanaged_images
 
     def validate_yaml_schema(self):
@@ -1511,24 +1525,24 @@ class ImageManager:
             )
 
     def share_image_with_project(self, image, project):
-        member = self.conn.image.find_member(project.id, image.id)
+        member = self.image_proxy.find_member(project.id, image.id)
 
         if not member:
             logger.info(f"add - {image.name} - {project.name} ({project.domain_id})")
             if not self.CONF.dry_run:
-                member = self.conn.image.add_member(image.id, member_id=project.id)
+                member = self.image_proxy.add_member(image.id, member_id=project.id)
 
         if not self.CONF.dry_run and member.status != "accepted":
             logger.info(f"accept - {image.name} - {project.name} ({project.domain_id})")
-            self.conn.image.update_member(member, image.id, status="accepted")
+            self.image_proxy.update_member(member, image.id, status="accepted")
 
     def unshare_image_with_project(self, image, project):
-        member = self.conn.image.find_member(project.id, image.id)
+        member = self.image_proxy.find_member(project.id, image.id)
 
         if member:
             logger.info(f"del - {image.name} - {project.name} ({project.domain_id})")
             if not self.CONF.dry_run:
-                self.conn.image.remove_member(member, image.id)
+                self.image_proxy.remove_member(member, image.id)
 
 
 def main():
