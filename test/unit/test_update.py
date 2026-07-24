@@ -81,6 +81,19 @@ class WriteContractTest(unittest.TestCase):
         after = self._read()
         self.assertEqual(before, after)
 
+    def test_disabled_image_not_updated(self):
+        # A disabled image must not be refreshed even when upstream changed.
+        with open(self.path, "w") as fp:
+            fp.write(SAMPLE_YML.replace("enable: true", "enable: false"))
+        before = self._read()
+        fake = _FakeHandler(
+            ("sha256:" + "1" * 64, "https://example.test/example.qcow2", "20260101")
+        )
+        with mock.patch.dict(update.HANDLERS, {"example": fake}, clear=True):
+            update.main(name="example", debug=False, dry_run=False, images_dir=self.dir)
+        after = self._read()
+        self.assertEqual(before, after)
+
 
 FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures", "update")
 DATED_UBUNTU = "20260705"
