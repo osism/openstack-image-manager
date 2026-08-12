@@ -31,3 +31,32 @@ images:
           https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-15.6/20240603-openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
         checksum: "sha256:0f7f09a9a083088b51aa365fe0e4310e6b156c2153d6aa03a77b81eee884e52a"
         build_date: 2024-06-03
+  - name: openSUSE Leap 16.0
+    enable: true
+    shortname: opensuse-leap-16.0
+    format: qcow2
+    login: sles
+    min_disk: 10
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: opensuse
+      os_version: '16.0'
+      os_purpose: generic
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    versions:
+      - version: '20251021'
+        url: https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud-Build16.2.qcow2
+        checksum: sha256:6c3b6b2ded57aa33d73b0eef219fc65b68f08ddd384d70b4c773dc35c8c7cb81
+        build_date: 2025-10-21
