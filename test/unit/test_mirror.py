@@ -176,6 +176,16 @@ class MirrorVersionTest(unittest.TestCase):
             ["openstack-images/ubuntu-24.04/20260108-ubuntu-24.04.qcow2"],
         )
 
+    def test_download_uses_a_request_timeout(self):
+        # A mirror that accepts the connection and then stalls must not hang
+        # the run forever; requests only enforces that if asked to.
+        client = _FakeClient()
+
+        with mock.patch.object(mirror.requests, "get", return_value=_response()) as get:
+            mirror.mirror_version(client, BUCKET, UBUNTU, UBUNTU["versions"][0])
+
+        self.assertEqual(get.call_args.kwargs["timeout"], mirror.REQUESTS_TIMEOUT)
+
 
 class DownloadFailureTest(unittest.TestCase):
     def setUp(self):
