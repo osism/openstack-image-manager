@@ -16,9 +16,190 @@ from minio.error import S3Error
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
+from typing import NamedTuple
 from urllib.parse import urlparse
 
 app = typer.Typer(add_completion=False)
+
+
+class MirrorPaths(NamedTuple):
+    """Where one image version lives upstream and in the mirror bucket."""
+
+    dirname: str
+    filename: str
+    source_filename: str
+    source_extension: str
+
+
+def mirror_paths(image, version):
+    """Derive the bucket path and local download name for one version."""
+    source_path = urlparse(version["url"])
+    mirror_path = urlparse(version["mirror_url"])
+
+    mirror_dirname = f"openstack-images/{image['shortname']}"
+    mirror_filename, mirror_fileextension = os.path.splitext(
+        os.path.basename(mirror_path.path)
+    )
+    _, mirror_fileextension2 = os.path.splitext(mirror_filename)
+
+    if not image["shortname"].startswith(
+        ("gardenlinux", "talos", "flatcar", "opnsense")
+    ):
+        mirror_filename = f"{version['version']}-{image['shortname']}"
+
+    if mirror_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
+        mirror_filename += mirror_fileextension
+
+    if mirror_fileextension2 == ".tar":
+        mirror_filename = os.path.basename(mirror_path.path)
+
+    source_filename, source_fileextension = os.path.splitext(
+        os.path.basename(source_path.path)
+    )
+    _, source_fileextension2 = os.path.splitext(source_filename)
+
+    if image["shortname"].startswith(("flatcar")):
+        mirror_dirname = os.path.join(mirror_dirname, version["version"])
+    elif source_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
+        source_filename += source_fileextension
+    else:
+        mirror_dirname = os.path.join(mirror_dirname, version["version"])
+
+    if source_fileextension2 == ".tar":
+        source_filename = os.path.basename(source_path.path)
+
+    return MirrorPaths(
+        mirror_dirname, mirror_filename, source_filename, source_fileextension
+    )
+
+
+def mirror_version(
+    client, minio_bucket, image, version, download=True, checksum=True, upload=True
+):
+    """Mirror one image version into the bucket unless it is already there."""
+    logger.debug(f"source: {version['url']}")
+
+    paths = mirror_paths(image, version)
+    mirror_dirname = paths.dirname
+    mirror_filename = paths.filename
+    source_filename = paths.source_filename
+    source_fileextension = paths.source_extension
+
+    logger.debug(f"mirror dirname: {mirror_dirname}")
+    logger.debug(f"mirror filename: {mirror_filename}")
+    logger.debug(f"source filename: {source_filename}")
+
+    try:
+        client.stat_object(minio_bucket, os.path.join(mirror_dirname, mirror_filename))
+        logger.info(f"File {mirror_filename} available in bucket {mirror_dirname}")
+    except S3Error:
+        logger.info(
+            f"File {mirror_filename} not yet available in bucket {mirror_dirname}"
+        )
+
+        if download:
+            if not isfile(os.path.basename(source_filename)):
+                logger.info(f"File {source_filename} not available on local filesystem")
+                logger.info(f"Downloading {version['url']}")
+                response = requests.get(
+                    version["url"], stream=True, allow_redirects=True
+                )
+                with open(source_filename, "wb") as fp:
+                    shutil.copyfileobj(response.raw, fp)
+                del response
+
+            if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
+                logger.info(f"Decompressing {source_filename}")
+                Path("tmp").mkdir(exist_ok=True)
+                patoolib.extract_archive(
+                    os.path.basename(source_filename), outdir="tmp"
+                )
+                os.remove(source_filename)
+                shutil.copy(os.path.join("tmp", mirror_filename), mirror_filename)
+            else:
+                os.rename(source_filename, mirror_filename)
+
+            if checksum:
+                h = hashlib.new("sha512")
+                with open(mirror_filename, "rb") as fp:
+                    while c := fp.read(8192):
+                        h.update(c)
+
+                logger.info(f"SHA512 of {mirror_filename}: {h.hexdigest()}")
+
+        else:
+            logger.info(
+                f"Not downloading {source_filename} to local filesystem (download disabled)"
+            )
+
+        if upload:
+            logger.info(f"Uploading {mirror_filename} to bucket {mirror_dirname}")
+
+            client.fput_object(
+                minio_bucket,
+                os.path.join(mirror_dirname, mirror_filename),
+                mirror_filename,
+            )
+
+            # Gardenlinux-specific: Upload additional files with simplified filename and SHA256 checksum
+            if image["shortname"] == "gardenlinux":
+                # Check if filename matches pattern with hash suffix: *-[8-char-hex].qcow2
+                hash_pattern = re.compile(r"-([a-f0-9]{8})\.qcow2$")
+                match = hash_pattern.search(mirror_filename)
+
+                if match:
+                    # Create simplified filename by removing hash suffix
+                    simplified_filename = hash_pattern.sub(".qcow2", mirror_filename)
+                    logger.info(f"Creating simplified filename: {simplified_filename}")
+
+                    # Create symlink to simplified filename
+                    if os.path.exists(simplified_filename):
+                        os.remove(simplified_filename)
+                    os.symlink(mirror_filename, simplified_filename)
+
+                    # Upload simplified filename
+                    logger.info(
+                        f"Uploading {simplified_filename} to bucket {mirror_dirname}"
+                    )
+                    client.fput_object(
+                        minio_bucket,
+                        os.path.join(mirror_dirname, simplified_filename),
+                        simplified_filename,
+                    )
+
+                    # Calculate SHA256 checksum
+                    h_sha256 = hashlib.sha256()
+                    with open(mirror_filename, "rb") as fp:
+                        while chunk := fp.read(8192):
+                            h_sha256.update(chunk)
+
+                    sha256_hash = h_sha256.hexdigest()
+                    logger.info(f"SHA256 of {simplified_filename}: {sha256_hash}")
+
+                    # Create SHA256 checksum file
+                    sha256_filename = f"{simplified_filename}.sha256"
+                    with open(sha256_filename, "w") as fp:
+                        fp.write(f"{sha256_hash}  {simplified_filename}\n")
+
+                    # Upload SHA256 checksum file
+                    logger.info(
+                        f"Uploading {sha256_filename} to bucket {mirror_dirname}"
+                    )
+                    client.fput_object(
+                        minio_bucket,
+                        os.path.join(mirror_dirname, sha256_filename),
+                        sha256_filename,
+                    )
+
+                    # Clean up temporary files
+                    os.remove(simplified_filename)
+                    os.remove(sha256_filename)
+
+            os.remove(mirror_filename)
+        else:
+            logger.info(
+                f"Not uploading {mirror_filename} to bucket {mirror_dirname} (upload disabled)"
+            )
 
 
 @app.command()
@@ -115,175 +296,15 @@ def main(
             if "url" not in version or "mirror_url" not in version:
                 continue
 
-            logger.debug(f"source: {version['url']}")
-
-            source_path = urlparse(version["url"])
-            mirror_path = urlparse(version["mirror_url"])
-
-            mirror_dirname = f"openstack-images/{image['shortname']}"
-            mirror_filename, mirror_fileextension = os.path.splitext(
-                os.path.basename(mirror_path.path)
+            mirror_version(
+                client,
+                minio_bucket,
+                image,
+                version,
+                download=download,
+                checksum=checksum,
+                upload=upload,
             )
-            _, mirror_fileextension2 = os.path.splitext(mirror_filename)
-
-            if not image["shortname"].startswith(
-                ("gardenlinux", "talos", "flatcar", "opnsense")
-            ):
-                mirror_filename = f"{version['version']}-{image['shortname']}"
-
-            if mirror_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
-                mirror_filename += mirror_fileextension
-
-            if mirror_fileextension2 == ".tar":
-                mirror_filename = os.path.basename(mirror_path.path)
-
-            logger.debug(f"mirror dirname: {mirror_dirname}")
-            logger.debug(f"mirror filename: {mirror_filename}")
-
-            source_filename, source_fileextension = os.path.splitext(
-                os.path.basename(source_path.path)
-            )
-            _, source_fileextension2 = os.path.splitext(source_filename)
-
-            if image["shortname"].startswith(("flatcar")):
-                mirror_dirname = os.path.join(mirror_dirname, version["version"])
-            elif source_fileextension not in [".bz2", ".zip", ".xz", ".gz"]:
-                source_filename += source_fileextension
-            else:
-                mirror_dirname = os.path.join(mirror_dirname, version["version"])
-
-            if source_fileextension2 == ".tar":
-                source_filename = os.path.basename(source_path.path)
-
-            logger.debug(f"source filename: {source_filename}")
-
-            try:
-                client.stat_object(
-                    minio_bucket, os.path.join(mirror_dirname, mirror_filename)
-                )
-                logger.info(
-                    f"File {mirror_filename} available in bucket {mirror_dirname}"
-                )
-            except S3Error:
-                logger.info(
-                    f"File {mirror_filename} not yet available in bucket {mirror_dirname}"
-                )
-
-                if download:
-                    if not isfile(os.path.basename(source_filename)):
-                        logger.info(
-                            f"File {source_filename} not available on local filesystem"
-                        )
-                        logger.info(f"Downloading {version['url']}")
-                        response = requests.get(
-                            version["url"], stream=True, allow_redirects=True
-                        )
-                        with open(source_filename, "wb") as fp:
-                            shutil.copyfileobj(response.raw, fp)
-                        del response
-
-                    if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                        logger.info(f"Decompressing {source_filename}")
-                        Path("tmp").mkdir(exist_ok=True)
-                        patoolib.extract_archive(
-                            os.path.basename(source_filename), outdir="tmp"
-                        )
-                        os.remove(source_filename)
-                        shutil.copy(
-                            os.path.join("tmp", mirror_filename), mirror_filename
-                        )
-                    else:
-                        os.rename(source_filename, mirror_filename)
-
-                    if checksum:
-                        h = hashlib.new("sha512")
-                        with open(mirror_filename, "rb") as fp:
-                            while c := fp.read(8192):
-                                h.update(c)
-
-                        logger.info(f"SHA512 of {mirror_filename}: {h.hexdigest()}")
-
-                else:
-                    logger.info(
-                        f"Not downloading {source_filename} to local filesystem (download disabled)"
-                    )
-
-                if upload:
-                    logger.info(
-                        f"Uploading {mirror_filename} to bucket {mirror_dirname}"
-                    )
-
-                    client.fput_object(
-                        minio_bucket,
-                        os.path.join(mirror_dirname, mirror_filename),
-                        mirror_filename,
-                    )
-
-                    # Gardenlinux-specific: Upload additional files with simplified filename and SHA256 checksum
-                    if image["shortname"] == "gardenlinux":
-                        # Check if filename matches pattern with hash suffix: *-[8-char-hex].qcow2
-                        hash_pattern = re.compile(r"-([a-f0-9]{8})\.qcow2$")
-                        match = hash_pattern.search(mirror_filename)
-
-                        if match:
-                            # Create simplified filename by removing hash suffix
-                            simplified_filename = hash_pattern.sub(
-                                ".qcow2", mirror_filename
-                            )
-                            logger.info(
-                                f"Creating simplified filename: {simplified_filename}"
-                            )
-
-                            # Create symlink to simplified filename
-                            if os.path.exists(simplified_filename):
-                                os.remove(simplified_filename)
-                            os.symlink(mirror_filename, simplified_filename)
-
-                            # Upload simplified filename
-                            logger.info(
-                                f"Uploading {simplified_filename} to bucket {mirror_dirname}"
-                            )
-                            client.fput_object(
-                                minio_bucket,
-                                os.path.join(mirror_dirname, simplified_filename),
-                                simplified_filename,
-                            )
-
-                            # Calculate SHA256 checksum
-                            h_sha256 = hashlib.sha256()
-                            with open(mirror_filename, "rb") as fp:
-                                while chunk := fp.read(8192):
-                                    h_sha256.update(chunk)
-
-                            sha256_hash = h_sha256.hexdigest()
-                            logger.info(
-                                f"SHA256 of {simplified_filename}: {sha256_hash}"
-                            )
-
-                            # Create SHA256 checksum file
-                            sha256_filename = f"{simplified_filename}.sha256"
-                            with open(sha256_filename, "w") as fp:
-                                fp.write(f"{sha256_hash}  {simplified_filename}\n")
-
-                            # Upload SHA256 checksum file
-                            logger.info(
-                                f"Uploading {sha256_filename} to bucket {mirror_dirname}"
-                            )
-                            client.fput_object(
-                                minio_bucket,
-                                os.path.join(mirror_dirname, sha256_filename),
-                                sha256_filename,
-                            )
-
-                            # Clean up temporary files
-                            os.remove(simplified_filename)
-                            os.remove(sha256_filename)
-
-                    os.remove(mirror_filename)
-                else:
-                    logger.info(
-                        f"Not uploading {mirror_filename} to bucket {mirror_dirname} (upload disabled)"
-                    )
 
 
 if __name__ == "__main__":
