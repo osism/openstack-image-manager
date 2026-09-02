@@ -10,6 +10,7 @@ from unittest import mock
 
 import requests
 from minio.error import S3Error
+from urllib3 import HTTPHeaderDict
 from urllib3.exceptions import ProtocolError
 
 import contrib.mirror as mirror
@@ -77,10 +78,15 @@ def _missing_object():
 
 
 class _FakeClient:
-    """Minimal stand-in for minio.Minio that records what the mirror step does."""
+    """Minimal stand-in for minio.Minio that records what the mirror step does.
+
+    Metadata is stored the way minio stores it: user keys are prefixed with
+    X-Amz-Meta- on the way in and read back out of a case-insensitive header
+    mapping, so production code has to look them up as minio presents them.
+    """
 
     def __init__(self, existing=()):
-        self.existing = set(existing)
+        self.existing = {name: HTTPHeaderDict() for name in existing}
         self.statted = []
         self.uploaded = []
 
@@ -91,10 +97,14 @@ class _FakeClient:
         self.statted.append(name)
         if name not in self.existing:
             raise _missing_object()
-        return mock.Mock(metadata={})
+        return mock.Mock(metadata=self.existing[name])
 
     def fput_object(self, bucket, name, path, **kwargs):
         self.uploaded.append((name, path, kwargs))
+        headers = HTTPHeaderDict()
+        for key, value in (kwargs.get("metadata") or {}).items():
+            headers[f"X-Amz-Meta-{key}"] = value
+        self.existing[name] = headers
 
 
 class _BrokenStream:
@@ -381,6 +391,57 @@ class ChecksumTest(unittest.TestCase):
 
         self.assertIs(ok, False)
         self.assertEqual(client.uploaded, [])
+
+
+class ObjectMetadataTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.cwd = os.getcwd()
+        os.chdir(self.dir)
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+        shutil.rmtree(self.dir)
+
+    def _mirror(self, client, version):
+        with mock.patch.object(mirror.requests, "get", return_value=_response()):
+            return mirror.mirror_version(client, BUCKET, UBUNTU, version)
+
+    def test_version_without_a_checksum_records_no_provenance(self):
+        # The schema allows a version with no checksum; there is then nothing
+        # meaningful to record, and an empty value would read back as garbage.
+        client = _FakeClient()
+        version = dict(UBUNTU["versions"][0])
+        del version["checksum"]
+
+        ok = self._mirror(client, version)
+
+        self.assertIs(ok, True)
+        self.assertNotIn("metadata", client.uploaded[0][2])
+
+    def test_unverified_download_records_no_provenance(self):
+        # With --no-checksum the bytes were never checked, so stamping them as
+        # matching the definition would make a later run trust them.
+        client = _FakeClient()
+
+        with mock.patch.object(mirror.requests, "get", return_value=_response()):
+            ok = mirror.mirror_version(
+                client, BUCKET, UBUNTU, UBUNTU["versions"][0], checksum=False
+            )
+
+        self.assertIs(ok, True)
+        self.assertNotIn("metadata", client.uploaded[0][2])
+
+    def test_upload_records_which_checksum_it_was_mirrored_for(self):
+        client = _FakeClient()
+        version = UBUNTU["versions"][0]
+
+        self._mirror(client, version)
+
+        stored = client.stat_object(BUCKET, client.uploaded[0][0])
+        self.assertEqual(
+            stored.metadata.get("x-amz-meta-upstream-checksum"), version["checksum"]
+        )
 
 
 SAMPLE_YML = """\

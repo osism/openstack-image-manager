@@ -26,6 +26,11 @@ CHUNK_SIZE = 1024 * 1024
 # Matches REQUESTS_TIMEOUT in openstack_image_manager/main.py.
 REQUESTS_TIMEOUT = 30
 
+# Object metadata recording which definition an object was mirrored for.
+# minio prefixes user metadata with X-Amz-Meta- on upload.
+UPSTREAM_CHECKSUM_KEY = "upstream-checksum"
+UPSTREAM_CHECKSUM_HEADER = "x-amz-meta-upstream-checksum"
+
 app = typer.Typer(add_completion=False)
 
 
@@ -106,6 +111,10 @@ def mirror_version(
     logger.debug(f"mirror filename: {mirror_filename}")
     logger.debug(f"source filename: {source_filename}")
 
+    # Only a checksum actually verified in this run may be recorded on the
+    # object; otherwise a later run would trust bytes nobody checked.
+    verified = False
+
     try:
         client.stat_object(minio_bucket, os.path.join(mirror_dirname, mirror_filename))
         logger.info(f"File {mirror_filename} available in bucket {mirror_dirname}")
@@ -178,6 +187,7 @@ def mirror_version(
                     logger.info(
                         f"{algorithm} of {mirror_filename} matches the definition"
                     )
+                    verified = True
 
         else:
             logger.info(
@@ -187,10 +197,15 @@ def mirror_version(
         if upload:
             logger.info(f"Uploading {mirror_filename} to bucket {mirror_dirname}")
 
+            extra = {}
+            if verified:
+                extra["metadata"] = {UPSTREAM_CHECKSUM_KEY: version["checksum"]}
+
             client.fput_object(
                 minio_bucket,
                 os.path.join(mirror_dirname, mirror_filename),
                 mirror_filename,
+                **extra,
             )
 
             # Gardenlinux-specific: Upload additional files with simplified filename and SHA256 checksum
