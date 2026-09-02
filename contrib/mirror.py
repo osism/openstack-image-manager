@@ -22,6 +22,10 @@ from urllib.parse import urlparse
 # Streaming chunk size for downloads and hashing.
 CHUNK_SIZE = 1024 * 1024
 
+# Mirrors that accept a connection and then stall must not hang the run.
+# Matches REQUESTS_TIMEOUT in openstack_image_manager/main.py.
+REQUESTS_TIMEOUT = 30
+
 app = typer.Typer(add_completion=False)
 
 
@@ -107,7 +111,10 @@ def mirror_version(
                 logger.info(f"Downloading {version['url']}")
                 try:
                     response = requests.get(
-                        version["url"], stream=True, allow_redirects=True
+                        version["url"],
+                        stream=True,
+                        allow_redirects=True,
+                        timeout=REQUESTS_TIMEOUT,
                     )
                     response.raise_for_status()
                     with open(source_filename, "wb") as fp:
