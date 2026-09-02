@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
+import hashlib
 import io
 import os
 import shutil
@@ -13,8 +14,12 @@ from urllib3.exceptions import ProtocolError
 
 import contrib.mirror as mirror
 
+PAYLOAD = b"image-bytes"
+PAYLOAD_SHA256 = hashlib.sha256(PAYLOAD).hexdigest()
+
 # Fixtures follow the shape of real etc/images entries, one per naming branch
 # mirror_paths has to handle.
+# Their checksums are the digest of the payload the fake download serves.
 
 UBUNTU = {
     "shortname": "ubuntu-24.04",
@@ -26,7 +31,7 @@ UBUNTU = {
                 "https://nbg1.your-objectstorage.com/osism/openstack-images/"
                 "ubuntu-24.04/20260108-ubuntu-24.04.qcow2"
             ),
-            "checksum": "sha256:" + "a" * 64,
+            "checksum": f"sha256:{PAYLOAD_SHA256}",
         }
     ],
 }
@@ -41,7 +46,7 @@ TALOS = {
                 "https://nbg1.your-objectstorage.com/osism/openstack-images/"
                 "talos/1.11.3/openstack-amd64"
             ),
-            "checksum": "sha256:" + "b" * 64,
+            "checksum": f"sha256:{PAYLOAD_SHA256}",
         }
     ],
 }
@@ -59,7 +64,7 @@ GARDENLINUX = {
                 "https://nbg1.your-objectstorage.com/osism/openstack-images/"
                 "gardenlinux/1592.14/openstack-gardener_prod-amd64-1592.14-730f446c.qcow2"
             ),
-            "checksum": "sha256:" + "c" * 64,
+            "checksum": f"sha256:{PAYLOAD_SHA256}",
         }
     ],
 }
@@ -107,7 +112,7 @@ class _BrokenStream:
         raise ProtocolError("connection broken: incomplete read")
 
 
-def _response(payload=b"image-bytes", status=200):
+def _response(payload=PAYLOAD, status=200):
     """A real requests.Response, so raise_for_status() behaves as in production."""
     response = requests.Response()
     response.status_code = status
@@ -264,6 +269,118 @@ class DownloadFailureTest(unittest.TestCase):
             ok = mirror.mirror_version(client, BUCKET, UBUNTU, UBUNTU["versions"][0])
 
         self.assertIs(ok, True)
+
+
+def _version_with_checksum(image, checksum):
+    version = dict(image["versions"][0])
+    version["checksum"] = checksum
+    return version
+
+
+class ChecksumTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.cwd = os.getcwd()
+        os.chdir(self.dir)
+        self.payload = PAYLOAD
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+        shutil.rmtree(self.dir)
+
+    def _mirror(self, version):
+        client = _FakeClient()
+        with mock.patch.object(
+            mirror.requests, "get", return_value=_response(self.payload)
+        ):
+            ok = mirror.mirror_version(client, BUCKET, UBUNTU, version)
+        return ok, client
+
+    def test_mismatching_checksum_is_not_uploaded(self):
+        version = _version_with_checksum(UBUNTU, "sha256:" + "0" * 64)
+
+        ok, client = self._mirror(version)
+
+        self.assertIs(ok, False)
+        self.assertEqual(client.uploaded, [])
+
+    def test_matching_checksum_is_uploaded(self):
+        digest = hashlib.sha256(self.payload).hexdigest()
+        version = _version_with_checksum(UBUNTU, f"sha256:{digest}")
+
+        ok, client = self._mirror(version)
+
+        self.assertIs(ok, True)
+        self.assertEqual(len(client.uploaded), 1)
+
+    def test_algorithm_comes_from_the_definition(self):
+        # Two catalog entries use sha512, so the algorithm cannot be hardcoded.
+        digest = hashlib.sha512(self.payload).hexdigest()
+        version = _version_with_checksum(UBUNTU, f"sha512:{digest}")
+
+        ok, _ = self._mirror(version)
+
+        self.assertIs(ok, True)
+
+    def test_mismatch_leaves_no_local_file_behind(self):
+        # upload=False, so nothing else can clean up after the rejected file.
+        version = _version_with_checksum(UBUNTU, "sha256:" + "0" * 64)
+        client = _FakeClient()
+
+        with mock.patch.object(
+            mirror.requests, "get", return_value=_response(self.payload)
+        ):
+            mirror.mirror_version(client, BUCKET, UBUNTU, version, upload=False)
+
+        self.assertEqual(os.listdir("."), [])
+
+    def _extracting(self, produced):
+        """Stand in for patoolib, producing the bytes the archive unpacks to."""
+
+        def extract(name, outdir):
+            os.makedirs(outdir, exist_ok=True)
+            target = mirror.mirror_paths(TALOS, TALOS["versions"][0]).filename
+            with open(os.path.join(outdir, target), "wb") as fp:
+                fp.write(produced)
+
+        return extract
+
+    def test_compressed_source_is_checked_after_decompression(self):
+        # For a compressed source the mirror stores the unpacked image, and the
+        # definition's checksum describes that -- contrib/update-gardenlinux.py
+        # hashes the extracted qcow2, and main.py downloads mirror_url. So the
+        # archive's own bytes are not what has to match.
+        unpacked = b"unpacked-image-bytes"
+        version = _version_with_checksum(
+            TALOS, f"sha256:{hashlib.sha256(unpacked).hexdigest()}"
+        )
+        client = _FakeClient()
+
+        with mock.patch.object(
+            mirror.requests, "get", return_value=_response(b"archive-bytes")
+        ):
+            with mock.patch.object(
+                mirror.patoolib, "extract_archive", self._extracting(unpacked)
+            ):
+                ok = mirror.mirror_version(client, BUCKET, TALOS, version)
+
+        self.assertIs(ok, True)
+        self.assertEqual(len(client.uploaded), 1)
+
+    def test_unpacked_image_that_does_not_match_is_not_uploaded(self):
+        version = _version_with_checksum(TALOS, "sha256:" + "0" * 64)
+        client = _FakeClient()
+
+        with mock.patch.object(
+            mirror.requests, "get", return_value=_response(b"archive-bytes")
+        ):
+            with mock.patch.object(
+                mirror.patoolib, "extract_archive", self._extracting(b"wrong-image")
+            ):
+                ok = mirror.mirror_version(client, BUCKET, TALOS, version)
+
+        self.assertIs(ok, False)
+        self.assertEqual(client.uploaded, [])
 
 
 SAMPLE_YML = """\

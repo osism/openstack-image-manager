@@ -29,6 +29,16 @@ REQUESTS_TIMEOUT = 30
 app = typer.Typer(add_completion=False)
 
 
+def file_checksum(path, algorithm):
+    """Return the hex digest of a file using the named hash algorithm."""
+    digest = hashlib.new(algorithm)
+    with open(path, "rb") as fp:
+        while chunk := fp.read(8192):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
 class MirrorPaths(NamedTuple):
     """Where one image version lives upstream and in the mirror bucket."""
 
@@ -139,12 +149,35 @@ def mirror_version(
                 os.rename(source_filename, mirror_filename)
 
             if checksum:
-                h = hashlib.new("sha512")
-                with open(mirror_filename, "rb") as fp:
-                    while c := fp.read(8192):
-                        h.update(c)
+                expected = version.get("checksum")
+                if not expected:
+                    logger.warning(
+                        f"No checksum defined for {mirror_filename}, "
+                        "it cannot be verified"
+                    )
+                else:
+                    algorithm, _, expected_digest = expected.partition(":")
+                    try:
+                        actual_digest = file_checksum(mirror_filename, algorithm)
+                    except ValueError:
+                        logger.error(
+                            f"Cannot verify {mirror_filename}: unknown checksum "
+                            f"algorithm {algorithm}"
+                        )
+                        os.remove(mirror_filename)
+                        return False
 
-                logger.info(f"SHA512 of {mirror_filename}: {h.hexdigest()}")
+                    if actual_digest != expected_digest:
+                        logger.error(
+                            f"{algorithm} of {mirror_filename} is {actual_digest}, "
+                            f"the definition says {expected_digest}"
+                        )
+                        os.remove(mirror_filename)
+                        return False
+
+                    logger.info(
+                        f"{algorithm} of {mirror_filename} matches the definition"
+                    )
 
         else:
             logger.info(
@@ -228,7 +261,9 @@ def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
     upload: bool = typer.Option(True, "--upload/--no-upload", help="Upload images"),
     checksum: bool = typer.Option(
-        True, "--checksum/--no-checksum", help="Calculate and compare the checksum"
+        True,
+        "--checksum/--no-checksum",
+        help="Verify the download against the checksum in the definition",
     ),
     download: bool = typer.Option(
         True, "--download/--no-download", help="Download images"
