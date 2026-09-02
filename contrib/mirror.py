@@ -116,8 +116,30 @@ def mirror_version(
     verified = False
 
     try:
-        client.stat_object(minio_bucket, os.path.join(mirror_dirname, mirror_filename))
+        stored = client.stat_object(
+            minio_bucket, os.path.join(mirror_dirname, mirror_filename)
+        )
         logger.info(f"File {mirror_filename} available in bucket {mirror_dirname}")
+
+        mirrored_for = (stored.metadata or {}).get(UPSTREAM_CHECKSUM_HEADER)
+        expected = version.get("checksum")
+        if not mirrored_for:
+            logger.warning(
+                f"File {mirror_filename} predates checksum recording, "
+                "cannot confirm which definition it was mirrored for"
+            )
+        elif expected and mirrored_for != expected:
+            logger.error(
+                f"File {mirror_filename} in bucket {mirror_dirname} was mirrored "
+                f"for {mirrored_for}, the definition says {expected}"
+            )
+            logger.error(
+                "Leaving it untouched: either the object is wrong or the "
+                "definition changed under a fixed version. Delete the object "
+                "and run again once it is clear which."
+            )
+            return False
+
         return True
     except S3Error:
         logger.info(

@@ -443,6 +443,45 @@ class ObjectMetadataTest(unittest.TestCase):
             stored.metadata.get("x-amz-meta-upstream-checksum"), version["checksum"]
         )
 
+    def test_object_matching_the_definition_is_left_alone(self):
+        client = _FakeClient()
+        version = UBUNTU["versions"][0]
+        self._mirror(client, version)
+
+        ok = self._mirror(client, version)
+
+        self.assertIs(ok, True)
+        self.assertEqual(len(client.uploaded), 1)
+
+    def test_object_mirrored_for_another_checksum_fails(self):
+        client = _FakeClient()
+        self._mirror(client, UBUNTU["versions"][0])
+
+        changed = _version_with_checksum(UBUNTU, "sha256:" + "0" * 64)
+        ok = self._mirror(client, changed)
+
+        self.assertIs(ok, False)
+
+    def test_mismatching_object_is_not_overwritten(self):
+        client = _FakeClient()
+        self._mirror(client, UBUNTU["versions"][0])
+
+        changed = _version_with_checksum(UBUNTU, "sha256:" + "0" * 64)
+        self._mirror(client, changed)
+
+        self.assertEqual(len(client.uploaded), 1)
+
+    def test_object_without_metadata_is_skipped_without_failing(self):
+        # Everything mirrored before this change has no recorded checksum.
+        client = _FakeClient(
+            existing={"openstack-images/ubuntu-24.04/20260108-ubuntu-24.04.qcow2"}
+        )
+
+        ok = self._mirror(client, UBUNTU["versions"][0])
+
+        self.assertIs(ok, True)
+        self.assertEqual(client.uploaded, [])
+
 
 SAMPLE_YML = """\
 ---
