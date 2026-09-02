@@ -10,6 +10,7 @@ from unittest import mock
 
 import requests
 from minio.error import S3Error
+from patoolib.util import PatoolError
 from urllib3 import HTTPHeaderDict
 from urllib3.exceptions import ProtocolError
 
@@ -481,6 +482,55 @@ class ObjectMetadataTest(unittest.TestCase):
 
         self.assertIs(ok, True)
         self.assertEqual(client.uploaded, [])
+
+
+class ExtractionFailureTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.cwd = os.getcwd()
+        os.chdir(self.dir)
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+        shutil.rmtree(self.dir)
+
+    def _mirror(self, extract):
+        client = _FakeClient()
+        with mock.patch.object(
+            mirror.requests, "get", return_value=_response(b"archive-bytes")
+        ):
+            with mock.patch.object(mirror.patoolib, "extract_archive", extract):
+                ok = mirror.mirror_version(client, BUCKET, TALOS, TALOS["versions"][0])
+        return ok, client
+
+    def test_unreadable_archive_is_reported_not_raised(self):
+        def extract(name, outdir):
+            raise PatoolError("unknown archive format")
+
+        ok, client = self._mirror(extract)
+
+        self.assertIs(ok, False)
+        self.assertEqual(client.uploaded, [])
+
+    def test_archive_without_the_expected_image_is_reported(self):
+        # What gardenlinux actually ships: the archive unpacks to a root
+        # filesystem tree, so the image the mirror_url names never appears.
+        def extract(name, outdir):
+            os.makedirs(os.path.join(outdir, "boot"), exist_ok=True)
+
+        ok, client = self._mirror(extract)
+
+        self.assertIs(ok, False)
+        self.assertEqual(client.uploaded, [])
+
+    def test_failed_extraction_leaves_no_downloaded_archive(self):
+        def extract(name, outdir):
+            raise PatoolError("unknown archive format")
+
+        self._mirror(extract)
+
+        leftovers = [f for f in os.listdir(".") if f != "tmp"]
+        self.assertEqual(leftovers, [])
 
 
 SAMPLE_YML = """\
