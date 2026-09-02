@@ -13,6 +13,7 @@ import yaml
 from loguru import logger
 from minio import Minio
 from minio.error import S3Error
+from patoolib.util import PatoolError
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
@@ -168,16 +169,23 @@ def mirror_version(
                         os.remove(source_filename)
                     return False
 
-            if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
-                logger.info(f"Decompressing {source_filename}")
-                Path("tmp").mkdir(exist_ok=True)
-                patoolib.extract_archive(
-                    os.path.basename(source_filename), outdir="tmp"
-                )
-                os.remove(source_filename)
-                shutil.copy(os.path.join("tmp", mirror_filename), mirror_filename)
-            else:
-                os.rename(source_filename, mirror_filename)
+            try:
+                if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
+                    logger.info(f"Decompressing {source_filename}")
+                    Path("tmp").mkdir(exist_ok=True)
+                    patoolib.extract_archive(
+                        os.path.basename(source_filename), outdir="tmp"
+                    )
+                    os.remove(source_filename)
+                    shutil.copy(os.path.join("tmp", mirror_filename), mirror_filename)
+                else:
+                    os.rename(source_filename, mirror_filename)
+            except (PatoolError, OSError) as exc:
+                logger.error(f"Preparing {mirror_filename} for upload failed: {exc}")
+                for leftover in (source_filename, mirror_filename):
+                    if isfile(leftover):
+                        os.remove(leftover)
+                return False
 
             if checksum:
                 expected = version.get("checksum")
