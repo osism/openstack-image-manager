@@ -19,6 +19,9 @@ from pathlib import Path
 from typing import NamedTuple
 from urllib.parse import urlparse
 
+# Streaming chunk size for downloads and hashing.
+CHUNK_SIZE = 1024 * 1024
+
 app = typer.Typer(add_completion=False)
 
 
@@ -92,6 +95,7 @@ def mirror_version(
     try:
         client.stat_object(minio_bucket, os.path.join(mirror_dirname, mirror_filename))
         logger.info(f"File {mirror_filename} available in bucket {mirror_dirname}")
+        return True
     except S3Error:
         logger.info(
             f"File {mirror_filename} not yet available in bucket {mirror_dirname}"
@@ -101,12 +105,20 @@ def mirror_version(
             if not isfile(os.path.basename(source_filename)):
                 logger.info(f"File {source_filename} not available on local filesystem")
                 logger.info(f"Downloading {version['url']}")
-                response = requests.get(
-                    version["url"], stream=True, allow_redirects=True
-                )
-                with open(source_filename, "wb") as fp:
-                    shutil.copyfileobj(response.raw, fp)
-                del response
+                try:
+                    response = requests.get(
+                        version["url"], stream=True, allow_redirects=True
+                    )
+                    response.raise_for_status()
+                    with open(source_filename, "wb") as fp:
+                        for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
+                            fp.write(chunk)
+                    del response
+                except (requests.RequestException, OSError) as exc:
+                    logger.error(f"Download of {version['url']} failed: {exc}")
+                    if isfile(source_filename):
+                        os.remove(source_filename)
+                    return False
 
             if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
                 logger.info(f"Decompressing {source_filename}")
@@ -201,6 +213,8 @@ def mirror_version(
                 f"Not uploading {mirror_filename} to bucket {mirror_dirname} (upload disabled)"
             )
 
+    return True
+
 
 @app.command()
 def main(
@@ -268,6 +282,8 @@ def main(
                 logger.debug(f"Adding {image['name']} to the list of images")
                 all_images.append(image)
 
+    failed = []
+
     for image in all_images:
         logger.info(f"Processing image {image['name']}")
 
@@ -296,7 +312,7 @@ def main(
             if "url" not in version or "mirror_url" not in version:
                 continue
 
-            mirror_version(
+            if not mirror_version(
                 client,
                 minio_bucket,
                 image,
@@ -304,7 +320,14 @@ def main(
                 download=download,
                 checksum=checksum,
                 upload=upload,
-            )
+            ):
+                failed.append(f"{image['name']} {version['version']}")
+
+    if failed:
+        logger.error(f"Failed to mirror {len(failed)} image version(s):")
+        for entry in failed:
+            logger.error(f"  {entry}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
