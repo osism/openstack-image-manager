@@ -27,17 +27,17 @@ images:
       - version: '1592.14'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1592.14/openstack-gardener_prod-amd64-1592.14-730f446c.tar.xz
         mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1592.14/openstack-gardener_prod-amd64-1592.14-730f446c.qcow2
-        checksum: "sha256:71b5a12e172d35bdbb85fe3861b2a35e7dd6b242c8c0a4b986a1c341340e4e23"
+        checksum: "sha256:d88da40ad12dd501ebea6af1ef80f4896cbc5ebd381005ef42246108bea3b1af"
         build_date: 2025-09-17
       - version: '1877.5'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1877.5/openstack-gardener_prod-amd64-1877.5-7a907e4e.tar.xz
         mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1877.5/openstack-gardener_prod-amd64-1877.5-7a907e4e.qcow2
-        checksum: "sha256:1ad90c202e360f0893525a081dd381dcdfbb42242da2c249bad3284fef6030a7"
+        checksum: "sha256:a968b3497a5935d6f6b8000499a0fc206bbbf49712f7a660a6b7c43c9cac102b"
         build_date: 2025-10-17
       - version: '1877.6'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1877.6/openstack-gardener_prod-amd64-1877.6-48d68617.tar.xz
         mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/gardenlinux/1877.6/openstack-gardener_prod-amd64-1877.6-48d68617.qcow2
-        checksum: "sha256:1ad90c202e360f0893525a081dd381dcdfbb42242da2c249bad3284fef6030a7"
+        checksum: "sha256:32fd15837df5745eea63c9449896f46bf3884c8bc2c8af5a82c284dd75cf63a1"
         build_date: 2025-11-04
       - version: '1877.7'
         url: https://github.com/gardenlinux/gardenlinux/releases/download/1877.7/openstack-gardener_prod-amd64-1877.7-5282bd31.tar.xz
