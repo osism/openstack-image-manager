@@ -407,3 +407,77 @@ images:
         checksum: 
           sha256:a8f88520387bd1a4deedfdb958779c1cc1d088a310f9fa01cd380f0e3164fbc2
         build_date: 2026-01-05
+  - name: Ubuntu 26.04
+    enable: true
+    shortname: ubuntu-26.04
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: ubuntu
+      os_version: '26.04'
+      os_purpose: generic
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url:
+      https://cloud-images.ubuntu.com/resolute/current/SHA256SUMS
+    latest_url:
+      https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img
+    versions:
+      - version: '20260717'
+        url:
+          https://cloud-images.ubuntu.com/resolute/20260717/resolute-server-cloudimg-amd64.img
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-26.04/20260717-ubuntu-26.04.qcow2
+        checksum:
+          sha256:b7daa0ffcb06acf44547a2f7682088d13acf0609937507faa8d7ef0302640ddd
+        build_date: 2026-07-17
+  - name: Ubuntu 26.04 Minimal
+    enable: true
+    shortname: ubuntu-26.04-minimal
+    format: qcow2
+    login: ubuntu
+    min_disk: 8
+    min_ram: 512
+    status: active
+    visibility: public
+    multi: true
+    meta:
+      architecture: x86_64
+      hw_disk_bus: scsi
+      hw_rng_model: virtio
+      hw_scsi_model: virtio-scsi
+      hw_watchdog_action: reset
+      hypervisor_type: qemu
+      os_distro: ubuntu
+      os_version: '26.04'
+      os_purpose: minimal
+      replace_frequency: quarterly
+      uuid_validity: last-3
+      provided_until: none
+    tags: []
+    latest_checksum_url:
+      https://cloud-images.ubuntu.com/minimal/releases/resolute/release/SHA256SUMS
+    latest_url:
+      https://cloud-images.ubuntu.com/minimal/releases/resolute/release/ubuntu-26.04-minimal-cloudimg-amd64.img
+    versions:
+      - version: '20260717'
+        url:
+          https://cloud-images.ubuntu.com/minimal/releases/resolute/release-20260717/ubuntu-26.04-minimal-cloudimg-amd64.img
+        mirror_url:
+          https://nbg1.your-objectstorage.com/osism/openstack-images/ubuntu-26.04-minimal/20260717-ubuntu-26.04-minimal.qcow2
+        checksum:
+          sha256:fe1deeb97031e27f929dca2472bb4ef30c38e33fa43eb2f721b20f12db1d0da1
+        build_date: 2026-07-17
