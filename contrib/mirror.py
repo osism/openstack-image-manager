@@ -384,6 +384,7 @@ def main(
             (
                 "almalinux",
                 "centos",
+                "cirros",
                 "debian",
                 "flatcar",
                 "gardenlinux",
