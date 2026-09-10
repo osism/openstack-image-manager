@@ -131,6 +131,17 @@ def _response(payload=PAYLOAD, status=200):
     return response
 
 
+def _tmp_contents():
+    """Every file left under tmp/, which must be empty after any run."""
+    if not os.path.isdir("tmp"):
+        return []
+    return sorted(
+        os.path.relpath(os.path.join(root, name), "tmp")
+        for root, _, files in os.walk("tmp")
+        for name in files
+    )
+
+
 class MirrorPathsTest(unittest.TestCase):
     def test_plain_image_keeps_a_flat_directory(self):
         paths = mirror.mirror_paths(UBUNTU, UBUNTU["versions"][0])
@@ -531,6 +542,48 @@ class ExtractionFailureTest(unittest.TestCase):
 
         leftovers = [f for f in os.listdir(".") if f != "tmp"]
         self.assertEqual(leftovers, [])
+
+    def test_partial_extraction_leaves_nothing_in_tmp(self):
+        # patoolib can write part of an archive and then fail; those bytes are
+        # a full image's worth of disk and nothing else deletes them.
+        def extract(name, outdir):
+            os.makedirs(outdir, exist_ok=True)
+            with open(os.path.join(outdir, "partial.raw"), "wb") as fp:
+                fp.write(b"partial")
+            raise PatoolError("archive truncated")
+
+        ok, _ = self._mirror(extract)
+
+        self.assertIs(ok, False)
+        self.assertEqual(_tmp_contents(), [])
+
+    def test_archive_siblings_are_not_left_behind(self):
+        # What gardenlinux ships: the image plus other members. Taking only the
+        # image out leaves the siblings behind.
+        target = mirror.mirror_paths(TALOS, TALOS["versions"][0]).filename
+
+        def extract(name, outdir):
+            os.makedirs(outdir, exist_ok=True)
+            for produced in (target, "sibling.txt"):
+                with open(os.path.join(outdir, produced), "wb") as fp:
+                    fp.write(PAYLOAD)
+
+        ok, client = self._mirror(extract)
+
+        self.assertIs(ok, True)
+        self.assertEqual(len(client.uploaded), 1)
+        self.assertEqual(_tmp_contents(), [])
+
+    def test_archive_without_the_expected_image_leaves_nothing_in_tmp(self):
+        def extract(name, outdir):
+            os.makedirs(os.path.join(outdir, "boot"), exist_ok=True)
+            with open(os.path.join(outdir, "boot", "vmlinuz"), "wb") as fp:
+                fp.write(b"kernel")
+
+        ok, _ = self._mirror(extract)
+
+        self.assertIs(ok, False)
+        self.assertEqual(_tmp_contents(), [])
 
 
 SAMPLE_YML = """\

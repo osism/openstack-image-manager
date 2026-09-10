@@ -7,6 +7,7 @@ import re
 import requests
 import shutil
 import sys
+import tempfile
 import typer
 import yaml
 
@@ -169,15 +170,23 @@ def mirror_version(
                         os.remove(source_filename)
                     return False
 
+            # Extract into a directory of this version's own, and drop it on
+            # every path out. patoolib may produce archive members besides the
+            # image, or fail partway with bytes already written; both are a
+            # full image's worth of disk that nothing else removes.
+            extract_dir = None
             try:
                 if source_fileextension in [".bz2", ".zip", ".xz", ".gz"]:
                     logger.info(f"Decompressing {source_filename}")
                     Path("tmp").mkdir(exist_ok=True)
+                    extract_dir = tempfile.mkdtemp(dir="tmp")
                     patoolib.extract_archive(
-                        os.path.basename(source_filename), outdir="tmp"
+                        os.path.basename(source_filename), outdir=extract_dir
                     )
                     os.remove(source_filename)
-                    shutil.copy(os.path.join("tmp", mirror_filename), mirror_filename)
+                    shutil.move(
+                        os.path.join(extract_dir, mirror_filename), mirror_filename
+                    )
                 else:
                     os.rename(source_filename, mirror_filename)
             except (PatoolError, OSError) as exc:
@@ -186,6 +195,9 @@ def mirror_version(
                     if isfile(leftover):
                         os.remove(leftover)
                 return False
+            finally:
+                if extract_dir:
+                    shutil.rmtree(extract_dir, ignore_errors=True)
 
             if checksum:
                 expected = version.get("checksum")
