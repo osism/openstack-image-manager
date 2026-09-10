@@ -643,5 +643,79 @@ class ExitStatusTest(unittest.TestCase):
         self.assertEqual(len(client.uploaded), 1)
 
 
+SCOPE_YML = """\
+---
+images:
+  - name: Ubuntu 24.04
+    shortname: ubuntu-24.04
+    versions:
+      - version: '20260108'
+        url: https://cloud-images.ubuntu.com/noble/x/noble-server-cloudimg-amd64.img
+        mirror_url: https://object.test/osism/openstack-images/ubuntu-24.04/a.qcow2
+  - name: openSUSE Leap 15.6
+    enable: false
+    shortname: opensuse-leap-15.6
+    versions:
+      - version: '20240603'
+        url: https://ftp.gwdg.de/pub/opensuse/x/Leap-15.6.qcow2
+        mirror_url: https://object.test/osism/openstack-images/opensuse-leap-15.6/b.qcow2
+  - name: Fedora 42
+    shortname: fedora-42
+    versions:
+      - version: '20260101'
+        url: https://download.fedoraproject.org/x/Fedora-Cloud-42.qcow2
+        mirror_url: https://object.test/osism/openstack-images/fedora-42/c.qcow2
+  - name: Ubuntu 22.04
+    shortname: ubuntu-22.04
+    versions:
+      - version: '20260201'
+        url: https://cloud-images.ubuntu.com/jammy/x/jammy-server-cloudimg-amd64.img
+  - name: No Shortname
+    versions:
+      - version: '1'
+        url: https://example.test/x.qcow2
+        mirror_url: https://object.test/osism/openstack-images/x/x.qcow2
+"""
+
+
+class IterMirrorableTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        with open(os.path.join(self.dir, "images.yml"), "w") as fp:
+            fp.write(SCOPE_YML)
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    def _yielded(self):
+        return [
+            (image["shortname"], version["version"])
+            for image, version in mirror.iter_mirrorable(self.dir)
+        ]
+
+    def test_allow_listed_image_is_in_scope(self):
+        self.assertIn(("ubuntu-24.04", "20260108"), self._yielded())
+
+    def test_disabled_image_stays_in_scope(self):
+        # mirror.py has never consulted `enable`, and opensuse-leap-15.6 is both
+        # disabled and mirrored. A checker that skipped it would misreport.
+        self.assertIn(("opensuse-leap-15.6", "20240603"), self._yielded())
+
+    def test_shortname_outside_the_allow_list_is_skipped(self):
+        self.assertNotIn(("fedora-42", "20260101"), self._yielded())
+
+    def test_version_without_a_mirror_url_is_skipped(self):
+        self.assertNotIn(("ubuntu-22.04", "20260201"), self._yielded())
+
+    def test_image_without_a_shortname_is_skipped(self):
+        self.assertEqual(len(self._yielded()), 2)
+
+    def test_non_yaml_files_are_ignored(self):
+        with open(os.path.join(self.dir, "notes.txt"), "w") as fp:
+            fp.write("not a definition")
+
+        self.assertEqual(len(self._yielded()), 2)
+
+
 if __name__ == "__main__":
     unittest.main()

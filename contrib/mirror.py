@@ -33,6 +33,22 @@ REQUESTS_TIMEOUT = 30
 UPSTREAM_CHECKSUM_KEY = "upstream-checksum"
 UPSTREAM_CHECKSUM_HEADER = "x-amz-meta-upstream-checksum"
 
+# Shortnames whose images are mirrored. Anything else in the catalog is served
+# from upstream only. Extending this is a one-line change here; it is read, not
+# restated, by contrib/check_mirror.py.
+MIRRORED_SHORTNAME_PREFIXES = (
+    "almalinux",
+    "centos",
+    "debian",
+    "flatcar",
+    "gardenlinux",
+    "opensuse",
+    "opnsense",
+    "rocky",
+    "talos",
+    "ubuntu",
+)
+
 app = typer.Typer(add_completion=False)
 
 
@@ -313,6 +329,42 @@ def mirror_version(
     return True
 
 
+def read_image_definitions(images_dir):
+    """Every image entry from every definition file in images_dir."""
+    all_images = []
+    for name in sorted(listdir(images_dir)):
+        if not name.endswith(".yml"):
+            continue
+        path = join(images_dir, name)
+        if not isfile(path):
+            continue
+        logger.debug(f"Adding {name} to the list of files")
+        with open(path) as fp:
+            data = yaml.load(fp, Loader=yaml.SafeLoader)
+        for image in data.get("images") or []:
+            all_images.append(image)
+    return all_images
+
+
+def iter_mirrorable(images_dir):
+    """Yield (image, version) for every version the mirror step handles.
+
+    This is the mirror's scope, and the only definition of it: an allow-listed
+    shortname, and a version carrying both url and mirror_url, since
+    mirror_paths() derives the destination from mirror_url. `enable` is
+    deliberately not consulted -- a disabled image stays mirrored.
+    """
+    for image in read_image_definitions(images_dir):
+        if "versions" not in image or "shortname" not in image:
+            continue
+        if not image["shortname"].startswith(MIRRORED_SHORTNAME_PREFIXES):
+            continue
+        for version in image["versions"]:
+            if "url" not in version or "mirror_url" not in version:
+                continue
+            yield image, version
+
+
 @app.command()
 def main(
     debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
@@ -366,62 +418,21 @@ def main(
         logger.error(f"Create bucket '{minio_bucket}' first")
         sys.exit(1)
 
-    onlyfiles = []
-    for f in listdir(images):
-        if isfile(join(images, f)):
-            logger.debug(f"Adding {f} to the list of files")
-            onlyfiles.append(f)
-
-    all_images = []
-    for file in [x for x in onlyfiles if x.endswith(".yml")]:
-        logger.info(f"Processing file {file}")
-        with open(join(images, file)) as fp:
-            data = yaml.load(fp, Loader=yaml.SafeLoader)
-            for image in data.get("images"):
-                logger.debug(f"Adding {image['name']} to the list of images")
-                all_images.append(image)
-
     failed = []
 
-    for image in all_images:
-        logger.info(f"Processing image {image['name']}")
+    for image, version in iter_mirrorable(images):
+        logger.info(f"Processing image {image['name']} {version['version']}")
 
-        if "versions" not in image:
-            continue
-
-        if "shortname" not in image:
-            continue
-
-        if not image["shortname"].startswith(
-            (
-                "almalinux",
-                "centos",
-                "debian",
-                "flatcar",
-                "gardenlinux",
-                "opensuse",
-                "opnsense",
-                "rocky",
-                "talos",
-                "ubuntu",
-            )
+        if not mirror_version(
+            client,
+            minio_bucket,
+            image,
+            version,
+            download=download,
+            checksum=checksum,
+            upload=upload,
         ):
-            continue
-
-        for version in image["versions"]:
-            if "url" not in version or "mirror_url" not in version:
-                continue
-
-            if not mirror_version(
-                client,
-                minio_bucket,
-                image,
-                version,
-                download=download,
-                checksum=checksum,
-                upload=upload,
-            ):
-                failed.append(f"{image['name']} {version['version']}")
+            failed.append(f"{image['name']} {version['version']}")
 
     if failed:
         logger.error(f"Failed to mirror {len(failed)} image version(s):")
