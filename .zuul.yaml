@@ -13,6 +13,32 @@
       - .github/workflows/*
       - etc/images/*
 
+- job:
+    name: openstack-image-manager-check-upstream
+    description: |
+      Fail while any in-scope catalog version has neither a retrievable
+      mirror nor a retrievable upstream. This walks the whole catalog, not
+      just what the change under review touched, so a red result here is
+      not necessarily caused by this change -- it can equally be an
+      already-rotted pin elsewhere in the catalog. A version that is merely
+      not mirrored yet, with upstream still reachable, is fine here -- the
+      upload happens after the merge.
+    run: playbooks/check-mirror.yml
+    files:
+      - '^etc/images/.*\.yml$'
+    vars:
+      check_mirror_accept: [0, 3]
+
+- job:
+    name: openstack-image-manager-check-mirror
+    description: |
+      Fail while the catalog references an object the store cannot serve.
+      This is the only signal that survives the upload job being broken,
+      expired, or not yet wired.
+    run: playbooks/check-mirror.yml
+    vars:
+      check_mirror_accept: [0]
+
 - project:
     merge-mode: squash-merge
     default-branch: main
@@ -20,6 +46,7 @@
       jobs:
         - flake8
         - mypy
+        - openstack-image-manager-check-upstream
         - openstack-image-manager-integration-test
         - python-black
         - tox:
@@ -31,6 +58,7 @@
       jobs:
         - flake8
         - mypy
+        - openstack-image-manager-check-mirror
         - openstack-image-manager-integration-test
         - python-black
         - tox:
