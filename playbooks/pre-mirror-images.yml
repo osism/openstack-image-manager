@@ -1,0 +1,6 @@
+---
+- name: Run preparations
+  hosts: all
+
+  roles:
+    - role: ensure-tox
