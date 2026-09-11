@@ -1,0 +1,48 @@
+---
+- name: Mirror images to the object store
+  hosts: all
+
+  vars:
+    zuul_work_dir: "{{ zuul.project.src_dir }}"
+
+  tasks:
+    # A wrong secret name or binding leaves secret.ACCESS_KEY/SECRET_KEY
+    # undefined, and no_log below would otherwise censor Ansible's own
+    # "undefined variable" message -- an unexplained failure on the very
+    # first run of a job nobody has ever run. no_log here too, so no value
+    # can leak through the assert itself; fail_msg is a literal string, so
+    # the reason still survives.
+    - name: Require the object store credentials to be bound
+      ansible.builtin.assert:
+        that:
+          - secret.ACCESS_KEY is defined
+          - secret.SECRET_KEY is defined
+        fail_msg: >-
+          secret.ACCESS_KEY and secret.SECRET_KEY must both be set. Check
+          that this job binds the SECRET_OPENSTACK_IMAGE_MANAGER secret
+          and that it carries both the ACCESS_KEY and SECRET_KEY data keys.
+      no_log: true
+
+    # no_log matches the credential handling of the job removed in 3c21cc5.
+    # The verification task below is deliberately not silenced, so a failure
+    # still says which object is wrong.
+    - name: Upload every object the catalog references and the store lacks
+      ansible.builtin.command:
+        cmd: "{{ tox_executable }} -e mirror"
+        chdir: "{{ zuul_work_dir }}"
+      environment:
+        MINIO_ACCESS_KEY: "{{ secret.ACCESS_KEY }}"
+        MINIO_SECRET_KEY: "{{ secret.SECRET_KEY }}"
+      changed_when: true
+      no_log: true
+
+    # mirror.py verifies the download before upload and, on a later run, the
+    # object's recorded checksum -- both through the authenticated client.
+    # Nothing checks that Glance can fetch the object anonymously. This does.
+    - name: Confirm every object is anonymously retrievable
+      ansible.builtin.command:
+        cmd: "{{ tox_executable }} -e check-mirror"
+        chdir: "{{ zuul_work_dir }}"
+      register: verify_mirror
+      changed_when: false
+      failed_when: verify_mirror.rc != 0
