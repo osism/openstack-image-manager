@@ -131,6 +131,17 @@ def _response(payload=PAYLOAD, status=200):
     return response
 
 
+def _tmp_contents():
+    """Every file left under tmp/, which must be empty after any run."""
+    if not os.path.isdir("tmp"):
+        return []
+    return sorted(
+        os.path.relpath(os.path.join(root, name), "tmp")
+        for root, _, files in os.walk("tmp")
+        for name in files
+    )
+
+
 class MirrorPathsTest(unittest.TestCase):
     def test_plain_image_keeps_a_flat_directory(self):
         paths = mirror.mirror_paths(UBUNTU, UBUNTU["versions"][0])
@@ -532,6 +543,48 @@ class ExtractionFailureTest(unittest.TestCase):
         leftovers = [f for f in os.listdir(".") if f != "tmp"]
         self.assertEqual(leftovers, [])
 
+    def test_partial_extraction_leaves_nothing_in_tmp(self):
+        # patoolib can write part of an archive and then fail; those bytes are
+        # a full image's worth of disk and nothing else deletes them.
+        def extract(name, outdir):
+            os.makedirs(outdir, exist_ok=True)
+            with open(os.path.join(outdir, "partial.raw"), "wb") as fp:
+                fp.write(b"partial")
+            raise PatoolError("archive truncated")
+
+        ok, _ = self._mirror(extract)
+
+        self.assertIs(ok, False)
+        self.assertEqual(_tmp_contents(), [])
+
+    def test_archive_siblings_are_not_left_behind(self):
+        # What gardenlinux ships: the image plus other members. Taking only the
+        # image out leaves the siblings behind.
+        target = mirror.mirror_paths(TALOS, TALOS["versions"][0]).filename
+
+        def extract(name, outdir):
+            os.makedirs(outdir, exist_ok=True)
+            for produced in (target, "sibling.txt"):
+                with open(os.path.join(outdir, produced), "wb") as fp:
+                    fp.write(PAYLOAD)
+
+        ok, client = self._mirror(extract)
+
+        self.assertIs(ok, True)
+        self.assertEqual(len(client.uploaded), 1)
+        self.assertEqual(_tmp_contents(), [])
+
+    def test_archive_without_the_expected_image_leaves_nothing_in_tmp(self):
+        def extract(name, outdir):
+            os.makedirs(os.path.join(outdir, "boot"), exist_ok=True)
+            with open(os.path.join(outdir, "boot", "vmlinuz"), "wb") as fp:
+                fp.write(b"kernel")
+
+        ok, _ = self._mirror(extract)
+
+        self.assertIs(ok, False)
+        self.assertEqual(_tmp_contents(), [])
+
 
 SAMPLE_YML = """\
 ---
@@ -588,6 +641,80 @@ class ExitStatusTest(unittest.TestCase):
         client = self._run(_response())
 
         self.assertEqual(len(client.uploaded), 1)
+
+
+SCOPE_YML = """\
+---
+images:
+  - name: Ubuntu 24.04
+    shortname: ubuntu-24.04
+    versions:
+      - version: '20260108'
+        url: https://cloud-images.ubuntu.com/noble/x/noble-server-cloudimg-amd64.img
+        mirror_url: https://object.test/osism/openstack-images/ubuntu-24.04/a.qcow2
+  - name: openSUSE Leap 15.6
+    enable: false
+    shortname: opensuse-leap-15.6
+    versions:
+      - version: '20240603'
+        url: https://ftp.gwdg.de/pub/opensuse/x/Leap-15.6.qcow2
+        mirror_url: https://object.test/osism/openstack-images/opensuse-leap-15.6/b.qcow2
+  - name: Fedora 42
+    shortname: fedora-42
+    versions:
+      - version: '20260101'
+        url: https://download.fedoraproject.org/x/Fedora-Cloud-42.qcow2
+        mirror_url: https://object.test/osism/openstack-images/fedora-42/c.qcow2
+  - name: Ubuntu 22.04
+    shortname: ubuntu-22.04
+    versions:
+      - version: '20260201'
+        url: https://cloud-images.ubuntu.com/jammy/x/jammy-server-cloudimg-amd64.img
+  - name: No Shortname
+    versions:
+      - version: '1'
+        url: https://example.test/x.qcow2
+        mirror_url: https://object.test/osism/openstack-images/x/x.qcow2
+"""
+
+
+class IterMirrorableTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        with open(os.path.join(self.dir, "images.yml"), "w") as fp:
+            fp.write(SCOPE_YML)
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
+
+    def _yielded(self):
+        return [
+            (image["shortname"], version["version"])
+            for image, version in mirror.iter_mirrorable(self.dir)
+        ]
+
+    def test_allow_listed_image_is_in_scope(self):
+        self.assertIn(("ubuntu-24.04", "20260108"), self._yielded())
+
+    def test_disabled_image_stays_in_scope(self):
+        # mirror.py has never consulted `enable`, and opensuse-leap-15.6 is both
+        # disabled and mirrored. A checker that skipped it would misreport.
+        self.assertIn(("opensuse-leap-15.6", "20240603"), self._yielded())
+
+    def test_shortname_outside_the_allow_list_is_skipped(self):
+        self.assertNotIn(("fedora-42", "20260101"), self._yielded())
+
+    def test_version_without_a_mirror_url_is_skipped(self):
+        self.assertNotIn(("ubuntu-22.04", "20260201"), self._yielded())
+
+    def test_image_without_a_shortname_is_skipped(self):
+        self.assertEqual(len(self._yielded()), 2)
+
+    def test_non_yaml_files_are_ignored(self):
+        with open(os.path.join(self.dir, "notes.txt"), "w") as fp:
+            fp.write("not a definition")
+
+        self.assertEqual(len(self._yielded()), 2)
 
 
 if __name__ == "__main__":
