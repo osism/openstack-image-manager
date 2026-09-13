@@ -102,14 +102,14 @@ images:
     latest_url: 
       https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20260120'
+      - version: '20260909'
         url: 
-          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20260119.0.x86_64.qcow2
+          https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20260908.0.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-9/20260120-centos-stream-9.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-9/20260909-centos-stream-9.qcow2
         checksum: 
-          sha256:4754fa55d85b3a487651f18940b389cef055d1436432dd01b1d059d0b879f141
-        build_date: 2026-01-20
+          sha256:d93b1ecfe4d77c8a364e5b2b8a751d1c7f1aa3a7e5bdf4de924ec9649c3b5e15
+        build_date: 2026-09-09
   - name: CentOS Stream 10
     enable: true
     shortname: centos-stream-10
@@ -139,11 +139,11 @@ images:
     latest_url: 
       https://cloud.centos.org/centos/10-stream/x86_64/images/CentOS-Stream-GenericCloud-10-HEREBE\d+\.\dDRAGONS.x86_64.qcow2
     versions:
-      - version: '20260902'
+      - version: '20260909'
         url: 
-          https://cloud.centos.org/centos/10-stream/x86_64/images/CentOS-Stream-GenericCloud-10-20260901.0.x86_64.qcow2
+          https://cloud.centos.org/centos/10-stream/x86_64/images/CentOS-Stream-GenericCloud-10-20260908.0.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-10/20260902-centos-stream-10.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/centos-stream-10/20260909-centos-stream-10.qcow2
         checksum: 
-          sha256:d33095d9bb4b3f5a168794b92f174e5e71c031210e63ef75bfd91d9d13a7de01
-        build_date: 2026-09-02
+          sha256:01dd4840ce196680c048b6f1083b0d2f1a277ffb143e53402b61aa4bccc8e23f
+        build_date: 2026-09-09
