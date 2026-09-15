@@ -1057,6 +1057,16 @@ class TestManage(TestCase):
 
         return Image(**image_data)
 
+    def _successor_image(self, os_purpose="generic", **attrs):
+        """build the image taking over the plain name from the previous one"""
+
+        image_data = copy.deepcopy(FAKE_IMAGE_DATA)
+        image_data["id"] = "successor-image-id"
+        image_data["properties"]["os_purpose"] = os_purpose
+        image_data.update(attrs)
+
+        return Image(**image_data)
+
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
@@ -1077,6 +1087,84 @@ class TestManage(TestCase):
         mock_update_image.assert_any_call(
             previous_image.id, name=self.fake_name, os_purpose="oldgeneric"
         )
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_demotes_generic_multi_version(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() demoting os_purpose=generic
+        for an image defining more than one version"""
+
+        previous_image = self._previous_image(os_purpose="generic")
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            f"{self.fake_image.name} (2)": self._successor_image(),
+        }
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            ["1", "2"],
+            self.imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(
+            previous_image.id, name=self.fake_name, os_purpose="oldgeneric"
+        )
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_multi_version_keeps_other_purpose(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() keeping a non-generic
+        os_purpose for an image defining more than one version"""
+
+        previous_image = self._previous_image(os_purpose="minimal")
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            f"{self.fake_image.name} (2)": self._successor_image(),
+        }
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            ["1", "2"],
+            self.imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(previous_image.id, name=self.fake_name)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_multi_version_keeps_other_os_version(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() keeping os_purpose=generic
+        when the successor overrides os_version, so the two images do not
+        conflict"""
+
+        previous_image = self._previous_image(os_purpose="generic")
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            f"{self.fake_image.name} (2)": self._successor_image(os_version="24.04"),
+        }
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            ["1", "2"],
+            self.imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(previous_image.id, name=self.fake_name)
 
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
