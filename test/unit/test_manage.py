@@ -1858,6 +1858,32 @@ class TestManage(TestCase):
                     with self.assertRaises(YamaleError):
                         yamale.validate(schema, data)
 
+    def test_schema_accepts_scs_os_purpose_values(self):
+        """os_purpose must accept every value the SCS Image Metadata
+        Standard permits, and nothing else"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for purpose, valid in (
+            ("generic", True),
+            ("oldgeneric", True),
+            ("minimal", True),
+            ("k8snode", True),
+            ("gpu", True),
+            ("network", True),
+            ("custom", True),
+            ("nonsense", False),
+        ):
+            with self.subTest(os_purpose=purpose):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                image["meta"]["os_purpose"] = purpose
+                content = yaml.safe_dump({"images": [image]})
+                data = yamale.make_data(content=content)
+                if valid:
+                    yamale.validate(schema, data)
+                else:
+                    with self.assertRaises(YamaleError):
+                        yamale.validate(schema, data)
+
     def test_schema_hw_qemu_guest_agent(self):
         """hw_qemu_guest_agent is optional, as 'yes'/'no' or a YAML boolean"""
         schema = yamale.make_schema("etc/schema.yaml")
