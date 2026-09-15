@@ -1312,6 +1312,10 @@ class ImageManager:
                 self.image_proxy.update_image(cloud_images[latest].id, name=name)
 
         elif len(sorted_versions) == 1 and name in cloud_images:
+            # all changes to the previous image are applied in a single update, so
+            # that it cannot be left half-retired when a request fails in between
+            update_attrs = {}
+
             if previous_image["properties"]["internal_version"] == "latest":
                 # if the last modification date cannot be found, use the creation date of the image instead
                 create_date = str(
@@ -1326,22 +1330,19 @@ class ImageManager:
                 logger.info(
                     f"Setting internal_version: {create_date} for {previous_latest}"
                 )
-                self.image_proxy.update_image(
-                    previous_image.id, **{"internal_version": create_date}
-                )
+                update_attrs["internal_version"] = create_date
             else:
                 previous_latest = f"{name}{separator}({previous_image['properties']['internal_version']})"
-
-            logger.info(f"Renaming old latest '{name}' to '{previous_latest}'")
-            self.image_proxy.update_image(previous_image.id, name=previous_latest)
 
             if previous_image["properties"].get("os_purpose") == "generic":
                 # you can't have more than one image of the same architecture, distro, and version
                 # with os_purpose=generic, so change this to oldgeneric for the previous image
-                self.image_proxy.update_image(
-                    previous_image.id,
-                    os_purpose="oldgeneric",
-                )
+                update_attrs["os_purpose"] = "oldgeneric"
+
+            logger.info(f"Renaming old latest '{name}' to '{previous_latest}'")
+            self.image_proxy.update_image(
+                previous_image.id, name=previous_latest, **update_attrs
+            )
 
             logger.info(f"Renaming imported image '{imported_image.name}' to '{name}'")
             self.image_proxy.update_image(imported_image.id, name=name)
