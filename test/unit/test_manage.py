@@ -1048,6 +1048,118 @@ class TestManage(TestCase):
         mock_get_images.assert_called_once()
         mock_update_image.assert_called_once_with(self.fake_image.id, name=mock.ANY)
 
+    def _previous_image(self, **properties):
+        """build a previous image distinct from the imported one"""
+
+        image_data = copy.deepcopy(FAKE_IMAGE_DATA)
+        image_data["id"] = "previous-image-id"
+        image_data["properties"].update(properties)
+
+        return Image(**image_data)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_demotes_generic(self, mock_get_images, mock_update_image):
+        """test main.ImageManager.rename_images() demoting os_purpose=generic"""
+
+        previous_image = self._previous_image(os_purpose="generic")
+        mock_get_images.return_value = {self.fake_image.name: previous_image}
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(
+            previous_image.id, name=self.fake_name, os_purpose="oldgeneric"
+        )
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_keeps_other_purpose(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() keeping a non-generic os_purpose"""
+
+        previous_image = self._previous_image(os_purpose="minimal")
+        mock_get_images.return_value = {self.fake_image.name: previous_image}
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(previous_image.id, name=self.fake_name)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_without_purpose(self, mock_get_images, mock_update_image):
+        """test main.ImageManager.rename_images() without an os_purpose property"""
+
+        previous_image = self._previous_image()
+        mock_get_images.return_value = {self.fake_image.name: previous_image}
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(previous_image.id, name=self.fake_name)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_retires_latest_in_one_update(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() retiring a previous image
+        with internal_version=latest in a single update: the internal version
+        taken from the creation date, the new name and the demotion at once"""
+
+        image_data = copy.deepcopy(FAKE_IMAGE_DATA)
+        image_data["id"] = "previous-image-id"
+        image_data["created_at"] = "2026-09-01T12:00:00Z"
+        image_data["properties"].update(internal_version="latest", os_purpose="generic")
+        previous_image = Image(**image_data)
+        mock_get_images.return_value = {self.fake_image.name: previous_image}
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            self.imported_image,
+            previous_image,
+        )
+
+        previous_updates = [
+            c
+            for c in mock_update_image.call_args_list
+            if c.args[0] == previous_image.id
+        ]
+        self.assertEqual(
+            previous_updates,
+            [
+                mock.call(
+                    previous_image.id,
+                    name=f"{self.fake_image.name} (20260901)",
+                    internal_version="20260901",
+                    os_purpose="oldgeneric",
+                )
+            ],
+        )
+
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
     )
