@@ -1100,7 +1100,7 @@ class ImageManager:
                         cloud_image.id, **{"os_hidden": versions[version]["hidden"]}
                     )
 
-                elif version != natsorted(versions.keys())[-1:]:
+                elif version != natsorted(versions.keys())[-1]:
                     logger.info("Setting os_hidden = True")
                     self.image_proxy.update_image(cloud_image.id, **{"os_hidden": True})
 
