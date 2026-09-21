@@ -225,6 +225,55 @@ class TestManage(TestCase):
         self.assertEqual(result, expected_result)
 
     @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
+    )
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.add_tag")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_set_properties_os_hidden(
+        self, mock_get_images, mock_update_image, mock_add_tag, mock_remove_tag
+    ):
+        """test that main.ImageManager.set_properties() hides only old versions"""
+
+        self.sot.CONF.use_os_hidden = True
+        mock_get_images.return_value = {self.fake_name: self.fake_image}
+
+        def hidden_values():
+            return [
+                call.kwargs["os_hidden"]
+                for call in mock_update_image.call_args_list
+                if "os_hidden" in call.kwargs
+            ]
+
+        # the newest version is the one being published, so it must stay visible
+        self.sot.set_properties(
+            self.fake_image_dict,
+            self.fake_name,
+            self.versions,
+            "1",
+            "",
+            self.fake_image_dict["meta"],
+        )
+        self.assertNotIn(True, hidden_values())
+
+        mock_update_image.reset_mock()
+
+        # an older version is superseded, so it must be hidden
+        versions = dict(self.versions)
+        versions["2"] = copy.deepcopy(self.versions["1"])
+        self.sot.set_properties(
+            self.fake_image_dict,
+            self.fake_name,
+            versions,
+            "1",
+            "",
+            self.fake_image_dict["meta"],
+        )
+        self.assertIn(True, hidden_values())
+
+    @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.stage_image"
     )
     @mock.patch(
