@@ -153,6 +153,11 @@ class ImageManager:
             "--import-timeout",
             help="Overall per-image import wait budget in seconds",
         ),
+        protect: bool = typer.Option(
+            True,
+            "--protect/--no-protect",
+            help="Protect the images against accidental deletion",
+        ),
     ):
         self.CONF = Munch.fromDict(locals())
         self.CONF.pop("self")  # remove the self object from CONF
@@ -524,6 +529,7 @@ class ImageManager:
             "min_disk": image.get("min_disk", 0),
             "min_ram": image.get("min_ram", 0),
             "name": name,
+            "protected": self.CONF.protect
             "tags": [self.CONF.tag],
             "visibility": "private",
         }
@@ -543,11 +549,17 @@ class ImageManager:
                     time.monotonic() + self.CONF.import_timeout,
                 )
             except Exception as e:
+                if new_image.is_protected:
+                    logger.info(f"Unprotecting {name}")
+                    new_image = self.image_proxy.update_image(new_image, dict(is_protected=False))
                 self.image_proxy.delete_image(new_image)
                 logger.error(f"Failed to import local file for image {name}\n{e}")
                 self.exit_with_error = True
                 return None
             if result is None:
+                if new_image.is_protected:
+                    logger.info(f"Unprotecting {name}")
+                    new_image = self.image_proxy.update_image(new_image, dict(is_protected=False))
                 self.image_proxy.delete_image(new_image)
                 self.exit_with_error = True
             return result
@@ -592,6 +604,9 @@ class ImageManager:
                 logger.warning(f"Deleting stuck image {name} and retrying import")
                 if new_image is not None:
                     try:
+                        if new_image.is_protected:
+                            logger.info(f"Unprotecting {name}")
+                            new_image = self.image_proxy.update_image(new_image, dict(is_protected=False))
                         self.image_proxy.delete_image(new_image)
                     except Exception as e:
                         logger.error(f"Failed to delete stuck image {name}\n{e}")
@@ -604,6 +619,9 @@ class ImageManager:
             )
             if new_image is not None:  # best-effort delete the ambiguous leftover
                 try:
+                    if new_image.is_protected:
+                        logger.info(f"Unprotecting {name}")
+                        new_image = self.image_proxy.update_image(new_image, dict(is_protected=False))
                     self.image_proxy.delete_image(new_image)
                 except Exception as e:
                     logger.error(f"Failed to delete leftover image {name}\n{e}")
@@ -658,6 +676,9 @@ class ImageManager:
                 logger.error(f"PREFETCH: glance-direct import failed for '{name}'")
                 if new_image is not None:
                     try:
+                        if new_image.is_protected:
+                            logger.info(f"Unprotecting {name}")
+                            new_image = self.image_proxy.update_image(new_image, dict(is_protected=False))
                         self.image_proxy.delete_image(new_image)
                     except Exception as e:
                         logger.error(f"Failed to delete image {name}\n{e}")
@@ -1427,6 +1448,9 @@ class ImageManager:
                             "keep" not in image_definition
                             or not image_definition["keep"]
                         ):
+                            if cloud_image.is_protected:
+                                logger.info(f"Unprotecting {image}")
+                                cloud_image = self.image_proxy.update_image(cloud_image, dict(is_protected=False))
                             logger.info(f"Deleting {image}")
                             self.image_proxy.delete_image(cloud_image.id)
                         else:
