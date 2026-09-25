@@ -1322,6 +1322,32 @@ class TestManage(TestCase):
         mock_process_images.assert_called_once_with([self.fake_image_dict])
         mock_manage_outdated.assert_not_called()
 
+    def test_schema_os_distro(self):
+        """os_distro accepts libosinfo, Glance-documented and local values"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for os_distro, valid in (
+            ("almalinux", True),
+            ("archlinux", True),
+            ("arch", True),
+            ("win", True),
+            ("windows", True),
+            ("cirros", True),
+            ("talos", True),
+            ("Ubuntu", False),
+            ("ubunut", False),
+        ):
+            with self.subTest(os_distro=os_distro):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                image["meta"]["os_distro"] = os_distro
+                content = yaml.safe_dump({"images": [image]})
+                data = yamale.make_data(content=content)
+                if valid:
+                    yamale.validate(schema, data)
+                else:
+                    with self.assertRaises(YamaleError):
+                        yamale.validate(schema, data)
+
     def test_schema_url_fields_reject_ftp(self):
         """the checksum URL fields must only accept URLs that
         requests.get() can actually fetch (no FTP adapter)"""
