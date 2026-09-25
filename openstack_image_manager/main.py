@@ -1262,6 +1262,14 @@ class ImageManager:
             logger.info(f"Renaming old latest '{name}' to '{previous_latest}'")
             self.image_proxy.update_image(previous_image.id, name=previous_latest)
 
+            if previous_image["properties"].get("os_purpose") == "generic":
+                # you can't have more than one image of the same architecture, distro, and version
+                # with os_purpose=generic, so change this to oldgeneric for the previous image
+                self.image_proxy.update_image(
+                    previous_image.id,
+                    os_purpose="oldgeneric",
+                )
+
             logger.info(f"Renaming imported image '{imported_image.name}' to '{name}'")
             self.image_proxy.update_image(imported_image.id, name=name)
 
