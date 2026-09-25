@@ -35,10 +35,13 @@ meta:
   hw_watchdog_action: enum('disabled', 'reset', 'poweroff', 'pause', 'none', required=False)
   hypervisor_type: enum('hyperv', 'ironic', 'lxc', 'qemu', 'uml', 'vmware', 'xen')
   image_description: str(required=False)
-  # Permissible values as documented for the os_distro property
-  # (https://docs.openstack.org/glance/latest/admin/useful-image-properties),
-  # extended with 'cirros' and 'talos' for which no official value exists.
-  os_distro: enum('arch', 'centos', 'cirros', 'debian', 'fedora', 'freebsd', 'gentoo', 'mandrake', 'mandriva', 'mes', 'msdos', 'netbsd', 'netware', 'openbsd', 'opensolaris', 'opensuse', 'rhel', 'rocky', 'sled', 'talos', 'ubuntu', 'windows')
+  # Permissible values are the libosinfo <distro> values
+  # (https://gitlab.com/libosinfo/osinfo-db), the values documented for the
+  # os_distro property
+  # (https://docs.openstack.org/glance/latest/admin/useful-image-properties)
+  # and 'talos', which neither lists. contrib/update_os_distro.py adds new
+  # osinfo-db values.
+  os_distro: enum('almalinux', 'alpinelinux', 'alt', 'altlinux', 'android-x86', 'anolis', 'arch', 'archlinux', 'asianux', 'caasp', 'centos', 'circle', 'cirros', 'clearlinux', 'debian', 'dragonflybsd', 'elementaryos', 'eos', 'eurolinux', 'fedora', 'freebsd', 'freedos', 'freenix', 'gentoo', 'gnome', 'guix-system', 'haiku', 'hyperbola', 'mageia', 'mandrake', 'mandriva', 'manjaro', 'mbs', 'mes', 'miraclelinux', 'msdos', 'netbsd', 'netware', 'nixos', 'oel', 'ol', 'omnios', 'openbsd', 'openindiana', 'opensolaris', 'opensuse', 'osx', 'popos', 'pureos', 'rhel', 'rhl', 'rocky', 'scientificlinux', 'slackware', 'sle', 'sled', 'slem', 'sles', 'smartos', 'solaris', 'solus', 'talos', 'trisquel', 'ubuntu', 'ucs', 'voidlinux', 'win', 'windows', 'winnt')
   os_version: str(required=False)
   os_purpose: enum('generic', 'minimal', 'k8snode', 'gpu', 'network', 'custom')
   patchlevel: str(required=False)
