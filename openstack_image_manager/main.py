@@ -43,6 +43,20 @@ def _validate_prefetch(value: str) -> str:
     return value
 
 
+HIDDEN_VISIBILITY_CHOICES = ("community", "private", "shared")
+
+
+def _validate_hidden_visibility(
+    value: typing.Optional[str],
+) -> typing.Optional[str]:
+    """Reject --hidden-visibility values outside the allowed set."""
+    if value is not None and value not in HIDDEN_VISIBILITY_CHOICES:
+        raise typer.BadParameter(
+            f"must be one of {', '.join(HIDDEN_VISIBILITY_CHOICES)}"
+        )
+    return value
+
+
 def checksum_to_aria2(checksum: typing.Optional[str]) -> typing.Optional[str]:
     """Convert a 'sha256:<hex>' or bare '<hex>' digest to aria2's '<algo>=<hex>'."""
     if not checksum:
@@ -55,6 +69,33 @@ def checksum_to_aria2(checksum: typing.Optional[str]) -> typing.Optional[str]:
         return f"{aria2_algo}={digest}"
     if len(checksum) == 64 and re.fullmatch(r"[0-9a-fA-F]+", checksum):
         return f"sha-256={checksum}"
+    return None
+
+
+def uuid_validity_keep(
+    uuid_validity: typing.Any, today: typing.Optional[date] = None
+) -> typing.Optional[int]:
+    """Return how many superseded images of an image to keep, or None to keep all.
+
+    Interprets uuid_validity as defined by scs-0102-v2: 'none' promises nothing
+    once the content changes, 'last-N' keeps the UUIDs of the last N images
+    (the current one included), a date keeps them until at least that date,
+    and 'notice' and 'forever' keep them indefinitely. Unrecognised values keep
+    everything, since deleting an image cannot be undone.
+    """
+    if uuid_validity == "none":
+        return 0
+    if uuid_validity in ("notice", "forever"):
+        return None
+    if isinstance(uuid_validity, str):
+        match = re.fullmatch(r"last-(\d+)", uuid_validity)
+        if match:
+            return max(int(match.group(1)) - 1, 0)
+        try:
+            valid_until = date.fromisoformat(uuid_validity)
+        except ValueError:
+            return None
+        return 0 if (today or date.today()) > valid_until else None
     return None
 
 
@@ -100,7 +141,11 @@ class ImageManager:
             False, "--deactivate", help="Deactivate images that should be deleted"
         ),
         hide: bool = typer.Option(
-            False, "--hide", help="Hide images that should be deleted"
+            False,
+            "--hide",
+            help="Hide images that should be deleted or are kept only for their "
+            "UUID: set os_hidden with --use-os-hidden, and change their "
+            "visibility as --hidden-visibility says",
         ),
         force: bool = typer.Option(
             False, "--force", help="Force upload of disabled images"
@@ -110,7 +155,17 @@ class ImageManager:
             False, "--yes-i-really-know-what-i-do", help="Really delete images"
         ),
         use_os_hidden: bool = typer.Option(
-            False, "--use-os-hidden", help="Use the os_hidden property"
+            False,
+            "--use-os-hidden",
+            help="Use the os_hidden property: hide older versions of images and, "
+            "with --hide, images that should be deleted",
+        ),
+        hidden_visibility: typing.Optional[str] = typer.Option(
+            None,
+            "--hidden-visibility",
+            callback=_validate_hidden_visibility,
+            help="Visibility --hide gives images: community | private | shared "
+            "(default: community, or unchanged with --use-os-hidden)",
         ),
         share_image: str = typer.Option(
             None, "--share-image", help="Share - Image to share"
@@ -156,6 +211,9 @@ class ImageManager:
     ):
         self.CONF = Munch.fromDict(locals())
         self.CONF.pop("self")  # remove the self object from CONF
+
+        if self.CONF.hidden_visibility and not self.CONF.hide:
+            raise typer.BadParameter("--hidden-visibility requires --hide")
 
         if self.CONF.debug:
             level = "DEBUG"
@@ -1339,6 +1397,44 @@ class ImageManager:
 
         return too_old_images
 
+    def hide_image(self, name: str, cloud_image: Image, deactivate: bool) -> None:
+        """
+        Apply --hide, and --deactivate if requested, to an image that is kept
+
+        The image is hidden before anything else changes, so it drops out of
+        listings first. Each step is skipped when already in effect.
+
+        Params:
+            name: name of the image
+            cloud_image: the image in Glance
+            deactivate: whether --deactivate applies to this image
+        """
+        if self.CONF.dry_run:
+            return
+
+        if self.CONF.hidden_visibility:
+            visibility = self.CONF.hidden_visibility
+        elif self.CONF.use_os_hidden:
+            visibility = None
+        else:
+            visibility = "community"
+
+        try:
+            if self.CONF.hide and self.CONF.use_os_hidden and not cloud_image.is_hidden:
+                logger.info(f"Setting os_hidden of '{name}' to True")
+                self.image_proxy.update_image(cloud_image.id, os_hidden=True)
+
+            if deactivate and self.CONF.deactivate and cloud_image.status == "active":
+                logger.info(f"Deactivating image '{name}'")
+                self.image_proxy.deactivate_image(cloud_image.id)
+
+            if self.CONF.hide and visibility and cloud_image.visibility != visibility:
+                logger.info(f"Setting visibility of '{name}' to '{visibility}'")
+                self.image_proxy.update_image(cloud_image.id, visibility=visibility)
+        except Exception as e:
+            logger.error(f"Failed to hide image '{name}'\n{e}")
+            self.exit_with_error = True
+
     def manage_outdated_images(self, managed_images: set) -> list:
         """
         Delete, hide or deactivate outdated images
@@ -1393,92 +1489,61 @@ class ImageManager:
             image_definition = images[image_name]
             counter[image_name] = counter.get(image_name, 0) + 1
 
-            uuid_validity = cloud_image.properties["uuid_validity"]
-            if "last" in uuid_validity:
-                last = int(uuid_validity[5:]) - 1
-            else:
-                last = 0
+            uuid_validity = cloud_image.properties.get("uuid_validity")
+            last = uuid_validity_keep(uuid_validity)
 
             if self.CONF.keep and not image_definition["multi"]:
                 logger.info(
                     f"Image '{image}' will not be deleted, undefined versions of defined images are kept"
                 )
 
-            elif uuid_validity == "none":
-                logger.info(
-                    f"Image '{image}' will not be deleted, UUID validity is 'none'"
-                )
-            elif counter[image_name] > last:
+            elif last is not None and counter[image_name] > last:
                 if (
                     self.CONF.delete
                     and self.CONF.yes_i_really_know_what_i_do
                     and not self.CONF.dry_run
                 ):
-                    try:
-                        logger.info(f"Deactivating image '{image}'")
-                        self.image_proxy.deactivate_image(cloud_image.id)
-
-                        logger.info(f"Setting visibility of '{image}' to 'community'")
-                        self.image_proxy.update_image(
-                            cloud_image.id, visibility="community"
+                    if image_definition.get("keep"):
+                        logger.info(
+                            f"Image '{image}' will not be deleted, because 'keep' flag is True"
                         )
-
-                        if (
-                            "keep" not in image_definition
-                            or not image_definition["keep"]
-                        ):
+                        self.hide_image(image, cloud_image, deactivate=True)
+                    else:
+                        try:
                             logger.info(f"Deleting {image}")
                             self.image_proxy.delete_image(cloud_image.id)
-                        else:
-                            logger.info(
-                                f"Image '{image}' will not be deleted, because 'keep' flag is True"
+                        except openstack.exceptions.ConflictException as e:
+                            # Glance refuses to delete an image that is in use;
+                            # it is retained and deleted on a later run
+                            logger.warning(
+                                f"Image '{image}' is in use and cannot be deleted, "
+                                f"retaining it\n{e}"
                             )
-                    except Exception as e:
-                        logger.info(
-                            f"{image} is still in use and cannot be deleted\n {e}"
-                        )
+                            self.hide_image(image, cloud_image, deactivate=True)
+                        except Exception as e:
+                            logger.error(f"Failed to delete image '{image}'\n{e}")
+                            self.exit_with_error = True
 
                 else:
                     logger.warning(
                         f"Image {image} should be deleted, but deletion is disabled"
                     )
-                    try:
-                        if self.CONF.deactivate and not self.CONF.dry_run:
-                            logger.info(f"Deactivating image '{image}'")
-                            self.image_proxy.deactivate_image(cloud_image.id)
-
-                        if (
-                            self.CONF.hide
-                            and not self.CONF.dry_run
-                            and cloud_image.visibility != "community"
-                        ):
-                            logger.info(
-                                f"Setting visibility of '{image}' to 'community'"
-                            )
-                            self.image_proxy.update_image(
-                                cloud_image.id, visibility="community"
-                            )
-                    except Exception as e:
-                        logger.error(f"An Exception occurred: \n{e}")
-                        self.exit_with_error = True
-            elif counter[image_name] <= last:
-                logger.info(
-                    f"Image '{image}' will not be deleted, {counter[image_name]} <= {last}"
-                )
-                if (
-                    self.CONF.hide
-                    and not self.CONF.dry_run
-                    and cloud_image.visibility != "community"
-                ):
-                    logger.info(f"Setting visibility of '{image}' to 'community'")
-                    self.image_proxy.update_image(
-                        cloud_image.id, visibility="community"
+                    self.hide_image(image, cloud_image, deactivate=True)
+            else:
+                if last is None:
+                    recognised = uuid_validity in ("notice", "forever") or (
+                        isinstance(uuid_validity, str)
+                        and re.fullmatch(r"\d{4}-\d{2}-\d{2}", uuid_validity)
                     )
-            elif (
-                counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run
-            ):
-                logger.info(f"Setting visibility of '{image}' to 'community'")
-                self.image_proxy.update_image(cloud_image.id, visibility="community")
+                    log = logger.info if recognised else logger.warning
+                    log(
+                        f"Image '{image}' will not be deleted, UUID validity is '{uuid_validity}'"
+                    )
+                else:
+                    logger.info(
+                        f"Image '{image}' will not be deleted, {counter[image_name]} <= {last}"
+                    )
+                self.hide_image(image, cloud_image, deactivate=False)
         return unmanaged_images
 
     def validate_yaml_schema(self):

@@ -133,7 +133,7 @@ FAKE_IMAGE_DATA = {
         "image_original_user": FAKE_IMAGE_DICT["login"],
         "internal_version": FAKE_IMAGE_DICT["versions"][0]["version"],
         "image_description": FAKE_IMAGE_DICT["name"],
-        "uuid_validity": {},
+        "uuid_validity": "none",
     },
 }
 
@@ -179,6 +179,7 @@ class TestManage(TestCase):
             max_age=90,
             dry_run=False,
             use_os_hidden=False,
+            hidden_visibility=None,
             delete=False,
             keep=False,
             yes_i_really_know_what_i_do=False,
@@ -993,8 +994,8 @@ class TestManage(TestCase):
 
         self.sot.manage_outdated_images(managed_images)
         mock_get_images.assert_called_once()
-        mock_deactivate.assert_called_once()
-        mock_update_image.assert_called_once()
+        mock_deactivate.assert_not_called()
+        mock_update_image.assert_not_called()
         mock_delete_image.assert_called_once()
 
         fake_image_dict_2 = dict(self.fake_image_dict)
@@ -1007,9 +1008,286 @@ class TestManage(TestCase):
         mock_delete_image.reset_mock()
         self.sot.manage_outdated_images(managed_images)
         mock_get_images.assert_called_once()
-        mock_deactivate.assert_called_once()
-        mock_update_image.assert_called_once()
+        mock_deactivate.assert_not_called()
+        mock_update_image.assert_not_called()
         mock_delete_image.assert_not_called()
+
+        # with --hide, a kept image is hidden instead
+        self.sot.CONF.hide = True
+        mock_get_images.reset_mock()
+        self.sot.manage_outdated_images(managed_images)
+        mock_update_image.assert_called_once_with(
+            self.fake_image.id, visibility="community"
+        )
+        mock_delete_image.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_uuid_validity(
+        self,
+        mock_get_images,
+        mock_deactivate,
+        mock_update_image,
+        mock_delete_image,
+        mock_read_image_files,
+    ):
+        """superseded images are deleted as far as uuid_validity permits"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        name = self.fake_image_dict["name"]
+        for uuid_validity, deleted in (
+            ("none", ["id-1", "id-2"]),
+            ("last-2", ["id-1"]),
+            ("last-3", []),
+            ("2000-01-01", ["id-1", "id-2"]),
+            ("2999-12-31", []),
+            ("notice", []),
+            ("forever", []),
+            ("garbage", []),
+            (None, []),
+        ):
+            with self.subTest(uuid_validity=uuid_validity):
+                mock_delete_image.reset_mock()
+                cloud_images = {}
+                for n in ("1", "2"):
+                    data = copy.deepcopy(FAKE_IMAGE_DATA)
+                    data["id"] = f"id-{n}"
+                    data["name"] = f"{name} ({n})"
+                    if uuid_validity is None:
+                        del data["properties"]["uuid_validity"]
+                    else:
+                        data["properties"]["uuid_validity"] = uuid_validity
+                    cloud_images[data["name"]] = Image(**data)
+                mock_get_images.return_value = cloud_images
+
+                self.sot.manage_outdated_images({name})
+
+                self.assertCountEqual(
+                    [c.args[0] for c in mock_delete_image.call_args_list], deleted
+                )
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_hide_none(
+        self,
+        mock_get_images,
+        mock_update_image,
+        mock_delete_image,
+        mock_read_image_files,
+    ):
+        """without --delete, a superseded 'none' image gets the --hide treatment"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        mock_get_images.return_value = {self.fake_image.name + "_2": self.fake_image}
+        self.sot.CONF.hide = True
+
+        self.sot.manage_outdated_images({"some_image_name"})
+
+        mock_update_image.assert_called_once_with(
+            self.fake_image.id, visibility="community"
+        )
+        mock_delete_image.assert_not_called()
+
+    def test_uuid_validity_keep(self):
+        """uuid_validity is read as scs-0102-v2 defines it"""
+        today = date(2026, 9, 25)
+        for uuid_validity, keep in (
+            ("none", 0),
+            ("last-1", 0),
+            ("last-3", 2),
+            ("2026-09-24", 0),
+            ("2026-09-25", None),
+            ("notice", None),
+            ("forever", None),
+            ("last-x", None),
+            ({}, None),
+            (None, None),
+        ):
+            with self.subTest(uuid_validity=uuid_validity):
+                self.assertEqual(main.uuid_validity_keep(uuid_validity, today), keep)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
+    )
+    def test_hide_image(self, mock_deactivate, mock_update_image):
+        """--hide sets os_hidden and visibility as --use-os-hidden and
+        --hidden-visibility say, and --deactivate deactivates"""
+        image_id = self.fake_image.id
+        for hide, use_os_hidden, hidden_visibility, deactivate, expected in (
+            (False, False, None, False, []),
+            (True, False, None, False, [("update", {"visibility": "community"})]),
+            (
+                True,
+                False,
+                "community",
+                False,
+                [("update", {"visibility": "community"})],
+            ),
+            (True, True, None, False, [("update", {"os_hidden": True})]),
+            (
+                True,
+                True,
+                "community",
+                False,
+                [
+                    ("update", {"os_hidden": True}),
+                    ("update", {"visibility": "community"}),
+                ],
+            ),
+            (
+                True,
+                True,
+                "private",
+                True,
+                [
+                    ("update", {"os_hidden": True}),
+                    ("deactivate", {}),
+                    ("update", {"visibility": "private"}),
+                ],
+            ),
+            (True, False, "private", False, [("update", {"visibility": "private"})]),
+            (False, False, None, True, [("deactivate", {})]),
+        ):
+            with self.subTest(
+                hide=hide,
+                use_os_hidden=use_os_hidden,
+                hidden_visibility=hidden_visibility,
+                deactivate=deactivate,
+            ):
+                self.sot.CONF.hide = hide
+                self.sot.CONF.use_os_hidden = use_os_hidden
+                self.sot.CONF.hidden_visibility = hidden_visibility
+                self.sot.CONF.deactivate = deactivate
+                calls: list = []
+                mock_update_image.side_effect = lambda _id, **kw: calls.append(
+                    ("update", kw)
+                )
+                mock_deactivate.side_effect = lambda _id: calls.append(
+                    ("deactivate", {})
+                )
+
+                self.sot.hide_image("name", Image(**FAKE_IMAGE_DATA), deactivate=True)
+
+                self.assertEqual(calls, expected)
+                for c in mock_update_image.call_args_list:
+                    self.assertEqual(c.args, (image_id,))
+                mock_update_image.reset_mock()
+                mock_deactivate.reset_mock()
+
+        with self.subTest("already hidden, deactivated and private"):
+            data = copy.deepcopy(FAKE_IMAGE_DATA)
+            data.update(os_hidden=True, status="deactivated", visibility="private")
+            self.sot.CONF.update(
+                hide=True, use_os_hidden=True, hidden_visibility="private"
+            )
+            self.sot.CONF.deactivate = True
+
+            self.sot.hide_image("name", Image(**data), deactivate=True)
+
+            mock_update_image.assert_not_called()
+            mock_deactivate.assert_not_called()
+
+        with self.subTest("--deactivate does not apply"):
+            self.sot.CONF.update(hide=False, deactivate=True)
+
+            self.sot.hide_image("name", Image(**FAKE_IMAGE_DATA), deactivate=False)
+
+            mock_deactivate.assert_not_called()
+
+        with self.subTest("dry run"):
+            self.sot.CONF.update(hide=True, deactivate=True, dry_run=True)
+
+            self.sot.hide_image("name", Image(**FAKE_IMAGE_DATA), deactivate=True)
+
+            mock_update_image.assert_not_called()
+            mock_deactivate.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager.hide_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_delete_fails(
+        self,
+        mock_get_images,
+        mock_deactivate,
+        mock_delete_image,
+        mock_read_image_files,
+        mock_hide_image,
+    ):
+        """an image in use is retained and hidden; other failures are errors"""
+        old_name = self.fake_image.name + "_2"
+        mock_get_images.return_value = {old_name: self.fake_image}
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        with self.subTest("in use"):
+            mock_delete_image.side_effect = main.openstack.exceptions.ConflictException(
+                "409 Conflict: Image is in use through the backend store"
+            )
+
+            self.sot.manage_outdated_images({"some_image_name"})
+
+            mock_deactivate.assert_not_called()
+            mock_hide_image.assert_called_once_with(
+                old_name, self.fake_image, deactivate=True
+            )
+            self.assertFalse(self.sot.exit_with_error)
+
+        with self.subTest("other failure"):
+            mock_hide_image.reset_mock()
+            mock_delete_image.side_effect = main.openstack.exceptions.HttpException(
+                "500 Internal Server Error"
+            )
+
+            self.sot.manage_outdated_images({"some_image_name"})
+
+            mock_hide_image.assert_not_called()
+            self.assertTrue(self.sot.exit_with_error)
+
+    def test_validate_hidden_visibility(self):
+        """invalid --hidden-visibility values are rejected"""
+        for value in (None, "community", "private", "shared"):
+            self.assertEqual(main._validate_hidden_visibility(value), value)
+        for value in ("public", "typo"):
+            with self.assertRaises(typer.BadParameter):
+                main._validate_hidden_visibility(value)
+
+    def test_hidden_visibility_requires_hide(self):
+        """--hidden-visibility without --hide is a usage error"""
+        from typer.testing import CliRunner
+
+        app = typer.Typer()
+        app.command()(main.ImageManager().create_cli_args)
+
+        result = CliRunner().invoke(app, ["--hidden-visibility", "private"])
+
+        self.assertEqual(result.exit_code, 2)
+        self.assertIn("requires --hide", result.output)
 
     @mock.patch("openstack_image_manager.main.ImageManager.unshare_image_with_project")
     @mock.patch("openstack_image_manager.main.ImageManager.share_image_with_project")
