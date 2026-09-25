@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+import hashlib
+import tempfile
 import requests
 import typer
 import yamale
@@ -199,6 +201,7 @@ class TestManage(TestCase):
             stuck_retry=0,
             import_timeout=1800,
             prefetch="never",
+            verify_checksum=False,
         )
 
         # we can also mimick an openstack connection object with a Munch
@@ -613,6 +616,186 @@ class TestManage(TestCase):
         self.assertIsNone(main.checksum_to_aria2(""))
         self.assertIsNone(main.checksum_to_aria2(None))
         self.assertIsNone(main.checksum_to_aria2("bogus:dead"))
+        # bare digests of every published length
+        self.assertEqual(main.checksum_to_aria2("c" * 32), "md5=" + "c" * 32)
+        self.assertEqual(main.checksum_to_aria2("d" * 40), "sha-1=" + "d" * 40)
+        self.assertEqual(main.checksum_to_aria2("e" * 128), "sha-512=" + "e" * 128)
+
+    def test_parse_checksum(self):
+        """digests are split into a supported algorithm and a lowercase hex"""
+        for checksum, expected in (
+            ("sha256:" + "A" * 64, ("sha256", "a" * 64)),
+            ("SHA512:" + "b" * 128, ("sha512", "b" * 128)),
+            ("c" * 32, ("md5", "c" * 32)),
+            ("d" * 40, ("sha1", "d" * 40)),
+            ("e" * 64, ("sha256", "e" * 64)),
+            ("F" * 128, ("sha512", "f" * 128)),
+            ("a" * 63, None),
+            ("g" * 64, None),
+            ("crc32:deadbeef", None),
+            ("sha256:", None),
+            ("", None),
+            (None, None),
+        ):
+            with self.subTest(checksum=checksum):
+                self.assertEqual(main.parse_checksum(checksum), expected)
+
+    @mock.patch("openstack_image_manager.main.requests.get")
+    def test_get_checksum_from_checksums_url_formats(self, mock_get):
+        """the digest is taken from the line naming exactly the image file"""
+        name = "Rocky-9-GenericCloud.latest.x86_64.qcow2"
+        url = f"https://example.com/images/{name}"
+        digest = "a" * 64
+        for text in (
+            # BSD style, with a comment line naming the file
+            f"# {name}: 645988352 bytes\nSHA256 ({name}) = {digest}\n",
+            # GNU style, binary mode
+            f"{'b' * 64} *{name}.manifest\n{digest} *{name}\n",
+            # GNU style, text mode
+            f"{'b' * 64}  {name}.manifest\n{digest}  {name}\n",
+        ):
+            with self.subTest(text=text):
+                mock_get.return_value = mock.MagicMock(text=text)
+                self.assertEqual(
+                    self.sot.get_checksum_from_checksums_url(url, "https://x/SUMS"),
+                    digest,
+                )
+
+        mock_get.return_value = mock.MagicMock(text=f"{'b' * 64}  {name}.manifest\n")
+        self.assertEqual(
+            self.sot.get_checksum_from_checksums_url(url, "https://x/SUMS"), ""
+        )
+
+    @mock.patch("openstack_image_manager.main.ImageManager._prefetch_import")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.import_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
+    )
+    def test_import_verify_checksum(self, mock_create, mock_import, mock_pf):
+        """--verify-checksum imports via the verified prefetch path, and
+        refuses an image it cannot verify"""
+        self.sot.CONF.prefetch = "on-stuck"
+        self.sot.CONF.verify_checksum = True
+        fresh = mock.MagicMock()
+        mock_pf.return_value = fresh
+
+        with self.subTest("with a checksum"):
+            result = self.sot.import_image(
+                self.fake_image_dict,
+                self.fake_name,
+                self.fake_url,
+                self.versions,
+                "1",
+                checksum="d" * 128,
+            )
+            self.assertIs(result, fresh)
+            mock_pf.assert_called_once()
+            mock_import.assert_not_called()
+            self.assertFalse(self.sot.exit_with_error)
+
+        for checksum in (None, "crc32:deadbeef"):
+            with self.subTest(checksum=checksum):
+                mock_pf.reset_mock()
+                self.sot.exit_with_error = False
+                result = self.sot.import_image(
+                    self.fake_image_dict,
+                    self.fake_name,
+                    self.fake_url,
+                    self.versions,
+                    "1",
+                    checksum=checksum,
+                )
+                self.assertIsNone(result)
+                self.assertTrue(self.sot.exit_with_error)
+                mock_pf.assert_not_called()
+                mock_create.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager._glance_direct_import")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.create_image"
+    )
+    def test_import_file_verifies_checksum(self, mock_create, mock_gd):
+        """a local file is checked against its checksum before it is staged"""
+        with tempfile.NamedTemporaryFile() as fp:
+            fp.write(b"image data")
+            fp.flush()
+            url = f"file://{fp.name}"
+            good = hashlib.sha256(b"image data").hexdigest()
+
+            with self.subTest("match"):
+                mock_gd.return_value = mock.MagicMock()
+                result = self.sot.import_image(
+                    self.file_image_dict,
+                    self.fake_name,
+                    url,
+                    self.file_versions,
+                    "1",
+                    checksum=f"sha256:{good}",
+                )
+                self.assertIs(result, mock_gd.return_value)
+                mock_create.assert_called_once()
+                self.assertFalse(self.sot.exit_with_error)
+
+            with self.subTest("mismatch"):
+                mock_create.reset_mock()
+                mock_gd.reset_mock()
+                result = self.sot.import_image(
+                    self.file_image_dict,
+                    self.fake_name,
+                    url,
+                    self.file_versions,
+                    "1",
+                    checksum="0" * 64,
+                )
+                self.assertIsNone(result)
+                mock_create.assert_not_called()
+                mock_gd.assert_not_called()
+                self.assertTrue(self.sot.exit_with_error)
+
+    @mock.patch("openstack_image_manager.main.subprocess.run")
+    @mock.patch(
+        "openstack_image_manager.main.shutil.which", return_value="/usr/bin/aria2c"
+    )
+    def test_download_checksum_mismatch(self, mock_which, mock_run):
+        """aria2c's checksum validation failure is a clean False"""
+        mock_run.return_value = mock.MagicMock(returncode=32)
+        self.assertFalse(self.sot._download("http://x/y", "/tmp/y", "a" * 128))
+        self.assertIn("--checksum=sha-512=" + "a" * 128, mock_run.call_args.args[0])
+
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch(
+        "openstack_image_manager.main.ImageManager.get_checksum_from_checksums_url"
+    )
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_latest_passes_upstream_checksum(
+        self,
+        mock_get_images,
+        mock_head,
+        mock_get_checksum,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        """a latest version is imported against the checksum fetched for it"""
+        mock_get_images.return_value = {}
+        mock_head.return_value.status_code = 200
+        mock_get_checksum.return_value = "e" * 128
+        versions = {
+            "latest": {
+                "url": self.fake_url,
+                "checksums_url": self.fake_checksums_url,
+                "meta": {"image_source": self.fake_url},
+            }
+        }
+
+        self.sot.process_image(
+            self.fake_image_dict, versions, ["latest"], self.fake_image_dict["meta"]
+        )
+
+        self.assertEqual(mock_import_image.call_args.kwargs["checksum"], "e" * 128)
 
     @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
