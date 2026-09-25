@@ -1348,3 +1348,27 @@ class TestManage(TestCase):
                     else:
                         with self.assertRaises(YamaleError):
                             yamale.validate(schema, data)
+
+    def test_schema_os_type_and_admin_user(self):
+        """os_type and os_admin_user are optional; os_type is linux or windows"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for meta, valid in (
+            ({}, True),
+            ({"os_type": "linux"}, True),
+            ({"os_type": "windows"}, True),
+            ({"os_type": "Linux"}, False),
+            ({"os_type": "freebsd"}, False),
+            ({"os_admin_user": "ubuntu"}, True),
+            ({"os_admin_user": 0}, False),
+        ):
+            with self.subTest(meta=meta):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                image["meta"].update(meta)
+                content = yaml.safe_dump({"images": [image]})
+                data = yamale.make_data(content=content)
+                if valid:
+                    yamale.validate(schema, data)
+                else:
+                    with self.assertRaises(YamaleError):
+                        yamale.validate(schema, data)
