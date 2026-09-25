@@ -133,7 +133,7 @@ FAKE_IMAGE_DATA = {
         "image_original_user": FAKE_IMAGE_DICT["login"],
         "internal_version": FAKE_IMAGE_DICT["versions"][0]["version"],
         "image_description": FAKE_IMAGE_DICT["name"],
-        "uuid_validity": {},
+        "uuid_validity": "none",
     },
 }
 
@@ -1010,6 +1010,107 @@ class TestManage(TestCase):
         mock_deactivate.assert_called_once()
         mock_update_image.assert_called_once()
         mock_delete_image.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_uuid_validity(
+        self,
+        mock_get_images,
+        mock_deactivate,
+        mock_update_image,
+        mock_delete_image,
+        mock_read_image_files,
+    ):
+        """superseded images are deleted as far as uuid_validity permits"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        name = self.fake_image_dict["name"]
+        for uuid_validity, deleted in (
+            ("none", ["id-1", "id-2"]),
+            ("last-2", ["id-1"]),
+            ("last-3", []),
+            ("2000-01-01", ["id-1", "id-2"]),
+            ("2999-12-31", []),
+            ("notice", []),
+            ("forever", []),
+            ("garbage", []),
+            (None, []),
+        ):
+            with self.subTest(uuid_validity=uuid_validity):
+                mock_delete_image.reset_mock()
+                cloud_images = {}
+                for n in ("1", "2"):
+                    data = copy.deepcopy(FAKE_IMAGE_DATA)
+                    data["id"] = f"id-{n}"
+                    data["name"] = f"{name} ({n})"
+                    if uuid_validity is None:
+                        del data["properties"]["uuid_validity"]
+                    else:
+                        data["properties"]["uuid_validity"] = uuid_validity
+                    cloud_images[data["name"]] = Image(**data)
+                mock_get_images.return_value = cloud_images
+
+                self.sot.manage_outdated_images({name})
+
+                self.assertCountEqual(
+                    [c.args[0] for c in mock_delete_image.call_args_list], deleted
+                )
+
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_hide_none(
+        self,
+        mock_get_images,
+        mock_update_image,
+        mock_delete_image,
+        mock_read_image_files,
+    ):
+        """without --delete, a superseded 'none' image gets the --hide treatment"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        mock_get_images.return_value = {self.fake_image.name + "_2": self.fake_image}
+        self.sot.CONF.hide = True
+
+        self.sot.manage_outdated_images({"some_image_name"})
+
+        mock_update_image.assert_called_once_with(
+            self.fake_image.id, visibility="community"
+        )
+        mock_delete_image.assert_not_called()
+
+    def test_uuid_validity_keep(self):
+        """uuid_validity is read as scs-0102-v2 defines it"""
+        today = date(2026, 9, 25)
+        for uuid_validity, keep in (
+            ("none", 0),
+            ("last-1", 0),
+            ("last-3", 2),
+            ("2026-09-24", 0),
+            ("2026-09-25", None),
+            ("notice", None),
+            ("forever", None),
+            ("last-x", None),
+            ({}, None),
+            (None, None),
+        ):
+            with self.subTest(uuid_validity=uuid_validity):
+                self.assertEqual(main.uuid_validity_keep(uuid_validity, today), keep)
 
     @mock.patch("openstack_image_manager.main.ImageManager.unshare_image_with_project")
     @mock.patch("openstack_image_manager.main.ImageManager.share_image_with_project")

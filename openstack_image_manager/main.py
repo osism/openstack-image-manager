@@ -58,6 +58,33 @@ def checksum_to_aria2(checksum: typing.Optional[str]) -> typing.Optional[str]:
     return None
 
 
+def uuid_validity_keep(
+    uuid_validity: typing.Any, today: typing.Optional[date] = None
+) -> typing.Optional[int]:
+    """Return how many superseded images of an image to keep, or None to keep all.
+
+    Interprets uuid_validity as defined by scs-0102-v2: 'none' promises nothing
+    once the content changes, 'last-N' keeps the UUIDs of the last N images
+    (the current one included), a date keeps them until at least that date,
+    and 'notice' and 'forever' keep them indefinitely. Unrecognised values keep
+    everything, since deleting an image cannot be undone.
+    """
+    if uuid_validity == "none":
+        return 0
+    if uuid_validity in ("notice", "forever"):
+        return None
+    if isinstance(uuid_validity, str):
+        match = re.fullmatch(r"last-(\d+)", uuid_validity)
+        if match:
+            return max(int(match.group(1)) - 1, 0)
+        try:
+            valid_until = date.fromisoformat(uuid_validity)
+        except ValueError:
+            return None
+        return 0 if (today or date.today()) > valid_until else None
+    return None
+
+
 class ImageManager:
     def __init__(self) -> None:
         self.exit_with_error = False
@@ -1393,22 +1420,15 @@ class ImageManager:
             image_definition = images[image_name]
             counter[image_name] = counter.get(image_name, 0) + 1
 
-            uuid_validity = cloud_image.properties["uuid_validity"]
-            if "last" in uuid_validity:
-                last = int(uuid_validity[5:]) - 1
-            else:
-                last = 0
+            uuid_validity = cloud_image.properties.get("uuid_validity")
+            last = uuid_validity_keep(uuid_validity)
 
             if self.CONF.keep and not image_definition["multi"]:
                 logger.info(
                     f"Image '{image}' will not be deleted, undefined versions of defined images are kept"
                 )
 
-            elif uuid_validity == "none":
-                logger.info(
-                    f"Image '{image}' will not be deleted, UUID validity is 'none'"
-                )
-            elif counter[image_name] > last:
+            elif last is not None and counter[image_name] > last:
                 if (
                     self.CONF.delete
                     and self.CONF.yes_i_really_know_what_i_do
@@ -1461,10 +1481,20 @@ class ImageManager:
                     except Exception as e:
                         logger.error(f"An Exception occurred: \n{e}")
                         self.exit_with_error = True
-            elif counter[image_name] <= last:
-                logger.info(
-                    f"Image '{image}' will not be deleted, {counter[image_name]} <= {last}"
-                )
+            else:
+                if last is None:
+                    recognised = uuid_validity in ("notice", "forever") or (
+                        isinstance(uuid_validity, str)
+                        and re.fullmatch(r"\d{4}-\d{2}-\d{2}", uuid_validity)
+                    )
+                    log = logger.info if recognised else logger.warning
+                    log(
+                        f"Image '{image}' will not be deleted, UUID validity is '{uuid_validity}'"
+                    )
+                else:
+                    logger.info(
+                        f"Image '{image}' will not be deleted, {counter[image_name]} <= {last}"
+                    )
                 if (
                     self.CONF.hide
                     and not self.CONF.dry_run
@@ -1474,11 +1504,6 @@ class ImageManager:
                     self.image_proxy.update_image(
                         cloud_image.id, visibility="community"
                     )
-            elif (
-                counter[image_name] < last and self.CONF.hide and not self.CONF.dry_run
-            ):
-                logger.info(f"Setting visibility of '{image}' to 'community'")
-                self.image_proxy.update_image(cloud_image.id, visibility="community")
         return unmanaged_images
 
     def validate_yaml_schema(self):
