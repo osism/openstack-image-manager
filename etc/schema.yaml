@@ -44,6 +44,8 @@ meta:
   os_distro: enum('almalinux', 'alpinelinux', 'alt', 'altlinux', 'android-x86', 'anolis', 'arch', 'archlinux', 'asianux', 'caasp', 'centos', 'circle', 'cirros', 'clearlinux', 'debian', 'dragonflybsd', 'elementaryos', 'eos', 'eurolinux', 'fedora', 'freebsd', 'freedos', 'freenix', 'gentoo', 'gnome', 'guix-system', 'haiku', 'hyperbola', 'mageia', 'mandrake', 'mandriva', 'manjaro', 'mbs', 'mes', 'miraclelinux', 'msdos', 'netbsd', 'netware', 'nixos', 'oel', 'ol', 'omnios', 'openbsd', 'openindiana', 'opensolaris', 'opensuse', 'osx', 'popos', 'pureos', 'rhel', 'rhl', 'rocky', 'scientificlinux', 'slackware', 'sle', 'sled', 'slem', 'sles', 'smartos', 'solaris', 'solus', 'talos', 'trisquel', 'ubuntu', 'ucs', 'voidlinux', 'win', 'windows', 'winnt')
   os_version: str(required=False)
   os_purpose: enum('generic', 'minimal', 'k8snode', 'gpu', 'network', 'custom')
+  os_type: enum('linux', 'windows', required=False)
+  os_admin_user: str(required=False)
   patchlevel: str(required=False)
   provided_until: any(enum('none'), day())
   replace_frequency: enum('yearly', 'quarterly', 'monthly', 'weekly', 'daily', 'critical_bug', 'never')
