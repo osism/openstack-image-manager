@@ -634,6 +634,27 @@ class TestManage(TestCase):
         too_old_images = self.sot.check_image_age()
         self.assertIn(self.fake_name, too_old_images)
 
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    def test_check_image_age_without_build_date(
+        self, mock_read_image_files, mock_get_images
+    ):
+        """images are ignored when either side has no build date"""
+        self.sot.CONF.max_age = 10
+
+        # the definition declares no build_date
+        del self.fake_image_dict["versions"][0]["build_date"]
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        mock_get_images.return_value = {self.fake_name: self.fake_image}
+        self.assertEqual(self.sot.check_image_age(), set())
+
+        # the cloud image carries no image_build_date
+        mock_read_image_files.return_value = [copy.deepcopy(FAKE_IMAGE_DICT)]
+        data = copy.deepcopy(FAKE_IMAGE_DATA)
+        del data["properties"]["image_build_date"]
+        mock_get_images.return_value = {self.fake_name: Image(**data)}
+        self.assertEqual(self.sot.check_image_age(), set())
+
     @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
     @mock.patch("openstack_image_manager.main.ImageManager.import_image")
     @mock.patch("openstack_image_manager.main.requests.head")
@@ -824,6 +845,93 @@ class TestManage(TestCase):
         mock_add_tag.assert_called_once_with(self.fake_image.id, "my_tag")
         mock_remove_tag.assert_called_once_with(self.fake_image.id, "fake_tag")
         mock_deactivate.assert_called_once_with(self.fake_image.id)
+
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
+    )
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.add_tag")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_set_properties_latest_build_date(
+        self,
+        mock_get_images,
+        mock_update_image,
+        mock_add_tag,
+        mock_remove_tag,
+        mock_head,
+    ):
+        """for a latest version, image_build_date is the Last-Modified date
+        unless the definition declares a build_date"""
+
+        mock_get_images.return_value = {self.fake_name: self.fake_image}
+        mock_head.return_value.headers = {
+            "Last-Modified": "Wed, 23 Sep 2026 10:00:00 GMT"
+        }
+        meta = {
+            k: v
+            for k, v in self.fake_image_dict["meta"].items()
+            if k != "image_build_date"
+        }
+
+        def build_dates():
+            return [
+                c.kwargs["image_build_date"]
+                for c in mock_update_image.call_args_list
+                if "image_build_date" in c.kwargs
+            ]
+
+        for declared, expected in (
+            (None, ["2026-09-23"]),
+            ("2026-09-15", ["2026-09-15"]),
+        ):
+            with self.subTest(declared=declared):
+                mock_update_image.reset_mock()
+                versions = {
+                    "latest": {
+                        "url": self.fake_url,
+                        "meta": {"image_source": self.fake_url},
+                    }
+                }
+                if declared:
+                    versions["latest"]["meta"]["image_build_date"] = declared
+
+                self.sot.set_properties(
+                    copy.deepcopy(self.fake_image_dict),
+                    self.fake_name,
+                    versions,
+                    "latest",
+                    "",
+                    meta,
+                )
+
+                self.assertEqual(build_dates(), expected)
+                mock_update_image.assert_any_call(
+                    self.fake_image.id, internal_version="20260923"
+                )
+
+        with self.subTest("no Last-Modified"):
+            mock_update_image.reset_mock()
+            mock_head.side_effect = requests.ConnectionError
+            versions = {
+                "latest": {
+                    "url": self.fake_url,
+                    "meta": {"image_source": self.fake_url},
+                }
+            }
+
+            self.sot.set_properties(
+                copy.deepcopy(self.fake_image_dict),
+                self.fake_name,
+                versions,
+                "latest",
+                "",
+                meta,
+            )
+
+            self.assertEqual(build_dates(), [])
 
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
@@ -1114,6 +1222,18 @@ class TestManage(TestCase):
         mock_validate_yaml.assert_called_once()
         mock_share_image.assert_not_called()
         mock_unshare_image.assert_not_called()
+
+    def test_schema_build_date_optional(self):
+        """a version validates with or without a build_date"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for build_date in (date(2026, 1, 1), None):
+            with self.subTest(build_date=build_date):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                if build_date is None:
+                    del image["versions"][0]["build_date"]
+                content = yaml.safe_dump({"images": [image]})
+                yamale.validate(schema, yamale.make_data(content=content))
 
     def test_validate_images(self):
         """Validate the image definitions in this repo against the schema"""

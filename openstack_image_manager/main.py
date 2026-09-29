@@ -461,6 +461,12 @@ class ImageManager:
                         versions[version["version"]]["meta"]["image_build_date"] = (
                             date.isoformat(version["build_date"])
                         )
+                    elif version["version"] != "latest":
+                        # only a latest pointer can derive its build date
+                        logger.warning(
+                            f"Version '{version['version']}' of image '{image['name']}' "
+                            "has no build_date, image_build_date will not be set"
+                        )
 
                     if "id" in version:
                         versions[version["version"]]["id"] = version["id"]
@@ -1107,24 +1113,33 @@ class ImageManager:
             if version == "latest":
                 try:
                     url = versions[version]["url"]
-                    modify_date = requests.head(url, allow_redirects=True).headers[
+                    last_modified = requests.head(url, allow_redirects=True).headers[
                         "Last-Modified"
                     ]
 
                     date_format = "%a, %d %b %Y %H:%M:%S %Z"
-                    modify_date = str(
-                        datetime.strptime(modify_date, date_format).date()
-                    )
-                    modify_date = modify_date.replace("-", "")
+                    modify_date = datetime.strptime(last_modified, date_format).date()
 
-                    logger.info(f"Setting internal_version = {modify_date}")
-                    image["meta"]["internal_version"] = modify_date
+                    internal_version = modify_date.strftime("%Y%m%d")
+                    logger.info(f"Setting internal_version = {internal_version}")
+                    image["meta"]["internal_version"] = internal_version
+
+                    # the date of the build actually published; a build_date
+                    # declared in the definition takes precedence when the
+                    # version meta is merged in below
+                    logger.info(f"Setting image_build_date = {modify_date.isoformat()}")
+                    image["meta"]["image_build_date"] = modify_date.isoformat()
                 except Exception:
                     logger.error(
                         f"Error when retrieving the modification date of image '{image['name']}'"
                     )
                     logger.info(f"Setting internal_version = {version}")
                     image["meta"]["internal_version"] = version
+                    if "image_build_date" not in versions[version]["meta"]:
+                        logger.warning(
+                            f"No build_date for image '{image['name']}', "
+                            "image_build_date will not be updated"
+                        )
             else:
                 logger.info(f"Setting internal_version = {version}")
                 image["meta"]["internal_version"] = version
@@ -1301,24 +1316,38 @@ class ImageManager:
 
             image_definition = images[image_name]
 
+            if "image_build_date" not in cloud_image.properties:
+                logger.warning(
+                    f"Image '{cloud_image_name}' has no image_build_date, image will be ignored"
+                )
+                continue
+
             build_date_backend = date.fromisoformat(
                 cloud_image.properties["image_build_date"]
             )
 
             if image_definition["multi"]:
-                build_date_definition_candidates = [
-                    x["build_date"] for x in image_definition["versions"]
-                ]
+                compatible_versions = image_definition["versions"]
             else:
-                build_date_definition_candidates = []
-                for v in image_definition["versions"]:
-                    if v["version"] != cloud_image.os_version:
-                        continue
-                    build_date_definition_candidates.append(v["build_date"])
+                compatible_versions = [
+                    v
+                    for v in image_definition["versions"]
+                    if v["version"] == cloud_image.os_version
+                ]
+
+            if len(compatible_versions) == 0:
+                logger.warning(
+                    f"No compatible version definition found for '{cloud_image_name}', image will be ignored"
+                )
+                continue
+
+            build_date_definition_candidates = [
+                v["build_date"] for v in compatible_versions if "build_date" in v
+            ]
 
             if len(build_date_definition_candidates) == 0:
                 logger.warning(
-                    f"No compatible version definition found for '{cloud_image_name}', image will be ignored"
+                    f"No build_date in the definition of '{cloud_image_name}', image will be ignored"
                 )
                 continue
 
