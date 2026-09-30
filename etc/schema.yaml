@@ -26,6 +26,7 @@ image:
 meta:
   architecture: enum('x86_64', 'aarch64', 'risc-v')
   hotfix_hours: int(min=0, required=False)
+  hw_cdrom_bus: enum('ide', 'sata', 'scsi', 'usb', required=False)
   hw_disk_bus: enum('virtio', 'scsi', None)
   hw_firmware_type: enum('uefi', None, required=False)
   hw_machine_type: enum('pc', 'q35', 'virt', None, required=False)
