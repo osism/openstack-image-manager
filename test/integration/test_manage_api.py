@@ -18,6 +18,7 @@ class TestManageAPI(TestCase):
             latest=True,
             dry_run=False,
             use_os_hidden=False,
+            retire_expired=False,
             delete=True,  # delete the image after the test
             yes_i_really_know_what_i_do=True,
             hide=False,
