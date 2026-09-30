@@ -1650,3 +1650,27 @@ class TestManage(TestCase):
                 else:
                     with self.assertRaises(YamaleError):
                         yamale.validate(schema, data)
+
+    def test_schema_hw_cdrom_bus(self):
+        """hw_cdrom_bus is optional and names a bus that can carry a CD-ROM"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for meta, valid in (
+            ({}, True),
+            ({"hw_cdrom_bus": "ide"}, True),
+            ({"hw_cdrom_bus": "sata"}, True),
+            ({"hw_cdrom_bus": "scsi"}, True),
+            ({"hw_cdrom_bus": "usb"}, True),
+            ({"hw_cdrom_bus": "virtio"}, False),
+            ({"hw_cdrom_bus": "SCSI"}, False),
+        ):
+            with self.subTest(meta=meta):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                image["meta"].update(meta)
+                content = yaml.safe_dump({"images": [image]})
+                data = yamale.make_data(content=content)
+                if valid:
+                    yamale.validate(schema, data)
+                else:
+                    with self.assertRaises(YamaleError):
+                        yamale.validate(schema, data)
