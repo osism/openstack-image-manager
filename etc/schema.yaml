@@ -9,7 +9,7 @@ image:
   latest_url: regex(r'^(http|ftp)s?:\/\/\w+.*', name='valid URL', required=False)
   login: str()
   meta: include('meta', required=True)
-  min_disk: int(min=0)
+  min_disk: int(min=0, required=False)
   min_ram: int(min=0)
   multi: bool()
   keep: bool(required=False)
