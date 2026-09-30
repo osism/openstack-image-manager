@@ -182,6 +182,7 @@ class TestManage(TestCase):
             dry_run=False,
             use_os_hidden=False,
             hidden_visibility=None,
+            retire_expired=False,
             delete=False,
             keep=False,
             yes_i_really_know_what_i_do=False,
@@ -1977,6 +1978,117 @@ class TestManage(TestCase):
 
             mock_hide_image.assert_not_called()
             self.assertTrue(self.sot.exit_with_error)
+
+    def test_provided_until_passed(self):
+        """provided_until has passed only for a date before today"""
+        today = date(2026, 9, 30)
+        for provided_until, passed in (
+            ("none", False),
+            (None, False),
+            (date(2026, 9, 29), True),
+            (date(2026, 9, 30), False),
+            ("2026-07-11", True),
+            ("2028-08-09", False),
+            ("garbage", False),
+        ):
+            with self.subTest(provided_until=provided_until):
+                self.assertEqual(
+                    main.provided_until_passed(provided_until, today), passed
+                )
+
+    @mock.patch("openstack_image_manager.main.os.listdir", return_value=["fake.yml"])
+    def test_read_image_files_expired(self, mock_listdir):
+        """an expired definition is not imported with --retire-expired"""
+        definitions = yaml.safe_dump(
+            {
+                "images": [
+                    dict(
+                        self.fake_image_dict,
+                        name="Current",
+                        meta={"provided_until": "none"},
+                    ),
+                    dict(
+                        self.fake_image_dict,
+                        name="Expired",
+                        meta={"provided_until": date(2000, 1, 1)},
+                    ),
+                ]
+            }
+        )
+        with mock.patch("builtins.open", mock.mock_open(read_data=definitions)):
+            for retire_expired, expected in (
+                (False, ["Current", "Expired"]),
+                (True, ["Current"]),
+            ):
+                with self.subTest(retire_expired=retire_expired):
+                    self.sot.CONF.retire_expired = retire_expired
+                    names = [i["name"] for i in self.sot.read_image_files()]
+                    self.assertEqual(sorted(names), expected)
+                    # the retirement side always sees every definition
+                    all_names = [
+                        i["name"]
+                        for i in self.sot.read_image_files(return_all_images=True)
+                    ]
+                    self.assertEqual(sorted(all_names), ["Current", "Expired"])
+
+    @mock.patch("openstack_image_manager.main.ImageManager.hide_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_retire_expired(
+        self, mock_get_images, mock_delete_image, mock_read_image_files, mock_hide_image
+    ):
+        """with --retire-expired, an expired definition's newest image is
+        retired too, and last-N keeps N images in all"""
+        name = self.fake_image_dict["name"]
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        def cloud(uuid_validity):
+            images = {}
+            for n, suffix in ((0, ""), (3, " (3)"), (2, " (2)"), (1, " (1)")):
+                data = copy.deepcopy(FAKE_IMAGE_DATA)
+                data["id"] = f"id-{n}"
+                data["name"] = f"{name}{suffix}"
+                data["properties"]["uuid_validity"] = uuid_validity
+                images[data["name"]] = Image(**data)
+            return images
+
+        for retire, provided_until, uuid_validity, deleted, hidden in (
+            # not expired: the newest image is never touched
+            (True, "none", "none", ["id-1", "id-2", "id-3"], []),
+            # expired, but without the flag: as if not expired
+            (False, date(2000, 1, 1), "none", ["id-1", "id-2", "id-3"], []),
+            # expired: the newest image goes too
+            (True, date(2000, 1, 1), "none", ["id-0", "id-1", "id-2", "id-3"], []),
+            # last-3 keeps 3 in all, the newest counted first
+            (True, date(2000, 1, 1), "last-3", ["id-1"], ["id-0", "id-3", "id-2"]),
+            # forever keeps them all, hidden
+            (True, date(2000, 1, 1), "forever", [], ["id-0", "id-3", "id-2", "id-1"]),
+        ):
+            with self.subTest(
+                retire=retire,
+                provided_until=provided_until,
+                uuid_validity=uuid_validity,
+            ):
+                mock_delete_image.reset_mock()
+                mock_hide_image.reset_mock()
+                self.sot.CONF.retire_expired = retire
+                definition = copy.deepcopy(self.fake_image_dict)
+                definition["meta"]["provided_until"] = provided_until
+                mock_read_image_files.return_value = [definition]
+                mock_get_images.return_value = cloud(uuid_validity)
+
+                self.sot.manage_outdated_images({name} if not retire else set())
+
+                self.assertCountEqual(
+                    [c.args[0] for c in mock_delete_image.call_args_list], deleted
+                )
+                self.assertEqual(
+                    [c.args[1].id for c in mock_hide_image.call_args_list], hidden
+                )
 
     def test_validate_hidden_visibility(self):
         """invalid --hidden-visibility values are rejected"""
