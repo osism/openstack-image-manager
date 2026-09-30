@@ -1569,6 +1569,37 @@ class TestManage(TestCase):
                     with self.assertRaises(YamaleError):
                         yamale.validate(schema, data)
 
+    def test_schema_hw_qemu_guest_agent(self):
+        """hw_qemu_guest_agent is optional, as 'yes'/'no' or a YAML boolean"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        # an unquoted yes in YAML is the boolean true, a quoted one a string
+        for value, valid in (
+            (None, True),
+            ("'yes'", True),
+            ("'no'", True),
+            ("yes", True),
+            ("true", True),
+            ("false", True),
+            ("'maybe'", False),
+            ("'Yes'", False),
+        ):
+            with self.subTest(value=value):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                content = yaml.safe_dump({"images": [image]})
+                if value is not None:
+                    content = content.replace(
+                        "    os_distro: ubuntu\n",
+                        f"    hw_qemu_guest_agent: {value}\n    os_distro: ubuntu\n",
+                    )
+                    self.assertIn("hw_qemu_guest_agent", content)
+                data = yamale.make_data(content=content)
+                if valid:
+                    yamale.validate(schema, data)
+                else:
+                    with self.assertRaises(YamaleError):
+                        yamale.validate(schema, data)
+
     def test_schema_url_fields_reject_ftp(self):
         """the checksum URL fields must only accept URLs that
         requests.get() can actually fetch (no FTP adapter)"""
