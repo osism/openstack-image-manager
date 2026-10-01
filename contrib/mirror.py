@@ -105,9 +105,20 @@ def mirror_paths(image, version):
 
 
 def mirror_version(
-    client, minio_bucket, image, version, download=True, checksum=True, upload=True
+    client,
+    minio_bucket,
+    image,
+    version,
+    download=True,
+    checksum=True,
+    upload=True,
+    dry_run=False,
 ):
-    """Mirror one image version into the bucket unless it is already there."""
+    """Mirror one image version into the bucket unless it is already there.
+
+    With dry_run the bucket is only read: a missing object is reported
+    instead of being downloaded and uploaded.
+    """
     logger.debug(f"source: {version['url']}")
 
     paths = mirror_paths(image, version)
@@ -154,6 +165,13 @@ def mirror_version(
         logger.info(
             f"File {mirror_filename} not yet available in bucket {mirror_dirname}"
         )
+
+        if dry_run:
+            logger.info(
+                f"Would mirror {version['url']} to "
+                f"{minio_bucket}/{os.path.join(mirror_dirname, mirror_filename)}"
+            )
+            return True
 
         if download:
             if not isfile(os.path.basename(source_filename)):
@@ -324,6 +342,11 @@ def main(
     delete: bool = typer.Option(
         True, "--delete/--no-delete", help="Delete images after upload"
     ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Only report what would be mirrored, download and upload nothing",
+    ),
     images: str = typer.Option(
         "etc/images/", help="Path to the directory containing all image files"
     ),
@@ -431,6 +454,7 @@ def main(
                 download=download,
                 checksum=checksum,
                 upload=upload,
+                dry_run=dry_run,
             ):
                 failed.append(f"{image['name']} {version['version']}")
 
