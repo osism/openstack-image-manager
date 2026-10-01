@@ -560,7 +560,7 @@ class ExitStatusTest(unittest.TestCase):
         os.chdir(self.cwd)
         shutil.rmtree(self.dir)
 
-    def _run(self, response):
+    def _run(self, response, name_filter=None):
         client = _FakeClient()
         with mock.patch.object(mirror, "Minio", return_value=client):
             with mock.patch.object(mirror.requests, "get", return_value=response):
@@ -571,6 +571,7 @@ class ExitStatusTest(unittest.TestCase):
                     download=True,
                     delete=True,
                     images=self.images,
+                    name_filter=name_filter,
                     minio_access_key="key",
                     minio_secret_key="secret",
                     minio_server="object.test",
@@ -588,6 +589,51 @@ class ExitStatusTest(unittest.TestCase):
         client = self._run(_response())
 
         self.assertEqual(len(client.uploaded), 1)
+
+    def test_image_matching_the_filter_is_mirrored(self):
+        client = self._run(_response(), name_filter="Ubuntu")
+
+        self.assertEqual(len(client.uploaded), 1)
+
+    def test_image_not_matching_the_filter_is_skipped(self):
+        client = self._run(_response(), name_filter="Debian")
+
+        self.assertEqual(len(client.uploaded), 0)
+
+    def test_invalid_filter_exits_non_zero(self):
+        with self.assertRaises(SystemExit) as caught:
+            self._run(_response(), name_filter="Ubuntu (")
+
+        self.assertEqual(caught.exception.code, 1)
+
+
+class FilterImagesTest(unittest.TestCase):
+    IMAGES = [
+        {"name": "Debian 12"},
+        {"name": "Ubuntu 22.04"},
+        {"name": "Ubuntu 24.04"},
+        {"name": "Ubuntu 24.04 Minimal"},
+    ]
+
+    def _names(self, pattern):
+        return [image["name"] for image in mirror.filter_images(self.IMAGES, pattern)]
+
+    def test_no_filter_keeps_every_image(self):
+        self.assertEqual(mirror.filter_images(self.IMAGES, None), self.IMAGES)
+
+    def test_distribution_name_selects_all_its_releases(self):
+        self.assertEqual(
+            self._names("Ubuntu"),
+            ["Ubuntu 22.04", "Ubuntu 24.04", "Ubuntu 24.04 Minimal"],
+        )
+
+    def test_release_selects_its_variants(self):
+        self.assertEqual(
+            self._names("Ubuntu 24.04"), ["Ubuntu 24.04", "Ubuntu 24.04 Minimal"]
+        )
+
+    def test_anchored_filter_selects_a_single_image(self):
+        self.assertEqual(self._names("Ubuntu 24.04$"), ["Ubuntu 24.04"])
 
 
 if __name__ == "__main__":
