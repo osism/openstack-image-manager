@@ -992,6 +992,87 @@ class TestManage(TestCase):
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
     @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_without_internal_version(
+        self, mock_get_images, mock_update_image
+    ):
+        """a previous image without internal_version is renamed after the
+        date it was created"""
+        data = copy.deepcopy(FAKE_IMAGE_DATA)
+        del data["properties"]["internal_version"]
+        data["created_at"] = "2026-09-22T10:00:00Z"
+        previous_image = Image(**data)
+        mock_get_images.return_value = {self.fake_image.name: previous_image}
+
+        self.sot.rename_images(
+            self.fake_image_dict, ["latest"], self.imported_image, previous_image
+        )
+
+        mock_update_image.assert_any_call(
+            previous_image.id, **{"internal_version": "20260922"}
+        )
+        mock_update_image.assert_any_call(
+            previous_image.id, name=f"{self.fake_image_dict['name']} (20260922)"
+        )
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_without_image_description(
+        self,
+        mock_get_images,
+        mock_read_image_files,
+        mock_delete_image,
+        mock_update_image,
+        mock_deactivate,
+    ):
+        """an image without image_description is skipped, and the cleanup
+        carries on with the others"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        broken = copy.deepcopy(FAKE_IMAGE_DATA)
+        broken["id"] = "id-broken"
+        broken["name"] = "Broken"
+        del broken["properties"]["image_description"]
+        superseded = copy.deepcopy(FAKE_IMAGE_DATA)
+        superseded["id"] = "id-superseded"
+        superseded["name"] = f"{self.fake_image_dict['name']} (1)"
+        superseded["properties"]["uuid_validity"] = "none"
+        mock_get_images.return_value = {
+            "Broken": Image(**broken),
+            superseded["name"]: Image(**superseded),
+        }
+
+        self.sot.manage_outdated_images({"some_image_name"})
+
+        mock_delete_image.assert_called_once_with("id-superseded")
+
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    def test_check_image_age_without_image_description(
+        self, mock_read_image_files, mock_get_images
+    ):
+        """an image without image_description is skipped by --check-age"""
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        broken = copy.deepcopy(FAKE_IMAGE_DATA)
+        del broken["properties"]["image_description"]
+        mock_get_images.return_value = {"Broken": Image(**broken)}
+
+        self.assertEqual(self.sot.check_image_age(), set())
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     def test_rename_images_separator(self, mock_get_images, mock_update_image):
         """test main.ImageManager.rename_images()"""
 
