@@ -45,6 +45,14 @@ def file_checksum(path, algorithm):
     return digest.hexdigest()
 
 
+def filter_images(images, pattern):
+    """Return the images whose name matches the regex, all of them without one."""
+    if not pattern:
+        return images
+
+    return [image for image in images if re.search(pattern, image["name"])]
+
+
 class MirrorPaths(NamedTuple):
     """Where one image version lives upstream and in the mirror bucket."""
 
@@ -319,6 +327,9 @@ def main(
     images: str = typer.Option(
         "etc/images/", help="Path to the directory containing all image files"
     ),
+    name_filter: str = typer.Option(
+        None, "--filter", help="Filter images with a regex on their name"
+    ),
     minio_access_key: str = typer.Option(
         None, help="Minio access key", envvar="MINIO_ACCESS_KEY"
     ),
@@ -342,6 +353,13 @@ def main(
 
     logger.remove()
     logger.add(sys.stderr, format=log_fmt, level=level, colorize=True)
+
+    if name_filter:
+        try:
+            re.compile(name_filter)
+        except re.error as exc:
+            logger.error(f"Invalid filter '{name_filter}': {exc}")
+            sys.exit(1)
 
     client = Minio(
         minio_server,
@@ -368,6 +386,11 @@ def main(
             for image in data.get("images"):
                 logger.debug(f"Adding {image['name']} to the list of images")
                 all_images.append(image)
+
+    if name_filter:
+        all_images = filter_images(all_images, name_filter)
+        if not all_images:
+            logger.warning(f"No image matches the filter '{name_filter}'")
 
     failed = []
 
