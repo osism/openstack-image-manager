@@ -810,6 +810,217 @@ class TestManage(TestCase):
         self.assertIn("Ubuntu 20.04", result[0])
         self.assertEqual(result[2], mock_old_image)
 
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch(
+        "openstack_image_manager.main.ImageManager.get_checksum_from_checksums_url"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_updates_unchanged_latest(
+        self,
+        mock_get_images,
+        mock_get_checksum,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        """an unchanged latest image still gets its definition applied"""
+        name = self.fake_image_dict["name"]
+        data = copy.deepcopy(FAKE_IMAGE_DATA)
+        data["properties"]["upstream_checksum"] = "a" * 64
+        data["properties"]["internal_version"] = "20260901"
+        mock_get_images.return_value = {name: Image(**data)}
+        mock_get_checksum.return_value = "a" * 64
+        versions = {
+            "latest": {
+                "url": self.fake_url,
+                "checksums_url": self.fake_checksums_url,
+                "meta": {"image_source": self.fake_url},
+            }
+        }
+        meta = self.fake_image_dict["meta"]
+
+        for dry_run, updated in ((False, True), (True, False)):
+            with self.subTest(dry_run=dry_run):
+                mock_set_properties.reset_mock()
+                self.sot.CONF.dry_run = dry_run
+
+                self.sot.process_image(self.fake_image_dict, versions, ["latest"], meta)
+
+                mock_import_image.assert_not_called()
+                if updated:
+                    mock_set_properties.assert_called_once_with(
+                        mock.ANY, name, versions, "latest", "a" * 64, meta
+                    )
+                else:
+                    mock_set_properties.assert_not_called()
+
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_updates_existing_versions(
+        self,
+        mock_get_images,
+        mock_head,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        """existing dated versions get their definition applied under their
+        names in Glance: the newest under the plain name, older ones under
+        their version-suffixed one"""
+        name = self.fake_image_dict["name"]
+        self.versions["2"] = {
+            "url": self.fake_url + "2",
+            "meta": {"image_source": self.fake_url + "2"},
+        }
+        meta = self.fake_image_dict["meta"]
+
+        for cloud, expected in (
+            # both versions in Glance: each gets its own definition
+            ([f"{name} (1)", name], [(f"{name} (1)", "1"), (name, "2")]),
+            # the older one is missing: the newest is not given its metadata
+            ([name], [(name, "2")]),
+        ):
+            with self.subTest(cloud=cloud):
+                mock_set_properties.reset_mock()
+                images = {}
+                for n in cloud:
+                    data = copy.deepcopy(FAKE_IMAGE_DATA)
+                    data["name"] = n
+                    # the plain name is the newest version, 2, once rotated
+                    data["properties"]["internal_version"] = "2" if n == name else "1"
+                    images[n] = Image(**data)
+                mock_get_images.return_value = images
+
+                self.sot.process_image(
+                    self.fake_image_dict, self.versions, ["1", "2"], meta
+                )
+
+                mock_import_image.assert_not_called()
+                self.assertEqual(
+                    [
+                        (c.args[1], c.args[3])
+                        for c in mock_set_properties.call_args_list
+                    ],
+                    expected,
+                )
+
+    def test_same_property_value(self):
+        """values are compared as Glance stores them"""
+        for current, wanted, same in (
+            ("2028-08-09", date(2028, 8, 9), True),
+            ("2028-08-10", date(2028, 8, 9), False),
+            (True, True, True),
+            ("True", True, True),
+            ("true", True, True),
+            ("False", True, False),
+            ("yes", "yes", True),
+            ("13", "13", True),
+            ("8", 8, True),
+            ("debian", "Debian", False),
+            (None, "q35", False),
+            (None, None, True),
+        ):
+            with self.subTest(current=current, wanted=wanted):
+                self.assertEqual(main.same_property_value(current, wanted), same)
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
+    )
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.add_tag")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_set_properties_writes_only_what_differs(
+        self, mock_get_images, mock_update_image, mock_add_tag, mock_remove_tag
+    ):
+        """properties already in Glance, whether openstacksdk exposes them as
+        attributes or in .properties, are not written again"""
+        meta = {
+            "architecture": "x86_64",
+            "os_distro": "debian",
+            "os_version": "13",
+            "hw_disk_bus": "scsi",
+            "hw_vif_multiqueue_enabled": True,
+            "hw_qemu_guest_agent": "yes",
+            "provided_until": date(2028, 8, 9),
+            "image_description": self.fake_image_dict["name"],
+        }
+        data = copy.deepcopy(FAKE_IMAGE_DATA)
+        data.update(
+            architecture="x86_64",
+            os_distro="debian",
+            os_version="13",
+            hw_disk_bus="scsi",
+            hw_vif_multiqueue_enabled=True,
+            hw_qemu_guest_agent="yes",
+        )
+        data["properties"].update(
+            provided_until="2028-08-09",
+            image_description=self.fake_image_dict["name"],
+            image_original_user=self.fake_image_dict["login"],
+            internal_version="1",
+        )
+
+        def written(meta):
+            mock_update_image.reset_mock()
+            mock_get_images.return_value = {self.fake_name: Image(**data)}
+            image = copy.deepcopy(self.fake_image_dict)
+            self.sot.set_properties(image, self.fake_name, self.versions, "1", "", meta)
+            return {
+                k
+                for c in mock_update_image.call_args_list
+                for k in c.kwargs
+                if k in meta
+            }
+
+        # hw_vif_multiqueue_enabled is written regardless: openstacksdk reads
+        # a stored "false" as True, so its value cannot be compared
+        self.assertEqual(written(meta), {"hw_vif_multiqueue_enabled"})
+        self.assertEqual(
+            written(dict(meta, os_version="12", provided_until=date(2026, 7, 11))),
+            {"os_version", "provided_until", "hw_vif_multiqueue_enabled"},
+        )
+
+        # the case that comparison would get wrong: "false" in Glance, true in
+        # the definition, but openstacksdk reporting True
+        data["hw_vif_multiqueue_enabled"] = "false"
+        self.assertTrue(Image(**data).is_hw_vif_multiqueue_enabled)
+        self.assertIn("hw_vif_multiqueue_enabled", written(meta))
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
+    )
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.add_tag")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_set_properties_keeps_oldgeneric(
+        self, mock_get_images, mock_update_image, mock_add_tag, mock_remove_tag
+    ):
+        """a superseded version demoted to oldgeneric stays oldgeneric, while
+        the image carrying the plain name follows the definition"""
+        meta = {"os_purpose": "generic"}
+        data = copy.deepcopy(FAKE_IMAGE_DATA)
+        data["properties"].update(os_purpose="oldgeneric", internal_version="1")
+
+        for name, kept in (
+            (self.fake_name, True),
+            (self.fake_image_dict["name"], False),
+        ):
+            with self.subTest(name=name):
+                mock_update_image.reset_mock()
+                mock_get_images.return_value = {name: Image(**dict(data, name=name))}
+                image = copy.deepcopy(self.fake_image_dict)
+                self.sot.set_properties(image, name, self.versions, "1", "", meta)
+                calls = [c.kwargs for c in mock_update_image.call_args_list]
+                self.assertEqual(
+                    {"os_purpose": "generic"} in calls,
+                    not kept,
+                )
+
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.deactivate_image"
     )
