@@ -1446,7 +1446,8 @@ class ImageManager:
             # that it cannot be left half-retired when a request fails in between
             update_attrs = {}
 
-            if previous_image["properties"]["internal_version"] == "latest":
+            internal_version = previous_image["properties"].get("internal_version")
+            if internal_version in (None, "latest"):
                 # if the last modification date cannot be found, use the creation date of the image instead
                 create_date = str(
                     datetime.strptime(
@@ -1462,7 +1463,7 @@ class ImageManager:
                 )
                 update_attrs["internal_version"] = create_date
             else:
-                previous_latest = f"{name}{separator}({previous_image['properties']['internal_version']})"
+                previous_latest = f"{name}{separator}({internal_version})"
 
             if self._is_generic_duplicate(
                 previous_image, cloud_images.get(imported_image.name)
@@ -1505,7 +1506,13 @@ class ImageManager:
         too_old_images = set()
 
         for cloud_image_name, cloud_image in cloud_images.items():
-            image_name = cloud_image.properties["image_description"]
+            image_name = cloud_image.properties.get("image_description")
+
+            if image_name is None:
+                logger.warning(
+                    f"Image '{cloud_image_name}' has no image_description, image will be ignored"
+                )
+                continue
 
             if image_name not in images:
                 logger.warning(
@@ -1644,7 +1651,15 @@ class ImageManager:
             logger.info(f"Processing image '{image}' (removal candidate)")
 
             cloud_image = cloud_images[image]
-            image_name = cloud_image.properties["image_description"]
+            image_name = cloud_image.properties.get("image_description")
+
+            # an image whose import failed, or that was added by hand, may lack
+            # the properties the manager sets after an import
+            if image_name is None:
+                logger.warning(
+                    f"Image '{image}' has no image_description, image will be ignored"
+                )
+                continue
 
             if image_name not in images:
                 logger.warning(
