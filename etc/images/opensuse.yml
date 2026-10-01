@@ -26,10 +26,12 @@ images:
     tags: []
     versions:
       - version: '20240603'
-        url: https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
-        mirror_url:
+        url: 
+          https://ftp.gwdg.de/pub/opensuse/distribution/leap/15.6/appliances/openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
+        mirror_url: 
           https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-15.6/20240603-openSUSE-Leap-15.6-Minimal-VM.x86_64-Cloud.qcow2
-        checksum: "sha256:0f7f09a9a083088b51aa365fe0e4310e6b156c2153d6aa03a77b81eee884e52a"
+        checksum: 
+          sha256:0f7f09a9a083088b51aa365fe0e4310e6b156c2153d6aa03a77b81eee884e52a
         build_date: 2024-06-03
   - name: openSUSE Leap 16.0
     enable: true
@@ -55,14 +57,16 @@ images:
       uuid_validity: last-3
       provided_until: none
     tags: []
-    latest_checksum_url:
+    latest_checksum_url: 
       https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2.sha256
-    latest_url:
+    latest_url: 
       https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2
     versions:
-      - version: '20260618'
-        url: https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2
-        mirror_url:
-          https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-16.0/20260618-opensuse-leap-16.0.qcow2
-        checksum: "sha256:c5cd6904632c86d5368dea3896da8c17571c238ef96a0e2c8b0ca1835d796e07"
-        build_date: 2026-06-18
+      - version: '20260930'
+        url: 
+          https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2
+        mirror_url: 
+          https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-16.0/20260930-opensuse-leap-16.0.qcow2
+        checksum: 
+          sha256:c1a6c50c51a44719946626c5d3ea22b844f1e831e6abf5f31f463c65a26a6fdc
+        build_date: 2026-09-30
