@@ -847,6 +847,69 @@ class TestManage(TestCase):
         mock_remove_tag.assert_called_once_with(self.fake_image.id, "fake_tag")
         mock_deactivate.assert_called_once_with(self.fake_image.id)
 
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
+    )
+    @mock.patch("openstack_image_manager.main.openstack.image.v2._proxy.Proxy.add_tag")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_set_properties_min_disk(
+        self, mock_get_images, mock_update_image, mock_add_tag, mock_remove_tag
+    ):
+        """min_disk is at least the image's virtual size, rounded up to GiB"""
+        gib = 2**30
+        for definition, size, virtual_size, current, expected in (
+            # a definition at or above the virtual size is kept
+            (8, gib // 3, 3 * gib, 0, 8),
+            (8, gib // 3, 3 * gib, 8, None),
+            # a definition below it is raised to it
+            (3, gib // 3, 3 * gib + gib // 2, 0, 4),
+            # without a definition, the virtual size decides
+            (None, gib // 3, 3 * gib + gib // 2, 0, 4),
+            (None, gib // 3, 10 * gib, 10, None),
+            # without a virtual size, the size of the image data is the floor
+            (None, gib + gib // 5, None, 0, 2),
+            (8, gib + gib // 5, None, 0, 8),
+        ):
+            with self.subTest(
+                definition=definition, virtual_size=virtual_size, current=current
+            ):
+                mock_update_image.reset_mock()
+                data = copy.deepcopy(FAKE_IMAGE_DATA)
+                data.update(size=size, virtual_size=virtual_size, min_disk=current)
+                mock_get_images.return_value = {self.fake_name: Image(**data)}
+                image = copy.deepcopy(self.fake_image_dict)
+                if definition is None:
+                    del image["min_disk"]
+                else:
+                    image["min_disk"] = definition
+
+                self.sot.set_properties(
+                    image, self.fake_name, self.versions, "1", "", image["meta"]
+                )
+
+                min_disk_calls = [
+                    c.kwargs["min_disk"]
+                    for c in mock_update_image.call_args_list
+                    if "min_disk" in c.kwargs
+                ]
+                self.assertEqual(min_disk_calls, [] if expected is None else [expected])
+
+    def test_image_min_disk(self):
+        """the virtual size is rounded up to whole GiB"""
+        gib = 2**30
+        for size, virtual_size, expected in (
+            (340983808, 3 * gib, 3),
+            (310260224, 2361393152, 3),
+            (1277034496, None, 2),
+            (gib, gib, 1),
+            (None, None, 0),
+        ):
+            with self.subTest(size=size, virtual_size=virtual_size):
+                self.assertEqual(main.image_min_disk(size, virtual_size), expected)
+
     @mock.patch("openstack_image_manager.main.requests.head")
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
@@ -1510,6 +1573,20 @@ class TestManage(TestCase):
                 image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
                 if build_date is None:
                     del image["versions"][0]["build_date"]
+                content = yaml.safe_dump({"images": [image]})
+                yamale.validate(schema, yamale.make_data(content=content))
+
+    def test_schema_min_disk_optional(self):
+        """an image validates with or without a min_disk"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for min_disk in (8, None):
+            with self.subTest(min_disk=min_disk):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                if min_disk is None:
+                    del image["min_disk"]
+                else:
+                    image["min_disk"] = min_disk
                 content = yaml.safe_dump({"images": [image]})
                 yamale.validate(schema, yamale.make_data(content=content))
 

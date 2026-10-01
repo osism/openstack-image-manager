@@ -18,7 +18,6 @@ import urllib.parse
 import pkgutil
 
 from datetime import datetime, date
-from decimal import Decimal, ROUND_UP
 from loguru import logger
 from munch import Munch
 from natsort import natsorted
@@ -97,6 +96,19 @@ def uuid_validity_keep(
             return None
         return 0 if (today or date.today()) > valid_until else None
     return None
+
+
+def image_min_disk(
+    size: typing.Optional[int], virtual_size: typing.Optional[int]
+) -> int:
+    """Return the smallest root disk in GiB that an image fits on.
+
+    That is its virtual size, rounded up to whole GiB. Glance reports the
+    virtual size once an import has finished; without it, the size of the
+    image data is the best available estimate.
+    """
+    needed = max(size or 0, virtual_size or 0)
+    return -(-needed // 2**30)
 
 
 class ImageManager:
@@ -1127,27 +1139,26 @@ class ImageManager:
             logger.info(f"Checking parameters of '{name}'")
 
             cloud_image = cloud_images[name]
-            real_image_size = int(
-                Decimal(cloud_image.size / 2**30).quantize(
-                    Decimal("1."), rounding=ROUND_UP
-                )
+
+            # Nova refuses a root disk smaller than the image's virtual size,
+            # so that is the floor; a definition may ask for more
+            required_min_disk = image_min_disk(
+                cloud_image.size, cloud_image.virtual_size
             )
+            if "min_disk" not in image:
+                min_disk = required_min_disk
+            elif int(image["min_disk"]) < required_min_disk:
+                logger.warning(
+                    f"min_disk {image['min_disk']} of '{name}' is smaller than "
+                    f"its image needs, using {required_min_disk}"
+                )
+                min_disk = required_min_disk
+            else:
+                min_disk = int(image["min_disk"])
 
-            if "min_disk" in image and image["min_disk"] != cloud_image.min_disk:
-                logger.info(
-                    f"Setting min_disk: {image['min_disk']} != {cloud_image.min_disk}"
-                )
-                self.image_proxy.update_image(
-                    cloud_image.id, **{"min_disk": int(image["min_disk"])}
-                )
-
-            if (
-                "min_disk" in image and real_image_size > image["min_disk"]
-            ) or "min_disk" not in image:
-                logger.info(f"Setting min_disk = {real_image_size}")
-                self.image_proxy.update_image(
-                    cloud_image.id, **{"min_disk": real_image_size}
-                )
+            if min_disk != cloud_image.min_disk:
+                logger.info(f"Setting min_disk: {min_disk} != {cloud_image.min_disk}")
+                self.image_proxy.update_image(cloud_image.id, **{"min_disk": min_disk})
 
             if "min_ram" in image and image["min_ram"] != cloud_image.min_ram:
                 logger.info(
