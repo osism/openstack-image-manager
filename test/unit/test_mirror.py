@@ -203,6 +203,74 @@ class MirrorVersionTest(unittest.TestCase):
         self.assertEqual(get.call_args.kwargs["timeout"], mirror.REQUESTS_TIMEOUT)
 
 
+class DryRunTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.cwd = os.getcwd()
+        os.chdir(self.dir)
+        self.messages = []
+        self.sink = mirror.logger.add(self.messages.append, format="{message}")
+
+    def tearDown(self):
+        mirror.logger.remove(self.sink)
+        os.chdir(self.cwd)
+        shutil.rmtree(self.dir)
+
+    def _dry_run(self, client, version=None):
+        with mock.patch.object(mirror.requests, "get") as get:
+            ok = mirror.mirror_version(
+                client,
+                BUCKET,
+                UBUNTU,
+                version or UBUNTU["versions"][0],
+                dry_run=True,
+            )
+        return ok, get
+
+    def test_missing_object_is_neither_downloaded_nor_uploaded(self):
+        client = _FakeClient()
+
+        ok, get = self._dry_run(client)
+
+        self.assertIs(ok, True)
+        get.assert_not_called()
+        self.assertEqual(client.uploaded, [])
+        self.assertEqual(os.listdir("."), [])
+
+    def test_missing_object_is_reported_with_source_and_target(self):
+        client = _FakeClient()
+
+        self._dry_run(client)
+
+        version = UBUNTU["versions"][0]
+        self.assertIn(
+            f"Would mirror {version['url']} to "
+            "osism/openstack-images/ubuntu-24.04/20260108-ubuntu-24.04.qcow2\n",
+            self.messages,
+        )
+
+    def test_object_already_in_the_bucket_is_not_reported(self):
+        client = _FakeClient(
+            existing={"openstack-images/ubuntu-24.04/20260108-ubuntu-24.04.qcow2"}
+        )
+
+        ok, _ = self._dry_run(client)
+
+        self.assertIs(ok, True)
+        self.assertFalse([m for m in self.messages if m.startswith("Would mirror")])
+
+    def test_object_mirrored_for_another_checksum_still_fails(self):
+        # A real run would stop at this object, so the preview has to say so.
+        client = _FakeClient()
+        with mock.patch.object(mirror.requests, "get", return_value=_response()):
+            mirror.mirror_version(client, BUCKET, UBUNTU, UBUNTU["versions"][0])
+
+        changed = _version_with_checksum(UBUNTU, "sha256:" + "0" * 64)
+        ok, _ = self._dry_run(client, changed)
+
+        self.assertIs(ok, False)
+
+
 class DownloadFailureTest(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.mkdtemp()
@@ -560,7 +628,7 @@ class ExitStatusTest(unittest.TestCase):
         os.chdir(self.cwd)
         shutil.rmtree(self.dir)
 
-    def _run(self, response, name_filter=None):
+    def _run(self, response, name_filter=None, dry_run=False):
         client = _FakeClient()
         with mock.patch.object(mirror, "Minio", return_value=client):
             with mock.patch.object(mirror.requests, "get", return_value=response):
@@ -570,6 +638,7 @@ class ExitStatusTest(unittest.TestCase):
                     checksum=False,
                     download=True,
                     delete=True,
+                    dry_run=dry_run,
                     images=self.images,
                     name_filter=name_filter,
                     minio_access_key="key",
@@ -589,6 +658,12 @@ class ExitStatusTest(unittest.TestCase):
         client = self._run(_response())
 
         self.assertEqual(len(client.uploaded), 1)
+
+    def test_dry_run_uploads_nothing(self):
+        client = self._run(_response(), dry_run=True)
+
+        self.assertEqual(client.uploaded, [])
+        self.assertEqual(os.listdir("."), ["images"])
 
     def test_image_matching_the_filter_is_mirrored(self):
         client = self._run(_response(), name_filter="Ubuntu")
