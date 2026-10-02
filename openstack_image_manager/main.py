@@ -57,6 +57,24 @@ def _validate_hidden_visibility(
     return value
 
 
+def provided_until_passed(
+    provided_until: typing.Any, today: typing.Optional[date] = None
+) -> bool:
+    """Return whether an image's provided_until date has passed.
+
+    scs-0102-v2 defines provided_until as the date until which an image is
+    provided and updated at least; 'none' sets no such date.
+    """
+    if isinstance(provided_until, str) and provided_until != "none":
+        try:
+            provided_until = date.fromisoformat(provided_until)
+        except ValueError:
+            return False
+    if not isinstance(provided_until, date):
+        return False
+    return (today or date.today()) > provided_until
+
+
 def checksum_to_aria2(checksum: typing.Optional[str]) -> typing.Optional[str]:
     """Convert a 'sha256:<hex>' or bare '<hex>' digest to aria2's '<algo>=<hex>'."""
     if not checksum:
@@ -167,6 +185,12 @@ class ImageManager:
             help="Visibility --hide gives images: community | private | shared "
             "(default: community, or unchanged with --use-os-hidden)",
         ),
+        retire_expired: bool = typer.Option(
+            False,
+            "--retire-expired",
+            help="Stop importing images whose provided_until date has passed, "
+            "and retire them, their newest version included",
+        ),
         share_image: str = typer.Option(
             None, "--share-image", help="Share - Image to share"
         ),
@@ -234,6 +258,10 @@ class ImageManager:
         if __name__ == "__main__" or __name__ == "openstack_image_manager.main":
             self.main()
 
+    def is_expired(self, image: dict) -> bool:
+        """Return whether an image definition's provided_until has passed."""
+        return provided_until_passed(image.get("meta", {}).get("provided_until"))
+
     def read_image_files(self, return_all_images=False) -> list:
         """Read all YAML files in self.CONF.images"""
         image_files = []
@@ -256,8 +284,22 @@ class ImageManager:
                     for image in images:
                         if return_all_images:
                             all_images.append(image)
+                            continue
 
-                        elif self.CONF.filter:
+                        enabled = image.get("enable", True) or self.CONF.force
+                        if enabled and self.is_expired(image):
+                            if self.CONF.retire_expired:
+                                logger.info(
+                                    f"Image '{image['name']}' is past its provided_until "
+                                    "date and will not be imported"
+                                )
+                                continue
+                            logger.warning(
+                                f"Image '{image['name']}' is past its provided_until "
+                                "date; --retire-expired would retire it"
+                            )
+
+                        if self.CONF.filter:
                             if re.search(self.CONF.filter, image["name"]):
                                 if "enable" in image and (
                                     (image["enable"])
@@ -1497,6 +1539,16 @@ class ImageManager:
                 [x for x in cloud_images if x not in managed_images], reverse=True
             )
 
+        # With --retire-expired, a definition past its provided_until date is
+        # no longer imported, and its newest image is retired along with the
+        # older ones. It is counted first, as the newest generation.
+        expired: Set[str] = set()
+        if self.CONF.retire_expired:
+            expired = {name for name, d in images.items() if self.is_expired(d)}
+            unmanaged_images = [x for x in unmanaged_images if x in expired] + [
+                x for x in unmanaged_images if x not in expired
+            ]
+
         counter: Dict[str, int] = {}
 
         for image in unmanaged_images:
@@ -1511,8 +1563,8 @@ class ImageManager:
                 )
                 continue
 
-            # Always skip the last imported image
-            if image_name == image:
+            # The newest image is kept, unless its definition has expired
+            if image_name == image and image_name not in expired:
                 continue
 
             image_definition = images[image_name]
@@ -1520,6 +1572,15 @@ class ImageManager:
 
             uuid_validity = cloud_image.properties.get("uuid_validity")
             last = uuid_validity_keep(uuid_validity)
+            if (
+                image_name in expired
+                and last is not None
+                and isinstance(uuid_validity, str)
+                and uuid_validity.startswith("last-")
+            ):
+                # last-N promises N images; once the newest is retired too,
+                # it is one of the N
+                last += 1
 
             if self.CONF.keep and not image_definition["multi"]:
                 logger.info(
