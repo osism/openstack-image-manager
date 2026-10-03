@@ -47,8 +47,9 @@ meta:
   os_version: str(required=False)
   # Permissible values as defined by the SCS Image Metadata Standard
   # (https://docs.scs.community/standards/scs-0102-v2-image-metadata).
-  # 'oldgeneric' rarely needs to be set by hand: the manager assigns it to
-  # every superseded version of a multi image when it rotates.
+  # 'oldgeneric' rarely needs to be set by hand: when a multi image rotates,
+  # the manager assigns it to the superseded version if that would otherwise
+  # be a second generic image for the same architecture, distro and version.
   os_purpose: enum('generic', 'oldgeneric', 'minimal', 'k8snode', 'gpu', 'network', 'custom')
   os_type: enum('linux', 'windows', required=False)
   os_admin_user: str(required=False)

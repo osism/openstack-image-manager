@@ -1062,6 +1062,7 @@ class TestManage(TestCase):
 
         image_data = copy.deepcopy(FAKE_IMAGE_DATA)
         image_data["id"] = "successor-image-id"
+        image_data["name"] = f"{FAKE_IMAGE_DICT['name']} (2)"
         image_data["properties"]["os_purpose"] = os_purpose
         image_data.update(attrs)
 
@@ -1075,18 +1076,49 @@ class TestManage(TestCase):
         """test main.ImageManager.rename_images() demoting os_purpose=generic"""
 
         previous_image = self._previous_image(os_purpose="generic")
-        mock_get_images.return_value = {self.fake_image.name: previous_image}
+        imported_image = self._successor_image()
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            imported_image.name: imported_image,
+        }
 
         self.sot.rename_images(
             self.fake_image_dict,
             self.sorted_versions,
-            self.imported_image,
+            imported_image,
             previous_image,
         )
 
         mock_update_image.assert_any_call(
             previous_image.id, name=self.fake_name, os_purpose="oldgeneric"
         )
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_keeps_other_os_version(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() keeping os_purpose=generic
+        when the imported image has another os_version, so the two images do
+        not conflict"""
+
+        previous_image = self._previous_image(os_purpose="generic")
+        imported_image = self._successor_image(os_version="24.04")
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            imported_image.name: imported_image,
+        }
+
+        self.sot.rename_images(
+            self.fake_image_dict,
+            self.sorted_versions,
+            imported_image,
+            previous_image,
+        )
+
+        mock_update_image.assert_any_call(previous_image.id, name=self.fake_name)
 
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
@@ -1176,12 +1208,16 @@ class TestManage(TestCase):
         """test main.ImageManager.rename_images() keeping a non-generic os_purpose"""
 
         previous_image = self._previous_image(os_purpose="minimal")
-        mock_get_images.return_value = {self.fake_image.name: previous_image}
+        imported_image = self._successor_image()
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            imported_image.name: imported_image,
+        }
 
         self.sot.rename_images(
             self.fake_image_dict,
             self.sorted_versions,
-            self.imported_image,
+            imported_image,
             previous_image,
         )
 
@@ -1195,12 +1231,16 @@ class TestManage(TestCase):
         """test main.ImageManager.rename_images() without an os_purpose property"""
 
         previous_image = self._previous_image()
-        mock_get_images.return_value = {self.fake_image.name: previous_image}
+        imported_image = self._successor_image()
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            imported_image.name: imported_image,
+        }
 
         self.sot.rename_images(
             self.fake_image_dict,
             self.sorted_versions,
-            self.imported_image,
+            imported_image,
             previous_image,
         )
 
@@ -1222,12 +1262,16 @@ class TestManage(TestCase):
         image_data["created_at"] = "2026-09-01T12:00:00Z"
         image_data["properties"].update(internal_version="latest", os_purpose="generic")
         previous_image = Image(**image_data)
-        mock_get_images.return_value = {self.fake_image.name: previous_image}
+        imported_image = self._successor_image()
+        mock_get_images.return_value = {
+            self.fake_image.name: previous_image,
+            imported_image.name: imported_image,
+        }
 
         self.sot.rename_images(
             self.fake_image_dict,
             self.sorted_versions,
-            self.imported_image,
+            imported_image,
             previous_image,
         )
 

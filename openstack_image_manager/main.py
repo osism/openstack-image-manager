@@ -1367,7 +1367,9 @@ class ImageManager:
             else:
                 previous_latest = f"{name}{separator}({previous_image['properties']['internal_version']})"
 
-            if previous_image["properties"].get("os_purpose") == "generic":
+            if self._is_generic_duplicate(
+                previous_image, cloud_images.get(imported_image.name)
+            ):
                 # you can't have more than one image of the same architecture, distro, and version
                 # with os_purpose=generic, so change this to oldgeneric for the previous image
                 update_attrs["os_purpose"] = "oldgeneric"
