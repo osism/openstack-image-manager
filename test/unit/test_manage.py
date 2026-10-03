@@ -1202,6 +1202,37 @@ class TestManage(TestCase):
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
     )
     @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_rename_images_multi_version_keeps_purpose_for_unlisted_successor(
+        self, mock_get_images, mock_update_image
+    ):
+        """test main.ImageManager.rename_images() keeping os_purpose=generic
+        when the successor is private or hidden, so the previous image stays
+        the only generic image public users can find"""
+
+        for attrs in ({"visibility": "private"}, {"os_hidden": True}):
+            with self.subTest(**attrs):
+                mock_update_image.reset_mock()
+                previous_image = self._previous_image(os_purpose="generic")
+                mock_get_images.return_value = {
+                    self.fake_image.name: previous_image,
+                    f"{self.fake_image.name} (2)": self._successor_image(**attrs),
+                }
+
+                self.sot.rename_images(
+                    self.fake_image_dict,
+                    ["1", "2"],
+                    self.imported_image,
+                    previous_image,
+                )
+
+                mock_update_image.assert_any_call(
+                    previous_image.id, name=self.fake_name
+                )
+
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.update_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
     def test_rename_images_keeps_other_purpose(
         self, mock_get_images, mock_update_image
     ):
