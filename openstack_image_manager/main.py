@@ -1288,11 +1288,19 @@ class ImageManager:
         so the previous image only conflicts with its successor if the
         effective metadata of both images match.
 
+        The uniqueness requirement only covers images that public users can
+        find, so a private or hidden successor conflicts with nothing. The
+        visibility of the previous image does not matter: if it is kept
+        generic while superseded, oldgeneric is the recommended value anyway.
+
         Params:
             previous_image: the image losing the plain name
             successor: the image taking the plain name, if any
         """
         if successor is None:
+            return False
+
+        if successor.visibility not in ("public", "community") or successor.is_hidden:
             return False
 
         return all(
