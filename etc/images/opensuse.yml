@@ -62,11 +62,11 @@ images:
     latest_url: 
       https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2
     versions:
-      - version: '20260930'
+      - version: '20261001'
         url: 
           https://ftp.gwdg.de/pub/opensuse/distribution/leap/16.0/appliances/Leap-16.0-Minimal-VM.x86_64-Cloud.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-16.0/20260930-opensuse-leap-16.0.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/opensuse-leap-16.0/20261001-opensuse-leap-16.0.qcow2
         checksum: 
-          sha256:c1a6c50c51a44719946626c5d3ea22b844f1e831e6abf5f31f463c65a26a6fdc
-        build_date: 2026-09-30
+          sha256:8267490632e380890cfea663b5dba5cd828161af3e8cf562a73d6eb04898c4a1
+        build_date: 2026-10-01
