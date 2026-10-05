@@ -1,0 +1,36 @@
+---
+- name: Check the object store against the catalog
+  hosts: all
+
+  # check_mirror_accept is supplied by the job and deliberately has NO default
+  # here. Zuul passes job vars into the inventory as variables of the `all`
+  # group, and Ansible ranks play vars above inventory vars -- so a default in
+  # this section would silently outrank every job's setting, and the strict
+  # daily job would tolerate a pending mirror, losing the whole signal.
+  vars:
+    zuul_work_dir: "{{ zuul.project.src_dir }}"
+
+  roles:
+    - role: ensure-tox
+
+  tasks:
+    - name: Require the pipeline to state which exit codes it accepts
+      ansible.builtin.assert:
+        that:
+          - check_mirror_accept is defined
+          - check_mirror_accept | type_debug == "list"
+        fail_msg: >-
+          check_mirror_accept must be set by the job, e.g. [0, 3] in check and
+          [0] in periodic-daily.
+
+    # 0 is clean, 3 is "not mirrored yet" -- normal for a change that adds a
+    # version, a defect once it is on main. Everything else fails: 1 is an
+    # unmirrorable pin, 2 is a run that reached no verdict, and an unlisted
+    # code is a crash.
+    - name: Probe every mirrored object the catalog references
+      ansible.builtin.command:
+        cmd: "{{ tox_executable }} -e check-mirror"
+        chdir: "{{ zuul_work_dir }}"
+      register: check_mirror
+      changed_when: false
+      failed_when: check_mirror.rc not in check_mirror_accept
