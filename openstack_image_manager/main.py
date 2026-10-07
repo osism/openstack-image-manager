@@ -475,6 +475,8 @@ class ImageManager:
 
             if self.CONF.share_type == "project":
                 domain = self.conn.get_domain(name_or_id=self.CONF.share_domain)
+                if domain is None:
+                    sys.exit(f"\nERROR: Domain {self.CONF.share_domain} not found")
                 project = self.conn.get_project(
                     self.CONF.share_target, domain_id=domain.id
                 )
@@ -486,6 +488,8 @@ class ImageManager:
 
             elif self.CONF.share_type == "domain":
                 domain = self.conn.get_domain(name_or_id=self.CONF.share_target)
+                if domain is None:
+                    sys.exit(f"\nERROR: Domain {self.CONF.share_target} not found")
                 projects = self.conn.list_projects(domain_id=domain.id)
                 for project in projects:
                     if self.CONF.share_action == "add":
