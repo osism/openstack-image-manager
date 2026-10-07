@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on Januar 28, 2026. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261007.0] - 2026-10-07
+
+### Added
+- Add Ubuntu Core 26 image definition, booting via UEFI (osism/openstack-image-manager#1305)
+- Add --retire-expired option to stop importing and retire images whose provided_until date has passed (osism/openstack-image-manager#1295)
+
+### Changed
+- Apply image definitions to existing images on every run, not only to new imports (osism/openstack-image-manager#1297)
+- Change os_distro tag from centos to almalinux for AlmaLinux images to satisfy SCS-0102-V2 uniqueness requirements (osism/openstack-image-manager#1305)
+- Run all Zuul jobs on the ubuntu-noble nodeset (osism/openstack-image-manager#1306)
+
+### Fixed
+- Tolerate managed images missing image_description or internal_version properties instead of failing with a KeyError (osism/openstack-image-manager#1296)
+- Abort image sharing with an error message when the given domain does not exist instead of raising an AttributeError (osism/openstack-image-manager#1307)
+
+### Dependencies
+- patool 4.0.7 → 4.1.0 (osism/openstack-image-manager#1274)
+- openstacksdk 4.17.0 → 4.20.0 (osism/openstack-image-manager#1263)
+
 ## [v0.20261005.0] - 2026-10-05
 
 ### Added
