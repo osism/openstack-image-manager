@@ -30,9 +30,9 @@ images:
     latest_url:
       https://cdimage.ubuntu.com/ubuntu-core/26/stable/current/ubuntu-core-26-amd64.qcow2
     versions:
-      - version: '20260606.1'
+      - version: '20260507.1'
         url:
-          https://cdimage.ubuntu.com/ubuntu-core/26/stable/20260606.1/ubuntu-core-26-amd64.qcow2
+          https://cdimage.ubuntu.com/ubuntu-core/26/stable/20260507.1/ubuntu-core-26-amd64.qcow2
         checksum:
-          sha256:f8aef3d6ec1786478c9640c3c50346160fbd346be09c2e42f10e7bd85bb6ab7f
-        build_date: 2026-06-06
+          sha256:0c7a17b54f2443490faf2f91ce48284bc9b76cf67fc664b90a9748962bb4c74b
+        build_date: 2026-05-07
