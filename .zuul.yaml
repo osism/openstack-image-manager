@@ -1,6 +1,7 @@
 ---
 - job:
     name: openstack-image-manager-integration-test
+    nodeset: ubuntu-noble
     pre-run: playbooks/pre-integration-test.yml
     run: playbooks/integration-test.yml
     # The deployment of Devstack can take more time than our default timeout.
@@ -18,23 +19,33 @@
     default-branch: main
     check:
       jobs:
-        - flake8
-        - mypy
+        - flake8:
+            nodeset: ubuntu-noble
+        - mypy:
+            nodeset: ubuntu-noble
         - openstack-image-manager-integration-test
-        - python-black
+        - python-black:
+            nodeset: ubuntu-noble
         - tox:
+            nodeset: ubuntu-noble
             vars:
               tox_envlist: test
               tox_extra_args: -- test/unit
-        - yamllint
+        - yamllint:
+            nodeset: ubuntu-noble
     periodic-daily:
       jobs:
-        - flake8
-        - mypy
+        - flake8:
+            nodeset: ubuntu-noble
+        - mypy:
+            nodeset: ubuntu-noble
         - openstack-image-manager-integration-test
-        - python-black
+        - python-black:
+            nodeset: ubuntu-noble
         - tox:
+            nodeset: ubuntu-noble
             vars:
               tox_envlist: test
               tox_extra_args: -- test/unit
-        - yamllint
+        - yamllint:
+            nodeset: ubuntu-noble
