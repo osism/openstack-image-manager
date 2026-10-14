@@ -1083,7 +1083,12 @@ class ImageManager:
             logger.debug(f"Checking existence of '{name}'")
             existence = name in cloud_images
 
-            if existence and cloud_images[name].status != "active":
+            # a deactivated image is not being imported, and never becomes
+            # active by waiting
+            if existence and cloud_images[name].status not in (
+                "active",
+                "deactivated",
+            ):
                 if self.wait_for_image(cloud_images[name]) is None:
                     self.exit_with_error = True
 
@@ -1809,6 +1814,17 @@ class ImageManager:
                         self.hide_image(image, cloud_image, deactivate=True)
                     else:
                         try:
+                            if cloud_image.status == "deactivated":
+                                # Glance hides a deactivated image's locations
+                                # from non-admins, so deleting it as one would
+                                # remove the record and leave its data in the
+                                # store; an image retained earlier is reactivated
+                                # first, and deactivated again if still in use
+                                logger.info(
+                                    f"Reactivating image '{image}' to delete it"
+                                )
+                                self.image_proxy.reactivate_image(cloud_image.id)
+                                cloud_image.status = "active"
                             logger.info(f"Deleting {image}")
                             self.image_proxy.delete_image(cloud_image.id)
                         except openstack.exceptions.ConflictException as e:

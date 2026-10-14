@@ -1089,6 +1089,50 @@ class TestManage(TestCase):
                     expected,
                 )
 
+    @mock.patch("openstack_image_manager.main.ImageManager.wait_for_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_waits_only_for_imports(
+        self,
+        mock_get_images,
+        mock_import_image,
+        mock_set_properties,
+        mock_wait_for_image,
+    ):
+        """an existing version is waited for while it is being imported, but
+        not once deactivated, which it stays however long it is waited for"""
+        name = self.fake_image_dict["name"]
+        self.versions["2"] = {
+            "url": self.fake_url + "2",
+            "meta": {"image_source": self.fake_url + "2"},
+        }
+        meta = self.fake_image_dict["meta"]
+
+        for status, waited in (
+            ("importing", True),
+            ("deactivated", False),
+            ("active", False),
+        ):
+            with self.subTest(status=status):
+                mock_wait_for_image.reset_mock()
+                images = {}
+                for n, version in ((f"{name} (1)", "1"), (name, "2")):
+                    data = copy.deepcopy(FAKE_IMAGE_DATA)
+                    data["name"] = n
+                    data["properties"]["internal_version"] = version
+                    if version == "1":
+                        data["status"] = status
+                    images[n] = Image(**data)
+                mock_get_images.return_value = images
+
+                self.sot.process_image(
+                    self.fake_image_dict, self.versions, ["1", "2"], meta
+                )
+
+                self.assertEqual(mock_wait_for_image.called, waited)
+                self.assertFalse(self.sot.exit_with_error)
+
     def test_same_property_value(self):
         """values are compared as Glance stores them"""
         for current, wanted, same in (
@@ -2187,6 +2231,81 @@ class TestManage(TestCase):
 
             self.sot.manage_outdated_images({"some_image_name"})
 
+            mock_hide_image.assert_not_called()
+            self.assertTrue(self.sot.exit_with_error)
+
+    @mock.patch("openstack_image_manager.main.ImageManager.hide_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.read_image_files")
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.delete_image"
+    )
+    @mock.patch(
+        "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.reactivate_image"
+    )
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_manage_outdated_images_deactivated(
+        self,
+        mock_get_images,
+        mock_reactivate,
+        mock_delete_image,
+        mock_read_image_files,
+        mock_hide_image,
+    ):
+        """a deactivated image is reactivated before it is deleted, since
+        Glance hides its locations from non-admins and would leave its data
+        in the store"""
+        old_name = self.fake_image.name + "_2"
+        mock_read_image_files.return_value = [self.fake_image_dict]
+        self.sot.CONF.delete = True
+        self.sot.CONF.yes_i_really_know_what_i_do = True
+
+        def deactivated():
+            data = copy.deepcopy(FAKE_IMAGE_DATA)
+            data["status"] = "deactivated"
+            return Image(**data)
+
+        calls: list = []
+        mock_reactivate.side_effect = lambda _id: calls.append("reactivate")
+        mock_delete_image.side_effect = lambda _id: calls.append("delete")
+
+        with self.subTest("not in use"):
+            mock_get_images.return_value = {old_name: deactivated()}
+
+            self.sot.manage_outdated_images({"some_image_name"})
+
+            self.assertEqual(calls, ["reactivate", "delete"])
+            mock_hide_image.assert_not_called()
+            self.assertFalse(self.sot.exit_with_error)
+
+        with self.subTest("in use"):
+            calls.clear()
+            cloud_image = deactivated()
+            mock_get_images.return_value = {old_name: cloud_image}
+            mock_delete_image.side_effect = main.openstack.exceptions.ConflictException(
+                "409 Conflict: Image is in use through the backend store"
+            )
+
+            self.sot.manage_outdated_images({"some_image_name"})
+
+            self.assertEqual(calls, ["reactivate"])
+            # hide_image sees it active, so --deactivate deactivates it again
+            mock_hide_image.assert_called_once_with(
+                old_name, cloud_image, deactivate=True
+            )
+            self.assertEqual(cloud_image.status, "active")
+            self.assertFalse(self.sot.exit_with_error)
+
+        with self.subTest("reactivation fails"):
+            mock_hide_image.reset_mock()
+            mock_delete_image.reset_mock()
+            mock_get_images.return_value = {old_name: deactivated()}
+            mock_reactivate.side_effect = main.openstack.exceptions.HttpException(
+                "403 Forbidden"
+            )
+
+            self.sot.manage_outdated_images({"some_image_name"})
+
+            mock_delete_image.assert_not_called()
             mock_hide_image.assert_not_called()
             self.assertTrue(self.sot.exit_with_error)
 
