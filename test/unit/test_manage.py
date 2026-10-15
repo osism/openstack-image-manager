@@ -1203,19 +1203,18 @@ class TestManage(TestCase):
                 if k in meta
             }
 
-        # hw_vif_multiqueue_enabled is written regardless: openstacksdk reads
-        # a stored "false" as True, so its value cannot be compared
-        self.assertEqual(written(meta), {"hw_vif_multiqueue_enabled"})
+        self.assertEqual(written(meta), set())
         self.assertEqual(
             written(dict(meta, os_version="12", provided_until=date(2026, 7, 11))),
-            {"os_version", "provided_until", "hw_vif_multiqueue_enabled"},
+            {"os_version", "provided_until"},
         )
 
-        # the case that comparison would get wrong: "false" in Glance, true in
-        # the definition, but openstacksdk reporting True
+        # Glance returns a boolean property as the string it stores, which
+        # openstacksdk turns into a bool for those it declares as booleans
+        data["hw_vif_multiqueue_enabled"] = "true"
+        self.assertEqual(written(meta), set())
         data["hw_vif_multiqueue_enabled"] = "false"
-        self.assertTrue(Image(**data).is_hw_vif_multiqueue_enabled)
-        self.assertIn("hw_vif_multiqueue_enabled", written(meta))
+        self.assertEqual(written(meta), {"hw_vif_multiqueue_enabled"})
 
     @mock.patch(
         "openstack_image_manager.main.openstack.image.v2._proxy.Proxy.remove_tag"
