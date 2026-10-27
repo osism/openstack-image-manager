@@ -1092,25 +1092,26 @@ class ImageManager:
                 if self.wait_for_image(cloud_images[name]) is None:
                     self.exit_with_error = True
 
+            # the plain name only holds this version if its internal_version
+            # says so; with a single version, --latest makes no difference
             if (
                 image["multi"]
-                and self.CONF.latest
+                and (self.CONF.latest or len(sorted_versions) == 1)
                 and version == sorted_versions[-1]
                 and not existence
             ):
                 existence = image["name"] in cloud_images
-                try:
-                    if existence:
-                        existence = (
-                            cloud_images[image["name"]]["properties"][
-                                "internal_version"
-                            ]
-                            == version
-                        )
-                except KeyError:
-                    logger.error(
-                        f"Image {image['name']} is missing property 'internal_version'"
+                if existence:
+                    internal_version = cloud_images[image["name"]]["properties"].get(
+                        "internal_version"
                     )
+                    if internal_version is None:
+                        # what the image holds is unknown, so it is replaced
+                        # rather than labelled with this version
+                        logger.warning(
+                            f"Image {image['name']} is missing property 'internal_version'"
+                        )
+                    existence = internal_version == version
 
             elif (
                 image["multi"]
@@ -1127,9 +1128,6 @@ class ImageManager:
                 and version == sorted_versions[-2]
                 and not existence
             ):
-                existence = image["name"] in cloud_images
-
-            elif image["multi"] and len(sorted_versions) == 1:
                 existence = image["name"] in cloud_images
 
             if version == "latest":
@@ -1243,6 +1241,22 @@ class ImageManager:
                 existing_images.add(image["name"])
             else:
                 existing_images.add(name)
+
+            if (
+                existence
+                and image["multi"]
+                and len(sorted_versions) == 1
+                and image["name"] not in cloud_images
+                and cloud_images[name].status == "active"
+            ):
+                # a run that stopped between import and rename left this
+                # version under its suffixed name; hand it on for renaming
+                if self.CONF.dry_run:
+                    logger.info(
+                        f"Skipping required rename of image '{name}', running in dry-run mode"
+                    )
+                else:
+                    imported_image = cloud_images[name]
 
             if imported_image:
                 self.set_properties(
