@@ -1133,6 +1133,175 @@ class TestManage(TestCase):
                 self.assertEqual(mock_wait_for_image.called, waited)
                 self.assertFalse(self.sot.exit_with_error)
 
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_single_version_changed(
+        self,
+        mock_get_images,
+        mock_head,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        """a multi image whose only version changed is imported as the new
+        version, with or without --latest, and the image under the plain name
+        keeps the metadata of the content it holds; an image without
+        internal_version holds unknown content and is replaced the same way"""
+        name = self.fake_image_dict["name"]
+        new_name = f"{name} (2)"
+        versions = {
+            "2": {
+                "url": self.fake_url + "2",
+                "checksum": "5678",
+                "meta": {"image_source": self.fake_url + "2"},
+            }
+        }
+        meta = self.fake_image_dict["meta"]
+        mock_head.return_value.status_code = 200
+
+        for latest in (False, True):
+            for internal_version in ("1", None):
+                with self.subTest(latest=latest, internal_version=internal_version):
+                    mock_import_image.reset_mock()
+                    mock_set_properties.reset_mock()
+                    self.sot.CONF.latest = latest
+                    data = copy.deepcopy(FAKE_IMAGE_DATA)
+                    if internal_version is None:
+                        del data["properties"]["internal_version"]
+                    current = Image(**data)
+                    new_data = copy.deepcopy(FAKE_IMAGE_DATA)
+                    new_data.update(id="new", name=new_name)
+                    new_image = Image(**new_data)
+                    mock_get_images.side_effect = [
+                        {name: current},
+                        {name: current, new_name: new_image},
+                    ]
+
+                    result = self.sot.process_image(
+                        self.fake_image_dict, versions, ["2"], meta
+                    )
+
+                    mock_import_image.assert_called_once_with(
+                        self.fake_image_dict,
+                        new_name,
+                        self.fake_url + "2",
+                        versions,
+                        "2",
+                        checksum="5678",
+                    )
+                    self.assertEqual(
+                        [c.args[1] for c in mock_set_properties.call_args_list],
+                        [new_name],
+                    )
+                    self.assertEqual(result, ({name}, new_image, current))
+
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_single_version_unchanged(
+        self,
+        mock_get_images,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        """a multi image whose only version is already under the plain name is
+        not imported again, and gets its definition applied"""
+        name = self.fake_image_dict["name"]
+        meta = self.fake_image_dict["meta"]
+        mock_get_images.return_value = {name: Image(**FAKE_IMAGE_DATA)}
+
+        for latest in (False, True):
+            with self.subTest(latest=latest):
+                mock_set_properties.reset_mock()
+                self.sot.CONF.latest = latest
+
+                self.sot.process_image(self.fake_image_dict, self.versions, ["1"], meta)
+
+                mock_import_image.assert_not_called()
+                mock_set_properties.assert_called_once_with(
+                    mock.ANY, name, self.versions, "1", "", meta
+                )
+
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_single_version_unpromoted(
+        self,
+        mock_get_images,
+        mock_head,
+        mock_import_image,
+        mock_set_properties,
+    ):
+        """a multi image whose only version was imported, but not renamed to
+        the plain name, is handed on for renaming instead of imported again"""
+        name = self.fake_image_dict["name"]
+        suffixed_name = f"{name} (1)"
+        mock_head.return_value.status_code = 200
+        meta = self.fake_image_dict["meta"]
+        data = copy.deepcopy(FAKE_IMAGE_DATA)
+        data["name"] = suffixed_name
+        suffixed = Image(**data)
+        mock_get_images.return_value = {suffixed_name: suffixed}
+
+        for latest in (False, True):
+            with self.subTest(latest=latest):
+                mock_import_image.reset_mock()
+                mock_set_properties.reset_mock()
+                self.sot.CONF.latest = latest
+
+                result = self.sot.process_image(
+                    self.fake_image_dict, self.versions, ["1"], meta
+                )
+
+                mock_import_image.assert_not_called()
+                mock_set_properties.assert_called_once_with(
+                    mock.ANY, suffixed_name, self.versions, "1", "", meta
+                )
+                self.assertEqual(result, ({name}, suffixed, None))
+
+    @mock.patch("openstack_image_manager.main.ImageManager.wait_for_image")
+    @mock.patch("openstack_image_manager.main.ImageManager.set_properties")
+    @mock.patch("openstack_image_manager.main.ImageManager.import_image")
+    @mock.patch("openstack_image_manager.main.requests.head")
+    @mock.patch("openstack_image_manager.main.ImageManager.get_images")
+    def test_process_image_single_version_unpromoted_kept(
+        self,
+        mock_get_images,
+        mock_head,
+        mock_import_image,
+        mock_set_properties,
+        mock_wait_for_image,
+    ):
+        """an image only under the suffixed name is not handed on for renaming
+        in dry-run mode, nor while it is not active"""
+        name = self.fake_image_dict["name"]
+        suffixed_name = f"{name} (1)"
+        mock_head.return_value.status_code = 200
+        meta = self.fake_image_dict["meta"]
+        mock_wait_for_image.return_value = None
+
+        for dry_run, status in ((True, "active"), (False, "importing")):
+            with self.subTest(dry_run=dry_run, status=status):
+                mock_import_image.reset_mock()
+                mock_set_properties.reset_mock()
+                self.sot.CONF.dry_run = dry_run
+                data = copy.deepcopy(FAKE_IMAGE_DATA)
+                data.update(name=suffixed_name, status=status)
+                mock_get_images.return_value = {suffixed_name: Image(**data)}
+
+                result = self.sot.process_image(
+                    self.fake_image_dict, self.versions, ["1"], meta
+                )
+
+                mock_import_image.assert_not_called()
+                self.assertEqual(
+                    [c.args[1] for c in mock_set_properties.call_args_list],
+                    [] if dry_run else [suffixed_name],
+                )
+                self.assertEqual(result, ({name}, None, None))
+
     def test_same_property_value(self):
         """values are compared as Glance stores them"""
         for current, wanted, same in (
