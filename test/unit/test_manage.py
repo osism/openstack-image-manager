@@ -3102,3 +3102,31 @@ class TestManage(TestCase):
                 else:
                     with self.assertRaises(YamaleError):
                         yamale.validate(schema, data)
+
+    def test_schema_hw_rescue_bus_and_device(self):
+        """hw_rescue_bus and hw_rescue_device are optional, with Nova's values"""
+        schema = yamale.make_schema("etc/schema.yaml")
+
+        for meta, valid in (
+            ({}, True),
+            ({"hw_rescue_device": "cdrom", "hw_rescue_bus": "scsi"}, True),
+            ({"hw_rescue_device": "disk", "hw_rescue_bus": "virtio"}, True),
+            ({"hw_rescue_device": "floppy"}, True),
+            ({"hw_rescue_bus": "ide"}, True),
+            ({"hw_rescue_bus": "sata"}, True),
+            ({"hw_rescue_bus": "usb"}, True),
+            ({"hw_rescue_device": "lun"}, False),
+            ({"hw_rescue_device": "CDROM"}, False),
+            ({"hw_rescue_bus": "xen"}, False),
+            ({"hw_rescue_bus": "SCSI"}, False),
+        ):
+            with self.subTest(meta=meta):
+                image = copy.deepcopy(SCHEMA_TEST_IMAGE_DICT)
+                image["meta"].update(meta)
+                content = yaml.safe_dump({"images": [image]})
+                data = yamale.make_data(content=content)
+                if valid:
+                    yamale.validate(schema, data)
+                else:
+                    with self.assertRaises(YamaleError):
+                        yamale.validate(schema, data)
