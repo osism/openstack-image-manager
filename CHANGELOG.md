@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on Januar 28, 2026. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261111.0] - 2026-11-11
+
+### Changed
+- Build the published sdist and wheel on Python 3.12 instead of 3.9, which GitHub's ubuntu-26.04 runners no longer provide (osism/openstack-image-manager#1319)
+
+### Fixed
+- Reactivate a deactivated image before deleting it so its data in the store is not left behind (osism/openstack-image-manager#1314, contributed by Tore Anderson (@toreanderson))
+- Wait for an existing image version only while it is being imported, not while retained and deactivated (osism/openstack-image-manager#1314, contributed by Tore Anderson (@toreanderson))
+- Compare boolean image properties against their current value instead of always rewriting them, since openstacksdk now reads them correctly (osism/openstack-image-manager#1313, contributed by Tore Anderson (@toreanderson))
+- Rotate a multi image's single version when it changes, with or without --latest, instead of leaving it unimported (osism/openstack-image-manager#1317)
+
+### Dependencies
+- typer 0.27.2 → 0.27.3 (osism/openstack-image-manager#1312)
+- openstacksdk 4.20.0 → 4.22.0 (osism/openstack-image-manager#1313, osism/openstack-image-manager#1316, contributed by Tore Anderson (@toreanderson))
+- paramiko 5.0.0 → 5.1.0 (osism/openstack-image-manager#1315)
+
 ## [v0.20261007.0] - 2026-10-07
 
 ### Added
