@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on Januar 28, 2026. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261111.0] - 2026-11-11
+
+### Changed
+
+- Update dependency typer to v0.27.3 (osism/openstack-image-manager#1312)
+- Compare boolean image properties like the others (osism/openstack-image-manager#1313, contributed by Tore Anderson (@toreanderson))
+- Delete deactivated images with their data (osism/openstack-image-manager#1314, contributed by Tore Anderson (@toreanderson))
+- Update dependency paramiko to v5.1.0 (osism/openstack-image-manager#1315)
+- Update dependency openstacksdk to v4.22.0 (osism/openstack-image-manager#1316)
+- Rotate single-version images without --latest (osism/openstack-image-manager#1317)
+- publish: build the release on Python 3.12 (osism/openstack-image-manager#1319)
+
 ## [v0.20261007.0] - 2026-10-07
 
 ### Added
