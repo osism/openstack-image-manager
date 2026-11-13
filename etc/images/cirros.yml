@@ -3,6 +3,7 @@ images:
 
   - name: Cirros
     enable: true
+    shortname: cirros
     format: qcow2
     login: cirros
     password: gocubsgo
@@ -27,9 +28,11 @@ images:
     versions:
       - version: '0.6.2'
         url: https://github.com/cirros-dev/cirros/releases/download/0.6.2/cirros-0.6.2-x86_64-disk.img
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/cirros/0.6.2-cirros.qcow2
         checksum: "sha256:07e44a73e54c94d988028515403c1ed762055e01b83a767edf3c2b387f78ce00"
         build_date: 2023-05-30
       - version: '0.6.3'
         url: https://github.com/cirros-dev/cirros/releases/download/0.6.3/cirros-0.6.3-x86_64-disk.img
+        mirror_url: https://nbg1.your-objectstorage.com/osism/openstack-images/cirros/0.6.3-cirros.qcow2
         checksum: "sha256:7d6355852aeb6dbcd191bcda7cd74f1536cfe5cbf8a10495a7283a8396e4b75b"
         build_date: 2024-09-26
