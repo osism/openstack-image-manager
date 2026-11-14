@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-loguru = "==0.7.3"
+loguru = "==0.8.0"
 minio = "==7.2.20"
 munch = "==4.0.0"
 natsort = "==8.4.0"
