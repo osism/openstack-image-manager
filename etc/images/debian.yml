@@ -103,14 +103,14 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2026-10-01
+      - build_date: 2026-11-14
         checksum: 
-          sha512:8be9e7bdf6cf8e04e3e4edb205e5bd3402320742da5491b78a0dc226822e057aa7c6f9e24103df2c701de1c60c842a62cb6dad38485ffb4653ac9dc24e44d43a
+          sha512:3f6209033679cb9756ca47ade9015cb23ef220e82a3fabc67443c6cf2a58aa0950405e3a5abe60518dcdbf9947551036cd5d443c2445e1c9b713cbbd626e19c3
         url: 
-          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20261001-2618/debian-12-genericcloud-amd64-daily-20261001-2618.qcow2
+          https://cdimage.debian.org/cdimage/cloud/bookworm/daily/20261114-2662/debian-12-genericcloud-amd64-daily-20261114-2662.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20261001-debian-12.qcow2
-        version: '20261001'
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-12/20261114-debian-12.qcow2
+        version: '20261114'
   - name: Debian 13
     enable: true
     shortname: debian-13
@@ -140,11 +140,11 @@ images:
     latest_url: 
       https://cdimage.debian.org/cdimage/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
     versions:
-      - build_date: 2026-10-01
+      - build_date: 2026-11-14
         checksum: 
-          sha512:f46f0671a6e5bdec5291ab8972bae2f10e5408c2f64a74078f11efc2f06a436a9d0313ed50e0472542eeabf780e9f7c792ac0a314c6c20507fcd9fd81b468c3d
+          sha512:baf0f693e51615decaa7617ddfe2a94de43ba7ab4c7801291ca458320b44db062cfb736f36d35c3fe785d1b3f16beeff3ee35cb1018462eba3e05f2f38734aa3
         url: 
-          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20261001-2618/debian-13-genericcloud-amd64-daily-20261001-2618.qcow2
+          https://cdimage.debian.org/cdimage/cloud/trixie/daily/20261114-2662/debian-13-genericcloud-amd64-daily-20261114-2662.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20261001-debian-13.qcow2
-        version: '20261001'
+          https://nbg1.your-objectstorage.com/osism/openstack-images/debian-13/20261114-debian-13.qcow2
+        version: '20261114'
