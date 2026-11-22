@@ -66,14 +66,14 @@ images:
     latest_url: 
       https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20260525'
+      - version: '20261113'
         url: 
           https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/rocky-9/20260525-rocky-9.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/rocky-9/20261113-rocky-9.qcow2
         checksum: 
-          sha256:92c206cc6f790c61583247eefe87890f8828420662c17cacf247cec78ab4eec8
-        build_date: 2026-05-25
+          sha256:4f88f4209de50813d8054ab97309e7169a580206a0c4ea04f375d36c4846d50e
+        build_date: 2026-11-13
   - name: Rocky 10
     enable: true
     shortname: rocky-10
@@ -103,11 +103,11 @@ images:
     latest_url: 
       https://download.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud.latest.x86_64.qcow2
     versions:
-      - version: '20260526'
+      - version: '20261113'
         url: 
           https://download.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud.latest.x86_64.qcow2
         mirror_url: 
-          https://nbg1.your-objectstorage.com/osism/openstack-images/rocky-10/20260526-rocky-10.qcow2
+          https://nbg1.your-objectstorage.com/osism/openstack-images/rocky-10/20261113-rocky-10.qcow2
         checksum: 
-          sha256:9fc9e9ff16888bb68ac39b0392e25c9c92684d50c85f1cce6ab549363bbc4b48
-        build_date: 2026-05-26
+          sha256:68eae06d402c8b19e7dca06e85bdc43a3476089afa3ee20d93d0d43cf9871e9e
+        build_date: 2026-11-13
